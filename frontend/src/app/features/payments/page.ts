@@ -2,18 +2,19 @@ import { Component } from '@angular/core';
 import { PageHeaderComponent } from '../../shared/ui/page-header';
 import { ButtonComponent } from '../../shared/ui/button';
 import { IconComponent } from '../../shared/ui/icon';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 
 @Component({
   selector: 'app-payments-page',
   standalone: true,
-  imports: [PageHeaderComponent, ButtonComponent, IconComponent],
+  imports: [PageHeaderComponent, ButtonComponent, IconComponent, TranslatePipe],
   template: `
-    <div class="p-4">
-      <app-page-header [title]="'Paiements'" [subtitle]="'Enregistrer les règlements'">
+    <div class=\"p-4\">
+      <app-page-header [title]=\"('payments.title' | t)\" [subtitle]=\"('payments.subtitle' | t)\">
         <div actions>
           <app-button>
-            <app-icon name="add"></app-icon>
-            Nouveau paiement
+            <app-icon name=\"add\"></app-icon>
+            {{ 'payments.new' | t }}
           </app-button>
         </div>
       </app-page-header>

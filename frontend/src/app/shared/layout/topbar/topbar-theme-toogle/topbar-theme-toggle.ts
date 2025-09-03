@@ -8,7 +8,7 @@ import { ButtonComponent } from '../../../ui/button';
   standalone: true,
   imports: [CommonModule, IconComponent, ButtonComponent],
   template: `
-    <app-button size="icon" variant="ghost" (clicked)="toggle.emit()" aria-label="Changer de thème">
+    <app-button size="icon" variant="ghost" (clicked)="toggle.emit()" aria-label="Changer de thème" shadow="none" hoverShadow="none">
       <app-icon [name]="isDark() ? 'light_mode' : 'dark_mode'" class="text-xl"></app-icon>
     </app-button>
   `,

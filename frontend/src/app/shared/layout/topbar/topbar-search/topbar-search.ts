@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconComponent } from '../../../ui/icon';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 
 @Component({
   selector: 'app-topbar-search',
   standalone: true,
-  imports: [CommonModule, IconComponent],
+  imports: [CommonModule, IconComponent, TranslatePipe],
   styles: [
     `
     /* Hide native search clear and decorations so only our Material icon shows */
@@ -17,13 +18,13 @@ import { IconComponent } from '../../../ui/icon';
   ],
   template: `
     <form role="search" class="hidden md:flex items-center w-full max-w-none">
-      <label for="top-search" class="sr-only">Rechercher</label>
+      <label for="top-search" class="sr-only">{{ 'search.label' | t }}</label>
       <div class="relative mx-auto transition-[transform,width] duration-200 ease-out will-change-transform"
            [class.scale-[1.01]]="focused">
         <span class="pointer-events-none absolute inset-y-0 left-3 inline-flex items-center text-neutral-400">
           <app-icon name="search"></app-icon>
         </span>
-        <input id="top-search" name="q" type="search" placeholder="Rechercher..."
+        <input id="top-search" name="q" type="search" [placeholder]="('search.placeholder' | t)"
                #q
                (focus)="focused=true"
                (blur)="focused=false"
@@ -41,7 +42,7 @@ import { IconComponent } from '../../../ui/icon';
                   (mousedown)="$event.preventDefault(); q.value=''; value=''; q.focus()"
                   (click)="$event.preventDefault()"
                   class="absolute inset-y-0 right-1 my-1 inline-flex items-center justify-center rounded-full h-8 w-8 text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 focus:outline-none"
-                  aria-label="Effacer la recherche">
+                  [attr.aria-label]="'search.clear' | t">
             <app-icon name="close"></app-icon>
           </button>
         }

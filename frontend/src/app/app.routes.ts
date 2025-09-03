@@ -9,7 +9,7 @@ export const routes: Routes = [
   },
   {
     path: 'customers',
-    loadComponent: () => import('./features/customers/page').then(m => m.CustomersPage),
+    loadChildren: () => import('./features/customers/routes').then(m => m.customersRoutes),
     data: { title: 'Clients' }
   },
   {

@@ -1,0 +1,58 @@
+{
+  "search": {
+    "label": "Search",
+    "placeholder": "Search...",
+    "clear": "Clear search"
+  },
+  "app": {
+    "name": "Optifact"
+  },
+  "actions": {
+    "new": "New",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "customers": {
+    "title": "Customers",
+    "subtitle": "Manage your customers",
+    "new": "New customer"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "customers": "Customers",
+    "products": "Products",
+    "quotes": "Quotes",
+    "invoices": "Invoices",
+    "payments": "Payments",
+    "settings": "Settings"
+  },
+  "products": {
+    "title": "Products",
+    "subtitle": "Product catalog",
+    "new": "New product"
+  },
+  "quotes": {
+    "title": "Quotes",
+    "subtitle": "Sales proposals",
+    "new": "New quote"
+  },
+  "invoices": {
+    "title": "Invoices",
+    "subtitle": "Track your invoices",
+    "new": "New invoice"
+  },
+  "payments": {
+    "title": "Payments",
+    "subtitle": "Record payments",
+    "new": "New payment"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Application preferences"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "refresh": "Refresh"
+  }
+}

@@ -1,23 +1,16 @@
 import { Component } from '@angular/core';
 import { PageHeaderComponent } from '../../shared/ui/page-header';
-import { ButtonComponent } from '../../shared/ui/button';
-import { IconComponent } from '../../shared/ui/icon';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-customers-page',
   standalone: true,
-  imports: [PageHeaderComponent, ButtonComponent, IconComponent],
+  imports: [PageHeaderComponent, RouterOutlet],
   template: `
     <div class="p-4">
-      <app-page-header [title]="'Clients'" [subtitle]="'Gérez vos clients'">
-        <div actions>
-          <app-button>
-            <app-icon name="add"></app-icon>
-            Nouveau client
-          </app-button>
-        </div>
-      </app-page-header>
+      <app-page-header title="Clients" subtitle="Gestion des clients"></app-page-header>
     </div>
+    <router-outlet />
   `
 })
 export class CustomersPage {}

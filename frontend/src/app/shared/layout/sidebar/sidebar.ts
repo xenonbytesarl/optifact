@@ -15,12 +15,12 @@ export class SidebarComponent {
   close = output<void>();
 
   readonly navItems = signal<SidebarNavItem[]>([
-    { link: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
-    { link: '/customers', icon: 'group', label: 'Clients' },
-    { link: '/products', icon: 'inventory_2', label: 'Produits' },
-    { link: '/quotes', icon: 'description', label: 'Devis' },
-    { link: '/invoices', icon: 'receipt_long', label: 'Factures' },
-    { link: '/payments', icon: 'credit_card', label: 'Paiements' },
-    { link: '/settings', icon: 'settings', label: 'Paramètres' }
+    { link: '/dashboard', icon: 'dashboard', label: 'nav.dashboard' },
+    { link: '/customers', icon: 'group', label: 'nav.customers' },
+    { link: '/products', icon: 'inventory_2', label: 'nav.products' },
+    { link: '/quotes', icon: 'description', label: 'nav.quotes' },
+    { link: '/invoices', icon: 'receipt_long', label: 'nav.invoices' },
+    { link: '/payments', icon: 'credit_card', label: 'nav.payments' },
+    { link: '/settings', icon: 'settings', label: 'nav.settings' }
   ]);
 }

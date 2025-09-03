@@ -8,7 +8,7 @@ import { ButtonComponent } from '../../../ui/button';
   standalone: true,
   imports: [CommonModule, IconComponent, ButtonComponent],
   template: `
-    <app-button class="hidden sm:inline-flex rounded-full" size="icon" variant="ghost" aria-label="Notifications">
+    <app-button class="hidden sm:inline-flex rounded-full" size="icon" variant="ghost" aria-label="Notifications" shadow="none" hoverShadow="none">
       <app-icon name="notifications"></app-icon>
     </app-button>
   `,

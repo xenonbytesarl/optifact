@@ -1,0 +1,58 @@
+{
+  "search": {
+    "label": "Rechercher",
+    "placeholder": "Rechercher...",
+    "clear": "Effacer la recherche"
+  },
+  "app": {
+    "name": "Optifact"
+  },
+  "actions": {
+    "new": "Créer",
+    "edit": "Modifier",
+    "cancel": "Annuler",
+    "save": "Sauvegarder"
+  },
+  "customers": {
+    "title": "Clients",
+    "subtitle": "Gérez vos clients",
+    "new": "Nouveau client"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "customers": "Clients",
+    "products": "Produits",
+    "quotes": "Devis",
+    "invoices": "Factures",
+    "payments": "Paiements",
+    "settings": "Paramètres"
+  },
+  "products": {
+    "title": "Produits",
+    "subtitle": "Catalogue des produits",
+    "new": "Nouveau produit"
+  },
+  "quotes": {
+    "title": "Devis",
+    "subtitle": "Propositions commerciales",
+    "new": "Nouveau devis"
+  },
+  "invoices": {
+    "title": "Factures",
+    "subtitle": "Suivez vos factures",
+    "new": "Nouvelle facture"
+  },
+  "payments": {
+    "title": "Paiements",
+    "subtitle": "Enregistrer les règlements",
+    "new": "Nouveau paiement"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Préférences de l’application"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "refresh": "Actualiser"
+  }
+}
