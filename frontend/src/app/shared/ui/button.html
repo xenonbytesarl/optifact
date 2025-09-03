@@ -1,0 +1,17 @@
+<button [attr.type]="type()"
+        (click)="clicked.emit($event)"
+        [disabled]="disabled()"
+        class="gap-2 inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 ring-primary"
+        [ngClass]="{
+          'px-2.5 py-1.5 text-sm': size() === 'sm',
+          'px-3 py-2 text-sm': size() === 'md',
+          'px-4 py-2.5 text-base': size() === 'lg',
+          'p-2': size() === 'icon',
+          'bg-[var(--color-primary)] text-white hover:opacity-90 dark:hover:opacity-95 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900': variant() === 'primary',
+          'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900': variant() === 'secondary',
+          'bg-transparent text-[var(--color-primary)] hover-surface-weak dark:text-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900': variant() === 'ghost',
+          'bg-[var(--color-danger)] text-white hover:opacity-90 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900': variant() === 'danger',
+          'bg-[var(--color-success)] text-white hover:opacity-90 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900': variant() === 'success'
+        }">
+  <ng-content />
+</button>

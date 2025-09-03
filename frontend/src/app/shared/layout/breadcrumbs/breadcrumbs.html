@@ -1,0 +1,9 @@
+<nav aria-label="Breadcrumb" class="text-sm text-muted">
+  <ol class="inline-flex items-center gap-2">
+    <li><a routerLink="/dashboard" class="hover:underline text-primary">Accueil</a></li>
+    @for (s of segments(); track s.url) {
+      <li aria-hidden="true" class="text-muted">/</li>
+      <li><a [routerLink]="s.url" class="hover:underline text-fg">{{ s.label }}</a></li>
+    }
+  </ol>
+</nav>

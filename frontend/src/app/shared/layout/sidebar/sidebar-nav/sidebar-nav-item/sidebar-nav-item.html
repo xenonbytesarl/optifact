@@ -1,0 +1,7 @@
+<a [routerLink]="link()" routerLinkActive="active" #rla="routerLinkActive"
+   [attr.aria-current]="rla.isActive ? 'page' : null"
+   class="group relative flex items-center gap-3 px-3 py-2 rounded-md hover-surface-weak text-fg transition-colors"
+   [ngClass]="{ 'bg-active text-primary active border-l-2 border-[var(--color-primary)]': rla.isActive }">
+  <app-icon [name]="icon()" class="text-xl text-muted" />
+  <span class="text-sm font-medium">{{ label() }}</span>
+</a>

@@ -1,0 +1,5 @@
+<nav class="p-3 space-y-1">
+  @for (item of items(); track item.link) {
+    <app-sidebar-nav-item [link]="item.link" [icon]="item.icon" [label]="item.label" />
+  }
+</nav>

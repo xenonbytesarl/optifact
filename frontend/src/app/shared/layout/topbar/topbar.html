@@ -1,0 +1,19 @@
+<header class="fixed top-0 inset-x-0 h-20 z-40 bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-800 shadow-sm">
+  <div class="h-full flex items-center gap-4 px-5 md:px-8 max-w-7xl mx-auto">
+    <app-topbar-menu-button (toggle)="toggleSidebar.emit()" />
+
+    <!-- Brand container ensures vertical centering -->
+    <div class="h-full flex items-center">
+      <app-topbar-brand [link]="'/dashboard'" [logoSrc]="logoSrc()" [appName]="appName()" />
+    </div>
+
+    <div class="flex-1 flex items-center justify-center">
+      <app-topbar-search />
+    </div>
+
+    <!-- Breadcrumbs removed from Topbar per requirement -->
+    <app-topbar-theme-toggle [isDark]="isDarkMode()" (toggle)="toggleTheme.emit()" />
+    <app-topbar-notifications />
+    <app-topbar-user-menu />
+  </div>
+</header>

@@ -31,10 +31,27 @@ frontend/
 - Injection: utiliser les providers au plus près de l’usage (provideIn: 'root' si transverse, sinon dans la route/feature).
 - Change detection: par défaut Angular 20 optimise avec zoneless; viser des composants présentations (
   inputs/outputs) + containers (logique, sélection d’état) si nécessaire.
+- Signals-first: privilégier les APIs Signals d’Angular pour la communication et les références de vues: input(), output(), model(), signal(), computed(), viewChild(), contentChild(), viewChildren(), contentChildren(), children(). Ne plus utiliser les décorateurs hérités @Input, @Output, @ViewChild, @ContentChild, @ViewChildren, @ContentChildren. Migrer systématiquement vers les équivalents Signals.
+  - Exemples de migration rapides:
+    - @Input() foo: Type; => foo = input.required<Type>(); ou foo = input<Type>();
+    - @Output() changed = new EventEmitter<T>(); => changed = output<T>();
+    - Two-way binding: remplacer [(value)] par model() côté composant et [model] / (modelChange) côté parent.
+    - @ViewChild(ChildCmp) child!: ChildCmp; => child = viewChild.required(ChildCmp); (lecture via child()?.methode())
+    - Sélection de multiples enfants: viewChildren(Directive) au lieu de @ViewChildren.
+- Contrôle de flux Angular moderne: utiliser @if, @else, @for, @switch, @case, @default à la place de *ngIf, *ngFor, *ngSwitch. Préférer ces nouvelles constructions pour de meilleures perfs, une portée plus claire et des templates plus lisibles (Angular 17+).
+  - Exemples de migration rapides:
+    - *ngIf="cond" => @if (cond) { ... } @else { ... }
+    - *ngFor="let item of items; trackBy: track" => @for (item of items; track item.id) { ... }
+    - *ngSwitch="type" avec *ngSwitchCase => @switch (type) { @case('a') { ... } @default { ... } }
 
 3. Tailwind CSS v4
 - Configuration minimale: import unique dans src/styles.css avec `@import "tailwindcss";` (déjà présent).
-- Design tokens: définir une palette (via CSS variables) dans :root si besoin. Ex. :root { --color-primary: ... }
+- Préférence CSS: privilégier au maximum Tailwind (utilitaires) pour le style. Éviter le CSS personnalisé sauf cas spécifiques (ex: resets, variables, cas complexes non couverts). Préférer des composants réutilisables et des classes utilitaires plutôt que des feuilles CSS globales lourdes.
+- Design tokens: définir une palette (via CSS variables) dans :root; exposer aussi une variante sombre via un sélecteur data ou classe. Ex. :root { --color-bg: 255 255 255; --color-fg: 17 24 39; } et [data-theme="dark"] { --color-bg: 17 24 39; --color-fg: 243 244 246; }.
+- Thèmes light/dark: l’application doit supporter les thèmes clair et sombre.
+  - Stratégie recommandée: utiliser Tailwind en mode `class` (dark) ou un attribut `[data-theme]` sur <html> / <body>, et piloter les couleurs via variables CSS et utilitaires Tailwind (ex: bg-[rgb(var(--color-bg))] text-[rgb(var(--color-fg))]).
+  - Détection initiale: respecter `prefers-color-scheme` puis persistance via localStorage si nécessaire; bascule via un service SettingsStore.
+  - Accessibilité: conserver des contrastes AA/AAA.
 - Icônes: utiliser Material Symbols (outlined/rounded) pour l’ensemble des icônes de l’application.
   - Ajout recommandé: <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> dans frontend/src/index.html.
   - Usage: <span class="material-symbols-outlined">home</span> avec des classes utilitaires Tailwind pour la taille/couleur.
