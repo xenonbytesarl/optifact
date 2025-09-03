@@ -14,21 +14,23 @@ import { TableComponent } from '../../../shared/ui/table';
     <app-tabs [items]="tabItems" [(active)]="tab">
       @if (tab==='addresses') {
         <div>
-          <div class="mb-2"><app-button (clicked)="addAddress.emit()">Ajouter une adresse</app-button></div>
-          @if (addresses().length === 0) {
-            <p class="text-sm text-muted">Aucune adresse — ajoutez-en une.</p>
-          } @else {
-            <app-table>
-              <thead>
+          <div class="mb-2"><app-button (clicked)="addAddress.emit()"><span class="material-symbols-outlined text-base">add</span><span class="ml-1">Ajouter une adresse</span></app-button></div>
+          <app-table>
+            <thead>
+              <tr>
+                <th scope="col" class="text-left p-2">Type</th>
+                <th scope="col" class="text-left p-2">Rue</th>
+                <th scope="col" class="text-left p-2">Ville</th>
+                <th scope="col" class="text-left p-2">Pays</th>
+                <th scope="col" class="text-right p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (addresses().length === 0) {
                 <tr>
-                  <th scope="col" class="text-left p-2">Type</th>
-                  <th scope="col" class="text-left p-2">Rue</th>
-                  <th scope="col" class="text-left p-2">Ville</th>
-                  <th scope="col" class="text-left p-2">Pays</th>
-                  <th scope="col" class="text-right p-2">Actions</th>
+                  <td colspan="5" class="p-2 text-sm text-muted">Aucune adresse</td>
                 </tr>
-              </thead>
-              <tbody>
+              } @else {
                 @for (a of addresses(); track a.id) {
                   <tr>
                     <td class="p-2">{{ a.type }}</td>
@@ -36,35 +38,41 @@ import { TableComponent } from '../../../shared/ui/table';
                     <td class="p-2">{{ a.city }}</td>
                     <td class="p-2">{{ a.country }}</td>
                     <td class="p-2 text-right">
-                      <app-button size="sm" variant="secondary" (clicked)="editAddress.emit(a)">Modifier</app-button>
-                      <app-button size="sm" variant="danger" (clicked)="removeAddress.emit(a.id)">Supprimer</app-button>
+                      <app-button size="sm" variant="ghost" shadow="none" hoverShadow="none" (clicked)="editAddress.emit(a)" aria-label="Modifier">
+                        <span class="material-symbols-outlined text-base">edit</span>
+                      </app-button>
+                      <app-button size="sm" variant="ghost"  shadow="none" hoverShadow="none" (clicked)="removeAddress.emit(a.id)" aria-label="Supprimer">
+                        <span class="material-symbols-outlined text-base text-red-600">delete</span>
+                      </app-button>
                     </td>
                   </tr>
                 }
-              </tbody>
-            </app-table>
-          }
+              }
+            </tbody>
+          </app-table>
         </div>
       }
 
       @if (tab==='contacts') {
         <div>
-          <div class="mb-2"><app-button (clicked)="addContact.emit()">Ajouter un contact</app-button></div>
-          @if (contacts().length === 0) {
-            <p class="text-sm text-muted">Aucun contact — ajoutez-en un.</p>
-          } @else {
-            <app-table>
-              <thead>
-              <tr>
-                <th class="text-left p-2">Type</th>
-                <th class="text-left p-2">Nom</th>
-                <th class="text-left p-2">Email</th>
-                <th class="text-left p-2">Téléphone</th>
-                <th class="text-left p-2">Fonction</th>
-                <th class="text-right p-2">Actions</th>
-              </tr>
-              </thead>
-              <tbody>
+          <div class="mb-2"><app-button (clicked)="addContact.emit()"><span class="material-symbols-outlined text-base">person_add</span><span class="ml-1">Ajouter un contact</span></app-button></div>
+          <app-table>
+            <thead>
+            <tr>
+              <th class="text-left p-2">Type</th>
+              <th class="text-left p-2">Nom</th>
+              <th class="text-left p-2">Email</th>
+              <th class="text-left p-2">Téléphone</th>
+              <th class="text-left p-2">Fonction</th>
+              <th class="text-right p-2">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+              @if (contacts().length === 0) {
+                <tr>
+                  <td colspan="6" class="p-2 text-sm text-muted">Aucun contact</td>
+                </tr>
+              } @else {
                 @for (c of contacts(); track c.id) {
                   <tr>
                     <td class="p-2">{{ c.type }}</td>
@@ -73,14 +81,18 @@ import { TableComponent } from '../../../shared/ui/table';
                     <td class="p-2">{{ c.phone }}</td>
                     <td class="p-2">{{ c.role }}</td>
                     <td class="p-2 text-right">
-                      <app-button size="sm" variant="secondary" (clicked)="editContact.emit(c)">Modifier</app-button>
-                      <app-button size="sm" variant="danger" (clicked)="removeContact.emit(c.id)">Supprimer</app-button>
+                      <app-button size="sm" variant="ghost" (clicked)="editContact.emit(c)" aria-label="Modifier">
+                        <span class="material-symbols-outlined text-base">edit</span>
+                      </app-button>
+                      <app-button size="sm" variant="ghost" (clicked)="removeContact.emit(c.id)" aria-label="Supprimer">
+                        <span class="material-symbols-outlined text-base text-red-600">delete</span>
+                      </app-button>
                     </td>
                   </tr>
                 }
-              </tbody>
-            </app-table>
-          }
+              }
+            </tbody>
+          </app-table>
         </div>
       }
     </app-tabs>
@@ -102,8 +114,8 @@ export class CustomerTabsComponent {
 
   get tabItems(): TabItem[] {
     return [
-      { id: 'addresses', label: 'Adresses', badge: this.addresses()?.length ?? 0 },
-      { id: 'contacts', label: 'Contacts', badge: this.contacts()?.length ?? 0 }
+      { id: 'addresses', label: 'Adresses' },
+      { id: 'contacts', label: 'Contacts' }
     ];
   }
 

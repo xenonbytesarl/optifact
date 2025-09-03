@@ -18,6 +18,8 @@ export class ButtonComponent {
   size = input<'sm' | 'md' | 'lg' | 'icon'>('md');
   type = input<'button' | 'submit' | 'reset'>('button');
   disabled = input(false);
+  // Allow button to take full width when desired (useful for small screens)
+  fullWidth = input<boolean>(false);
   // Shadow controls: base (default 'sm') and hover (default 'base' = 'shadow')
   shadow = input<'none' | 'sm' | 'base' | 'md' | 'lg' | 'xl' | 'inner'>('sm');
   hoverShadow = input<'none' | 'sm' | 'base' | 'md' | 'lg' | 'xl' | 'inner'>('base');

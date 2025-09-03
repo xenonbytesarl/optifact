@@ -3,14 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FormFieldComponent } from '../../../shared/ui/form-field';
 import { InputComponent } from '../../../shared/ui/input';
-import { SelectComponent } from '../../../shared/ui/select';
 
 export interface CustomerBaseModel { name: string; reference?: string; category?: string }
 
 @Component({
   selector: 'app-customer-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, FormFieldComponent, InputComponent, SelectComponent],
+  imports: [CommonModule, FormsModule, FormFieldComponent, InputComponent],
   template: `
   <form class="grid gap-4 md:grid-cols-2">
     <div class="col-span-2 md:col-span-1">
@@ -21,11 +20,6 @@ export interface CustomerBaseModel { name: string; reference?: string; category?
     <div class="col-span-2 md:col-span-1">
       <app-form-field [label]="'Référence'" [hint]="'Max 20 caractères'">
         <app-input [value]="model().reference ?? ''" (valueChange)="update('reference', $event || '')" />
-      </app-form-field>
-    </div>
-    <div class="col-span-2 md:col-span-1">
-      <app-form-field [label]="'Catégorie'">
-        <app-select [options]="categories" placeholder="-- Sélectionner --" [value]="model().category ?? ''" (valueChange)="update('category', $event || '')" />
       </app-form-field>
     </div>
   </form>

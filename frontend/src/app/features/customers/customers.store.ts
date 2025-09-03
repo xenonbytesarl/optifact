@@ -1,112 +1,146 @@
-import { inject, signal, computed } from '@angular/core';
+import { inject, computed } from '@angular/core';
+import { signalStore, withState, withComputed, withMethods, patchState } from '@ngrx/signals';
 import { CustomersApi } from '../../core/api/customers.api';
 import { Address, Contact, Customer } from './models';
 
-export class CustomersStore {
-  private api = inject(CustomersApi);
-
-  currentCustomer = signal<Customer | null>(null);
-  addresses = signal<Address[]>([]);
-  contacts = signal<Contact[]>([]);
-  loading = signal(false);
-  error = signal<string | null>(null);
-  formDirty = signal(false);
-
-  addressesCount = computed(() => this.addresses().length);
-  contactsCount = computed(() => this.contacts().length);
-  canSave = computed(() => {
-    const c = this.currentCustomer();
-    return !!c && c.name?.trim().length >= 2 && !this.loading();
-  });
-
-  setCustomer(c: Customer | null) {
-    this.currentCustomer.set(c);
-    this.addresses.set(c?.addresses ?? []);
-    this.contacts.set(c?.contacts ?? []);
-    this.formDirty.set(false);
-  }
-
-  addAddress(a: Address) {
-    const list = [...this.addresses()];
-    // ensure only one default
-    if (a.type === 'défaut') {
-      for (const item of list) {
-        if (item.type === 'défaut') item.type = 'autres';
-      }
-    }
-    this.addresses.set([a, ...list]);
-    this.formDirty.set(true);
-  }
-
-  updateAddress(a: Address) {
-    this.addresses.set(this.addresses().map(x => x.id === a.id ? a : x));
-    this.formDirty.set(true);
-  }
-
-  removeAddress(id: string) {
-    this.addresses.set(this.addresses().filter(x => x.id !== id));
-    this.formDirty.set(true);
-  }
-
-  addContact(c: Contact) {
-    this.contacts.set([c, ...this.contacts()]);
-    this.formDirty.set(true);
-  }
-
-  updateContact(c: Contact) {
-    this.contacts.set(this.contacts().map(x => x.id === c.id ? c : x));
-    this.formDirty.set(true);
-  }
-
-  removeContact(id: string) {
-    this.contacts.set(this.contacts().filter(x => x.id !== id));
-    this.formDirty.set(true);
-  }
-
-  async load(id: string) {
-    this.loading.set(true);
-    this.error.set(null);
-    try {
-      const data = await this.api.get(id);
-      if (data) this.setCustomer(data);
-    } catch (e: any) {
-      this.error.set(e?.message ?? 'Erreur de chargement');
-    } finally {
-      this.loading.set(false);
-    }
-  }
-
-  async create(payload: Partial<Customer>) {
-    this.loading.set(true);
-    this.error.set(null);
-    try {
-      const created = await this.api.create({ ...payload, addresses: this.addresses(), contacts: this.contacts() });
-      this.setCustomer(created as Customer);
-      return created;
-    } catch (e: any) {
-      this.error.set(e?.message ?? 'Erreur de création');
-      throw e;
-    } finally {
-      this.loading.set(false);
-    }
-  }
-
-  async update(id: string, payload: Partial<Customer>) {
-    this.loading.set(true);
-    this.error.set(null);
-    try {
-      const updated = await this.api.update(id, { ...payload, addresses: this.addresses(), contacts: this.contacts() });
-      this.setCustomer(updated as Customer);
-      return updated;
-    } catch (e: any) {
-      this.error.set(e?.message ?? 'Erreur de mise à jour');
-      throw e;
-    } finally {
-      this.loading.set(false);
-    }
-  }
+export interface CustomersState {
+  currentCustomer: Customer | null;
+  addresses: Address[];
+  contacts: Contact[];
+  loading: boolean;
+  error: string | null;
+  formDirty: boolean;
 }
 
+const initialState: CustomersState = {
+  currentCustomer: null,
+  addresses: [],
+  contacts: [],
+  loading: false,
+  error: null,
+  formDirty: false,
+};
+
+export const CustomersStore = signalStore(
+  // Keep providedIn so it can be root-provided; component-level providers can still override per injector
+  { providedIn: 'root' },
+  withState(initialState),
+  withComputed(({ addresses, contacts, loading, currentCustomer }) => ({
+    addressesCount: computed(() => addresses().length),
+    contactsCount: computed(() => contacts().length),
+    canSave: computed(() => {
+      const c = currentCustomer();
+      return !!c && (c.name?.trim().length ?? 0) >= 2 && !loading();
+    }),
+  })),
+  withMethods((store) => {
+    const api = inject(CustomersApi);
+
+    return {
+      setCustomer(c: Customer | null) {
+        patchState(store, {
+          currentCustomer: c,
+          addresses: c?.addresses ?? [],
+          contacts: c?.contacts ?? [],
+          formDirty: false,
+        });
+      },
+
+      addAddress(a: Address) {
+        const list = [...store.addresses()];
+        // ensure only one default
+        if (a.type === 'défaut') {
+          for (const item of list) {
+            if (item.type === 'défaut') item.type = 'autres';
+          }
+        }
+        patchState(store, { addresses: [a, ...list], formDirty: true });
+      },
+
+      updateAddress(a: Address) {
+        patchState(store, {
+          addresses: store.addresses().map((x) => (x.id === a.id ? a : x)),
+          formDirty: true,
+        });
+      },
+
+      removeAddress(id: string) {
+        patchState(store, {
+          addresses: store.addresses().filter((x) => x.id !== id),
+          formDirty: true,
+        });
+      },
+
+      addContact(c: Contact) {
+        patchState(store, { contacts: [c, ...store.contacts()], formDirty: true });
+      },
+
+      updateContact(c: Contact) {
+        patchState(store, {
+          contacts: store.contacts().map((x) => (x.id === c.id ? c : x)),
+          formDirty: true,
+        });
+      },
+
+      removeContact(id: string) {
+        patchState(store, {
+          contacts: store.contacts().filter((x) => x.id !== id),
+          formDirty: true,
+        });
+      },
+
+      async load(id: string) {
+        patchState(store, { loading: true, error: null });
+        try {
+          const data = await api.get(id);
+          if (data) this.setCustomer(data);
+        } catch (e: any) {
+          patchState(store, { error: e?.message ?? 'Erreur de chargement' });
+        } finally {
+          patchState(store, { loading: false });
+        }
+      },
+
+      async create(payload: Partial<Customer>) {
+        patchState(store, { loading: true, error: null });
+        try {
+          const created = await api.create({
+            ...payload,
+            addresses: store.addresses(),
+            contacts: store.contacts(),
+          });
+          this.setCustomer(created as Customer);
+          return created;
+        } catch (e: any) {
+          patchState(store, { error: e?.message ?? 'Erreur de création' });
+          throw e;
+        } finally {
+          patchState(store, { loading: false });
+        }
+      },
+
+      async update(id: string, payload: Partial<Customer>) {
+        patchState(store, { loading: true, error: null });
+        try {
+          const updated = await api.update(id, {
+            ...payload,
+            addresses: store.addresses(),
+            contacts: store.contacts(),
+          });
+          this.setCustomer(updated as Customer);
+          return updated;
+        } catch (e: any) {
+          patchState(store, { error: e?.message ?? 'Erreur de mise à jour' });
+          throw e;
+        } finally {
+          patchState(store, { loading: false });
+        }
+      },
+    };
+  })
+);
+
 export function provideCustomersStore() {
-  return [{ provide: CustomersStore, useClass: CustomersStore }];
+  // Providing the store at component/route level will create a new instance scoped to that injector
+  return [CustomersStore];
 }
