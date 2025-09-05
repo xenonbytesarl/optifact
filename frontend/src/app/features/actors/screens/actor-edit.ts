@@ -126,6 +126,8 @@ export class ActorEditPage {
     const a: Address = existing ? { ...existing, ...m } as Address : { id: crypto.randomUUID(), ...m } as Address;
     existing ? this.store.updateAddress(a) : this.store.addAddress(a);
     this.addressDialogOpen.set(false);
+    // Reset country as requested (leave other fields intact for convenience)
+    this.addressModel.set({ ...this.addressModel(), country: '' });
   }
 
   editAddress(a: Address) { this.openAddressDialog(a); }

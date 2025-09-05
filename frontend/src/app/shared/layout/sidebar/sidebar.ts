@@ -19,7 +19,7 @@ export class SidebarComponent {
     { link: '/actors', icon: 'group', label: 'nav.actors' },
     { icon: 'inventory_2', label: 'nav.products', children: [
       { link: '/product-categories', icon: 'category', label: 'productCategories.title' },
-      { link: '/products', icon: 'inventory', label: 'Produit' }
+      { link: '/products', icon: 'inventory', label: 'products.title' }
     ] },
     { link: '/invoices', icon: 'receipt_long', label: 'nav.invoices' },
     { link: '/payments', icon: 'credit_card', label: 'nav.payments' },

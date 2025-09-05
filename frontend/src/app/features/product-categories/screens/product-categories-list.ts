@@ -6,24 +6,28 @@ import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { ProductCategoriesStore, provideCategoriesStore } from '../product-categories.store';
 import { ProductCategoryListComponent } from '../components/product-category-list';
+import { CardComponent } from '../../../shared/ui/card';
 
 @Component({
   selector: 'app-product-categories-list-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, ButtonComponent, IconComponent, TranslatePipe, ProductCategoryListComponent],
+  imports: [CommonModule, RouterLink, ButtonComponent, IconComponent, TranslatePipe, ProductCategoryListComponent, CardComponent],
   providers: [provideCategoriesStore()],
   template: `
-    <div class="p-4 flex flex-col gap-4">
-      <div class="flex justify-end">
-        <a routerLink="../new">
-          <app-button>
-            <app-icon name="add" class="mr-1"></app-icon>
-            {{ 'productCategories.new' | t }}
-          </app-button>
-        </a>
-      </div>
+    <div class="p-4">
+      <app-card>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold">{{ 'productCategories.title' | t }}</h2>
+          <a routerLink="../new">
+            <app-button>
+              <app-icon name="add" class="mr-1"></app-icon>
+              {{ 'productCategories.new' | t }}
+            </app-button>
+          </a>
+        </div>
 
-      <app-product-category-list [items]="store.filtered()" (edit)="goEdit($event.id)" (remove)="remove($event.id)" />
+        <app-product-category-list [items]="store.filtered()" (edit)="goEdit($event.id)" (remove)="remove($event.id)" />
+      </app-card>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Default

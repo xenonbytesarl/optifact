@@ -20,36 +20,15 @@ import { RouterLink } from '@angular/router';
             <app-button><span class="material-symbols-outlined text-base">add</span><span class="ml-1">Nouveau</span></app-button>
           </a>
         </div>
-        <app-table>
-          <thead>
-            <tr>
-              <th class="text-left p-2">Nom</th>
-              <th class="text-left p-2">Référence</th>
-              <th class="text-right p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @if (loading()) {
-              <tr><td colspan="3" class="p-2 text-sm text-muted">Chargement...</td></tr>
-            } @else if (actors().length === 0) {
-              <tr><td colspan="3" class="p-2 text-sm text-muted">Aucun acteur</td></tr>
-            } @else {
-              @for (a of actors(); track a.id) {
-                <tr>
-                  <td class="p-2">{{ a.name }}</td>
-                  <td class="p-2">{{ a.reference }}</td>
-                  <td class="p-2 text-right">
-                    <a [routerLink]="['/actors', a.id]" class="inline-flex items-center text-primary hover:underline mr-2">
-                      <span class="material-symbols-outlined text-base">visibility</span>
-                    </a>
-                    <a [routerLink]="['/actors', a.id, 'edit']" class="inline-flex items-center text-primary hover:underline">
-                      <span class="material-symbols-outlined text-base">edit</span>
-                    </a>
-                  </td>
-                </tr>
-              }
-            }
-          </tbody>
+        <app-table [rows]="actors()" [columns]="actorColumns">
+          <ng-template #actions let-row>
+            <a [routerLink]="['/actors', row.id]" class="inline-flex items-center text-primary hover:underline mr-2">
+              <span class="material-symbols-outlined text-base">visibility</span>
+            </a>
+            <a [routerLink]="['/actors', row.id, 'edit']" class="inline-flex items-center text-primary hover:underline">
+              <span class="material-symbols-outlined text-base">edit</span>
+            </a>
+          </ng-template>
         </app-table>
       </app-card>
     </div>
@@ -57,6 +36,10 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ActorsListPage {
+  actorColumns = [
+    { key: 'name', header: 'Nom' },
+    { key: 'reference', header: 'Référence' },
+  ];
   api = inject(ActorsApi);
   actors = signal<Actor[]>([]);
   loading = signal(false);

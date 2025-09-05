@@ -4,6 +4,7 @@ import { FormFieldComponent } from '../../../shared/ui/form-field';
 import { InputTextComponent } from '../../../shared/ui/input';
 import { SelectComponent, SelectOption } from '../../../shared/ui/select';
 import { InputPhoneComponent } from '../../../shared/ui/input-phone';
+import { InputEmailComponent } from '../../../shared/ui/input-email';
 import { ContactType } from '../models';
 
 export interface ContactFormModel { type: ContactType; name: string; email: string; phone: string; role?: string }
@@ -11,7 +12,7 @@ export interface ContactFormModel { type: ContactType; name: string; email: stri
 @Component({
   selector: 'app-contact-form',
   standalone: true,
-  imports: [CommonModule, FormFieldComponent, InputTextComponent, SelectComponent, InputPhoneComponent],
+  imports: [CommonModule, FormFieldComponent, InputTextComponent, SelectComponent, InputPhoneComponent, InputEmailComponent],
   template: `
     <form class="grid gap-4 md:grid-cols-2">
       <div class="col-span-2 md:col-span-1">
@@ -26,7 +27,7 @@ export interface ContactFormModel { type: ContactType; name: string; email: stri
       </div>
       <div class="col-span-2 md:col-span-1">
         <app-form-field [label]="'Email'">
-          <app-input type="email" [value]="model().email" (valueChange)="update('email', $event || '')" />
+          <app-input-email [value]="model().email || ''" (valueChange)="update('email', $event || '')" />
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">

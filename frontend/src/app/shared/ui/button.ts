@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
   },
   template: `
     <button [attr.type]="type()"
-            (click)="clicked.emit($event)"
+            (click)="onClick($event)"
             [disabled]="disabled()"
             class="gap-2 inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 ring-primary "
             [ngClass]="{
@@ -55,5 +55,13 @@ export class ButtonComponent {
   // Shadow controls: base (default 'sm') and hover (default 'base' = 'shadow')
   shadow = input<'none' | 'sm' | 'base' | 'md' | 'lg' | 'xl' | 'inner'>('sm');
   hoverShadow = input<'none' | 'sm' | 'base' | 'md' | 'lg' | 'xl' | 'inner'>('base');
+  // Preferred custom output
   clicked = output<Event>();
+  // Backward-compatible alias to support (click) on <app-button>
+  click = output<Event>();
+
+  onClick(e: Event) {
+    this.clicked.emit(e);
+    this.click.emit(e);
+  }
 }

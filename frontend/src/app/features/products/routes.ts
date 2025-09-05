@@ -8,6 +8,7 @@ export const productsRoutes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'list' },
       { path: 'list', loadComponent: () => import('./screens/products-list').then(m => m.ProductsListPage) },
       { path: 'new', loadComponent: () => import('./screens/product-new').then(m => m.ProductNewPage) },
+      { path: ':id', loadComponent: () => import('./screens/product-view').then(m => m.ProductViewPage) },
       { path: ':id/edit', loadComponent: () => import('./screens/product-edit').then(m => m.ProductEditPage) },
     ]
   }
