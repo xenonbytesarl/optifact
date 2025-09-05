@@ -18,7 +18,7 @@ export interface Contact {
   role?: string;
 }
 
-export interface Customer {
+export interface Actor {
   id: string;
   name: string;
   reference?: string;

@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { FormFieldComponent } from '../../../shared/ui/form-field';
 import { InputComponent } from '../../../shared/ui/input';
 
-export interface CustomerBaseModel { name: string; reference?: string; category?: string }
+export interface ActorBaseModel { name: string; reference?: string; category?: string }
 
 @Component({
-  selector: 'app-customer-form',
+  selector: 'app-actor-form',
   standalone: true,
   imports: [CommonModule, FormsModule, FormFieldComponent, InputComponent],
   template: `
@@ -26,13 +26,13 @@ export interface CustomerBaseModel { name: string; reference?: string; category?
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class CustomerFormComponent {
+export class ActorFormComponent {
   categories = [
     { value: 'Particulier', label: 'Particulier' },
     { value: 'Entreprise', label: 'Entreprise' },
     { value: 'Administration', label: 'Administration' }
   ];
-  model = model.required<CustomerBaseModel>();
+  model = model.required<ActorBaseModel>();
   nameError = signal<string | null>(null);
 
   onName(value: string | null) {
@@ -42,7 +42,7 @@ export class CustomerFormComponent {
     this.nameError.set(v.length >= 2 ? null : 'Le nom est obligatoire (min. 2 caractères)');
   }
 
-  update<K extends keyof CustomerBaseModel>(key: K, value: CustomerBaseModel[K]) {
+  update<K extends keyof ActorBaseModel>(key: K, value: ActorBaseModel[K]) {
     const next = { ...this.model(), [key]: value };
     this.model.set(next);
   }

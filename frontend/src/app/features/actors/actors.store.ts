@@ -1,10 +1,10 @@
 import { inject, computed } from '@angular/core';
 import { signalStore, withState, withComputed, withMethods, patchState } from '@ngrx/signals';
-import { CustomersApi } from '../../core/api/customers.api';
-import { Address, Contact, Customer } from './models';
+import { ActorsApi } from '../../core/api/actors.api';
+import { Address, Contact, Actor } from './models';
 
-export interface CustomersState {
-  currentCustomer: Customer | null;
+export interface ActorsState {
+  currentActor: Actor | null;
   addresses: Address[];
   contacts: Contact[];
   loading: boolean;
@@ -12,8 +12,8 @@ export interface CustomersState {
   formDirty: boolean;
 }
 
-const initialState: CustomersState = {
-  currentCustomer: null,
+const initialState: ActorsState = {
+  currentActor: null,
   addresses: [],
   contacts: [],
   loading: false,
@@ -21,25 +21,25 @@ const initialState: CustomersState = {
   formDirty: false,
 };
 
-export const CustomersStore = signalStore(
+export const ActorsStore = signalStore(
   // Keep providedIn so it can be root-provided; component-level providers can still override per injector
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ addresses, contacts, loading, currentCustomer }) => ({
+  withComputed(({ addresses, contacts, loading, currentActor }) => ({
     addressesCount: computed(() => addresses().length),
     contactsCount: computed(() => contacts().length),
     canSave: computed(() => {
-      const c = currentCustomer();
+      const c = currentActor();
       return !!c && (c.name?.trim().length ?? 0) >= 2 && !loading();
     }),
   })),
   withMethods((store) => {
-    const api = inject(CustomersApi);
+    const api = inject(ActorsApi);
 
     return {
-      setCustomer(c: Customer | null) {
+      setActor(c: Actor | null) {
         patchState(store, {
-          currentCustomer: c,
+          currentActor: c,
           addresses: c?.addresses ?? [],
           contacts: c?.contacts ?? [],
           formDirty: false,
@@ -93,7 +93,7 @@ export const CustomersStore = signalStore(
         patchState(store, { loading: true, error: null });
         try {
           const data = await api.get(id);
-          if (data) this.setCustomer(data);
+          if (data) this.setActor(data);
         } catch (e: any) {
           patchState(store, { error: e?.message ?? 'Erreur de chargement' });
         } finally {
@@ -101,7 +101,7 @@ export const CustomersStore = signalStore(
         }
       },
 
-      async create(payload: Partial<Customer>) {
+      async create(payload: Partial<Actor>) {
         patchState(store, { loading: true, error: null });
         try {
           const created = await api.create({
@@ -109,7 +109,7 @@ export const CustomersStore = signalStore(
             addresses: store.addresses(),
             contacts: store.contacts(),
           });
-          this.setCustomer(created as Customer);
+          this.setActor(created as Actor);
           return created;
         } catch (e: any) {
           patchState(store, { error: e?.message ?? 'Erreur de création' });
@@ -119,7 +119,7 @@ export const CustomersStore = signalStore(
         }
       },
 
-      async update(id: string, payload: Partial<Customer>) {
+      async update(id: string, payload: Partial<Actor>) {
         patchState(store, { loading: true, error: null });
         try {
           const updated = await api.update(id, {
@@ -127,7 +127,7 @@ export const CustomersStore = signalStore(
             addresses: store.addresses(),
             contacts: store.contacts(),
           });
-          this.setCustomer(updated as Customer);
+          this.setActor(updated as Actor);
           return updated;
         } catch (e: any) {
           patchState(store, { error: e?.message ?? 'Erreur de mise à jour' });
@@ -140,7 +140,7 @@ export const CustomersStore = signalStore(
   })
 );
 
-export function provideCustomersStore() {
+export function provideActorsStore() {
   // Providing the store at component/route level will create a new instance scoped to that injector
-  return [CustomersStore];
+  return [ActorsStore];
 }

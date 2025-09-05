@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { BreadcrumbsComponent } from './shared/layout/breadcrumbs/breadcrumbs';
 import { TopbarComponent } from './shared/layout/topbar/topbar';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar';
 import { ThemeService } from './core/settings/theme.service';
@@ -9,7 +8,7 @@ import { ThemeService } from './core/settings/theme.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, BreadcrumbsComponent, TopbarComponent, SidebarComponent],
+  imports: [CommonModule, RouterOutlet, TopbarComponent, SidebarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

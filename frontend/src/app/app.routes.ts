@@ -8,14 +8,19 @@ export const routes: Routes = [
     data: { title: 'Dashboard' }
   },
   {
-    path: 'customers',
-    loadChildren: () => import('./features/customers/routes').then(m => m.customersRoutes),
-    data: { title: 'Clients' }
+    path: 'actors',
+    loadChildren: () => import('./features/actors/routes').then(m => m.actorsRoutes),
+    data: { title: 'Acteurs' }
   },
   {
     path: 'products',
     loadComponent: () => import('./features/products/page').then(m => m.ProductsPage),
     data: { title: 'Produits' }
+  },
+  {
+    path: 'product-categories',
+    loadComponent: () => import('./features/product-categories/page').then(m => m.ProductCategoriesPage),
+    data: { title: 'Catégories de produit' }
   },
   {
     path: 'quotes',

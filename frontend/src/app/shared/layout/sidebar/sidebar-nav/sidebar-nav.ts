@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { SidebarNavItemComponent } from './sidebar-nav-item/sidebar-nav-item';
 
 export interface SidebarNavItem {
-  link: string;
+  link?: string;
   icon: string;
   label: string;
+  children?: SidebarNavItem[];
 }
 
 @Component({

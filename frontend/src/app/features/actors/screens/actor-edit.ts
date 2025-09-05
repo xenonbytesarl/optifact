@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 
 @Component({
-  selector: 'app-customer-edit-page',
+  selector: 'app-actor-edit-page',
   standalone: true,
   imports: [CommonModule, ActionBarComponent],
   template: `
@@ -12,4 +12,4 @@ import { ActionBarComponent } from '../../../shared/ui/action-bar';
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class CustomerEditPage {}
+export class ActorEditPage {}

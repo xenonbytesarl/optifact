@@ -6,7 +6,7 @@ import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { TableComponent } from '../../../shared/ui/table';
 
 @Component({
-  selector: 'app-customer-tabs',
+  selector: 'app-actor-tabs',
   standalone: true,
   imports: [CommonModule, ButtonComponent, TabsComponent, TableComponent],
   template: `
@@ -100,7 +100,7 @@ import { TableComponent } from '../../../shared/ui/table';
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class CustomerTabsComponent {
+export class ActorTabsComponent {
   addresses = input.required<Address[]>();
   contacts = input.required<Contact[]>();
 

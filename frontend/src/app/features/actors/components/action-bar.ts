@@ -21,7 +21,7 @@ import { TranslatePipe } from '../../../core/i18n/translate.pipe';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ActionBarComponent {
-  title = input<string>('Client');
+  title = input<string>('Acteur');
   disableNew = input<boolean>(false);
   disableEdit = input<boolean>(false);
   disableCancel = input<boolean>(false);

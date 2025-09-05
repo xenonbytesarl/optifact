@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 
 @Component({
-  selector: 'app-customer-view-page',
+  selector: 'app-actor-view-page',
   standalone: true,
   imports: [CommonModule, ActionBarComponent],
   template: `
     <app-action-bar [disableNew]="false" [disableEdit]="false" [disableCancel]="true" [disableSave]="true" />
-    <div class="p-4">Détails du client (lecture seule) — à implémenter</div>
+    <div class="p-4">Détails du acteur (lecture seule) — à implémenter</div>
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class CustomerViewPage {}
+export class ActorViewPage {}

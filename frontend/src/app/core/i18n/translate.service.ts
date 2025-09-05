@@ -34,7 +34,7 @@ export class TranslateService {
   }
 
   async load(lang: Lang) {
-    // In SSR (no window), skip fetching assets; the dictionary will be loaded on the client after hydration
+    // In SSR (no window), skip fetching assets; the dictionary will be loaded on the acteur after hydration
     if (typeof window === 'undefined') {
       this.dict.set({});
       return;

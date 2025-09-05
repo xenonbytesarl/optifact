@@ -13,14 +13,14 @@
     "cancel": "Cancel",
     "save": "Save"
   },
-  "customers": {
-    "title": "Customers",
-    "subtitle": "Manage your customers",
-    "new": "New customer"
+  "actors": {
+    "title": "Actors",
+    "subtitle": "Manage your actors",
+    "new": "New actor"
   },
   "nav": {
     "dashboard": "Dashboard",
-    "customers": "Customers",
+    "actors": "Actors",
     "products": "Products",
     "quotes": "Quotes",
     "invoices": "Invoices",

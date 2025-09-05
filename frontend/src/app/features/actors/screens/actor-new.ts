@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
-import { CustomerFormComponent, CustomerBaseModel } from '../components/customer-form';
-import { CustomerTabsComponent } from '../components/customer-tabs';
-import { CustomersStore, provideCustomersStore } from '../customers.store';
+import { ActorFormComponent, ActorBaseModel } from '../components/actor-form';
+import { ActorTabsComponent } from '../components/actor-tabs';
+import { ActorsStore, provideActorsStore } from '../actors.store';
 import { Address, Contact } from '../models';
 import { CardComponent } from '../../../shared/ui/card';
 import { DialogComponent } from '../../../shared/ui/dialog';
@@ -12,10 +12,10 @@ import { ContactFormComponent } from '../components/contact-form';
 import { ButtonComponent } from '../../../shared/ui/button';
 
 @Component({
-  selector: 'app-customer-new-page',
+  selector: 'app-actor-new-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CustomerFormComponent, CustomerTabsComponent, CardComponent, DialogComponent, AddressFormComponent, ContactFormComponent, ButtonComponent],
-  providers: [provideCustomersStore()],
+  imports: [CommonModule, ActionBarComponent, ActorFormComponent, ActorTabsComponent, CardComponent, DialogComponent, AddressFormComponent, ContactFormComponent, ButtonComponent],
+  providers: [provideActorsStore()],
   template: `
     <app-action-bar
       [disableNew]="false"
@@ -29,8 +29,8 @@ import { ButtonComponent } from '../../../shared/ui/button';
     <div class="p-4">
       <app-card>
         <div class="space-y-6">
-          <app-customer-form [model]="customerModel()" (modelChange)="onBaseChange($event)"></app-customer-form>
-          <app-customer-tabs
+          <app-actor-form [model]="actorModel()" (modelChange)="onBaseChange($event)"></app-actor-form>
+          <app-actor-tabs
             [addresses]="store.addresses()"
             [contacts]="store.contacts()"
             (addAddress)="openAddressDialog()"
@@ -66,24 +66,24 @@ import { ButtonComponent } from '../../../shared/ui/button';
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class CustomerNewPage {
-  store = inject(CustomersStore);
+export class ActorNewPage {
+  store = inject(ActorsStore);
 
-  customerModel = signal<CustomerBaseModel>({ name: '', reference: '', category: '' });
-  canSave = computed(() => (this.customerModel().name?.trim().length ?? 0) >= 2 && !this.store.loading());
+  actorModel = signal<ActorBaseModel>({ name: '', reference: '', category: '' });
+  canSave = computed(() => (this.actorModel().name?.trim().length ?? 0) >= 2 && !this.store.loading());
 
-  onBaseChange(v: CustomerBaseModel) { this.customerModel.set(v); this.store.setCustomer({ id: '', ...v, addresses: this.store.addresses(), contacts: this.store.contacts() } as any); }
+  onBaseChange(v: ActorBaseModel) { this.actorModel.set(v); this.store.setActor({ id: '', ...v, addresses: this.store.addresses(), contacts: this.store.contacts() } as any); }
 
   reset() {
-    this.customerModel.set({ name: '', reference: '', category: '' });
-    this.store.setCustomer({ id: '', name: '', reference: '', category: '', addresses: [], contacts: [] });
+    this.actorModel.set({ name: '', reference: '', category: '' });
+    this.store.setActor({ id: '', name: '', reference: '', category: '', addresses: [], contacts: [] });
   }
 
   async save() {
-    const payload = { ...this.customerModel() };
+    const payload = { ...this.actorModel() };
     try {
       await this.store.create(payload as any);
-      alert('Client créé');
+      alert('Acteur créé');
     } catch {}
   }
 

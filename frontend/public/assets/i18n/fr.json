@@ -13,14 +13,14 @@
     "cancel": "Annuler",
     "save": "Sauvegarder"
   },
-  "customers": {
-    "title": "Clients",
-    "subtitle": "Gérez vos clients",
-    "new": "Nouveau client"
+  "actors": {
+    "title": "Acteurs",
+    "subtitle": "Gérez vos acteurs",
+    "new": "Nouveau acteur"
   },
   "nav": {
     "dashboard": "Tableau de bord",
-    "customers": "Clients",
+    "actors": "Acteurs",
     "products": "Produits",
     "quotes": "Devis",
     "invoices": "Factures",

@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IconComponent } from '../../../../ui/icon';
 import { TranslatePipe } from '../../../../../core/i18n/translate.pipe';
+import { SidebarNavItem } from '../sidebar-nav';
 
 @Component({
   selector: 'app-sidebar-nav-item',
@@ -12,7 +13,8 @@ import { TranslatePipe } from '../../../../../core/i18n/translate.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SidebarNavItemComponent {
-  link = input.required<string>();
-  icon = input.required<string>();
-  label = input.required<string>();
+  item = input.required<SidebarNavItem>();
+  open = signal(false);
+
+  toggle() { this.open.update(v => !v); }
 }

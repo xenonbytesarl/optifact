@@ -1,6 +1,6 @@
 # Lignes directrices projet – Application de facturation (Angular 20, Tailwind 4, NgRx Signal 19)
 
-Ce document décrit une architecture simple et claire, avec séparation des responsabilités, pour une application de facturation (clients, produits, devis, factures, paiements). Il est adapté à Angular 20, Tailwind CSS v4 et @ngrx/signals v19/20.
+Ce document décrit une architecture simple et claire, avec séparation des responsabilités, pour une application de facturation (acteurs, produits, devis, factures, paiements). Il est adapté à Angular 20, Tailwind CSS v4 et @ngrx/signals v19/20.
 
 Objectifs
 - Simplicité: structure minimale, lisible par une petite équipe.
@@ -11,17 +11,17 @@ Objectifs
 frontend/
   src/
     app/
-      core/                # services transverses, interceptors, guards, config, api clients
+      core/                # services transverses, interceptors, guards, config, api acteurs
       shared/              # librairie UI (components, directives, pipes), utilitaires
       features/
-        customers/         # domaine Clients (feature slice)
+        actors/         # domaine Acteurs (feature slice)
         products/          # domaine Produits
         invoices/          # domaine Factures
         quotes/            # domaine Devis
         payments/          # domaine Paiements
       state/               # stores globaux (signals) si nécessaires
       app.routes.ts        # routes racine
-      app.config.ts        # application providers (HttpClient, Tailwind init, etc.)
+      app.config.ts        # application providers (HttpActeur, Tailwind init, etc.)
       app.component.*      # shell app
     styles.css             # Tailwind @import
 
@@ -65,20 +65,20 @@ frontend/
   - Préférer l’état local (signals dans les components) pour UI éphémère.
   - Utiliser des stores par feature lorsque l’état doit être partagé, dérivé ou synchronisé avec l’API.
 - Pattern store par feature (simplifié):
-  - customers.store.ts: 
-    - signals: customers, loading, error, filters.
-    - computed: filteredCustomers, stats.
+  - actors.store.ts: 
+    - signals: actors, loading, error, filters.
+    - computed: filteredActors, stats.
     - methods: load(), add(), update(), remove().
     - effects (optionnel): gestion d’appels HTTP avec cancellation simple.
-  - Exporte un provider: provideCustomersStore().
-  - Consommation dans containers: inject(CustomersStore) pour lire/écrire.
+  - Exporte un provider: provideActorsStore().
+  - Consommation dans containers: inject(ActorsStore) pour lire/écrire.
 - Stores globaux (app/state):
   - auth.store.ts: user, token, permissions.
   - settings.store.ts: préférence UI, devise, entreprise.
 - Interop RxJS: où des flux externes existent (WebSocket), convertissez en signal via toSignal ou exposez avec compute.
 
 5. Accès API et services
-- clients HTTP par domaine dans core/api: CustomersApi, InvoicesApi, etc.
+- acteurs HTTP par domaine dans core/api: ActorsApi, InvoicesApi, etc.
   - Responsabilité: requêtes CRUD, mapping minimal DTO -> modèle interne.
 - Services domaine (optionnels) dans features/xxx/data ou core/domain si réutilisés.
 - Gestion des erreurs: 
@@ -101,34 +101,34 @@ frontend/
 - Responsive: l’application doit être responsive et couvrir téléphone, tablette, PC portable, grand écran et très grand écran. Utiliser les breakpoints Tailwind (sm/md/lg/xl/2xl), layout fluides, grilles, et composants adaptatifs (stack->row, pagination compacte, etc.).
 
 8. Modélisation de base (exemples)
-- Customer: { id, name, email, phone, address }
+- Actor: { id, name, email, phone, address }
 - Product: { id, name, sku, priceHT, tva }
-- Invoice: { id, number, date, customerId, lines: [{ productId, qty, priceHT, tva }], status, totalHT, totalTVA, totalTTC }
+- Invoice: { id, number, date, actorId, lines: [{ productId, qty, priceHT, tva }], status, totalHT, totalTVA, totalTTC }
 - Quote: proche d’Invoice avec status différent
 - Payment: { id, invoiceId, date, amount, method }
 
 9. Flux métiers (exemples)
-- Création facture: sélectionner client -> ajouter lignes (produits) -> calculs -> sauvegarder -> générer PDF.
+- Création facture: sélectionner acteur -> ajouter lignes (produits) -> calculs -> sauvegarder -> générer PDF.
 - Règlement: affecter paiement à facture -> MAJ status (partiellement payé, payé).
 
 10. Exemples de code
 - Store simple (signals)
   
-  // features/customers/customers.store.ts
+  // features/actors/actors.store.ts
   import { inject, signal, computed } from '@angular/core';
-  import { CustomersApi } from '../../core/api/customers.api';
+  import { ActorsApi } from '../../core/api/actors.api';
 
-  export class CustomersStore {
-    private api = inject(CustomersApi);
+  export class ActorsStore {
+    private api = inject(ActorsApi);
 
-    customers = signal([] as Array<{ id: string; name: string }>>());
+    actors = signal([] as Array<{ id: string; name: string }>>());
     loading = signal(false);
     error = signal<string | null>(null);
     search = signal('');
 
     filtered = computed(() => {
       const q = this.search().toLowerCase();
-      return this.customers().filter(c => c.name.toLowerCase().includes(q));
+      return this.actors().filter(c => c.name.toLowerCase().includes(q));
     });
 
     async load() {
@@ -136,7 +136,7 @@ frontend/
       this.error.set(null);
       try {
         const data = await this.api.list();
-        this.customers.set(data);
+        this.actors.set(data);
       } catch (e: any) {
         this.error.set(e?.message ?? 'Erreur de chargement');
       } finally {
@@ -145,19 +145,19 @@ frontend/
     }
   }
 
-  export function provideCustomersStore() {
-    return [{ provide: CustomersStore, useClass: CustomersStore }];
+  export function provideActorsStore() {
+    return [{ provide: ActorsStore, useClass: ActorsStore }];
   }
 
-- API client
+- API acteur
   
-  // core/api/customers.api.ts
+  // core/api/actors.api.ts
   import { inject } from '@angular/core';
-  import { HttpClient } from '@angular/common/http';
+  import { HttpActeur } from '@angular/common/http';
 
-  export class CustomersApi {
-    private http = inject(HttpClient);
-    private base = '/api/customers';
+  export class ActorsApi {
+    private http = inject(HttpActeur);
+    private base = '/api/actors';
 
     list() { return this.http.get<any[]>(this.base).toPromise(); }
     get(id: string) { return this.http.get<any>(`${this.base}/${id}`).toPromise(); }
@@ -185,7 +185,7 @@ frontend/
 
 14. Roadmap minimale
 - M0: Skeleton features + stores vides + routes.
-- M1: Clients, Produits CRUD.
+- M1: Acteurs, Produits CRUD.
 - M2: Factures (création, calculs), PDF (service séparé), Paiements.
 - M3: Tableaux de bord (chiffre d’affaires, impayés).
 
