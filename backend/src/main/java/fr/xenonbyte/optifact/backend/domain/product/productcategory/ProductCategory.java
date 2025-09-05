@@ -48,4 +48,8 @@ public final class ProductCategory extends BaseEntity {
         productCategory.updateAudit(createdAt);
         return productCategory;
     }
+
+    public String getName() {
+        return name;
+    }
 }
