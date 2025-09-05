@@ -1,0 +1,9 @@
+BACKEND_PORT: 6065
+PROFILE: dev
+DB_HOST: localhost
+DB_PORT: 5433
+DB_NAME: optifact_db
+DB_USERNAME: optifact
+DB_PASSWORD: optifact2025!
+FRONTEND_HOST: localhost
+FRONTEND_PORT: 4200
