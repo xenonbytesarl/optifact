@@ -5,7 +5,7 @@ import { ButtonComponent } from '../../../shared/ui/button';
 import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { ProductsStore, provideProductsStore } from '../products.store';
-import { CategoriesStore, provideCategoriesStore } from '../../product-categories/categories.store';
+import { ProductCategoriesStore, provideCategoriesStore } from '../../product-categories/product-categories.store';
 import { ProductListComponent } from '../components/product-list';
 
 @Component({
@@ -31,7 +31,7 @@ import { ProductListComponent } from '../components/product-list';
 })
 export class ProductsListPage {
   readonly store = inject(ProductsStore);
-  readonly cats = inject(CategoriesStore);
+  readonly cats = inject(ProductCategoriesStore);
   private router = inject(Router);
 
   items = computed(() => {

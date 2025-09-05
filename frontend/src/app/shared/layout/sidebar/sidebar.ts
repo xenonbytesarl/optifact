@@ -21,7 +21,6 @@ export class SidebarComponent {
       { link: '/product-categories', icon: 'category', label: 'productCategories.title' },
       { link: '/products', icon: 'inventory', label: 'Produit' }
     ] },
-    { link: '/quotes', icon: 'description', label: 'nav.quotes' },
     { link: '/invoices', icon: 'receipt_long', label: 'nav.invoices' },
     { link: '/payments', icon: 'credit_card', label: 'nav.payments' },
     { link: '/settings', icon: 'settings', label: 'nav.settings' }

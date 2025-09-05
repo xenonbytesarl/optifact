@@ -6,7 +6,7 @@ import { ProductsStore, provideProductsStore } from '../products.store';
 import { ProductFormComponent, ProductFormValue } from '../components/product-form';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
-import { provideCategoriesStore } from '../../product-categories/categories.store';
+import { provideCategoriesStore } from '../../product-categories/product-categories.store';
 
 @Component({
   selector: 'app-product-new-page',

@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CategoriesStore, provideCategoriesStore } from '../categories.store';
-import { CategoryFormComponent, CategoryFormValue } from '../components/category-form';
+import { ProductCategoriesStore, provideCategoriesStore } from '../product-categories.store';
+import { ProductCategoryFormComponent, CategoryFormValue } from '../components/product-category-form';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 
 @Component({
-  selector: 'app-category-edit-page',
+  selector: 'app-product-category-edit-page',
   standalone: true,
-  imports: [CommonModule, CategoryFormComponent, ActionBarComponent, CardComponent],
+  imports: [CommonModule, ProductCategoryFormComponent, ActionBarComponent, CardComponent],
   providers: [provideCategoriesStore()],
   template: `
     <app-action-bar
@@ -23,14 +23,14 @@ import { CardComponent } from '../../../shared/ui/card';
 
     <div class="p-4 flex flex-col gap-4">
       <app-card>
-        <app-category-form [value]="formValue()" (valueChange)="formValue.set($event)" (submit)="save($event)" (cancel)="goBack()" />
+        <app-product-category-form [value]="formValue()" (valueChange)="formValue.set($event)" (submit)="save($event)" (cancel)="goBack()" />
       </app-card>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class CategoryEditPage implements OnInit {
-  readonly store = inject(CategoriesStore);
+export class ProductCategoryEditPage implements OnInit {
+  readonly store = inject(ProductCategoriesStore);
   readonly route = inject(ActivatedRoute);
   private router = inject(Router);
 

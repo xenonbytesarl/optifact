@@ -2,7 +2,7 @@ import { computed, inject } from '@angular/core';
 import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
 import { ProductCategoriesApi, ProductCategory } from '../../core/api/product-categories.api';
 
-export interface CategoriesState {
+export interface ProductCategoriesState {
   categories: ProductCategory[];
   current: ProductCategory | null;
   search: string;
@@ -10,7 +10,7 @@ export interface CategoriesState {
   error: string | null;
 }
 
-const initialState: CategoriesState = {
+const initialState: ProductCategoriesState = {
   categories: [],
   current: null,
   search: '',
@@ -18,7 +18,7 @@ const initialState: CategoriesState = {
   error: null,
 };
 
-export const CategoriesStore = signalStore(
+export const ProductCategoriesStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withComputed(({ categories, search, loading }) => ({
@@ -101,5 +101,5 @@ export const CategoriesStore = signalStore(
 );
 
 export function provideCategoriesStore() {
-  return [CategoriesStore];
+  return [ProductCategoriesStore];
 }

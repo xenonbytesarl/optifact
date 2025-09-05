@@ -6,9 +6,9 @@ export const productCategoriesRoutes: Routes = [
     loadComponent: () => import('./page').then(m => m.ProductCategoriesPage),
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'list' },
-      { path: 'list', loadComponent: () => import('./screens/categories-list').then(m => m.CategoriesListPage) },
-      { path: 'new', loadComponent: () => import('./screens/category-new').then(m => m.CategoryNewPage) },
-      { path: ':id/edit', loadComponent: () => import('./screens/category-edit').then(m => m.CategoryEditPage) },
+      { path: 'list', loadComponent: () => import('./screens/product-categories-list').then(m => m.ProductCategoriesListPage) },
+      { path: 'new', loadComponent: () => import('./screens/product-category-new').then(m => m.ProductCategoryNewPage) },
+      { path: ':id/edit', loadComponent: () => import('./screens/product-category-edit').then(m => m.ProductCategoryEditPage) },
     ]
   }
 ];

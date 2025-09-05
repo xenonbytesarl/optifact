@@ -4,13 +4,13 @@ import { Router, RouterLink } from '@angular/router';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
-import { CategoriesStore, provideCategoriesStore } from '../categories.store';
-import { CategoryListComponent } from '../components/category-list';
+import { ProductCategoriesStore, provideCategoriesStore } from '../product-categories.store';
+import { ProductCategoryListComponent } from '../components/product-category-list';
 
 @Component({
-  selector: 'app-categories-list-page',
+  selector: 'app-product-categories-list-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, ButtonComponent, IconComponent, TranslatePipe, CategoryListComponent],
+  imports: [CommonModule, RouterLink, ButtonComponent, IconComponent, TranslatePipe, ProductCategoryListComponent],
   providers: [provideCategoriesStore()],
   template: `
     <div class="p-4 flex flex-col gap-4">
@@ -23,13 +23,13 @@ import { CategoryListComponent } from '../components/category-list';
         </a>
       </div>
 
-      <app-category-list [items]="store.filtered()" (edit)="goEdit($event.id)" (remove)="remove($event.id)" />
+      <app-product-category-list [items]="store.filtered()" (edit)="goEdit($event.id)" (remove)="remove($event.id)" />
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class CategoriesListPage {
-  readonly store = inject(CategoriesStore);
+export class ProductCategoriesListPage {
+  readonly store = inject(ProductCategoriesStore);
   private router = inject(Router);
 
   constructor() {

@@ -10,7 +10,7 @@ export interface CategoryFormValue {
 }
 
 @Component({
-  selector: 'app-category-form',
+  selector: 'app-product-category-form',
   standalone: true,
   imports: [CommonModule, TranslatePipe, InputTextComponent, FormFieldComponent],
   template: `
@@ -22,7 +22,7 @@ export interface CategoryFormValue {
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class CategoryFormComponent {
+export class ProductCategoryFormComponent {
   value = model<CategoryFormValue>({ name: '' });
   submit = output<CategoryFormValue>();
   cancel = output<void>();

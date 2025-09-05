@@ -6,7 +6,7 @@ import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 
 @Component({
-  selector: 'app-category-list',
+  selector: 'app-product-category-list',
   standalone: true,
   imports: [CommonModule, ButtonComponent, IconComponent, TranslatePipe],
   template: `
@@ -38,7 +38,7 @@ import { TranslatePipe } from '../../../core/i18n/translate.pipe';
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class CategoryListComponent {
+export class ProductCategoryListComponent {
   items = input.required<ProductCategory[]>();
   edit = output<ProductCategory>();
   remove = output<ProductCategory>();

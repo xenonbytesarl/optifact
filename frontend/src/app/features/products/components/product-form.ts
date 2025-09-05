@@ -6,7 +6,7 @@ import { InputNumberComponent } from '../../../shared/ui/input-number';
 import {SelectComponent, SelectOption} from '../../../shared/ui/select';
 import { FormFieldComponent } from '../../../shared/ui/form-field';
 import { ProductType } from '../../../core/api/products.api';
-import { CategoriesStore } from '../../product-categories/categories.store';
+import { ProductCategoriesStore } from '../../product-categories/product-categories.store';
 import { AutocompleteComponent, AutocompleteItem } from '../../../shared/ui/autocomplete';
 import { InputCurrencyComponent } from '../../../shared/ui/input-currency';
 
@@ -66,7 +66,7 @@ export class ProductFormComponent implements OnInit {
   submit = output<ProductFormValue>();
   cancel = output<void>();
 
-  private categories = inject(CategoriesStore);
+  private categories = inject(ProductCategoriesStore);
 
   typeOptions = signal<SelectOption[]>([
     { value: 'forfait', label: 'Forfait' },
