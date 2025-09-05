@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+import { TranslateService } from '../../../core/i18n/translate.service';
 import { TableComponent } from '../../../shared/ui/table';
 import { Product } from '../../../core/api/products.api';
 
@@ -30,10 +31,16 @@ export class ProductListComponent {
   edit = output<Product>();
   remove = output<Product>();
 
-  columns = [
-    { key: 'code', header: 'Code' },
-    { key: 'name', header: 'Nom' },
-    { key: 'type', header: 'Type' },
-    { key: 'categoryName', header: 'Catégorie' },
-  ];
+  constructor(private i18n: TranslateService) {}
+
+  get columns() {
+    // Depend on lang() so headers update when language changes
+    this.i18n.lang();
+    return [
+      { key: 'code', header: this.i18n.t('products.fields.code') },
+      { key: 'name', header: this.i18n.t('products.fields.name') },
+      { key: 'type', header: this.i18n.t('products.fields.type') },
+      { key: 'categoryName', header: this.i18n.t('products.fields.category') },
+    ];
+  }
 }

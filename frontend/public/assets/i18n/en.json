@@ -30,7 +30,27 @@
   "products": {
     "title": "Products",
     "subtitle": "Product catalog",
-    "new": "New product"
+    "new": "New product",
+    "fields": {
+      "code": "Code",
+      "name": "Name",
+      "type": "Type",
+      "amount": "Amount",
+      "rate": "Rate (%)",
+      "category": "Category",
+      "selectCategory": "Select a category",
+      "description": "Description",
+      "actions": "Actions"
+    },
+    "types": {
+      "forfait": "Flat amount",
+      "pourcentage": "Percentage"
+    },
+    "hints": {
+      "amount": "Used when the type is flat amount",
+      "rate": "Used when the type is percentage"
+    },
+    "empty": "No products"
   },
   "productCategories": {
     "title": "Product categories",
@@ -65,5 +85,15 @@
   "dashboard": {
     "title": "Dashboard",
     "refresh": "Refresh"
+  },
+  "paginator": {
+    "noItems": "No items",
+    "of": "of",
+    "perPage": "Per page",
+    "first": "First",
+    "prev": "Previous",
+    "next": "Next",
+    "last": "Last",
+    "pageXofY": "Page {{page}} / {{total}}"
   }
 }

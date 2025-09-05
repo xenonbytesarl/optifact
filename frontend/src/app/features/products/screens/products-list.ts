@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ButtonComponent } from '../../../shared/ui/button';
@@ -8,11 +8,12 @@ import { ProductsStore, provideProductsStore } from '../products.store';
 import { ProductCategoriesStore, provideCategoriesStore } from '../../product-categories/product-categories.store';
 import { ProductListComponent } from '../components/product-list';
 import { CardComponent } from '../../../shared/ui/card';
+import { PaginatorComponent } from '../../../shared/ui/paginator';
 
 @Component({
   selector: 'app-products-list-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, ButtonComponent, IconComponent, TranslatePipe, ProductListComponent, CardComponent],
+  imports: [CommonModule, RouterLink, ButtonComponent, IconComponent, TranslatePipe, ProductListComponent, CardComponent, PaginatorComponent],
   providers: [provideProductsStore(), provideCategoriesStore()],
   template: `
     <div class="p-4">
@@ -27,7 +28,8 @@ import { CardComponent } from '../../../shared/ui/card';
           </a>
         </div>
 
-        <app-product-list [items]="items()" (edit)="goEdit($event.id)" (remove)="remove($event.id)" />
+        <app-product-list [items]="pagedItems()" (edit)="goEdit($event.id)" (remove)="remove($event.id)" />
+        <app-paginator [total]="items().length" [(page)]="page" [(pageSize)]="pageSize" />
       </app-card>
     </div>
   `,
@@ -44,6 +46,13 @@ export class ProductsListPage {
       ...p,
       categoryName: categories.find(c => c.id === p.categoryId)?.name
     }));
+  });
+
+  page = signal(1);
+  pageSize = signal(10);
+  pagedItems = computed(() => {
+    const start = (this.page() - 1) * this.pageSize();
+    return this.items().slice(start, start + this.pageSize());
   });
 
   constructor() {

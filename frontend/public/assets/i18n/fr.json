@@ -42,6 +42,10 @@
       "description": "Description",
       "actions": "Actions"
     },
+    "types": {
+      "forfait": "Forfait",
+      "pourcentage": "Pourcentage"
+    },
     "hints": {
       "amount": "Utilisé lorsque le type est forfait",
       "rate": "Utilisé lorsque le type est pourcentage"
@@ -81,5 +85,15 @@
   "dashboard": {
     "title": "Tableau de bord",
     "refresh": "Actualiser"
+  },
+  "paginator": {
+    "noItems": "Aucun élément",
+    "of": "sur",
+    "perPage": "Par page",
+    "first": "Première",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "last": "Dernière",
+    "pageXofY": "Page {{page}} / {{total}}"
   }
 }

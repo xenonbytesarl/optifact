@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, model, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+import { TranslateService } from '../../../core/i18n/translate.service';
 import { InputTextComponent } from '../../../shared/ui/input';
 import { InputNumberComponent } from '../../../shared/ui/input-number';
 import {SelectComponent, SelectOption} from '../../../shared/ui/select';
@@ -67,11 +68,17 @@ export class ProductFormComponent implements OnInit {
   cancel = output<void>();
 
   private categories = inject(ProductCategoriesStore);
+  protected i18n = inject(TranslateService);
 
-  typeOptions = signal<SelectOption[]>([
-    { value: 'forfait', label: 'Forfait' },
-    { value: 'pourcentage', label: 'Pourcentage' },
-  ]);
+  // Build type options from i18n so labels are translated
+  typeOptions = computed<SelectOption[]>(() => {
+    // depend on lang signal for recomputation
+    this.i18n.lang();
+    return [
+      { value: 'forfait', label: this.i18n.t('products.types.forfait') },
+      { value: 'pourcentage', label: this.i18n.t('products.types.pourcentage') },
+    ];
+  });
 
   categoryItems = computed<AutocompleteItem[]>(() =>
     this.categories.categories().map(c => ({ value: c.id, label: c.name }))

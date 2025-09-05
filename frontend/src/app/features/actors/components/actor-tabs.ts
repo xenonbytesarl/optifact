@@ -1,14 +1,15 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Address, Contact } from '../models';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { TableComponent } from '../../../shared/ui/table';
+import { PaginatorComponent } from '../../../shared/ui/paginator';
 
 @Component({
   selector: 'app-actor-tabs',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, TabsComponent, TableComponent],
+  imports: [CommonModule, ButtonComponent, TabsComponent, TableComponent, PaginatorComponent],
   template: `
   <div>
     <app-tabs [items]="tabItems" [(active)]="tab">
@@ -17,7 +18,7 @@ import { TableComponent } from '../../../shared/ui/table';
           @if (!readonly()) {
             <div class="mb-2"><app-button (clicked)="addAddress.emit()"><span class="material-symbols-outlined text-base">add</span><span class="ml-1">Ajouter une adresse</span></app-button></div>
           }
-          <app-table [rows]="addresses()" [columns]="addressColumns">
+          <app-table [rows]="addressesPaged()" [columns]="addressColumns">
             <ng-template #actions let-row>
               @if (!readonly()) {
                 <app-button size="sm" variant="ghost" shadow="none" hoverShadow="none" (clicked)="editAddress.emit(row)" aria-label="Modifier">
@@ -29,6 +30,7 @@ import { TableComponent } from '../../../shared/ui/table';
               }
             </ng-template>
           </app-table>
+          <app-paginator [total]="addresses().length" [(page)]="addressesPage" [(pageSize)]="addressesPageSize" />
         </div>
       }
 
@@ -37,7 +39,7 @@ import { TableComponent } from '../../../shared/ui/table';
           @if (!readonly()) {
             <div class="mb-2"><app-button (clicked)="addContact.emit()"><span class="material-symbols-outlined text-base">person_add</span><span class="ml-1">Ajouter un contact</span></app-button></div>
           }
-          <app-table [rows]="contacts()" [columns]="contactColumns">
+          <app-table [rows]="contactsPaged()" [columns]="contactColumns">
             <ng-template #actions let-row>
               @if (!readonly()) {
                 <app-button size="sm" variant="ghost" (clicked)="editContact.emit(row)" aria-label="Modifier">
@@ -49,6 +51,7 @@ import { TableComponent } from '../../../shared/ui/table';
               }
             </ng-template>
           </app-table>
+          <app-paginator [total]="contacts().length" [(page)]="contactsPage" [(pageSize)]="contactsPageSize" />
         </div>
       }
     </app-tabs>
@@ -90,4 +93,20 @@ export class ActorTabsComponent {
   }
 
   tab: 'addresses' | 'contacts' = 'addresses';
+
+  // Pagination states for each tab
+  addressesPage = signal(1);
+  addressesPageSize = signal(5);
+  contactsPage = signal(1);
+  contactsPageSize = signal(5);
+
+  addressesPaged = computed(() => {
+    const start = (this.addressesPage() - 1) * this.addressesPageSize();
+    return this.addresses().slice(start, start + this.addressesPageSize());
+  });
+
+  contactsPaged = computed(() => {
+    const start = (this.contactsPage() - 1) * this.contactsPageSize();
+    return this.contacts().slice(start, start + this.contactsPageSize());
+  });
 }

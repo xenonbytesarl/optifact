@@ -4,6 +4,7 @@ import { ProductCategory } from '../../../core/api/product-categories.api';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+import { TranslateService } from '../../../core/i18n/translate.service';
 import { TableComponent } from '../../../shared/ui/table';
 
 @Component({
@@ -29,7 +30,12 @@ export class ProductCategoryListComponent {
   edit = output<ProductCategory>();
   remove = output<ProductCategory>();
 
-  columns = [
-    { key: 'name', header: 'Nom' },
-  ];
+  constructor(private i18n: TranslateService) {}
+
+  get columns() {
+    this.i18n.lang();
+    return [
+      { key: 'name', header: this.i18n.t('productCategories.fields.name') },
+    ];
+  }
 }
