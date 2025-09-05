@@ -18,7 +18,7 @@ export class SidebarComponent {
     { link: '/dashboard', icon: 'dashboard', label: 'nav.dashboard' },
     { link: '/actors', icon: 'group', label: 'nav.actors' },
     { icon: 'inventory_2', label: 'nav.products', children: [
-      { link: '/product-categories', icon: 'category', label: 'Catégorie de produit' },
+      { link: '/product-categories', icon: 'category', label: 'productCategories.title' },
       { link: '/products', icon: 'inventory', label: 'Produit' }
     ] },
     { link: '/quotes', icon: 'description', label: 'nav.quotes' },

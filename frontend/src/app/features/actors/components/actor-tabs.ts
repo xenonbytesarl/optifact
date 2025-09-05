@@ -14,7 +14,9 @@ import { TableComponent } from '../../../shared/ui/table';
     <app-tabs [items]="tabItems" [(active)]="tab">
       @if (tab==='addresses') {
         <div>
-          <div class="mb-2"><app-button (clicked)="addAddress.emit()"><span class="material-symbols-outlined text-base">add</span><span class="ml-1">Ajouter une adresse</span></app-button></div>
+          @if (!readonly()) {
+            <div class="mb-2"><app-button (clicked)="addAddress.emit()"><span class="material-symbols-outlined text-base">add</span><span class="ml-1">Ajouter une adresse</span></app-button></div>
+          }
           <app-table>
             <thead>
               <tr>
@@ -38,12 +40,14 @@ import { TableComponent } from '../../../shared/ui/table';
                     <td class="p-2">{{ a.city }}</td>
                     <td class="p-2">{{ a.country }}</td>
                     <td class="p-2 text-right">
-                      <app-button size="sm" variant="ghost" shadow="none" hoverShadow="none" (clicked)="editAddress.emit(a)" aria-label="Modifier">
-                        <span class="material-symbols-outlined text-base">edit</span>
-                      </app-button>
-                      <app-button size="sm" variant="ghost"  shadow="none" hoverShadow="none" (clicked)="removeAddress.emit(a.id)" aria-label="Supprimer">
-                        <span class="material-symbols-outlined text-base text-red-600">delete</span>
-                      </app-button>
+                      @if (!readonly()) {
+                        <app-button size="sm" variant="ghost" shadow="none" hoverShadow="none" (clicked)="editAddress.emit(a)" aria-label="Modifier">
+                          <span class="material-symbols-outlined text-base">edit</span>
+                        </app-button>
+                        <app-button size="sm" variant="ghost"  shadow="none" hoverShadow="none" (clicked)="removeAddress.emit(a.id)" aria-label="Supprimer">
+                          <span class="material-symbols-outlined text-base text-red-600">delete</span>
+                        </app-button>
+                      }
                     </td>
                   </tr>
                 }
@@ -55,7 +59,9 @@ import { TableComponent } from '../../../shared/ui/table';
 
       @if (tab==='contacts') {
         <div>
-          <div class="mb-2"><app-button (clicked)="addContact.emit()"><span class="material-symbols-outlined text-base">person_add</span><span class="ml-1">Ajouter un contact</span></app-button></div>
+          @if (!readonly()) {
+            <div class="mb-2"><app-button (clicked)="addContact.emit()"><span class="material-symbols-outlined text-base">person_add</span><span class="ml-1">Ajouter un contact</span></app-button></div>
+          }
           <app-table>
             <thead>
             <tr>
@@ -81,12 +87,14 @@ import { TableComponent } from '../../../shared/ui/table';
                     <td class="p-2">{{ c.phone }}</td>
                     <td class="p-2">{{ c.role }}</td>
                     <td class="p-2 text-right">
-                      <app-button size="sm" variant="ghost" (clicked)="editContact.emit(c)" aria-label="Modifier">
-                        <span class="material-symbols-outlined text-base">edit</span>
-                      </app-button>
-                      <app-button size="sm" variant="ghost" (clicked)="removeContact.emit(c.id)" aria-label="Supprimer">
-                        <span class="material-symbols-outlined text-base text-red-600">delete</span>
-                      </app-button>
+                      @if (!readonly()) {
+                        <app-button size="sm" variant="ghost" (clicked)="editContact.emit(c)" aria-label="Modifier">
+                          <span class="material-symbols-outlined text-base">edit</span>
+                        </app-button>
+                        <app-button size="sm" variant="ghost" (clicked)="removeContact.emit(c.id)" aria-label="Supprimer">
+                          <span class="material-symbols-outlined text-base text-red-600">delete</span>
+                        </app-button>
+                      }
                     </td>
                   </tr>
                 }
@@ -103,6 +111,7 @@ import { TableComponent } from '../../../shared/ui/table';
 export class ActorTabsComponent {
   addresses = input.required<Address[]>();
   contacts = input.required<Contact[]>();
+  readonly = input<boolean>(false);
 
   addAddress = output<void>();
   editAddress = output<Address>();

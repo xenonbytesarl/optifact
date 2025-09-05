@@ -30,7 +30,34 @@
   "products": {
     "title": "Produits",
     "subtitle": "Catalogue des produits",
-    "new": "Nouveau produit"
+    "new": "Nouveau produit",
+    "fields": {
+      "code": "Code",
+      "name": "Nom",
+      "type": "Type",
+      "amount": "Montant",
+      "rate": "Taux (%)",
+      "category": "Catégorie",
+      "selectCategory": "Sélectionner une catégorie",
+      "description": "Description",
+      "actions": "Actions"
+    },
+    "hints": {
+      "amount": "Utilisé lorsque le type est forfait",
+      "rate": "Utilisé lorsque le type est pourcentage"
+    },
+    "empty": "Aucun produit"
+  },
+  "productCategories": {
+    "title": "Catégories de produit",
+    "subtitle": "Gérez les catégories de vos produits",
+    "new": "Nouvelle catégorie",
+    "fields": {
+      "name": "Nom",
+      "actions": "Actions"
+    },
+    "empty": "Aucune catégorie",
+    "count": "Nombre"
   },
   "quotes": {
     "title": "Devis",

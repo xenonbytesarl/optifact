@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, model, signal } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FormFieldComponent } from '../../../shared/ui/form-field';
-import { InputComponent } from '../../../shared/ui/input';
+import { InputTextComponent } from '../../../shared/ui/input';
 
 export interface ActorBaseModel { name: string; reference?: string; category?: string }
 
 @Component({
   selector: 'app-actor-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, FormFieldComponent, InputComponent],
+  imports: [CommonModule, FormsModule, FormFieldComponent, InputTextComponent],
   template: `
   <form class="grid gap-4 md:grid-cols-2">
     <div class="col-span-2 md:col-span-1">

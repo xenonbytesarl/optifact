@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
       [disabled]="disabled()"
       [rows]="rows()"
       (input)="onInput($event)"
-      class="w-full rounded-lg border border-token bg-surface text-fg placeholder-muted px-3 py-2 text-sm outline-none focus:ring-2 ring-primary shadow-sm resize-y"
+      class="w-full  border border-token bg-surface text-fg placeholder-muted px-3 py-2 text-sm outline-none focus:ring-2 ring-primary shadow-sm resize-y"
     >{{ value() ?? '' }}</textarea>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush

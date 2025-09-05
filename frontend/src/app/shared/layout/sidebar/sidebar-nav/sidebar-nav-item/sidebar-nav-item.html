@@ -1,14 +1,14 @@
 @if (!item().children?.length) {
   <a [routerLink]="item().link!" routerLinkActive="active" #rla="routerLinkActive"
      [attr.aria-current]="rla.isActive ? 'page' : null"
-     class="group relative flex items-center gap-3 px-3 py-2 rounded-md hover-surface-weak text-fg transition-colors"
+     class="group relative flex items-center gap-3 px-3 py-2  hover-surface-weak text-fg transition-colors"
      [ngClass]="{ 'bg-active text-primary active border-l-2 border-[var(--color-primary)]': rla.isActive }">
     <app-icon [name]="item().icon" class="text-xl text-muted" />
     <span class="text-sm font-medium">{{ item().label | t }}</span>
   </a>
 } @else {
   <button type="button"
-          class="w-full group relative flex items-center justify-between gap-3 px-3 py-2 rounded-md hover-surface-weak text-fg transition-colors"
+          class="w-full group relative flex items-center justify-between gap-3 px-3 py-2  hover-surface-weak text-fg transition-colors"
           (click)="toggle()" [attr.aria-expanded]="open()">
     <div class="flex items-center gap-3">
       <app-icon [name]="item().icon" class="text-xl text-muted" />
@@ -21,7 +21,7 @@
       @for (child of item().children!; track child.label) {
         <a [routerLink]="child.link!" routerLinkActive="active" #rlaChild="routerLinkActive"
            [attr.aria-current]="rlaChild.isActive ? 'page' : null"
-           class="group relative flex items-center gap-3 px-3 py-2 rounded-md hover-surface-weak text-fg transition-colors"
+           class="group relative flex items-center gap-3 px-3 py-2  hover-surface-weak text-fg transition-colors"
            [ngClass]="{ 'bg-active text-primary active border-l-2 border-[var(--color-primary)]': rlaChild.isActive }">
           <span class="w-4 h-px bg-neutral-300 dark:bg-neutral-700 mr-2"></span>
           <span class="text-sm">{{ child.label | t }}</span>

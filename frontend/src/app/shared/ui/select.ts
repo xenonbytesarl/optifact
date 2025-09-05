@@ -9,11 +9,11 @@ export interface SelectOption { value: string; label: string }
   imports: [CommonModule],
   template: `
     <select [disabled]="disabled()"
-            class="w-full rounded-lg border border-token bg-surface text-fg px-3 py-2 text-sm outline-none focus:ring-2 ring-primary shadow-sm"
+            class="w-full h-11  border border-token bg-surface text-fg px-3 text-base outline-none focus:ring-1 ring-primary shadow-sm"
             [value]="value() ?? ''"
             (change)="onChange($event)">
-      <option *ngIf="placeholder()" value="">{{ placeholder() }}</option>
-      <option *ngFor="let o of options()" [value]="o.value">{{ o.label }}</option>
+      @if (placeholder()) { <option value="">{{ placeholder() }}</option> }
+      @for (o of options(); track o.value) { <option [value]="o.value">{{ o.label }}</option> }
     </select>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -8,13 +8,13 @@ import { CommonModule } from '@angular/common';
   template: `
     <label class="block text-sm font-medium text-fg">
       {{ label() }}
-      <span *ngIf="required()" class="text-red-600">*</span>
+      @if (required()) { <span class="text-red-600">*</span> }
     </label>
     <div class="mt-1">
       <ng-content />
     </div>
-    <p *ngIf="hint() && !error()" class="mt-1 text-xs text-muted">{{ hint() }}</p>
-    <p *ngIf="error()" class="mt-1 text-xs text-red-600">{{ error() }}</p>
+    @if (hint() && !error()) { <p class="mt-1 text-xs text-muted">{{ hint() }}</p> }
+    @if (error()) { <p class="mt-1 text-xs text-red-600">{{ error() }}</p> }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block' }

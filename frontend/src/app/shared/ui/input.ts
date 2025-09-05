@@ -11,11 +11,11 @@ import { CommonModule } from '@angular/common';
            [disabled]="disabled()"
            [value]="value() ?? ''"
            (input)="onInput($event)"
-           class="w-full rounded-lg border border-token bg-surface text-fg placeholder-muted px-3 py-2 text-sm outline-none focus:ring-2 ring-primary shadow-sm" />
+           class="w-full h-11  border border-token bg-surface text-fg placeholder-muted px-3 text-base outline-none focus:ring-1 ring-primary shadow-sm" />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InputComponent {
+export class InputTextComponent {
   type = input<'text' | 'email' | 'tel' | 'number' | 'search' | 'password'>('text');
   placeholder = input<string>('');
   disabled = input<boolean>(false);

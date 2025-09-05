@@ -32,6 +32,17 @@
     "subtitle": "Product catalog",
     "new": "New product"
   },
+  "productCategories": {
+    "title": "Product categories",
+    "subtitle": "Manage product categories",
+    "new": "New category",
+    "fields": {
+      "name": "Name",
+      "actions": "Actions"
+    },
+    "empty": "No categories",
+    "count": "Count"
+  },
   "quotes": {
     "title": "Quotes",
     "subtitle": "Sales proposals",

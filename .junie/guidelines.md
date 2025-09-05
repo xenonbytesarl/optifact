@@ -91,6 +91,8 @@ frontend/
 - Shell layout: AppComponent affiche la topbar/sidebar + router-outlet.
 
 7. UI et composants
+- Réutilisation d’abord: privilégier la réutilisation des composants existants (shared/ et patterns établis) avant de créer un nouveau composant. Ne créer un nouveau composant que lorsqu’aucun composant existant ne couvre le besoin, ou que l’adaptation créerait plus de dette que de valeur. Documenter le nouveau composant et viser sa réutilisabilité. 
+- Cohérence visuelle: respecter strictement la charte graphique sur l’ensemble de l’UI (components, écrans, layouts, états vides, messages d’erreur, etc.). Réutiliser les mêmes patterns (typographies, espacements, couleurs, bordures, rayons, ombres) et les composants shared pour garantir une expérience homogène.
 - Shared components: Button, Input, Select, Table, Modal, EmptyState, Spinner.
 - Feature components:
   - Container: InvoicesPage (charge, sélectionne, orchestre actions)
@@ -190,6 +192,7 @@ frontend/
 - M3: Tableaux de bord (chiffre d’affaires, impayés).
 
 15. Règles de contribution
+- Avant chaque tâche (ticket/PR), consultez ce document de guidelines et vérifiez la conformité des décisions (architecture, UI, état, i18n, accessibilité). Documentez les écarts justifiés si nécessaire.
 - Une PR par feature slice. 
 - 1 store par feature max tant que c’est simple. 
 - Pas de logique métier dans les composants de présentation.
@@ -202,4 +205,5 @@ Références
 16. Charte graphique & branding
 - Logo: utiliser le fichier frontend/public/assets/images/logo.png pour l’identité visuelle (header, sidebar, écran de connexion). Prévoir des variantes sombre/clair si nécessaire.
 - Favicon/manifest: optionnel mais recommandé, aligné sur le logo.
-- Cohérence: respecter la palette et la typographie définies, et réutiliser les composants shared.
+- Cohérence globale: la charte graphique (palette, typographies, rayons, ombres, espacements) doit être appliquée de manière uniforme à tous les composants, écrans, layouts et états. Les dérogations doivent être exceptionnelles et documentées.
+- Réutiliser les composants shared et les mêmes tokens pour garantir l’uniformité.

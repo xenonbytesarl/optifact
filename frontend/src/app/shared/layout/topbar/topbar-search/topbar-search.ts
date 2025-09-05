@@ -29,7 +29,7 @@ import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
                (focus)="focused=true"
                (blur)="focused=false"
                (input)="value = q.value"
-               class="pl-10 pr-10 py-2 rounded-full border border-token bg-surface text-fg placeholder-muted text-sm shadow-sm focus:outline-none transition-[width] duration-200 ease-out"
+               class="pl-10 pr-10 py-2  border border-token bg-surface text-fg placeholder-muted text-sm shadow-sm focus:outline-none transition-[width] duration-200 ease-out"
                [class.w-[22rem]]="!focused"
                [class.md:w-[28rem]]="!focused"
                [class.lg:w-[36rem]]="!focused"
@@ -41,7 +41,7 @@ import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
           <button type="button"
                   (mousedown)="$event.preventDefault(); q.value=''; value=''; q.focus()"
                   (click)="$event.preventDefault()"
-                  class="absolute inset-y-0 right-1 my-1 inline-flex items-center justify-center rounded-full h-8 w-8 text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 focus:outline-none"
+                  class="absolute inset-y-0 right-1 my-1 inline-flex items-center justify-center  h-8 w-8 text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 focus:outline-none"
                   [attr.aria-label]="'search.clear' | t">
             <app-icon name="close"></app-icon>
           </button>

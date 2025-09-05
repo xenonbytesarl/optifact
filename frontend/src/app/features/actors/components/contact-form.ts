@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, model, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormFieldComponent } from '../../../shared/ui/form-field';
-import { InputComponent } from '../../../shared/ui/input';
+import { InputTextComponent } from '../../../shared/ui/input';
 import { SelectComponent, SelectOption } from '../../../shared/ui/select';
+import { InputPhoneComponent } from '../../../shared/ui/input-phone';
 import { ContactType } from '../models';
 
 export interface ContactFormModel { type: ContactType; name: string; email: string; phone: string; role?: string }
@@ -10,7 +11,7 @@ export interface ContactFormModel { type: ContactType; name: string; email: stri
 @Component({
   selector: 'app-contact-form',
   standalone: true,
-  imports: [CommonModule, FormFieldComponent, InputComponent, SelectComponent],
+  imports: [CommonModule, FormFieldComponent, InputTextComponent, SelectComponent, InputPhoneComponent],
   template: `
     <form class="grid gap-4 md:grid-cols-2">
       <div class="col-span-2 md:col-span-1">
@@ -30,7 +31,7 @@ export interface ContactFormModel { type: ContactType; name: string; email: stri
       </div>
       <div class="col-span-2 md:col-span-1">
         <app-form-field [label]="'Téléphone'">
-          <app-input type="tel" [value]="model().phone" (valueChange)="update('phone', $event || '')" />
+          <app-input-phone [value]="model().phone || null" (valueChange)="update('phone', $event || '')"></app-input-phone>
         </app-form-field>
       </div>
       <div class="col-span-2">

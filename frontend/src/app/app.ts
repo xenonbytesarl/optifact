@@ -4,11 +4,12 @@ import { RouterOutlet } from '@angular/router';
 import { TopbarComponent } from './shared/layout/topbar/topbar';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar';
 import { ThemeService } from './core/settings/theme.service';
+import { ToastsComponent } from './shared/ui/toast';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, TopbarComponent, SidebarComponent],
+  imports: [CommonModule, RouterOutlet, TopbarComponent, SidebarComponent, ToastsComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

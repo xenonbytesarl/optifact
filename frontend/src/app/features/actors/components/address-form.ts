@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, input, model, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormFieldComponent } from '../../../shared/ui/form-field';
-import { InputComponent } from '../../../shared/ui/input';
+import { InputTextComponent } from '../../../shared/ui/input';
 import { SelectComponent, SelectOption } from '../../../shared/ui/select';
+import { CountryAutocompleteComponent } from '../../../shared/ui/country-autocomplete';
 import { Address, AddressType } from '../models';
 
 export interface AddressFormModel { type: AddressType; street: string; city: string; country: string }
@@ -10,7 +11,7 @@ export interface AddressFormModel { type: AddressType; street: string; city: str
 @Component({
   selector: 'app-address-form',
   standalone: true,
-  imports: [CommonModule, FormFieldComponent, InputComponent, SelectComponent],
+  imports: [CommonModule, FormFieldComponent, InputTextComponent, SelectComponent, CountryAutocompleteComponent],
   template: `
     <form class="grid gap-4 md:grid-cols-2">
       <div class="col-span-2 md:col-span-1">
@@ -30,7 +31,7 @@ export interface AddressFormModel { type: AddressType; street: string; city: str
       </div>
       <div class="col-span-2 md:col-span-1">
         <app-form-field [label]="'Pays'" [required]="true">
-          <app-input [value]="model().country" (valueChange)="update('country', $event || '')" />
+          <app-country-autocomplete [value]="model().country || null" (valueChange)="update('country', $event || '')" />
         </app-form-field>
       </div>
     </form>

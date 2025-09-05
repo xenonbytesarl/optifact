@@ -26,21 +26,21 @@ import { ButtonComponent } from '../../../shared/ui/button';
       (saveClicked)="save()"
     />
 
-    <div class="p-4">
+    <div class="p-4 space-y-4">
       <app-card>
         <div class="space-y-6">
           <app-actor-form [model]="actorModel()" (modelChange)="onBaseChange($event)"></app-actor-form>
-          <app-actor-tabs
-            [addresses]="store.addresses()"
-            [contacts]="store.contacts()"
-            (addAddress)="openAddressDialog()"
-            (editAddress)="editAddress($event)"
-            (removeAddress)="removeAddress($event)"
-            (addContact)="openContactDialog()"
-            (editContact)="editContact($event)"
-            (removeContact)="removeContact($event)"
-          />
         </div>
+        <app-actor-tabs
+          [addresses]="store.addresses()"
+          [contacts]="store.contacts()"
+          (addAddress)="openAddressDialog()"
+          (editAddress)="editAddress($event)"
+          (removeAddress)="removeAddress($event)"
+          (addContact)="openContactDialog()"
+          (editContact)="editContact($event)"
+          (removeContact)="removeContact($event)"
+        />
       </app-card>
     </div>
 
