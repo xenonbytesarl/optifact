@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, input, model, TemplateRef, viewChild, effect, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model, TemplateRef, viewChild, contentChild, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /**
  * Reusable TableComponent
  * - Config-only: when [rows] and [columns] are provided, renders a table with:
- *   - First column: checkboxes per row and a header checkbox with tri-state
- *   - Last column: actions (projected via ng-template [appTableActions])
+ *   - Optional first column: selection checkboxes (toggle via [selectable]) with tri-state header
+ *   - Optional last column: actions (projected via <ng-template #actions let-row>)
  *   - Middle columns defined by columns input (key + header + optional cell template)
  * Selection model: two-way via selectedIds model().
  */
@@ -15,35 +15,43 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div class="overflow-x-auto">
-      <table class="w-full text-sm border-collapse border border-gray-200 rounded-md">
+      <table class="w-full text-sm border-collapse border border-gray-200 dark:border-neutral-700 rounded-md">
           <thead>
-            <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="p-2 w-10">
-                <input type="checkbox"
-                  [checked]="allSelected()"
-                  (change)="toggleAll($any($event.target).checked)"
-                  [attr.aria-checked]="someSelected() && !allSelected() ? 'mixed' : null"
-                  #master>
-              </th>
-              @for (col of columns(); track col.key) {
-                <th class="text-left p-2">{{ col.header }}</th>
+            <tr class="border-b border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-gray-900 dark:text-neutral-100">
+              @if (selectable()) {
+                <th class="p-2 w-10">
+                  <input type="checkbox"
+                    [checked]="allSelected()"
+                    (change)="toggleAll($any($event.target).checked)"
+                    [attr.aria-checked]="someSelected() && !allSelected() ? 'mixed' : null"
+                    #master>
+                </th>
               }
-              <th class="text-right p-2">Actions</th>
+              @for (col of columns(); track col.key) {
+                <th [class]="'p-2 ' + headerAlignClass(col.align) + (col.headerClass ? ' ' + col.headerClass : '')">{{ col.header }}</th>
+              }
+              @if (hasActions()) {
+                <th class="text-right p-2">Actions</th>
+              }
             </tr>
           </thead>
           <tbody>
             @if (rows().length === 0) {
-              <tr><td class="p-2 py-6 text-sm text-gray-500 text-center" [attr.colspan]="columns().length + 2">Aucune donnée</td></tr>
+              <tr>
+                <td class="p-2 py-6 text-sm text-gray-500 dark:text-neutral-400 text-center" [attr.colspan]="colCount()">Aucune donnée</td>
+              </tr>
             } @else {
-              @for (row of rows(); track $index) {
-                <tr class="border-b border-gray-200">
-                  <td class="p-2 w-10 text-center">
-                    <input type="checkbox"
-                      [checked]="isSelected(row)"
-                      (change)="toggleRow(row, $any($event.target).checked)">
-                  </td>
+              @for (row of rows(); track trackBy($index, row)) {
+                <tr class="border-b border-gray-200 dark:border-neutral-800">
+                  @if (selectable()) {
+                    <td class="p-2 w-10 text-center">
+                      <input type="checkbox"
+                        [checked]="isSelected(row)"
+                        (change)="toggleRow(row, $any($event.target).checked)">
+                    </td>
+                  }
                   @for (col of columns(); track col.key) {
-                    <td class="p-2">
+                    <td [class]="'p-2 ' + cellAlignClass(col.align) + (col.class ? ' ' + col.class : '')">
                       @if (col.template) {
                         <ng-container *ngTemplateOutlet="col.template; context: {$implicit: row}"></ng-container>
                       } @else {
@@ -51,9 +59,11 @@ import { CommonModule } from '@angular/common';
                       }
                     </td>
                   }
-                  <td class="p-2 text-right">
-                    <ng-container *ngTemplateOutlet="actionsTpl(); context: {$implicit: row}"></ng-container>
-                  </td>
+                  @if (hasActions()) {
+                    <td class="p-2 text-right">
+                      <ng-container *ngTemplateOutlet="actionsTpl(); context: {$implicit: row}"></ng-container>
+                    </td>
+                  }
                 </tr>
               }
             }
@@ -70,42 +80,59 @@ export class TableComponent {
     try {
       const idFn = this.rowId();
       const key = idFn ? idFn(row) : undefined;
-      return key ?? index;
+      // If no stable key provided, fallback to JSON signature to reduce DOM reuse issues,
+      // finally fallback to index.
+      if (key !== undefined && key !== null && key !== '') return key as any;
+      const signature = safeSignature(row);
+      return signature ?? index;
     } catch {
       return index;
     }
   };
   // Config mode API
   rows = input<any[]>([]);
-  columns = input<{ key: string; header: string; template?: TemplateRef<any> }[]>([]);
-  rowId = input<(row: any) => string | number>((row) => row?.id);
+  columns = input<{ key: string; header: string; template?: TemplateRef<any>; class?: string; headerClass?: string; align?: 'left' | 'center' | 'right' }[]>([]);
+  rowId = input<(row: any) => string | number | null | undefined>((row) => row?.id ?? row?.tempId ?? null);
   selectedIds = model<Set<string | number>>(new Set());
+  selectable = input<boolean>(true);
 
   // Actions template from content (optional) identified by template reference variable "actions"
   // Usage: <ng-template #actions let-row> ... </ng-template>
-  actionsTemplateRef = viewChild<TemplateRef<any>>('actions');
+  actionsTemplateRef = contentChild<TemplateRef<any>>('actions');
 
+  hasActions = computed(() => !!this.actionsTemplateRef() || this.columns().some(c => c.key === 'actions'));
   actionsTpl = computed(() => this.actionsTemplateRef() ?? this._emptyTpl);
 
+  colCount = computed(() => this.columns().length + (this.selectable() ? 1 : 0) + (this.hasActions() ? 1 : 0));
+
   // selection derived
-  allSelected = computed(() => this.rows().length > 0 && this.selectedIds().size === this.rows().length);
-  someSelected = computed(() => this.selectedIds().size > 0 && this.selectedIds().size < this.rows().length);
+  allSelected = computed(() => this.selectable() && this.rows().length > 0 && this.selectedIds().size === this.rows().length);
+  someSelected = computed(() => this.selectable() && this.selectedIds().size > 0 && this.selectedIds().size < this.rows().length);
 
   isSelected(row: any) {
-    return this.selectedIds().has(this.rowId()(row));
+    if (!this.selectable()) return false;
+    const id = this.rowId()(row);
+    if (id === null || id === undefined) return false;
+    return this.selectedIds().has(id);
   }
 
   toggleRow(row: any, checked: boolean) {
+    if (!this.selectable()) return;
     const id = this.rowId()(row);
+    if (id === null || id === undefined) return; // ignore rows without stable id
     const set = new Set(this.selectedIds());
     if (checked) set.add(id); else set.delete(id);
     this.selectedIds.set(set);
   }
 
   toggleAll(checked: boolean) {
+    if (!this.selectable()) return;
     if (checked) {
       const set = new Set<string | number>();
-      for (const r of this.rows()) set.add(this.rowId()(r));
+      for (const r of this.rows()) {
+        const id = this.rowId()(r);
+        if (id !== null && id !== undefined) set.add(id);
+      }
       this.selectedIds.set(set);
     } else {
       this.selectedIds.set(new Set());
@@ -119,6 +146,41 @@ export class TableComponent {
     if (el) el.indeterminate = this.someSelected() && !this.allSelected();
   });
 
+  headerAlignClass(align?: 'left' | 'center' | 'right'): string {
+    switch (align) {
+      case 'center': return 'text-center';
+      case 'right': return 'text-right';
+      default: return 'text-left';
+    }
+  }
+  cellAlignClass(align?: 'left' | 'center' | 'right'): string {
+    switch (align) {
+      case 'center': return 'text-center';
+      case 'right': return 'text-right';
+      default: return 'text-left';
+    }
+  }
+
   // Fallback empty template
   private _emptyTpl = null as unknown as TemplateRef<any>;
+}
+
+// Generate a weak signature for non-keyed rows to help Angular track DOM nodes more reliably
+function safeSignature(row: any): string | null {
+  try {
+    if (!row || typeof row !== 'object') return String(row ?? '');
+    // Prefer common fields
+    const idLike = (row.id ?? row.tempId ?? row.key ?? row.code ?? row.email ?? row.phone) as any;
+    if (idLike != null && idLike !== '') return String(idLike);
+    // Fallback to a shallow JSON of first-level keys sorted to keep order stable
+    const entries = Object.keys(row).sort().slice(0, 5).map(k => `${k}:${stringifyValue((row as any)[k])}`);
+    return entries.join('|');
+  } catch {
+    return null;
+  }
+}
+function stringifyValue(v: any): string {
+  if (v == null) return '';
+  if (typeof v === 'object') return JSON.stringify(v, Object.keys(v).sort()).slice(0, 100);
+  return String(v);
 }

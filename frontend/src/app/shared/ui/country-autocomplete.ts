@@ -35,4 +35,5 @@ export class CountryAutocompleteComponent {
     const fo = this.flagOnly();
     return COUNTRIES.map(c => ({ value: c.code, label: fo ? `${c.flag} ${c.code}` : `${c.flag} ${c.name}` }));
   });
+
 }

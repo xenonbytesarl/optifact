@@ -14,11 +14,11 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
         <div class="h-14 flex items-center justify-between">
           <div class="font-medium text-sm md:text-base"></div>
           <div class="inline-flex items-center gap-2">
-            <app-button size="md" variant="secondary" shadow="md" hoverShadow="base" [disabled]="disableNew()" (clicked)="newClicked.emit()">
+            <app-button size="md" variant="primary" shadow="md" hoverShadow="base" [disabled]="disableNew()" (clicked)="newClicked.emit()">
               <span class="material-symbols-outlined text-base">add</span>
               <span class="hidden sm:inline">{{ 'actions.new' | t }}</span>
             </app-button>
-            <app-button size="md" variant="secondary" shadow="md" hoverShadow="base" [disabled]="disableEdit()" (clicked)="editClicked.emit()">
+            <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" [disabled]="disableEdit()" (clicked)="editClicked.emit()">
               <span class="material-symbols-outlined text-base">edit</span>
               <span class="hidden sm:inline">{{ 'actions.edit' | t }}</span>
             </app-button>

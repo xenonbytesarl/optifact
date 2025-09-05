@@ -79,10 +79,14 @@ export class AutocompleteComponent {
   activeId = computed(() => this.activeIndex() >= 0 ? this.idFor(this.activeIndex()) : null);
 
   constructor() {
-    // keep the query in sync with the selected value initially
+    // keep the query in sync with the selected value
     effect(() => {
       const v = this.value();
-      if (v == null) { return; }
+      if (v == null) {
+        // When value is cleared externally (e.g., after form submit), also clear the visual query
+        this.query.set('');
+        return;
+      }
       const found = this.items().find(i => i.value === v);
       if (found && !this.open()) {
         this.query.set(found.label);
