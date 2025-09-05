@@ -25,13 +25,13 @@ export interface AddressFormModel { type: AddressType; street: string; city: str
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">
-        <app-form-field [label]="'Ville'" [required]="true">
-          <app-input [value]="model().city" (valueChange)="update('city', $event || '')" />
+        <app-form-field [label]="'Pays'" [required]="true">
+          <app-country-autocomplete [value]="model().country || null" (valueChange)="update('country', $event || '')" />
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">
-        <app-form-field [label]="'Pays'" [required]="true">
-          <app-country-autocomplete [value]="model().country || null" (valueChange)="update('country', $event || '')" />
+        <app-form-field [label]="'Ville'" [required]="true">
+          <app-input [value]="model().city" (valueChange)="update('city', $event || '')" />
         </app-form-field>
       </div>
     </form>

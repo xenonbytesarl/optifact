@@ -9,6 +9,8 @@ import { ProductCategoriesStore, provideCategoriesStore } from '../../product-ca
 import { ProductListComponent } from '../components/product-list';
 import { CardComponent } from '../../../shared/ui/card';
 import { PaginatorComponent } from '../../../shared/ui/paginator';
+import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog';
+import { TranslateService } from '../../../core/i18n/translate.service';
 
 @Component({
   selector: 'app-products-list-page',
@@ -20,12 +22,12 @@ import { PaginatorComponent } from '../../../shared/ui/paginator';
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'products.title' | t }}</h2>
-          <a routerLink="../new">
+          <button routerLink="../new" class="inline-flex">
             <app-button>
               <app-icon name="add" class="mr-1"></app-icon>
               {{ 'products.new' | t }}
             </app-button>
-          </a>
+          </button>
         </div>
 
         <app-product-list [items]="pagedItems()" (edit)="goEdit($event.id)" (remove)="remove($event.id)" />
@@ -55,6 +57,9 @@ export class ProductsListPage {
     return this.items().slice(start, start + this.pageSize());
   });
 
+  svc = inject(ConfirmDialogService);
+  i18n = inject(TranslateService);
+
   constructor() {
     this.cats.loadAll();
     this.store.loadAll();
@@ -63,6 +68,8 @@ export class ProductsListPage {
   goEdit(id: string) { this.router.navigate(['../', id, 'edit']); }
 
   async remove(id: string) {
+    const ok = await this.svc.open({ message: this.i18n.t('confirm.delete.product') });
+    if (!ok) return;
     await this.store.remove(id);
   }
 }

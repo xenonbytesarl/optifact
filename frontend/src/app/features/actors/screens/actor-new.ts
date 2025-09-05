@@ -122,7 +122,7 @@ export class ActorNewPage {
     if (closeAfter) {
       this.contactDialogOpen.set(false);
     }
-    // reset form for a new entry
+    // reset the form for a new entry
     this.contactModel.set({ type: 'commercial', name: '', phone: '', email: '', role: '' });
   }
   saveContactAndNew() { this.addContactCommon(false); }

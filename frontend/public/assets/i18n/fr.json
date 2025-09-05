@@ -9,6 +9,7 @@
   },
   "actions": {
     "new": "Créer",
+    "view": "Voir",
     "edit": "Modifier",
     "cancel": "Annuler",
     "save": "Sauvegarder"
@@ -16,7 +17,13 @@
   "actors": {
     "title": "Acteurs",
     "subtitle": "Gérez vos acteurs",
-    "new": "Nouveau acteur"
+    "new": "Nouvel acteur",
+    "fields": {
+      "name": "Nom",
+      "reference": "Référence",
+      "actions": "Actions"
+    },
+    "empty": "Aucun acteur"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -95,5 +102,20 @@
     "next": "Suivant",
     "last": "Dernière",
     "pageXofY": "Page {{page}} / {{total}}"
+  },
+  "confirm": {
+    "title": "Confirmation",
+    "message": {
+      "default": "Êtes-vous sûr de vouloir continuer ?"
+    },
+    "ok": "Oui",
+    "cancel": "Non",
+    "delete": {
+      "actor": "Supprimer cet acteur ?",
+      "address": "Supprimer cette adresse ?",
+      "contact": "Supprimer ce contact ?",
+      "product": "Supprimer ce produit ?",
+      "productCategory": "Supprimer cette catégorie ?"
+    }
   }
 }

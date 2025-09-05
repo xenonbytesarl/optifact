@@ -14,10 +14,10 @@ import { Product } from '../../../core/api/products.api';
   template: `
     <app-table [rows]="items()" [columns]="columns">
       <ng-template #actions let-row>
-        <app-button size="sm" variant="ghost" (click)="edit.emit(row)">
+        <app-button size="sm" shadow="none" variant="ghost" (click)="edit.emit(row)">
           <app-icon name="edit" class="mr-1"></app-icon>{{ 'actions.edit' | t }}
         </app-button>
-        <app-button size="sm" variant="ghost" (click)="remove.emit(row)">
+        <app-button size="sm" shadow="none" variant="ghost" (click)="remove.emit(row)">
           <app-icon name="delete" class="mr-1"></app-icon>
         </app-button>
       </ng-template>

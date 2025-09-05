@@ -8,6 +8,8 @@ import { ProductCategoriesStore, provideCategoriesStore } from '../product-categ
 import { ProductCategoryListComponent } from '../components/product-category-list';
 import { CardComponent } from '../../../shared/ui/card';
 import { PaginatorComponent } from '../../../shared/ui/paginator';
+import {ConfirmDialogService} from '../../../shared/ui/confirm-dialog';
+import {TranslateService} from '../../../core/i18n/translate.service';
 
 @Component({
   selector: 'app-product-categories-list-page',
@@ -19,12 +21,12 @@ import { PaginatorComponent } from '../../../shared/ui/paginator';
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'productCategories.title' | t }}</h2>
-          <a routerLink="../new">
+          <button routerLink="../new" class="inline-flex">
             <app-button>
               <app-icon name="add" class="mr-1"></app-icon>
               {{ 'productCategories.new' | t }}
             </app-button>
-          </a>
+          </button>
         </div>
 
         <app-product-category-list [items]="paged()" (edit)="goEdit($event.id)" (remove)="remove($event.id)" />
@@ -46,8 +48,11 @@ export class ProductCategoriesListPage {
     return list.slice(start, start + this.pageSize());
   });
 
+  svc = inject(ConfirmDialogService);
+  i18n = inject(TranslateService);
+
   constructor() {
-    // load all when list screen mounts
+    // load all when the list screen mounts
     this.store.loadAll();
   }
 
@@ -56,6 +61,8 @@ export class ProductCategoriesListPage {
   }
 
   async remove(id: string) {
+    const ok = await this.svc.open({ message: this.i18n.t('confirm.delete.productCategory') });
+    if (!ok) return;
     await this.store.remove(id);
   }
 }

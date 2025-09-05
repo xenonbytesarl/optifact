@@ -16,7 +16,7 @@ export interface TabItem {
       <div class="flex items-center gap-2 border-b border-token">
         @for (t of items(); track t.id) {
           <button
-            class="relative -mb-px px-3 py-2 text-sm font-medium transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            class="relative -mb-px px-3 py-2 text-sm font-medium transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-700 dark:hover:text-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/60"
             [class.text-[rgb(var(--color-fg))]]="active() === t.id"
             [class.text-muted]="active() !== t.id"
             [class.border-b-2]="active() === t.id"

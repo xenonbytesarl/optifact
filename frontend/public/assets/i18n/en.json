@@ -16,7 +16,13 @@
   "actors": {
     "title": "Actors",
     "subtitle": "Manage your actors",
-    "new": "New actor"
+    "new": "New actor",
+    "fields": {
+      "name": "Name",
+      "reference": "Reference",
+      "actions": "Actions"
+    },
+    "empty": "Aucun acteur"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -95,5 +101,20 @@
     "next": "Next",
     "last": "Last",
     "pageXofY": "Page {{page}} / {{total}}"
+  },
+  "confirm": {
+    "title": "Confirmation",
+    "message": {
+      "default": "Are you sure you want to continue?"
+    },
+    "ok": "Yes",
+    "cancel": "No",
+    "delete": {
+      "actor": "Delete this actor?",
+      "address": "Delete this address?",
+      "contact": "Delete this contact?",
+      "product": "Delete this product?",
+      "productCategory": "Delete this category?"
+    }
   }
 }
