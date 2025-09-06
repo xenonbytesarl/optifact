@@ -7,7 +7,7 @@ import { InputNumberComponent } from '../../../shared/ui/input-number';
 import {SelectComponent, SelectOption} from '../../../shared/ui/select';
 import { FormFieldComponent } from '../../../shared/ui/form-field';
 import { ProductType } from '../../../core/api/products.api';
-import { ProductCategoriesStore } from '../../product-categories/product-categories.store';
+import { productCategoryStore } from '../../product-categories/product-category.store';
 import { AutocompleteComponent, AutocompleteItem } from '../../../shared/ui/autocomplete';
 import { InputCurrencyComponent } from '../../../shared/ui/input-currency';
 
@@ -67,7 +67,7 @@ export class ProductFormComponent implements OnInit {
   submit = output<ProductFormValue>();
   cancel = output<void>();
 
-  private categories = inject(ProductCategoriesStore);
+  private categoryStore = inject(productCategoryStore);
   protected i18n = inject(TranslateService);
 
   // Build type options from i18n so labels are translated
@@ -81,12 +81,12 @@ export class ProductFormComponent implements OnInit {
   });
 
   categoryItems = computed<AutocompleteItem[]>(() =>
-    this.categories.categories().map(c => ({ value: c.id, label: c.name }))
+    this.categoryStore.categoryPage().elements.map(c => ({ value: c.id, label: c.name }))
   );
 
   ngOnInit() {
     // ensure categories are loaded for the select
-    this.categories.loadAll();
+    //TODO replace this line with product category search resolver this.categoryStore.loadAll();
   }
 
   onCode(v: string | null) {

@@ -25,3 +25,14 @@ export interface SuccessApiResponse<T> {
   timestamp?: string;
   data: {content: T};
 }
+
+export interface Page<T> {
+  elements: T[];
+  totalElements: number;
+  page: number;
+  size: number;
+  totalPages: number;
+  isFirst: boolean;
+  isLast: boolean;
+}
+
