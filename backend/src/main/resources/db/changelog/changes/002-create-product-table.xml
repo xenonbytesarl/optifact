@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="07092025_0148_create_product_table" author="brice.mbiandji">
+        <createTable tableName="t_product">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Domain fields -->
+            <column name="c_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="c_code" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="c_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_rate" type="double precision">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_amount" type="numeric(19,2)"/>
+            <column name="c_currency" type="varchar(10)"/>
+            <column name="c_description" type="text"/>
+            <column name="c_active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_category_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Indexes -->
+        <createIndex indexName="idx_t_product_name" tableName="t_product">
+            <column name="c_name"/>
+        </createIndex>
+        <createIndex indexName="idx_t_product_code" tableName="t_product">
+            <column name="c_code"/>
+        </createIndex>
+        <createIndex indexName="idx_t_product_category_id" tableName="t_product">
+            <column name="c_category_id"/>
+        </createIndex>
+
+        <!-- Unique constraints -->
+        <addUniqueConstraint constraintName="uk_t_product_name" tableName="t_product" columnNames="c_name"/>
+        <addUniqueConstraint constraintName="uk_t_product_code" tableName="t_product" columnNames="c_code"/>
+
+        <!-- Foreign key to product category -->
+        <addForeignKeyConstraint
+                baseTableName="t_product"
+                baseColumnNames="c_category_id"
+                constraintName="fk_t_product_category"
+                referencedTableName="t_product_category"
+                referencedColumnNames="c_id"
+                onDelete="RESTRICT"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -6,4 +6,5 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
 
     <include file="/db/changelog/changes/001-create-product-category-table.xml"/>
+    <include file="/db/changelog/changes/002-create-product-table.xml"/>
 </databaseChangeLog>
