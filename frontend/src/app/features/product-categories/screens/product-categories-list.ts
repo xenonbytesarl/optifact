@@ -13,6 +13,8 @@ import {ConfirmDialogService} from '../../../shared/ui/confirm-dialog';
 import {TranslateService} from '../../../core/i18n/translate.service';
 import {Direction, DirectionType} from '../../../core/model/direction.enum';
 import { ProductCategorySortColumn } from '../../../core/api/product-categories.api';
+import { ToastService } from '../../../shared/ui/toast';
+import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../../core/constant/constant';
 
 @Component({
   selector: 'app-product-categories-list-page',
@@ -71,6 +73,7 @@ export class ProductCategoriesListPage {
 
   svc = inject(ConfirmDialogService);
   i18n = inject(TranslateService);
+  toast = inject(ToastService);
 
   loading = computed(() => this.store.loading());
 
@@ -111,6 +114,19 @@ export class ProductCategoriesListPage {
   async remove(id: string) {
     const ok = await this.svc.open({ message: this.i18n.t('confirm.delete.productCategory') });
     if (!ok) return;
-    await this.store.remove(id);
+    const response  = await this.store.remove(id);
+    // Show success toast after deletion
+
+    if(response) {
+      const msg = this.store.message() || this.i18n.t('common.deleted');
+      this.toast.success(msg);
+      // refresh the table
+      this.sortDirection = Direction.ASC;
+      this.sortColumn = 'name';
+      await this.store.search('', DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, this.sortDirection, this.sortColumn);
+    } else {
+      this.toast.error(this.store.error() || this.i18n.t('common.error'));
+    }
+
   }
 }

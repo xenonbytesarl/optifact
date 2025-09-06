@@ -68,7 +68,33 @@
       "actions": "Actions"
     },
     "empty": "Aucune catégorie",
-    "count": "Nombre"
+    "count": "Nombre",
+    "messages": {
+      "deleted": {
+        "success": "Catégorie de produit supprimée avec succès.",
+        "error": "Échec de la suppression de la catégorie de produit."
+      }
+    }
+  },
+  "productCategory": {
+    "messages": {
+      "created": {
+        "success": "Catégorie de produit créée avec succès.",
+        "error": "Échec de la création de la catégorie de produit."
+      },
+      "update": {
+        "success": "Catégorie de produit mise à jour avec succès.",
+        "error": "Échec de la mise à jour de la catégorie de produit."
+      },
+      "find": {
+        "success": "Catégorie de produit récupérée avec succès.",
+        "error": "Échec de la récupération de la catégorie de produit."
+      },
+      "search": {
+        "success": "Catégories de produit chargées avec succès.",
+        "error": "Échec du chargement des catégories de produit."
+      }
+    }
   },
   "quotes": {
     "title": "Devis",
@@ -92,6 +118,9 @@
   "dashboard": {
     "title": "Tableau de bord",
     "refresh": "Actualiser"
+  },
+  "common": {
+    "deleted": "Supprimé avec succès."
   },
   "paginator": {
     "noItems": "Aucun élément",

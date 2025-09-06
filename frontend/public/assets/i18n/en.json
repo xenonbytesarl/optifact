@@ -67,7 +67,33 @@
       "actions": "Actions"
     },
     "empty": "No categories",
-    "count": "Count"
+    "count": "Count",
+    "messages": {
+      "deleted": {
+        "success": "Product category deleted successfully.",
+        "error": "Failed to delete product category."
+      }
+    }
+  },
+  "productCategory": {
+    "messages": {
+      "created": {
+        "success": "Product category created successfully.",
+        "error": "Failed to create product category."
+      },
+      "update": {
+        "success": "Product category updated successfully.",
+        "error": "Failed to update product category."
+      },
+      "find": {
+        "success": "Product category retrieved successfully.",
+        "error": "Failed to retrieve product category."
+      },
+      "search": {
+        "success": "Product categories loaded successfully.",
+        "error": "Failed to load product categories."
+      }
+    }
   },
   "quotes": {
     "title": "Quotes",
@@ -91,6 +117,9 @@
   "dashboard": {
     "title": "Dashboard",
     "refresh": "Refresh"
+  },
+  "common": {
+    "deleted": "Deleted successfully."
   },
   "paginator": {
     "noItems": "No items",
