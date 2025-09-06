@@ -56,6 +56,7 @@ html.dark app-sidebar aside { border-color: #262626 !important; }
   .ring-primary { --tw-ring-color: var(--color-primary); }
   .text-accent { color: var(--color-accent); }
   .bg-accent { background-color: var(--color-accent); }
+  .accent-primary {accent-color: var(--color-primary); }
   .text-emphasis { color: var(--color-emphasis); }
   .bg-emphasis { background-color: var(--color-emphasis); }
   .text-fg { color: rgb(var(--color-fg)); }
