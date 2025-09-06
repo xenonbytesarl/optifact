@@ -30,7 +30,9 @@ import {ToastService} from '../../../shared/ui/toast';
         <app-product-category-form
           [disabled]="loading()"
           [value]="formValue()"
+          [nameRequiredError]="nameHasError()"
           (valueChange)="onValueChange($event)"
+          (blur)="onNameBlur()"
         />
       </app-card>
     </div>
@@ -54,6 +56,11 @@ export class ProductCategoryNewPage {
     });
   }
 
+  nameHasError() {
+    const c = this.form.get('name');
+    return !!c && c.invalid && (c.dirty || c.touched);
+  }
+
   onValueChange(categoryFormValue: CategoryFormValue) {
     this.formValue.set(categoryFormValue);
     this.form.patchValue({
@@ -61,8 +68,16 @@ export class ProductCategoryNewPage {
     });
   }
 
+  onNameBlur() {
+    const c = this.form.get('name');
+    c?.markAsTouched();
+  }
+
   async save() {
-    if (this.form.invalid || this.loading()) return;
+    if (this.form.invalid || this.loading()) {
+      this.form.markAllAsTouched();
+      return;
+    }
     const response = await this.store.create({ ...this.formValue() });
     if (response) {
       const msg = this.store.message() as string;

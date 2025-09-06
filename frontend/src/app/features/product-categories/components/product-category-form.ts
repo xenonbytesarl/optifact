@@ -15,8 +15,12 @@ export interface CategoryFormValue {
   imports: [CommonModule, TranslatePipe, InputTextComponent, FormFieldComponent, ReactiveFormsModule],
   template: `
     <form class="flex flex-col gap-3">
-      <app-form-field [label]="('productCategories.fields.name' | t)" [required]="true">
-        <app-input [disabled]="disabled()" [value]="value().name" (valueChange)="onName($event)" />
+      <app-form-field
+        [label]="('productCategories.fields.name' | t)"
+        [required]="true"
+        [error]="nameRequiredError() ? ('validation.required' | t) : null"
+      >
+        <app-input [disabled]="disabled()" [value]="value().name" (valueChange)="onName($event)" (blurred)="blur.emit()" />
       </app-form-field>
     </form>
   `,
@@ -24,9 +28,13 @@ export interface CategoryFormValue {
 })
 export class ProductCategoryFormComponent {
   disabled = input<boolean>(false);
+  // Flag from parent to indicate whether to show the required error for name
+  nameRequiredError = input<boolean>(false);
+
   value = model<CategoryFormValue>({ name: '' });
   submit = output<CategoryFormValue>();
   cancel = output<void>();
+  blur = output<void>();
 
   onName(v: string | null) {
     const name = (v ?? '').toString();
