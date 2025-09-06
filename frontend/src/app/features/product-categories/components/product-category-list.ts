@@ -3,22 +3,21 @@ import { CommonModule } from '@angular/common';
 import { ProductCategory } from '../../../core/api/product-categories.api';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { IconComponent } from '../../../shared/ui/icon';
-import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { TranslateService } from '../../../core/i18n/translate.service';
 import { TableComponent } from '../../../shared/ui/table';
 
 @Component({
   selector: 'app-product-category-list',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, IconComponent, TranslatePipe, TableComponent],
+  imports: [CommonModule, ButtonComponent, IconComponent, TableComponent, IconComponent],
   template: `
     <app-table [rows]="items()" [columns]="columns">
       <ng-template #actions let-row>
-        <app-button size="sm" shadow="none" variant="ghost" (click)="edit.emit(row)">
-          <app-icon name="edit" class="mr-1"></app-icon>{{ 'actions.edit' | t }}
+        <app-button size="sm" shadow="none" variant="ghost" (click)="edit.emit(row.id)">
+          <app-icon name="edit" class="mr-1"></app-icon>
         </app-button>
-        <app-button size="sm" shadow="none" variant="ghost" (click)="remove.emit(row)">
-          <app-icon name="delete" class="mr-1"></app-icon>
+        <app-button size="sm"  shadow="none" variant="ghost" (click)="remove.emit(row.id)">
+          <app-icon name="delete"  class="mr-1 text-red-600"></app-icon>
         </app-button>
       </ng-template>
     </app-table>
@@ -27,8 +26,8 @@ import { TableComponent } from '../../../shared/ui/table';
 })
 export class ProductCategoryListComponent {
   items = input.required<ProductCategory[]>();
-  edit = output<ProductCategory>();
-  remove = output<ProductCategory>();
+  edit = output<string>();
+  remove = output<string>();
 
   constructor(private i18n: TranslateService) {}
 

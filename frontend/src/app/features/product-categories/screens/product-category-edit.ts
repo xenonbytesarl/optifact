@@ -5,11 +5,12 @@ import { ProductCategoriesStore, provideCategoriesStore } from '../product-categ
 import { ProductCategoryFormComponent, CategoryFormValue } from '../components/product-category-form';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
+import { SpinnerComponent } from '../../../shared/ui/spinner';
 
 @Component({
   selector: 'app-product-category-edit-page',
   standalone: true,
-  imports: [CommonModule, ProductCategoryFormComponent, ActionBarComponent, CardComponent],
+  imports: [CommonModule, ProductCategoryFormComponent, ActionBarComponent, CardComponent, SpinnerComponent],
   providers: [provideCategoriesStore()],
   template: `
     <app-action-bar
@@ -21,7 +22,10 @@ import { CardComponent } from '../../../shared/ui/card';
       (saveClicked)="save()"
     />
 
-    <div class="p-4 flex flex-col gap-4">
+    <div class="p-4 flex flex-col gap-4 relative">
+      @if (store.loading()) {
+        <app-spinner [overlay]="true" />
+      }
       <app-card>
         <app-product-category-form [value]="formValue()" (valueChange)="formValue.set($event)" (submit)="save($event)" (cancel)="goBack()" />
       </app-card>

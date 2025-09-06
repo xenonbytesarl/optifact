@@ -4,17 +4,22 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 import { ProductCategoriesStore, provideCategoriesStore } from '../product-categories.store';
-import { ProductCategoriesApi } from '../../../core/api/product-categories.api';
+import {ProductCategoriesApi, ProductCategory} from '../../../core/api/product-categories.api';
+import { SpinnerComponent } from '../../../shared/ui/spinner';
+import {SuccessApiResponse} from '../../../core/model/response.model';
 
 @Component({
   selector: 'app-product-category-view-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, RouterLink],
+  imports: [CommonModule, ActionBarComponent, CardComponent, RouterLink, SpinnerComponent],
   providers: [provideCategoriesStore()],
   template: `
     <app-action-bar [disableNew]="false" [disableEdit]="false" [disableCancel]="true" [disableSave]="true" />
 
-    <div class="p-4 space-y-4">
+    <div class="p-4 space-y-4 relative">
+      @if (store.loading()) {
+        <app-spinner [overlay]="true" />
+      }
       <app-card>
         <div class="grid gap-4 md:grid-cols-2">
           <div>
@@ -47,9 +52,14 @@ export class ProductCategoryViewPage {
   constructor() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      // try load single item for accuracy
-      this.api.get(id).then((c) => this.store.setCurrent(c)).catch(() => {
-        // fallback: ensure list exists and try find in list (optional)
+      // try to load single item for accuracy
+      this.api.get(id).then((c) => {
+        if(c.success) {
+          const payload = c as SuccessApiResponse<ProductCategory>;
+          return this.store.setCurrent(payload.data.content);
+        }
+      }).catch(() => {
+        // fallback: ensure a list exists and try to find in list (optional)
         this.store.loadAll();
       });
     }

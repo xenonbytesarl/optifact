@@ -1,6 +1,7 @@
 import { computed, inject } from '@angular/core';
 import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
-import { ProductCategoriesApi, ProductCategory } from '../../core/api/product-categories.api';
+import {Page, ProductCategoriesApi, ProductCategory} from '../../core/api/product-categories.api';
+import {SuccessApiResponse} from '../../core/model/response.model';
 
 export interface ProductCategoriesState {
   categories: ProductCategory[];
@@ -24,7 +25,8 @@ export const ProductCategoriesStore = signalStore(
   withComputed(({ categories, search, loading }) => ({
     filtered: computed(() => {
       const q = (search() || '').toLowerCase();
-      return categories().filter(c => c.name?.toLowerCase().includes(q));
+      const list = Array.isArray(categories()) ? categories() : [];
+      return list.filter(c => c.name?.toLowerCase().includes(q));
     }),
     canSave: computed(() => {
       // name required, at least 1 char, and not loading
@@ -43,9 +45,14 @@ export const ProductCategoriesStore = signalStore(
       },
       async loadAll() {
         patchState(store, { loading: true, error: null });
+        console.log('loadAll');
         try {
-          const data = await api.list();
-          patchState(store, { categories: data ?? [] });
+          const response = await api.list();
+          if(response.success) {
+            const payload = response as SuccessApiResponse<Page<ProductCategory>>;
+            patchState(store, { categories: payload.data.content.elements ?? [] });
+          }
+
         } catch (e: any) {
           patchState(store, { error: e?.message ?? 'Erreur de chargement' });
         } finally {
@@ -55,11 +62,12 @@ export const ProductCategoriesStore = signalStore(
       async create(payload: Partial<ProductCategory>) {
         patchState(store, { loading: true, error: null });
         try {
-          const created = await api.create(payload);
-          if (created) {
-            patchState(store, { categories: [created, ...store.categories()] });
+          const response = await api.create(payload);
+          if (response) {
+            const payload = response as SuccessApiResponse<ProductCategory>;
+            patchState(store, { categories: [payload.data.content, ...store.categories()] });
           }
-          return created;
+          return response.data.content;
         } catch (e: any) {
           patchState(store, { error: e?.message ?? 'Erreur de création' });
           throw e;
@@ -70,13 +78,14 @@ export const ProductCategoriesStore = signalStore(
       async update(id: string, payload: Partial<ProductCategory>) {
         patchState(store, { loading: true, error: null });
         try {
-          const updated = await api.update(id, payload);
-          if (updated) {
+          const response = await api.update(id, payload);
+          if (response) {
+            const payload = response as SuccessApiResponse<ProductCategory>;
             patchState(store, {
-              categories: store.categories().map(c => c.id === id ? updated : c)
+              categories: store.categories().map(c => c.id === id ? payload.data.content : c)
             });
           }
-          return updated;
+          return response.data.content;
         } catch (e: any) {
           patchState(store, { error: e?.message ?? 'Erreur de mise à jour' });
           throw e;
