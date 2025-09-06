@@ -5,6 +5,7 @@ import fr.xenonbyte.optifact.backend.domain.common.entity.BaseEntity;
 import fr.xenonbyte.optifact.backend.domain.product.product.message.ProductMessage;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
@@ -23,7 +24,7 @@ public final class Product extends BaseEntity {
     private final ProductType type;
     private final Double rate;
     private final BigDecimal amount; // optional
-    private final String currency; // optional (ISO code like "EUR", "USD")
+    private final Currency currency; // optional (ISO code like "EUR", "USD")
     private final String description; // optional
     private final Boolean active;
 
@@ -34,7 +35,7 @@ public final class Product extends BaseEntity {
                    ProductType type,
                    Double rate,
                    BigDecimal amount,
-                   String currency,
+                   Currency currency,
                    String description,
                    Boolean active) {
         this.id = id;
@@ -49,14 +50,14 @@ public final class Product extends BaseEntity {
         this.active = active;
     }
 
-    public Product create(String code,
-                          String name,
-                          UUID categoryId,
-                          ProductType type,
-                          Double rate,
-                          BigDecimal amount,
-                          String currency,
-                          String description) {
+    public static Product create(String code,
+                                 String name,
+                                 UUID categoryId,
+                                 ProductType type,
+                                 Double rate,
+                                 BigDecimal amount,
+                                 Currency currency,
+                                 String description) {
         validateParams(code, name, categoryId, type, rate, amount);
         return new Product(
                 randomUUID(),
@@ -66,7 +67,32 @@ public final class Product extends BaseEntity {
                 type,
                 rate,
                 normalizeAmount(amount),
-                normalizeCurrency(currency),
+                currency,
+                normalizeDescription(description),
+                true
+        );
+    }
+
+    public static Product create(
+              UUID id,
+              String code,
+              String name,
+              UUID categoryId,
+              ProductType type,
+              Double rate,
+              BigDecimal amount,
+              Currency currency,
+              String description) {
+        validateParams(code, name, categoryId, type, rate, amount);
+        return new Product(
+                id,
+                code.trim(),
+                name.trim(),
+                categoryId,
+                type,
+                rate,
+                normalizeAmount(amount),
+                currency,
                 normalizeDescription(description),
                 true
         );
@@ -78,10 +104,10 @@ public final class Product extends BaseEntity {
                           ProductType type,
                           Double rate,
                           BigDecimal amount,
-                          String currency,
+                          Currency currency,
                           String description) {
         validateParams(code, name, categoryId, type, rate, amount);
-        Product product = new Product(id, code.trim(), name.trim(), categoryId, type, rate, normalizeAmount(amount), normalizeCurrency(currency), normalizeDescription(description), true);
+        Product product = new Product(id, code.trim(), name.trim(), categoryId, type, rate, normalizeAmount(amount), currency, normalizeDescription(description), true);
         product.updateAudit(createdAt);
         return product;
     }
@@ -92,7 +118,7 @@ public final class Product extends BaseEntity {
         return product;
     }
 
-    private void validateParams(String code,
+    private static void validateParams(String code,
                                 String name,
                                 UUID categoryId,
                                 ProductType type,
@@ -123,10 +149,6 @@ public final class Product extends BaseEntity {
         return amount == null ? null : amount.stripTrailingZeros();
     }
 
-    private static String normalizeCurrency(String currency) {
-        return currency == null ? null : currency.trim();
-    }
-
     private static String normalizeDescription(String description) {
         return description == null ? null : description.trim();
     }
@@ -155,7 +177,7 @@ public final class Product extends BaseEntity {
         return amount;
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
     }
 
