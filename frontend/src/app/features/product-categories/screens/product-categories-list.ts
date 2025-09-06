@@ -125,7 +125,7 @@ export class ProductCategoriesListPage {
     // Show success toast after deletion
 
     if(response) {
-      const msg = this.store.message() || this.i18n.t('common.deleted');
+      const msg = this.store.message() as string;
       this.toast.success(msg);
       // refresh the table
       this.sortDirection = Direction.ASC;

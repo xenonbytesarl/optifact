@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 import { productCategoryStore } from '../product-category.store';
@@ -12,7 +12,7 @@ import { SpinnerComponent } from '../../../shared/ui/spinner';
   standalone: true,
   imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent],
   template: `
-    <app-action-bar [disableNew]="false" [disableEdit]="false" [disableCancel]="true" [disableSave]="true" />
+    <app-action-bar [showCancel]="false" [showSave]="false" (newClicked)="goNew()" (editClicked)="goEdit()" />
 
     <div class="p-4 space-y-4 relative">
       @if (loading()) {
@@ -34,10 +34,19 @@ export class ProductCategoryViewPage {
   readonly store = inject(productCategoryStore);
   readonly api = inject(ProductCategoriesApi);
   readonly route = inject(ActivatedRoute);
+  readonly router = inject(Router);
 
   loading = computed(() => this.store.loading());
   name = computed(() => this.store.current()?.name ?? '');
   id = computed(() => this.store.current()?.id ?? '');
 
   constructor() {}
+
+  goNew() {
+    this.router.navigate(['/product-categories', 'new']);
+  }
+
+  goEdit() {
+    this.router.navigate(['/product-categories', this.id(), 'edit']);
+  }
 }
