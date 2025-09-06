@@ -37,7 +37,7 @@ import { COUNTRIES } from './countries.data';
             (keydown)="onKeydown($event)"
             (paste)="onPaste($event)"
             (blur)="onBlur()"
-            class="w-full h-11  border border-l-0 border-token bg-surface text-fg placeholder-muted px-3 text-base outline-none focus:ring-1 ring-primary shadow-sm"
+            [class]="inputClass()"
           />
         </div>
         @if (incomplete()) {
@@ -52,6 +52,7 @@ export class InputPhoneComponent {
   placeholder = input<string>('');
   countryPlaceholder = input<string>('Pays');
   disabled = input<boolean>(false);
+  error = input<boolean>(false);
   autoFormat = input<boolean>(true);
   showFlag = input<boolean>(true);
   inlineFlag = input<boolean>(true);
@@ -93,6 +94,15 @@ export class InputPhoneComponent {
     const len = this.comparableDigits().length;
     return len > 0 && len < max;
   });
+
+  inputClass() {
+    const base = 'w-full h-11 border border-l-0 bg-surface text-fg placeholder-muted px-3 text-base outline-none shadow-sm';
+    const normal = 'border-token focus:ring-1 ring-primary';
+    const danger = 'border-red-500 focus:ring-1 ring-red-500';
+    const disabled = this.disabled() ? ' opacity-60 cursor-not-allowed' : '';
+    const isError = this.error() || this.incomplete();
+    return [base, isError ? danger : normal].join(' ') + disabled;
+  }
   errorMessage = computed(() => {
     const max = this.maxDigits();
     const count = this.comparableDigits().length;
