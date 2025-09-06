@@ -19,10 +19,10 @@ import {DirectionType} from '../../../core/model/direction.enum';
       [sortDir]="sortDir()"
       (sortChange)="onSortChange($event)">
       <ng-template #actions let-row>
-        <app-button size="sm" shadow="none" variant="ghost" (click)="edit.emit(row.id)">
+        <app-button size="sm" shadow="none" variant="ghost" (clicked)="edit.emit(row.id)">
           <app-icon name="edit" class="mr-1"></app-icon>
         </app-button>
-        <app-button size="sm"  shadow="none" variant="ghost" (click)="remove.emit(row.id)">
+        <app-button size="sm"  shadow="none" variant="ghost" (clicked)="remove.emit(row.id)">
           <app-icon name="delete"  class="mr-1 text-red-600"></app-icon>
         </app-button>
       </ng-template>
