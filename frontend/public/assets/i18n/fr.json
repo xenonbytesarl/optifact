@@ -146,5 +146,8 @@
       "product": "Supprimer ce produit ?",
       "productCategory": "Supprimer cette catégorie ?"
     }
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire."
   }
 }

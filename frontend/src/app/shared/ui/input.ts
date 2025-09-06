@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, input, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,7 +11,8 @@ import { CommonModule } from '@angular/common';
            [disabled]="disabled()"
            [value]="value() ?? ''"
            (input)="onInput($event)"
-           class="w-full h-11  border border-token bg-surface text-fg placeholder-muted px-3 text-base outline-none focus:ring-1 ring-primary shadow-sm" />
+           (blur)="onBlur()"
+           [class]="inputClass()" />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -20,9 +21,14 @@ export class InputTextComponent {
   placeholder = input<string>('');
   disabled = input<boolean>(false);
   value = model<string | null>(null);
+  blurred = output<void>();
 
   onInput(e: Event) {
     const target = e.target as HTMLInputElement;
     this.value.set(target.value);
+  }
+
+  onBlur() {
+    this.blurred.emit();
   }
 }
