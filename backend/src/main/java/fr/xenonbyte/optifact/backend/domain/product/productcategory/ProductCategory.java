@@ -32,13 +32,8 @@ public final class ProductCategory extends BaseEntity {
         return new ProductCategory(randomUUID(), name, true);
     }
 
-    private static void validateParam(String name) {
-        if(name == null || name.isBlank()) {
-            throw new IllegalArgumentException(ProductCategoryMessage.PRODUCT_CATEGORY_NAME_REQUIRED);
-        }
-    }
-
     public static ProductCategory create(UUID id, ZonedDateTime createdAt, ZonedDateTime updatedAt, String name, Boolean active) {
+        validateParam(name);
         ProductCategory productCategory = new ProductCategory(id, name, active);
         productCategory.updateAudit(createdAt, updatedAt);
         return productCategory;
@@ -63,5 +58,11 @@ public final class ProductCategory extends BaseEntity {
 
     public Boolean getActive() {
         return active;
+    }
+
+    private static void validateParam(String name) {
+        if(name == null || name.isBlank()) {
+            throw new IllegalArgumentException(ProductCategoryMessage.PRODUCT_CATEGORY_NAME_REQUIRED);
+        }
     }
 }

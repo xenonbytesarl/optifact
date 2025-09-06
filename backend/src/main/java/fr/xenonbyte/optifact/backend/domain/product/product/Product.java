@@ -130,4 +130,40 @@ public final class Product extends BaseEntity {
     private static String normalizeDescription(String description) {
         return description == null ? null : description.trim();
     }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public UUID getCategoryId() {
+        return categoryId;
+    }
+
+    public ProductType getType() {
+        return type;
+    }
+
+    public Double getRate() {
+        return rate;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
 }
