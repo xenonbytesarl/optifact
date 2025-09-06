@@ -1,13 +1,11 @@
-import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import { productCategoryStore } from '../product-category.store';
-import { ProductCategoryFormComponent, CategoryFormValue } from '../components/product-category-form';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ProductCategoryFormComponent } from '../components/product-category-form';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 import { SpinnerComponent } from '../../../shared/ui/spinner';
-import {ToastService} from '../../../shared/ui/toast';
+import { useProductCategoryScreen } from './product-category-screen.util';
 
 @Component({
   selector: 'app-product-category-new-page',
@@ -40,68 +38,16 @@ import {ToastService} from '../../../shared/ui/toast';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ProductCategoryNewPage {
-  readonly store = inject(productCategoryStore);
-  readonly router = inject(Router);
-  readonly fb = inject(FormBuilder);
-  readonly toast = inject(ToastService);
+  ui = useProductCategoryScreen();
 
-  form: FormGroup;
+  get form() { return this.ui.form; }
+  get formValue() { return this.ui.formValue; }
+  get loading() { return this.ui.loading; }
 
-  formValue = signal<CategoryFormValue>({ name: '' });
-  loading = computed(() => this.store.loading());
+  nameHasError() { return this.ui.nameHasError(); }
+  onValueChange(v: any) { return this.ui.onValueChange(v); }
+  onNameBlur() { return this.ui.onNameBlur(); }
 
-
-  constructor() {
-    this.form = this.fb.group({
-      name: ['', [Validators.required]]
-    });
-  }
-
-  nameHasError() {
-    const c = this.form.get('name');
-    return !!c && c.invalid && (c.dirty || c.touched);
-  }
-
-  onValueChange(categoryFormValue: CategoryFormValue) {
-    this.formValue.set(categoryFormValue);
-    this.form.patchValue({
-      name: categoryFormValue.name
-    });
-  }
-
-  onNameBlur() {
-    const c = this.form.get('name');
-    c?.markAsTouched();
-  }
-
-  async save() {
-    if (this.form.invalid || this.loading()) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    const response = await this.store.create({ ...this.formValue() });
-    if (response) {
-      const msg = this.store.message() as string;
-      this.toast.success(msg);
-      this.router.navigate(['/product-categories', this.store.current()?.id]);
-    } else {
-      const msg = this.store.error() as string;
-      this.toast.error(msg);
-    }
-  }
-
-  resetForm() {
-    this.store.resetForm();
-    this.formValue.set({ name: '' });
-    this.form.patchValue({
-      name: ''
-    });
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
-  }
-
-  goBack() {
-    this.resetForm()
-    this.router.navigate(['/product-categories', 'list']);
-  }
+  save() { return this.ui.saveNew(); }
+  goBack() { return this.ui.goBack(); }
 }
