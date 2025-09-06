@@ -22,8 +22,10 @@ import { CommonModule } from '@angular/common';
                 <th class="p-2 w-10">
                   <input type="checkbox"
                     [checked]="allSelected()"
+                    [indeterminate]="someSelected()"
                     (change)="toggleAll($any($event.target).checked)"
                     [attr.aria-checked]="someSelected() && !allSelected() ? 'mixed' : null"
+                    class="size-4 accent-primary border-gray-300 focus:outline-none  focus:ring-primary"
                     #master>
                 </th>
               }
@@ -43,7 +45,7 @@ import { CommonModule } from '@angular/common';
                 </th>
               }
               @if (hasActions()) {
-                <th class="text-right p-2">Actions</th>
+                <th class="text-right p-2"></th>
               }
             </tr>
           </thead>
@@ -59,7 +61,9 @@ import { CommonModule } from '@angular/common';
                     <td class="p-2 w-10 text-center">
                       <input type="checkbox"
                         [checked]="isSelected(row)"
-                        (change)="toggleRow(row, $any($event.target).checked)">
+                        (change)="toggleRow(row, $any($event.target).checked)"
+                        class=" size-4 accent-primary border-gray-300 focus:outline-none  focus:ring-primary"
+                      >
                     </td>
                   }
                   @for (col of columns(); track col.key) {
