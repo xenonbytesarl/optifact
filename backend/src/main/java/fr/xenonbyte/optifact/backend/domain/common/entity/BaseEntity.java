@@ -27,6 +27,11 @@ public abstract class BaseEntity {
         this.createdAt = createdAt;
     }
 
+    protected void updateAudit(ZonedDateTime createdAt, ZonedDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+        this.createdAt = createdAt;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -38,4 +43,6 @@ public abstract class BaseEntity {
     public ZonedDateTime getUpdatedAt() {
         return updatedAt;
     }
+
+
 }

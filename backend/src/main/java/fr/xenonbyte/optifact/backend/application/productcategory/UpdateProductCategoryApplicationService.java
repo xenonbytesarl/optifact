@@ -7,6 +7,7 @@ import fr.xenonbyte.optifact.backend.application.productcategory.port.out.Produc
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.product.productcategory.ProductCategory;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -32,7 +33,9 @@ public final class UpdateProductCategoryApplicationService implements UpdateProd
     public ProductCategory updateProductCategory(UUID categoryId, ProductCategory productCategory) {
         LOGGER.info("Updating product category with id: '" + categoryId + "'");
 
-        if(Boolean.FALSE.equals(repository.existById(categoryId))) {
+        Optional<ProductCategory> optional = repository.findById(categoryId);
+
+        if(optional.isEmpty()) {
             throw new ProductCategoryIdNotFoundException(categoryId);
         }
 
@@ -40,7 +43,10 @@ public final class UpdateProductCategoryApplicationService implements UpdateProd
             throw new ProductCategoryNameConflictException(productCategory.getName());
         }
 
-        productCategory = repository.save(productCategory);
+        ProductCategory existing = optional.get();
+        existing = existing.update(productCategory.getName());
+
+        productCategory = repository.save(existing);
 
         LOGGER.info("Product category updated successfully with id: '" + productCategory.getId() + "'");
 

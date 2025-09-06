@@ -34,7 +34,7 @@ public class ProductCategoryRepositoryAdapterJpa implements ProductCategoryRepos
 
     @Override
     public ProductCategory save(ProductCategory productCategory) {
-        return mapperJpa.toDomain(mapperJpa.toJpa(productCategory));
+        return mapperJpa.toDomain(repositoryJpa.save(mapperJpa.toJpa(productCategory)));
     }
 
     @Override
