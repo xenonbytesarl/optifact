@@ -40,7 +40,10 @@ export class ProductCategoryEditPage {
   editedId = signal<string>('');
   formValue = signal<CategoryFormValue>({ name: '' });
 
-  constructor() {}
+  constructor() {
+    const id = this.route.snapshot.paramMap.get('id') ?? '';
+    this.editedId.set(id);
+  }
 
   async save(v?: CategoryFormValue) {
     const id = this.editedId();
@@ -52,6 +55,6 @@ export class ProductCategoryEditPage {
 
   goBack() {
     // navigate deterministically to the list under the same feature shell
-    this.router.navigate(['../list']);
+    this.router.navigate(['/product-categories/list']);
   }
 }

@@ -64,7 +64,7 @@ export class ProductsListPage {
     this.store.loadAll();
   }
 
-  goEdit(id: string) { this.router.navigate(['../', id, 'edit']); }
+  goEdit(id: string) { this.router.navigate(['/products', id, 'edit']); }
 
   goNew() { this.router.navigate(['../new']); }
 
