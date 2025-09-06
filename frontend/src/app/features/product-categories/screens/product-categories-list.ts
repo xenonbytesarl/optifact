@@ -50,6 +50,7 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../../core/constant/con
       <app-card>
         <app-product-category-list
           [items]="store.categoryPage().elements"
+          (view)="goView($event)"
           (edit)="goEdit($event)"
           (remove)="remove($event)"
           (sort)="onSort($event)"
@@ -108,7 +109,13 @@ export class ProductCategoriesListPage {
   }
 
   goEdit(id: string) {
-    this.router.navigate(['../', id, 'edit']);
+    // navigate to an absolute feature path to avoid relative routing issues causing NG04002
+    this.router.navigate(['/product-categories', id, 'edit']);
+  }
+
+  goView(id: string) {
+    // navigate to an absolute feature path to avoid relative routing issues causing NG04002
+    this.router.navigate(['/product-categories', id]);
   }
 
   async remove(id: string) {

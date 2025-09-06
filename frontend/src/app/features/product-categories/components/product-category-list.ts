@@ -19,6 +19,9 @@ import {DirectionType} from '../../../core/model/direction.enum';
       [sortDir]="sortDir()"
       (sortChange)="onSortChange($event)">
       <ng-template #actions let-row>
+        <app-button size="sm" shadow="none" variant="ghost" (clicked)="view.emit(row.id)">
+          <app-icon name="visibility" class="mr-1"></app-icon>
+        </app-button>
         <app-button size="sm" shadow="none" variant="ghost" (clicked)="edit.emit(row.id)">
           <app-icon name="edit" class="mr-1"></app-icon>
         </app-button>
@@ -32,6 +35,7 @@ import {DirectionType} from '../../../core/model/direction.enum';
 })
 export class ProductCategoryListComponent {
   items = input.required<ProductCategory[]>();
+  view = output<string>();
   edit = output<string>();
   remove = output<string>();
 
