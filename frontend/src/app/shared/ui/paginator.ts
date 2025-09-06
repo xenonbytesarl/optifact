@@ -18,7 +18,7 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../core/constant/consta
       <!-- Left: page size selector (list déroulante) -->
       <div class="flex items-center gap-2 order-2 sm:order-1">
         <label class="text-sm text-gray-600">{{ 'paginator.perPage' | t }}</label>
-        <select class="border-1 border-neutral-100 px-2 py-1 text-sm"
+        <select class="px-2 py-1 text-sm shadow-sm border border-transparent focus:outline-none focus:ring-1 focus:ring-neutral-300 bg-white dark:bg-neutral-800"
                 [value]="pageSize()"
                 (change)="onPageSizeChange($any($event.target).value)">
           @for (s of pageSizes(); track s) {
@@ -34,17 +34,17 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../core/constant/consta
       <!-- Right: range text + controls -->
       <div class="flex items-center justify-between sm:justify-end gap-2 order-1 sm:order-2">
         <div class="flex items-center gap-1">
-          <button class="px-2 py-1 border-1 border-neutral-100  disabled:opacity-50" [disabled]="page() === 1" (click)="goFirst()" [attr.aria-label]="'paginator.first' | t">
+          <button class="px-2 py-1  bg-neutral-100/70 dark:bg-neutral-700/40 hover:bg-neutral-200/60 dark:hover:bg-neutral-700 disabled:opacity-50" [disabled]="page() === 1" (click)="goFirst()" [attr.aria-label]="'paginator.first' | t">
             «
           </button>
-          <button class="px-2 py-1 border-1 border-neutral-100  disabled:opacity-50" [disabled]="page() === 1" (click)="prev()" [attr.aria-label]="'paginator.prev' | t">
+          <button class="px-2 py-1  bg-neutral-100/70 dark:bg-neutral-700/40 hover:bg-neutral-200/60 dark:hover:bg-neutral-700 disabled:opacity-50" [disabled]="page() === 1" (click)="prev()" [attr.aria-label]="'paginator.prev' | t">
             ‹
           </button>
           <span class="px-2 text-sm">{{ 'paginator.pageXofY' | t: { page: page(), total: totalPages() } }}</span>
-          <button class="px-2 py-1 border-1 border-neutral-100  disabled:opacity-50" [disabled]="page() >= totalPages()" (click)="next()" [attr.aria-label]="'paginator.next' | t">
+          <button class="px-2 py-1  bg-neutral-100/70 dark:bg-neutral-700/40 hover:bg-neutral-200/60 dark:hover:bg-neutral-700 disabled:opacity-50" [disabled]="page() >= totalPages()" (click)="next()" [attr.aria-label]="'paginator.next' | t">
             ›
           </button>
-          <button class="px-2 py-1 border-1 border-neutral-100  disabled:opacity-50" [disabled]="page() >= totalPages()" (click)="goLast()" [attr.aria-label]="'paginator.last' | t">
+          <button class="px-2 py-1  bg-neutral-100/70 dark:bg-neutral-700/40 hover:bg-neutral-200/60 dark:hover:bg-neutral-700 disabled:opacity-50" [disabled]="page() >= totalPages()" (click)="goLast()" [attr.aria-label]="'paginator.last' | t">
             »
           </button>
         </div>
@@ -55,7 +55,8 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../core/constant/consta
 })
 export class PaginatorComponent {
   total = input<number>(0);
-  page = model<number>(DEFAULT_PAGE_NUMBER);
+  // Paginator uses 1-based page index for UI
+  page = model<number>(1);
   pageSize = model<number>(DEFAULT_PAGE_SIZE);
   pageSizes = input<number[]>([DEFAULT_PAGE_SIZE, 50, 100, 200]);
 
@@ -63,7 +64,7 @@ export class PaginatorComponent {
   pageSizeChange = output<number>();
 
   totalPages = computed(() => Math.max(1, Math.ceil(this.total() / this.pageSize())));
-  startIndex = computed(() => (this.page()) * this.pageSize());
+  startIndex = computed(() => (this.page() - 1) * this.pageSize());
   endIndex = computed(() => Math.min(this.startIndex() + this.pageSize(), this.total()));
 
   emit() { this.pageChange.emit(this.page()); }
@@ -78,10 +79,7 @@ export class PaginatorComponent {
     const size = Number(v) || this.pageSize();
     if (size !== this.pageSize()) {
       this.pageSize.set(size);
-      // Reposition page to 1 to avoid empty
-      this.page.set(1);
       this.emitSize();
-      this.emit();
     }
   }
 }
