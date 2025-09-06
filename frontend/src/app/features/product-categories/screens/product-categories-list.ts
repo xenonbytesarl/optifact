@@ -8,16 +8,20 @@ import { ProductCategoriesStore, provideCategoriesStore } from '../product-categ
 import { ProductCategoryListComponent } from '../components/product-category-list';
 import { CardComponent } from '../../../shared/ui/card';
 import { PaginatorComponent } from '../../../shared/ui/paginator';
+import { SpinnerComponent } from '../../../shared/ui/spinner';
 import {ConfirmDialogService} from '../../../shared/ui/confirm-dialog';
 import {TranslateService} from '../../../core/i18n/translate.service';
 
 @Component({
   selector: 'app-product-categories-list-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, ButtonComponent, IconComponent, TranslatePipe, ProductCategoryListComponent, CardComponent, PaginatorComponent],
+  imports: [CommonModule, RouterLink, ButtonComponent, IconComponent, TranslatePipe, ProductCategoryListComponent, CardComponent, PaginatorComponent, SpinnerComponent],
   providers: [provideCategoriesStore()],
   template: `
-    <div class="p-4">
+    <div class="p-4 relative">
+      @if (store.loading()) {
+        <app-spinner [overlay]="true" />
+      }
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'productCategories.title' | t }}</h2>
@@ -29,7 +33,7 @@ import {TranslateService} from '../../../core/i18n/translate.service';
           </button>
         </div>
 
-        <app-product-category-list [items]="paged()" (edit)="goEdit($event.id)" (remove)="remove($event.id)" />
+        <app-product-category-list [items]="paged()" (edit)="goEdit($event)" (remove)="remove($event)" />
         <app-paginator [total]="store.filtered().length" [(page)]="page" [(pageSize)]="pageSize" />
       </app-card>
     </div>
@@ -43,6 +47,7 @@ export class ProductCategoriesListPage {
   page = signal(1);
   pageSize = signal(10);
   paged = computed(() => {
+    console.log('paged', this.store.filtered().length);
     const list = this.store.filtered();
     const start = (this.page() - 1) * this.pageSize();
     return list.slice(start, start + this.pageSize());
@@ -53,6 +58,7 @@ export class ProductCategoriesListPage {
 
   constructor() {
     // load all when the list screen mounts
+    console.log('load all');
     this.store.loadAll();
   }
 

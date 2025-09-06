@@ -68,7 +68,7 @@ public class ProductCategoryRepositoryAdapterJpa implements ProductCategoryRepos
     private Specification<ProductCategoryJpa> addNativeStringFilter(String value, Specification<ProductCategoryJpa> spec) {
 
         if(value != null && !value.isBlank()) {
-            spec.and((root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + value.toLowerCase() + "%"));
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + value.toLowerCase() + "%"));
         }
         return spec;
     }

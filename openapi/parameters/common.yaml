@@ -48,8 +48,8 @@ sortDirectionParam:
   description: Direction to sort in ("asc" or "desc"). Default is "asc".
   schema:
     type: string
-    enum: [asc, desc]
-    default: "asc"
+    enum: [ASC, DESC]
+    default: "ASC"
 
 searchParam:
   name: search
