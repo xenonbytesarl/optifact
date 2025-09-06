@@ -20,7 +20,7 @@ export interface CategoryFormValue {
         [required]="true"
         [error]="nameRequiredError() ? ('validation.required' | t) : null"
       >
-        <app-input [disabled]="disabled()" [value]="value().name" (valueChange)="onName($event)" (blurred)="blur.emit()" />
+        <app-input [disabled]="disabled()" [error]="nameRequiredError()" [value]="value().name" (valueChange)="onName($event)" (blurred)="blur.emit()" />
       </app-form-field>
     </form>
   `,

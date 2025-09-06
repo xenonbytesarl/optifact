@@ -20,8 +20,17 @@ export class InputTextComponent {
   type = input<'text' | 'email' | 'tel' | 'number' | 'search' | 'password'>('text');
   placeholder = input<string>('');
   disabled = input<boolean>(false);
+  error = input<boolean>(false);
   value = model<string | null>(null);
   blurred = output<void>();
+
+  inputClass() {
+    const base = 'w-full h-11 border bg-surface text-fg placeholder-muted px-3 text-base outline-none shadow-sm';
+    const normal = 'border-token focus:ring-1 ring-primary';
+    const danger = 'border-red-500 focus:ring-1 ring-red-500';
+    const disabled = this.disabled() ? ' opacity-60 cursor-not-allowed' : '';
+    return [base, this.error() ? danger : normal].join(' ') + disabled;
+  }
 
   onInput(e: Event) {
     const target = e.target as HTMLInputElement;

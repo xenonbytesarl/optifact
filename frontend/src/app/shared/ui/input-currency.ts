@@ -27,13 +27,14 @@ function parseNumberLoose(v: string): number | null {
            (input)="onInput($event)"
            (blur)="onBlur()"
            (focus)="onFocus()"
-           class="w-full h-11  border border-token bg-surface text-fg placeholder-muted px-3 text-base outline-none focus:ring-1 ring-primary shadow-sm" />
+           [class]="inputClass()" />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputCurrencyComponent {
   placeholder = input<string>('');
   disabled = input<boolean>(false);
+  error = input<boolean>(false);
   currency = input<string>('EUR');
   locale = input<string>('fr-FR');
   // By default, do not show decimals; can be enabled by consumer
@@ -47,6 +48,14 @@ export class InputCurrencyComponent {
   private rawText = signal<string>('');
 
   displayValue = signal<string>('');
+
+  inputClass() {
+    const base = 'w-full h-11 border bg-surface text-fg placeholder-muted px-3 text-base outline-none shadow-sm';
+    const normal = 'border-token focus:ring-1 ring-primary';
+    const danger = 'border-red-500 focus:ring-1 ring-red-500';
+    const disabled = this.disabled() ? ' opacity-60 cursor-not-allowed' : '';
+    return [base, this.error() ? danger : normal].join(' ') + disabled;
+  }
 
   decimalPattern() {
     // Accept digits with optional decimal separator
