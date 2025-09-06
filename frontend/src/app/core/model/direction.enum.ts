@@ -1,4 +1,6 @@
 export enum Direction {
   ASC = 'ASC',
-  DESC = 'DSC',
+  DESC = 'DESC',
 }
+
+export type DirectionType = 'ASC' | 'DESC';

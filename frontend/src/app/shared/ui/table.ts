@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, model, TemplateRef, viewChild, contentChild, effect, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model, TemplateRef, viewChild, contentChild, effect, computed, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /**
@@ -28,7 +28,19 @@ import { CommonModule } from '@angular/common';
                 </th>
               }
               @for (col of columns(); track col.key) {
-                <th [class]="'p-2 ' + headerAlignClass(col.align) + (col.headerClass ? ' ' + col.headerClass : '')">{{ col.header }}</th>
+                <th [class]="'p-2 select-none ' + headerAlignClass(col.align) + (col.headerClass ? ' ' + col.headerClass : '')">
+                  <button
+                    class="inline-flex items-center gap-1 disabled:opacity-60"
+                    [disabled]="!col.sortable"
+                    (click)="onHeaderClick(col)">
+                    <span>{{ col.header }}</span>
+                    @if (isActiveSort(col.key)) {
+                      <span class="material-symbols-outlined text-xs text-neutral-400 align-middle">
+                        {{ sortDir() === 'ASC' ? 'arrow_upward' : 'arrow_downward' }}
+                      </span>
+                    }
+                  </button>
+                </th>
               }
               @if (hasActions()) {
                 <th class="text-right p-2">Actions</th>
@@ -91,7 +103,7 @@ export class TableComponent {
   };
   // Config mode API
   rows = input<any[]>([]);
-  columns = input<{ key: string; header: string; template?: TemplateRef<any>; class?: string; headerClass?: string; align?: 'left' | 'center' | 'right' }[]>([]);
+  columns = input<{ key: string; header: string; template?: TemplateRef<any>; class?: string; headerClass?: string; align?: 'left' | 'center' | 'right'; sortable?: boolean }[]>([]);
   rowId = input<(row: any) => string | number | null | undefined>((row) => row?.id ?? row?.tempId ?? null);
   selectedIds = model<Set<string | number>>(new Set());
   selectable = input<boolean>(true);
@@ -101,6 +113,20 @@ export class TableComponent {
   actionsTemplateRef = contentChild<TemplateRef<any>>('actions');
 
   hasActions = computed(() => !!this.actionsTemplateRef() || this.columns().some(c => c.key === 'actions'));
+
+  // Sorting API
+  sortKey = input<string | null>(null);
+  sortDir = input<'ASC' | 'DESC'>('ASC');
+  sortChange = output<{ key: string; direction: 'ASC' | 'DESC' }>();
+
+  isActiveSort = (key: string) => this.sortKey() === key;
+
+  onHeaderClick(col: { key: string; sortable?: boolean }) {
+    if (!col.sortable) return;
+    const active = this.isActiveSort(col.key);
+    const nextDir: 'ASC' | 'DESC' = active ? (this.sortDir() === 'ASC' ? 'DESC' : 'ASC') : 'ASC';
+    this.sortChange.emit({ key: col.key, direction: nextDir });
+  }
   actionsTpl = computed(() => this.actionsTemplateRef() ?? this._emptyTpl);
 
   colCount = computed(() => this.columns().length + (this.selectable() ? 1 : 0) + (this.hasActions() ? 1 : 0));
