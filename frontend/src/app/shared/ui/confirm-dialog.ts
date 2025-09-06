@@ -9,7 +9,7 @@ import { TranslateService } from '../../core/i18n/translate.service';
   standalone: true,
   imports: [CommonModule, DialogComponent, ButtonComponent],
   template: `
-    <app-dialog [title]="titleText()" [(open)]="open" [backdropClosable]="false" (closed)="onCancel()">
+    <app-dialog [title]="titleText()" [(open)]="open" [backdropClosable]="false" [panelMaxWidth]="panelMaxWidth()">
       <div class="text-sm">
         {{ messageText() }}
       </div>
@@ -29,6 +29,8 @@ export class ConfirmDialogComponent {
   message = input<string>('');
   okLabel = input<string>('');
   cancelLabel = input<string>('');
+  // Optional: allow setting a fixed max width on the inner dialog panel, e.g. '480px'
+  panelMaxWidth = input<string | null>('360px');
 
   open = model<boolean>(false);
   decided = output<boolean>();
@@ -55,7 +57,7 @@ import { ApplicationRef, EnvironmentInjector, Injectable, createComponent } from
 export class ConfirmDialogService {
   constructor(private appRef: ApplicationRef, private injector: EnvironmentInjector) {}
 
-  open(options?: { title?: string; message?: string; okLabel?: string; cancelLabel?: string }): Promise<boolean> {
+  open(options?: { title?: string; message?: string; okLabel?: string; cancelLabel?: string; panelMaxWidth?: string }): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       const host = document.createElement('div');
       document.body.appendChild(host);
@@ -72,6 +74,7 @@ export class ConfirmDialogService {
       if (options?.message) cmpRef.setInput('message', options.message);
       if (options?.okLabel) cmpRef.setInput('okLabel', options.okLabel);
       if (options?.cancelLabel) cmpRef.setInput('cancelLabel', options.cancelLabel);
+      if (options?.panelMaxWidth) cmpRef.setInput('panelMaxWidth', options.panelMaxWidth);
       cmpRef.setInput('open', true);
 
       const sub = cmpRef.instance.decided.subscribe((val) => {
