@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
@@ -15,19 +15,17 @@ import { TranslateService } from '../../../core/i18n/translate.service';
 @Component({
   selector: 'app-products-list-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, ButtonComponent, IconComponent, TranslatePipe, ProductListComponent, CardComponent, PaginatorComponent],
+  imports: [CommonModule, ButtonComponent, IconComponent, TranslatePipe, ProductListComponent, CardComponent, PaginatorComponent],
   providers: [provideProductsStore(), provideCategoriesStore()],
   template: `
     <div class="p-4">
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'products.title' | t }}</h2>
-          <button routerLink="../new" class="inline-flex">
-            <app-button>
-              <app-icon name="add" class="mr-1"></app-icon>
-              {{ 'products.new' | t }}
-            </app-button>
-          </button>
+          <app-button (click)="goNew()">
+            <app-icon name="add" class="mr-1"></app-icon>
+            {{ 'products.new' | t }}
+          </app-button>
         </div>
 
         <app-product-list [items]="pagedItems()" (edit)="goEdit($event.id)" (remove)="remove($event.id)" />
@@ -67,6 +65,8 @@ export class ProductsListPage {
   }
 
   goEdit(id: string) { this.router.navigate(['../', id, 'edit']); }
+
+  goNew() { this.router.navigate(['../new']); }
 
   async remove(id: string) {
     const ok = await this.svc.open({ message: this.i18n.t('confirm.delete.product') });
