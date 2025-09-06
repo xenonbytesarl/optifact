@@ -43,12 +43,13 @@ export class ProductCategoryNewPage {
   readonly store = inject(productCategoryStore);
   readonly router = inject(Router);
   readonly fb = inject(FormBuilder);
+  readonly toast = inject(ToastService);
 
   form: FormGroup;
 
   formValue = signal<CategoryFormValue>({ name: '' });
   loading = computed(() => this.store.loading());
-  toast = inject(ToastService);
+
 
   constructor() {
     this.form = this.fb.group({

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Signal, computed, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export type ToastType = 'info' | 'success' | 'warning' | 'error';
@@ -28,9 +28,9 @@ export class ToastService {
     return id;
   }
 
-  info(msg: string, timeout = 3000) { return this.show(msg, 'info', timeout); }
-  success(msg: string, timeout = 3000) { return this.show(msg, 'success', timeout); }
-  warning(msg: string, timeout = 4000) { return this.show(msg, 'warning', timeout); }
+  info(msg: string, timeout = 5000) { return this.show(msg, 'info', timeout); }
+  success(msg: string, timeout = 5000) { return this.show(msg, 'success', timeout); }
+  warning(msg: string, timeout = 5000) { return this.show(msg, 'warning', timeout); }
   error(msg: string, timeout = 5000) { return this.show(msg, 'error', timeout); }
 
   dismiss(id: number) {
@@ -57,10 +57,14 @@ export class ToastService {
               {{ icon(t.type) }}
             </span>
           </div>
-          <div class="flex-1">
+          <div class="flex-1 pt-1">
             {{ t.message }}
           </div>
-          <button type="button" (click)="dismiss(t.id)" class="ml-2 text-xs text-muted hover:underline">Fermer</button>
+          <div class="pt-0.5">
+            <button type="button" (click)="dismiss(t.id)" class="ml-2 text-xs text-muted hover:underline">
+              <span class="material-symbols-outlined" [class.text-emerald-700]="t.type==='success'" [class.text-sky-700]="t.type==='info'" [class.text-amber-700]="t.type==='warning'" [class.text-rose-700]="t.type==='error'">cancel</span>
+            </button>
+          </div>
         </div>
       }
     </div>
