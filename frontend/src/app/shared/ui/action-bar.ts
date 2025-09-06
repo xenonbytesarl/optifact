@@ -14,22 +14,30 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
         <div class="h-14 flex items-center justify-between">
           <div class="font-medium text-sm md:text-base"></div>
           <div class="inline-flex items-center gap-2">
-            <app-button size="md" variant="primary" shadow="md" hoverShadow="base" [disabled]="disableNew()" (clicked)="newClicked.emit()">
-              <span class="material-symbols-outlined text-base">add</span>
-              <span class="hidden sm:inline">{{ 'actions.new' | t }}</span>
-            </app-button>
-            <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" [disabled]="disableEdit()" (clicked)="editClicked.emit()">
-              <span class="material-symbols-outlined text-base">edit</span>
-              <span class="hidden sm:inline">{{ 'actions.edit' | t }}</span>
-            </app-button>
-            <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" [disabled]="disableCancel()" (clicked)="cancelClicked.emit()">
-              <span class="material-symbols-outlined text-base">close</span>
-              <span class="hidden sm:inline">{{ 'actions.cancel' | t }}</span>
-            </app-button>
-            <app-button size="md" variant="primary" shadow="md" hoverShadow="base" [disabled]="disableSave()" (clicked)="saveClicked.emit()">
-              <span class="material-symbols-outlined text-base">save</span>
-              <span class="hidden sm:inline">{{ 'actions.save' | t }}</span>
-            </app-button>
+            @if(showNew()) {
+              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" [disabled]="disableNew()" (click)="newClicked.emit()">
+                <span class="material-symbols-outlined text-sm">add</span>
+                <span class="hidden sm:inline">{{ 'actions.new' | t }}</span>
+              </app-button>
+            }
+            @if(showEdit()) {
+              <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" [disabled]="disableEdit()" (click)="editClicked.emit()">
+                <span class="material-symbols-outlined text-sm">edit</span>
+                <span class="hidden sm:inline">{{ 'actions.edit' | t }}</span>
+              </app-button>
+            }
+            @if(showCancel()) {
+              <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" [disabled]="disableCancel()" (click)="cancelClicked.emit()">
+                <span class="material-symbols-outlined text-sm">close</span>
+                <span class="hidden sm:inline">{{ 'actions.cancel' | t }}</span>
+              </app-button>
+            }
+            @if(showSave()) {
+              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" [disabled]="disableSave()" (click)="saveClicked.emit()">
+                <span class="material-symbols-outlined text-sm">save</span>
+                <span class="hidden sm:inline">{{ 'actions.save' | t }}</span>
+              </app-button>
+            }
           </div>
         </div>
       </app-card>
@@ -42,6 +50,11 @@ export class ActionBarComponent {
   disableEdit = input<boolean>(false);
   disableCancel = input<boolean>(false);
   disableSave = input<boolean>(false);
+
+  showNew = input<boolean>(true);
+  showEdit = input<boolean>(true);
+  showCancel = input<boolean>(true);
+  showSave = input<boolean>(true)
 
   newClicked = output<void>();
   editClicked = output<void>();
