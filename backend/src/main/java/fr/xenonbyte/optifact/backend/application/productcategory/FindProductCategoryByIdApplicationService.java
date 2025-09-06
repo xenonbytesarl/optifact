@@ -31,7 +31,7 @@ public final class FindProductCategoryByIdApplicationService implements FindProd
     }
 
     @Override
-    public ProductCategory createProductCategory(UUID categoryId) {
+    public ProductCategory findProductCategoryById(UUID categoryId) {
         LOGGER.info("Find product category with id: '" + categoryId + "'" );
 
         ProductCategory productCategory = repository.findById(categoryId)

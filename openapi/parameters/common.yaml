@@ -1,0 +1,68 @@
+# Common parameters used across multiple API specifications
+
+# Path parameters
+idParam:
+  name: id
+  in: path
+  required: true
+  description: The unique identifier
+  schema:
+    type: string
+    format: uuid
+
+# Query parameters
+pageParam:
+  name: page
+  in: query
+  required: true
+  description: Page number (zero-based)
+  schema:
+    type: integer
+    default: 0
+    minimum: 0
+
+sizeParam:
+  name: size
+  in: query
+  required: true
+  description: Number of items per page
+  schema:
+    type: integer
+    default: 20
+    minimum: 1
+    maximum: 100
+
+sortFieldParam:
+  name: sortField
+  in: query
+  required: true
+  description: Field to sort by (e.g., "name", "createdAt"). Default is "id".
+  schema:
+    type: string
+    default: "id"
+
+sortDirectionParam:
+  name: sortDirection
+  in: query
+  required: true
+  description: Direction to sort in ("asc" or "desc"). Default is "asc".
+  schema:
+    type: string
+    enum: [asc, desc]
+    default: "asc"
+
+searchParam:
+  name: search
+  in: query
+  required: false
+  description: Search term to filter results
+  schema:
+    type: string
+
+accept-language:
+  name: Accept-Language
+  in: header
+  required: true
+  schema:
+    type: string
+    enum: [en, fr]
