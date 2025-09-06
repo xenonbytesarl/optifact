@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ProductCategoriesStore, provideCategoriesStore } from '../product-categories.store';
+import { productCategoryStore } from '../product-category.store';
 import { ProductCategoryFormComponent, CategoryFormValue } from '../components/product-category-form';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
@@ -11,7 +11,6 @@ import { SpinnerComponent } from '../../../shared/ui/spinner';
   selector: 'app-product-category-new-page',
   standalone: true,
   imports: [CommonModule, ProductCategoryFormComponent, ActionBarComponent, CardComponent, SpinnerComponent],
-  providers: [provideCategoriesStore()],
   template: `
     <app-action-bar
       [disableNew]="false"
@@ -34,7 +33,7 @@ import { SpinnerComponent } from '../../../shared/ui/spinner';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ProductCategoryNewPage {
-  readonly store = inject(ProductCategoriesStore);
+  readonly store = inject(productCategoryStore);
   private router = inject(Router);
   formValue = signal<CategoryFormValue>({ name: '' });
 

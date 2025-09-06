@@ -5,7 +5,7 @@ import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 import { ProductsStore, provideProductsStore } from '../products.store';
 import { ProductsApi } from '../../../core/api/products.api';
-import { ProductCategoriesStore, provideCategoriesStore } from '../../product-categories/product-categories.store';
+import { productCategoryStore, provideCategoriesStore } from '../../product-categories/product-category.store';
 
 @Component({
   selector: 'app-product-view-page',
@@ -59,7 +59,7 @@ import { ProductCategoriesStore, provideCategoriesStore } from '../../product-ca
 })
 export class ProductViewPage {
   readonly store = inject(ProductsStore);
-  readonly cats = inject(ProductCategoriesStore);
+  readonly categoryStore = inject(productCategoryStore);
   readonly api = inject(ProductsApi);
   readonly route = inject(ActivatedRoute);
 
@@ -72,7 +72,7 @@ export class ProductViewPage {
   categoryName = computed(() => {
     const cid = this.store.current()?.categoryId ?? null;
     if (!cid) return '';
-    const c = this.cats.categories().find(x => x.id === cid);
+    const c = this.categoryStore.categoryPage().elements.find(x => x.id === cid);
     return c?.name ?? '';
   });
 
@@ -80,7 +80,8 @@ export class ProductViewPage {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       // Load supporting categories for name resolution
-      this.cats.loadAll();
+      //TODO replace this line with product categories search resolver
+      // this.categoryStore.loadAll();
       // Load the product itself
       this.api.get(id).then((p) => this.store.setCurrent(p)).catch(() => {
         // fallback: ensure list exists (optional)

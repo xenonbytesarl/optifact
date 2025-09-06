@@ -5,7 +5,7 @@ import { ButtonComponent } from '../../../shared/ui/button';
 import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { ProductsStore, provideProductsStore } from '../products.store';
-import { ProductCategoriesStore, provideCategoriesStore } from '../../product-categories/product-categories.store';
+import { productCategoryStore, provideCategoriesStore } from '../../product-categories/product-category.store';
 import { ProductListComponent } from '../components/product-list';
 import { CardComponent } from '../../../shared/ui/card';
 import { PaginatorComponent } from '../../../shared/ui/paginator';
@@ -39,11 +39,11 @@ import { TranslateService } from '../../../core/i18n/translate.service';
 })
 export class ProductsListPage {
   readonly store = inject(ProductsStore);
-  readonly cats = inject(ProductCategoriesStore);
+  readonly categoryStore = inject(productCategoryStore);
   private router = inject(Router);
 
   items = computed(() => {
-    const categories = this.cats.categories();
+    const categories = this.categoryStore.categoryPage().elements ?? [];
     return this.store.filtered().map(p => ({
       ...p,
       categoryName: categories.find(c => c.id === p.categoryId)?.name
@@ -61,7 +61,8 @@ export class ProductsListPage {
   i18n = inject(TranslateService);
 
   constructor() {
-    this.cats.loadAll();
+    //TODO replace with product category search resolver
+    // this.categoryStore.loadAll();
     this.store.loadAll();
   }
 

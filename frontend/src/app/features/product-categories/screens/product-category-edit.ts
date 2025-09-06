@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductCategoriesStore, provideCategoriesStore } from '../product-categories.store';
+import { productCategoryStore } from '../product-category.store';
 import { ProductCategoryFormComponent, CategoryFormValue } from '../components/product-category-form';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
@@ -11,7 +11,6 @@ import { SpinnerComponent } from '../../../shared/ui/spinner';
   selector: 'app-product-category-edit-page',
   standalone: true,
   imports: [CommonModule, ProductCategoryFormComponent, ActionBarComponent, CardComponent, SpinnerComponent],
-  providers: [provideCategoriesStore()],
   template: `
     <app-action-bar
       [disableNew]="true"
@@ -33,22 +32,15 @@ import { SpinnerComponent } from '../../../shared/ui/spinner';
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class ProductCategoryEditPage implements OnInit {
-  readonly store = inject(ProductCategoriesStore);
+export class ProductCategoryEditPage {
+  readonly store = inject(productCategoryStore);
   readonly route = inject(ActivatedRoute);
   private router = inject(Router);
 
   editedId = signal<string>('');
   formValue = signal<CategoryFormValue>({ name: '' });
 
-  ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.editedId.set(id);
-      // ensure list is loaded to have context (optional)
-      this.store.loadAll();
-    }
-  }
+  constructor() {}
 
   async save(v?: CategoryFormValue) {
     const id = this.editedId();

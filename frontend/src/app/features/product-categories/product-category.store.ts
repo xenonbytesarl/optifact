@@ -1,60 +1,74 @@
 import { computed, inject } from '@angular/core';
 import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
-import {Page, ProductCategoriesApi, ProductCategory} from '../../core/api/product-categories.api';
-import {SuccessApiResponse} from '../../core/model/response.model';
+import {ProductCategoriesApi, ProductCategory, ProductCategorySortColumn} from '../../core/api/product-categories.api';
+import { SuccessApiResponse, Page } from '../../core/model/response.model';
+import {Direction} from '../../core/model/direction.enum';
+import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../core/constant/constant';
+
+
 
 export interface ProductCategoriesState {
-  categories: ProductCategory[];
+  categoryPage: Page<ProductCategory>;
+  column: ProductCategorySortColumn;
   current: ProductCategory | null;
-  search: string;
   loading: boolean;
   error: string | null;
 }
 
+let initialCategoryPage = {
+  elements: [],
+  totalElements: 0,
+  size: DEFAULT_PAGE_SIZE,
+  page: DEFAULT_PAGE_NUMBER,
+  totalPages: 0,
+  isFirst: true,
+  isLast: true
+};
 const initialState: ProductCategoriesState = {
-  categories: [],
+  categoryPage: initialCategoryPage,
+  column: 'name',
   current: null,
-  search: '',
   loading: false,
   error: null,
 };
 
-export const ProductCategoriesStore = signalStore(
+export const productCategoryStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ categories, search, loading }) => ({
-    filtered: computed(() => {
-      const q = (search() || '').toLowerCase();
-      const list = Array.isArray(categories()) ? categories() : [];
-      return list.filter(c => c.name?.toLowerCase().includes(q));
-    }),
-    canSave: computed(() => {
-      // name required, at least 1 char, and not loading
-      return !loading();
-    })
+  withComputed(({ categoryPage, column, loading }) => ({
   })),
   withMethods((store) => {
     const api = inject(ProductCategoriesApi);
 
     return {
-      setSearch(q: string) {
-        patchState(store, { search: q });
-      },
-      setCurrent(c: ProductCategory | null) {
-        patchState(store, { current: c });
-      },
-      async loadAll() {
+      async search(nameFilter: string, page: number, size: number, direction: Direction, sort: ProductCategorySortColumn) {
         patchState(store, { loading: true, error: null });
-        console.log('loadAll');
         try {
-          const response = await api.list();
+          const response = await api.search(nameFilter, page, size, direction, sort );
           if(response.success) {
             const payload = response as SuccessApiResponse<Page<ProductCategory>>;
-            patchState(store, { categories: payload.data.content.elements ?? [] });
+            patchState(store, {categoryPage: payload.data.content as any});
           }
-
+          return response.data.content;
         } catch (e: any) {
           patchState(store, { error: e?.message ?? 'Erreur de chargement' });
+          throw e;
+        } finally {
+          patchState(store, { loading: false });
+        }
+      },
+      async findById(categoryId: string) {
+        patchState(store, { loading: true, error: null });
+        try {
+          const response =  await api.get(categoryId);
+          if(response.success) {
+            const payload = response as SuccessApiResponse<ProductCategory>;
+            patchState(store, {current: payload.data.content ?? null });
+          }
+          return response.data.content;
+        } catch (e: any) {
+          patchState(store, { error: e?.message ?? 'Erreur de chargement' });
+          throw e;
         } finally {
           patchState(store, { loading: false });
         }
@@ -65,7 +79,11 @@ export const ProductCategoriesStore = signalStore(
           const response = await api.create(payload);
           if (response) {
             const payload = response as SuccessApiResponse<ProductCategory>;
-            patchState(store, { categories: [payload.data.content, ...store.categories()] });
+            patchState(store, {
+              categoryPage: {
+                ...store.categoryPage(),
+                elements: [payload.data.content, ...store.categoryPage().elements]
+              } });
           }
           return response.data.content;
         } catch (e: any) {
@@ -82,7 +100,10 @@ export const ProductCategoriesStore = signalStore(
           if (response) {
             const payload = response as SuccessApiResponse<ProductCategory>;
             patchState(store, {
-              categories: store.categories().map(c => c.id === id ? payload.data.content : c)
+              categoryPage: {
+                ...store.categoryPage(),
+                elements: store.categoryPage().elements
+                  .map(productCategory => productCategory.id === id ? payload.data.content: productCategory)}
             });
           }
           return response.data.content;
@@ -97,7 +118,12 @@ export const ProductCategoriesStore = signalStore(
         patchState(store, { loading: true, error: null });
         try {
           await api.remove(id);
-          patchState(store, { categories: store.categories().filter(c => c.id !== id) });
+          patchState(store, {
+            categoryPage: {
+              ...store.categoryPage(),
+              elements: store.categoryPage().elements.filter(productCategory => productCategory.id !== id)
+            }
+          });
         } catch (e: any) {
           patchState(store, { error: e?.message ?? 'Erreur de suppression' });
           throw e;
@@ -110,5 +136,5 @@ export const ProductCategoriesStore = signalStore(
 );
 
 export function provideCategoriesStore() {
-  return [ProductCategoriesStore];
+  return [productCategoryStore];
 }

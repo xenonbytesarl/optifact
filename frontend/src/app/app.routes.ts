@@ -1,4 +1,8 @@
 import { Routes } from '@angular/router';
+import {
+  productCategoryFindByIdResolver,
+  productCategorySearchResolver
+} from './features/product-categories/product-category.resolver';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },

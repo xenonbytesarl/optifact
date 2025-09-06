@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
-import { ProductCategoriesStore, provideCategoriesStore } from '../product-categories.store';
+import { productCategoryStore } from '../product-category.store';
 import {ProductCategoriesApi, ProductCategory} from '../../../core/api/product-categories.api';
 import { SpinnerComponent } from '../../../shared/ui/spinner';
 import {SuccessApiResponse} from '../../../core/model/response.model';
@@ -12,7 +12,6 @@ import {SuccessApiResponse} from '../../../core/model/response.model';
   selector: 'app-product-category-view-page',
   standalone: true,
   imports: [CommonModule, ActionBarComponent, CardComponent, RouterLink, SpinnerComponent],
-  providers: [provideCategoriesStore()],
   template: `
     <app-action-bar [disableNew]="false" [disableEdit]="false" [disableCancel]="true" [disableSave]="true" />
 
@@ -42,26 +41,15 @@ import {SuccessApiResponse} from '../../../core/model/response.model';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ProductCategoryViewPage {
-  readonly store = inject(ProductCategoriesStore);
+  readonly store = inject(productCategoryStore);
   readonly api = inject(ProductCategoriesApi);
   readonly route = inject(ActivatedRoute);
 
   name = computed(() => this.store.current()?.name ?? '');
   id = computed(() => this.store.current()?.id ?? '');
+  productCategory = computed(() => this.store.current());
 
   constructor() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      // try to load single item for accuracy
-      this.api.get(id).then((c) => {
-        if(c.success) {
-          const payload = c as SuccessApiResponse<ProductCategory>;
-          return this.store.setCurrent(payload.data.content);
-        }
-      }).catch(() => {
-        // fallback: ensure a list exists and try to find in list (optional)
-        this.store.loadAll();
-      });
-    }
+
   }
 }
