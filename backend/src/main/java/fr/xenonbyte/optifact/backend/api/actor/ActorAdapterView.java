@@ -3,6 +3,8 @@ package fr.xenonbyte.optifact.backend.api.actor;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.ActorApiRequestView;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.ActorPageResponseView;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.ActorResponseView;
+import fr.xenonbyte.optifact.backend.api.actor.generated.view.CreateActorApiRequestView;
+import fr.xenonbyte.optifact.backend.api.actor.generated.view.UpdateActorApiRequestView;
 import fr.xenonbyte.optifact.backend.application.actor.port.in.CreateActorUseCase;
 import fr.xenonbyte.optifact.backend.application.actor.port.in.DeleteActorByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.actor.port.in.FindActorByIdUseCase;
@@ -40,11 +42,11 @@ public final class ActorAdapterView {
         this.mapperView = mapperView;
     }
 
-    public ActorResponseView createActor(ActorApiRequestView requestView) {
+    public ActorResponseView createActor(CreateActorApiRequestView requestView) {
         return mapperView.toActorResponseView(createActorUseCase.createActor(mapperView.toActor(requestView)));
     }
 
-    public ActorResponseView updateActor(UUID actorId, ActorApiRequestView requestView) {
+    public ActorResponseView updateActor(UUID actorId, UpdateActorApiRequestView requestView) {
         return mapperView.toActorResponseView(updateActorUseCase.updateActor(actorId, mapperView.toActor(requestView)));
     }
 

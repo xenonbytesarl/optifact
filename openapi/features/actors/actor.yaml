@@ -67,7 +67,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ActorApiRequestView'
+              $ref: '#/components/schemas/CreateActorApiRequestView'
       responses:
         '201':
           description: Acteur créé avec succès
@@ -154,7 +154,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ActorApiRequestView'
+              $ref: '#/components/schemas/UpdateActorApiRequestView'
       responses:
         '200':
           description: Acteur mis à jour avec succès
@@ -229,6 +229,84 @@ paths:
 
 components:
   schemas:
+    # New creation/update wrapper schemas
+    CreateActorApiRequestView:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          description: Nom de l'acteur
+          example: "Société ACME"
+        reference:
+          type: string
+          description: Référence interne ou code de l'acteur
+          example: "CLI-2025-0001"
+        active:
+          type: boolean
+          description: Indique si l'acteur est actif
+          default: true
+        contacts:
+          description: Contacts associés à l'acteur
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateContactRequestView'
+        addresses:
+          description: Adresses associées à l'acteur
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateAddressRequestView'
+
+    UpdateActorApiRequestView:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          description: Nom de l'acteur
+        reference:
+          type: string
+          description: Référence interne ou code de l'acteur
+        active:
+          type: boolean
+          description: Indique si l'acteur est actif
+        contacts:
+          description: Contacts associés à l'acteur
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateContactRequestView'
+        addresses:
+          description: Adresses associées à l'acteur
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateAddressRequestView'
+
+    # Create aliases for existing request views
+    CreateAddressRequestView:
+      allOf:
+        - $ref: '#/components/schemas/AddressRequestView'
+    CreateContactRequestView:
+      allOf:
+        - $ref: '#/components/schemas/ContactRequestView'
+
+    # Update variants include id and extend existing request views
+    UpdateAddressRequestView:
+      allOf:
+        - $ref: '#/components/schemas/AddressRequestView'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+    UpdateContactRequestView:
+      allOf:
+        - $ref: '#/components/schemas/ContactRequestView'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+
     ActorApiRequestView:
       type: object
       required:
@@ -297,6 +375,28 @@ components:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/ActorResponseView'
+    SearchActorResponseView:
+      type: object
+      required:
+        - id
+        - name
+        - active
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identifiant unique de l'acteur
+        name:
+          type: string
+          description: Nom de l'acteur
+          example: "Société ACME"
+        reference:
+          type: string
+          description: Référence interne ou code de l'acteur
+          example: "CLI-2025-0001"
+        active:
+          type: boolean
+          description: Indique si l'acteur est actif
     ActorPageResponseView:
       allOf:
         - $ref: '../../common/schemas.yaml#/PaginationResponseView'
@@ -308,7 +408,7 @@ components:
               type: array
               description: Liste des acteurs
               items:
-                $ref: '#/components/schemas/ActorResponseView'
+                $ref: '#/components/schemas/SearchActorResponseView'
     ActorPageApiResponseView:
       allOf:
         - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'

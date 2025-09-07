@@ -3,6 +3,7 @@ package fr.xenonbyte.optifact.backend.infrastructure.actor.contact;
 import fr.xenonbyte.optifact.backend.domain.actor.contact.Contact;
 import fr.xenonbyte.optifact.backend.domain.actor.contact.ContactType;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
 
 /**
@@ -12,6 +13,7 @@ import org.mapstruct.ObjectFactory;
  */
 @Mapper
 public interface ContactMapperJpa {
+    @Mapping(target = "actor", expression = "java(fr.xenonbyte.optifact.backend.infrastructure.actor.ActorJpa.builder().id(contact.getActorId()).build())")
     ContactJpa toJpa(Contact contact);
     Contact toDomain(ContactJpa contactJpa);
 
