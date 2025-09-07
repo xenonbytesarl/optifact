@@ -72,11 +72,7 @@
       "deleted": {
         "success": "Product category deleted successfully.",
         "error": "Failed to delete product category."
-      }
-    }
-  },
-  "productCategory": {
-    "messages": {
+      },
       "created": {
         "success": "Product category created successfully.",
         "error": "Failed to create product category."

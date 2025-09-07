@@ -37,7 +37,7 @@ const initialState: ProductCategoriesState = {
 export const productCategoryStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ categoryPage, column, loading }) => ({
+  withComputed(({ categoryPage, current, column, loading }) => ({
   })),
   withMethods((store) => {
     const api = inject(ProductCategoriesApi);
@@ -51,11 +51,11 @@ export const productCategoryStore = signalStore(
         const response = await api.search(nameFilter, page, size, direction, sort );
         if(response.success) {
           const payload = response as SuccessApiResponse<Page<ProductCategory>>;
-          patchState(store, {categoryPage: payload.data.content as any, message: payload.message ?? 'productCategory.messages.search.success', loading: false });
+          patchState(store, {categoryPage: payload.data.content as any, message: payload.message ?? 'productCategories.messages.search.success', loading: false });
           return payload.data.content;
         } else {
           const payload = response as ErrorApiResponse;
-          patchState(store, { error: payload.reason ?? 'productCategory.messages.search.error', loading: false });
+          patchState(store, { error: payload.reason ?? 'productCategories.messages.search.error', loading: false });
           return null;
         }
       },
@@ -64,11 +64,11 @@ export const productCategoryStore = signalStore(
         const response =  await api.get(categoryId);
         if(response.success) {
           const payload = response as SuccessApiResponse<ProductCategory>;
-          patchState(store, {current: payload.data.content ?? null, message: payload.message ?? 'productCategory.messages.find.success', loading: false });
+          patchState(store, {current: payload.data.content ?? null, message: payload.message ?? 'productCategories.messages.find.success', loading: false });
           return payload.data.content;
         } else {
           const payload = response as ErrorApiResponse;
-          patchState(store, { error: payload.reason ?? 'productCategory.messages.find.error', loading: false });
+          patchState(store, { error: payload.reason ?? 'productCategories.messages.find.error', loading: false });
           return null;
         }
       },
@@ -81,11 +81,11 @@ export const productCategoryStore = signalStore(
             categoryPage: {
               ...store.categoryPage(),
               elements: [payload.data.content, ...store.categoryPage().elements]
-            }, message: payload.message ?? 'productCategory.messages.created.success', loading: false });
+            }, message: payload.message ?? 'productCategories.messages.created.success', loading: false });
           return payload.data.content;
         } else {
           const payload = response as ErrorApiResponse;
-          patchState(store, { error: payload.reason ?? 'productCategory.messages.created.error', loading: false });
+          patchState(store, { error: payload.reason ?? 'productCategories.messages.created.error', loading: false });
           return null;
         }
       },
@@ -99,12 +99,12 @@ export const productCategoryStore = signalStore(
               ...store.categoryPage(),
               elements: store.categoryPage().elements
                 .map(productCategory => productCategory.id === id ? payload.data.content: productCategory)},
-            message: payload.message ?? 'productCategory.messages.update.success', loading: false
+            message: payload.message ?? 'productCategories.messages.update.success', loading: false
           });
           return payload.data.content;
         } else {
           const payload = response as ErrorApiResponse;
-          patchState(store, { error: payload.reason ?? 'productCategory.messages.update.error', loading: false });
+          patchState(store, { error: payload.reason ?? 'productCategories.messages.update.error', loading: false });
           return null;
         }
       },

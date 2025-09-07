@@ -1,48 +1,53 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { TranslatePipe } from '../../../core/i18n/translate.pipe';
-import { ProductsStore, provideProductsStore } from '../products.store';
-import { ProductFormComponent, ProductFormValue } from '../components/product-form';
+import { ProductFormComponent } from '../components/product-form';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
-import { provideCategoriesStore } from '../../product-categories/product-category.store';
+import {SpinnerComponent} from '../../../shared/ui/spinner';
+import {useProductScreen} from './product-screen.util';
 
 @Component({
   selector: 'app-product-new-page',
   standalone: true,
-  imports: [CommonModule, ProductFormComponent, ActionBarComponent, CardComponent],
-  providers: [provideProductsStore(), provideCategoriesStore()],
+  imports: [CommonModule, ProductFormComponent, ActionBarComponent, CardComponent, SpinnerComponent],
+  providers: [],
   template: `
     <app-action-bar
-      [disableNew]="false"
-      [disableEdit]="true"
-      [disableCancel]="false"
-      [disableSave]="false"
-      (cancelClicked)="goBack()"
+      [showNew]="false"
+      [showEdit]="false"
+      [disableSave]="form.invalid || loading()"
       (saveClicked)="save()"
+      (cancelClicked)="goBack()"
     />
 
     <div class="p-4 flex flex-col gap-4">
+      @if (loading()) {
+        <app-spinner [overlay]="true" />
+      }
       <app-card>
-        <app-product-form [value]="formValue()" (valueChange)="formValue.set($event)" (submit)="save($event)" (cancel)="goBack()" />
+        <app-product-form
+          [disabled]="loading()"
+          [value]="formValue()"
+          [nameRequiredError]="nameHasError()"
+          (valueChange)="onValueChange($event)"
+          (blur)="onNameBlur()"
+        />
       </app-card>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ProductNewPage {
-  readonly store = inject(ProductsStore);
-  private router = inject(Router);
-  formValue = signal<ProductFormValue>({ code: '', name: '', type: 'forfait', amount: null, rate: null, categoryId: null, description: '' });
+  ui = useProductScreen();
 
-  async save(v?: ProductFormValue) {
-    const val = v ?? this.formValue();
-    await this.store.create(val);
-    this.goBack();
-  }
+  get form() { return this.ui.form; }
+  get formValue() { return this.ui.formValue; }
+  get loading() { return this.ui.loading; }
 
-  goBack() {
-    this.router.navigate(['../list']);
-  }
+  nameHasError() { return this.ui.nameHasError(); }
+  onValueChange(v: any) { return this.ui.onValueChange(v); }
+  onNameBlur() { return this.ui.onNameBlur(); }
+
+  save() { return this.ui.saveNew(); }
+  goBack() { return this.ui.goBack(); }
 }

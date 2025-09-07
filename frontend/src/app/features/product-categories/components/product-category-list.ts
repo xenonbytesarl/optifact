@@ -39,7 +39,7 @@ export class ProductCategoryListComponent {
   edit = output<string>();
   remove = output<string>();
 
-  // sort state comes from parent via inputs or internal defaults; as minimal change, keep local signals and emit
+  // sort state comes from parent via inputs or internal defaults; as a minimal change, keep local signals and emit
   sortKey = signal<string | null>('name');
   sortDir = signal<DirectionType>('ASC');
   sort = output<{ key: string; direction: DirectionType }>();

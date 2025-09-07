@@ -73,11 +73,7 @@
       "deleted": {
         "success": "Catégorie de produit supprimée avec succès.",
         "error": "Échec de la suppression de la catégorie de produit."
-      }
-    }
-  },
-  "productCategory": {
-    "messages": {
+      },
       "created": {
         "success": "Catégorie de produit créée avec succès.",
         "error": "Échec de la création de la catégorie de produit."

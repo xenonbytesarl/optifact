@@ -8,7 +8,7 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../core/constant/consta
 export const productCategorySearchResolver: ResolveFn<boolean> = async (route, state) => {
   const store = inject(productCategoryStore);
   try {
-    await store.search('', DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, Direction.ASC, 'name')
+    await store.search('', DEFAULT_PAGE_NUMBER, 100, Direction.ASC, 'name')
     return true;
   } catch {
     return false;
