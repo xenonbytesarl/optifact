@@ -49,21 +49,21 @@ public final class Address extends BaseEntity {
         this.active = active;
     }
 
-    private static Address create(AddressType type, String street, String city, String country,
+    public static Address create(AddressType type, String street, String city, String country,
                                   String zipCode, String state, Boolean active) {
-        validateParams(type, street, city, country, zipCode);
+        validateParams(type, city, country);
         return new Address(randomUUID(), type, street, city, country, zipCode, state, active);
     }
 
-    private static Address create(UUID id, AddressType type, String street, String city, String country,
-                                  String zipCode, String state, Boolean active) {
-        validateParams(type, street, city, country, zipCode);
-        return new Address(id, type, street, city, country, zipCode, state, active);
+    public static Address create(UUID id, AddressType type, String street, String city, String country,
+                                  String zipCode, String state, UUID actorId, Boolean active) {
+        validateParams(type, city, country);
+        return new Address(id, type, street, city, country, zipCode, state, actorId, active);
     }
 
     public Address update(AddressType type, String street, String city, String country,
                           String zipCode, String state, Boolean active) {
-        validateParams(type, street, city, country, zipCode);
+        validateParams(type, city, country);
         Address address = new Address(id, type, street, city, country, zipCode, state, active);
         address.updateAudit(createdAt);
         return address;
@@ -73,8 +73,7 @@ public final class Address extends BaseEntity {
         return new Address(id, type, street, city, country, zipCode, state, actorId, active);
     }
 
-    private static void validateParams(AddressType type, String street, String city, String country,
-                                       String zipCode) {
+    private static void validateParams(AddressType type, String city, String country) {
         if (type == null) {
             throw new IllegalArgumentException(AddressMessage.ADDRESS_TYPE_REQUIRED);
         }
