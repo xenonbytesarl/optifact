@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="07092025_1039_alter_product_rate_nullable" author="brice.mbiandji">
+        <comment>Allow NULL values for c_rate column in t_product</comment>
+        <modifyDataType tableName="t_product" columnName="c_rate" newDataType="double precision"/>
+        <dropNotNullConstraint tableName="t_product" columnName="c_rate" columnDataType="double precision"/>
+        <rollback>
+            <addNotNullConstraint tableName="t_product" columnName="c_rate" columnDataType="double precision"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
