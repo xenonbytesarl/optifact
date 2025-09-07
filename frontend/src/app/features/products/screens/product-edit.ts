@@ -1,61 +1,66 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal, effect} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ProductsStore, provideProductsStore } from '../products.store';
-import { ProductFormComponent, ProductFormValue } from '../components/product-form';
+import { ActivatedRoute } from '@angular/router';
+import { ProductFormComponent } from '../components/product-form';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
-import { provideCategoriesStore } from '../../product-categories/product-category.store';
+import {SpinnerComponent} from '../../../shared/ui/spinner';
+import {useProductScreen} from './product-screen.util';
 
 @Component({
   selector: 'app-product-edit-page',
   standalone: true,
-  imports: [CommonModule, ProductFormComponent, ActionBarComponent, CardComponent],
-  providers: [provideProductsStore(), provideCategoriesStore()],
+  imports: [CommonModule, ProductFormComponent, ActionBarComponent, CardComponent, SpinnerComponent],
+  providers: [],
   template: `
     <app-action-bar
-      [disableNew]="true"
-      [disableEdit]="true"
-      [disableCancel]="false"
-      [disableSave]="false"
-      (cancelClicked)="goBack()"
+      [showEdit]="false"
+      [showNew]="false"
+      [disableSave]="form.invalid || loading()"
       (saveClicked)="save()"
+      (cancelClicked)="goBack()"
     />
 
     <div class="p-4 flex flex-col gap-4">
+      @if (loading()) {
+        <app-spinner [overlay]="true" />
+      }
       <app-card>
-        <app-product-form [value]="formValue()" (valueChange)="formValue.set($event)" (submit)="save($event)" (cancel)="goBack()" />
+        <app-product-form
+          [disabled]="loading()"
+          [value]="formValue()"
+          [nameRequiredError]="nameHasError()"
+          (valueChange)="onValueChange($event)"
+          (blur)="onNameBlur()"
+        />
       </app-card>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class ProductEditPage implements OnInit {
-  readonly store = inject(ProductsStore);
+export class ProductEditPage {
   readonly route = inject(ActivatedRoute);
-  private router = inject(Router);
+  ui = useProductScreen();
 
   editedId = signal<string>('');
-  formValue = signal<ProductFormValue>({ code: '', name: '', type: 'forfait', amount: null, rate: null, categoryId: null, description: '' });
 
-  ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.editedId.set(id);
-      this.store.loadAll();
-    }
+  constructor() {
+    const id = this.route.snapshot.paramMap.get('id') ?? '';
+    this.editedId.set(id);
+
+    effect(() => {
+      this.ui.syncFromCurrentIfPristine();
+    });
   }
 
-  async save(v?: ProductFormValue) {
-    const id = this.editedId();
-    if (id) {
-      const val = v ?? this.formValue();
-      await this.store.update(id, val);
-    }
-    this.goBack();
-  }
+  get form() { return this.ui.form; }
+  get formValue() { return this.ui.formValue; }
+  get loading() { return this.ui.loading; }
 
-  goBack() {
-    this.router.navigate(['../list']);
-  }
+  nameHasError() { return this.ui.nameHasError(); }
+  onValueChange(v: any) { return this.ui.onValueChange(v); }
+  onNameBlur() { return this.ui.onNameBlur(); }
+
+  save() { return this.ui.saveEdit(this.editedId()); }
+  goBack() { return this.ui.goBack(); }
 }

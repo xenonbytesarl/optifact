@@ -1,15 +1,22 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, model, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  model,
+  output,
+  input, computed, inject
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
-import { TranslateService } from '../../../core/i18n/translate.service';
 import { InputTextComponent } from '../../../shared/ui/input';
 import { InputNumberComponent } from '../../../shared/ui/input-number';
 import {SelectComponent, SelectOption} from '../../../shared/ui/select';
 import { FormFieldComponent } from '../../../shared/ui/form-field';
 import { ProductType } from '../../../core/api/products.api';
-import { productCategoryStore } from '../../product-categories/product-category.store';
-import { AutocompleteComponent, AutocompleteItem } from '../../../shared/ui/autocomplete';
+import {AutocompleteComponent, AutocompleteItem} from '../../../shared/ui/autocomplete';
 import { InputCurrencyComponent } from '../../../shared/ui/input-currency';
+import {CategoryFormValue} from '../../product-categories/components/product-category-form';
+import {productCategoryStore} from '../../product-categories/product-category.store';
+import {TranslateService} from '../../../core/i18n/translate.service';
 
 export interface ProductFormValue {
   code: string;
@@ -26,29 +33,29 @@ export interface ProductFormValue {
   standalone: true,
   imports: [CommonModule, TranslatePipe, InputTextComponent, InputNumberComponent, InputCurrencyComponent, AutocompleteComponent, FormFieldComponent, SelectComponent],
   template: `
-    <form class="flex flex-col gap-3" (submit)="onSubmit()">
+    <form class="flex flex-col gap-3">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <app-form-field [label]="('products.fields.code' | t)" [required]="true">
-          <app-input [value]="value().code" (valueChange)="onCode($event)" />
+          <app-input [disabled]="disabled()" [error]="codeRequiredError()" [value]="value().code" (valueChange)="onCode($event)" (blurred)="blur.emit()" />
         </app-form-field>
         <app-form-field [label]="('products.fields.name' | t)" [required]="true">
-          <app-input [value]="value().name" (valueChange)="onName($event)" />
+          <app-input [disabled]="disabled()" [error]="nameRequiredError()" [value]="value().name" (valueChange)="onName($event)" (blurred)="blur.emit()" />
         </app-form-field>
 
         <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-3">
           <app-form-field [label]="('products.fields.category' | t)" [required]="true">
-            <app-autocomplete [placeholder]="('products.fields.selectCategory' | t)"
-                               [items]="categoryItems()" [value]="value().categoryId ?? null" (valueChange)="onCategory($event)" />
+            <app-autocomplete [disabled]="disabled()"  [placeholder]="('products.fields.selectCategory' | t)"
+                               [items]="categoryItems()" [value]="value().categoryId ?? null" (valueChange)="onCategoryId($event)" />
           </app-form-field>
           <app-form-field [label]="('products.fields.type' | t)" [required]="true">
-            <app-select [options]="typeOptions()" [value]="value().type" (valueChange)="onType($event)" />
+            <app-select [disabled]="disabled()"  [options]="typeOptions()" [value]="value().type" (valueChange)="onType($event)"  />
           </app-form-field>
-          @if (value().type === 'forfait') {
+          @if (value().type === 'FLAT_AMOUNT') {
             <app-form-field [label]="('products.fields.amount' | t)" [hint]="('products.hints.amount' | t)">
               <app-input-currency [value]="value().amount ?? null" [currency]="'XAF'" (valueChange)="onAmount($event)" />
             </app-form-field>
           }
-          @if (value().type === 'pourcentage') {
+          @if (value().type === 'PERCENTAGE') {
             <app-form-field [label]="('products.fields.rate' | t)" [hint]="('products.hints.rate' | t)">
               <app-input-number [min]="0" [max]="100" [step]="0.01" [value]="value().rate ?? null" (valueChange)="onRate($event)" />
             </app-form-field>
@@ -62,21 +69,38 @@ export interface ProductFormValue {
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class ProductFormComponent implements OnInit {
-  value = model<ProductFormValue>({ code: '', name: '', type: 'forfait', amount: null, rate: null, categoryId: null, description: '' });
-  submit = output<ProductFormValue>();
-  cancel = output<void>();
+export class ProductFormComponent {
 
   private categoryStore = inject(productCategoryStore);
   protected i18n = inject(TranslateService);
+
+  disabled = input<boolean>(false);
+  // Flag from parent to indicate whether to show the required error for name
+  nameRequiredError = input<boolean>(false);
+  codeRequiredError = input<boolean>(false);
+  categoryIdRequiredError = input<boolean>(false);
+  typeRequiredError = input<boolean>(false);
+  value = model<ProductFormValue>({
+    code: '',
+    name: '',
+    type: 'FLAT_AMOUNT',
+    amount: null,
+    rate: null,
+    categoryId: null,
+    description: ''
+  });
+
+  submit = output<CategoryFormValue>();
+  cancel = output<void>();
+  blur = output<void>();
 
   // Build type options from i18n so labels are translated
   typeOptions = computed<SelectOption[]>(() => {
     // depend on lang signal for recomputation
     this.i18n.lang();
     return [
-      { value: 'forfait', label: this.i18n.t('products.types.forfait') },
-      { value: 'pourcentage', label: this.i18n.t('products.types.pourcentage') },
+      { value: 'FLAT_AMOUNT', label: this.i18n.t('products.types.forfait') },
+      { value: 'PERCENTAGE', label: this.i18n.t('products.types.pourcentage') },
     ];
   });
 
@@ -84,45 +108,40 @@ export class ProductFormComponent implements OnInit {
     this.categoryStore.categoryPage().elements.map(c => ({ value: c.id, label: c.name }))
   );
 
-  ngOnInit() {
-    // ensure categories are loaded for the select
-    //TODO replace this line with product category search resolver this.categoryStore.loadAll();
-  }
 
   onCode(v: string | null) {
-    this.value.set({ ...this.value(), code: (v ?? '').toString() });
-  }
-  onName(v: string | null) {
-    this.value.set({ ...this.value(), name: (v ?? '').toString() });
-  }
-  onType(v: string | null) {
-    const t = (v as ProductType) || 'forfait';
-    this.value.set({ ...this.value(), type: t });
-  }
-  onCategory(v: string | null) {
-    this.value.set({ ...this.value(), categoryId: v || null });
-  }
-  onAmount(v: number | null) {
-    this.value.set({ ...this.value(), amount: v });
-  }
-  onRate(v: number | null) {
-    this.value.set({ ...this.value(), rate: v });
-  }
-  onDescription(v: string | null) {
-    this.value.set({ ...this.value(), description: (v ?? '').toString() });
+    const code = (v ?? '').toString();
+    this.value.set({ ...this.value(), code });
   }
 
-  onSubmit() {
-    const v = this.value();
-    const codeOk = !!v.code?.trim();
-    const nameOk = !!v.name?.trim();
-    const typeOk = v.type === 'forfait' || v.type === 'pourcentage';
-    const catOk = !!v.categoryId;
-    if (!codeOk || !nameOk || !typeOk || !catOk) return;
-    // Normalize: clear opposite numeric
-    const payload = { ...v };
-    if (v.type === 'forfait') payload.rate = null;
-    if (v.type === 'pourcentage') payload.amount = null;
-    this.submit.emit({ ...payload, code: v.code.trim(), name: v.name.trim() });
+  onName(v: string | null) {
+    const name = (v ?? '').toString();
+    this.value.set({ ...this.value(), name });
   }
+
+  onCategoryId(v: string | null) {
+    const categoryId = (v ?? '').toString();
+    this.value.set({ ...this.value(), categoryId });
+  }
+
+  onDescription(v: string | null) {
+    const description = (v ?? '').toString();
+    this.value.set({ ...this.value(), description });
+  }
+
+  onType(v: string | null) {
+    const type = (v ?? 'FLAT_AMOUNT') as ProductType;
+    this.value.set({ ...this.value(), type });
+  }
+
+  onRate(v: number | null) {
+    const rate = (v ?? null);
+    this.value.set({ ...this.value(), rate });
+  }
+
+  onAmount(v: number | null) {
+    const amount = (v ?? null);
+    this.value.set({ ...this.value(), amount });
+  }
+
 }

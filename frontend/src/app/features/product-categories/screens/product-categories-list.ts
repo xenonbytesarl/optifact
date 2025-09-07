@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, computed, inject, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
@@ -21,7 +21,6 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../../core/constant/con
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     ButtonComponent,
     IconComponent,
     TranslatePipe,
@@ -38,12 +37,10 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../../core/constant/con
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'productCategories.title' | t }}</h2>
-          <button routerLink="../new" class="inline-flex">
-            <app-button>
+            <app-button (click)="goNew()">
               <app-icon name="add" class="mr-1"></app-icon>
               {{ 'productCategories.new' | t }}
             </app-button>
-          </button>
         </div>
       </app-card>
 
@@ -78,16 +75,14 @@ export class ProductCategoriesListPage {
 
   loading = computed(() => this.store.loading());
 
-  // UI page is 1-based; backend/store page is 0-based
+  // UI page is 1-based; the backend / store page is 0-based
   uiPage = computed(() => (this.store.categoryPage().page ?? 0) + 1);
   uiPageSize = computed(() => this.store.categoryPage().size ?? 10);
 
   sortColumn: ProductCategorySortColumn = 'name';
   sortDirection: Direction = Direction.ASC;
 
-  constructor() {
-    this.route.data.subscribe(data => {});
-  }
+  constructor() {}
 
   async onPageChange(page1Based: number) {
     const size = this.uiPageSize();
@@ -116,6 +111,10 @@ export class ProductCategoriesListPage {
   goView(id: string) {
     // navigate to an absolute feature path to avoid relative routing issues causing NG04002
     this.router.navigate(['/product-categories', id]);
+  }
+
+  goNew() {
+    this.router.navigate(['/product-categories', 'new']);
   }
 
   async remove(id: string) {

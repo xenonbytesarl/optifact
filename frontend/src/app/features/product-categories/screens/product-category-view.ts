@@ -37,8 +37,8 @@ export class ProductCategoryViewPage {
   readonly router = inject(Router);
 
   loading = computed(() => this.store.loading());
-  name = computed(() => this.store.current()?.name ?? '');
   id = computed(() => this.store.current()?.id ?? '');
+  name = computed(() => this.store.current()?.name ?? '');
 
   constructor() {}
 

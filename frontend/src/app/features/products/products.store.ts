@@ -1,102 +1,137 @@
-import { computed, inject } from '@angular/core';
-import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
-import { ProductsApi, Product, ProductType } from '../../core/api/products.api';
+import { inject } from '@angular/core';
+import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
+import {ProductsApi, Product, ProductSortColumn} from '../../core/api/products.api';
+import {ErrorApiResponse, Page, SuccessApiResponse} from '../../core/model/response.model';
+import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../core/constant/constant';
+import {Direction} from '../../core/model/direction.enum';
 
 export interface ProductsState {
-  products: Product[];
+  productPage: Page<Product>;
+  column: ProductSortColumn;
   current: Product | null;
-  search: string;
-  type: ProductType | 'all';
-  categoryId: string | 'all';
   loading: boolean;
   error: string | null;
+  message: string | null;
 }
 
-const initialState: ProductsState = {
-  products: [],
-  current: null,
-  search: '',
-  type: 'all',
-  categoryId: 'all',
-  loading: false,
-  error: null,
+let initialProductPage = {
+  elements: [],
+  totalElements: 0,
+  size: DEFAULT_PAGE_SIZE,
+  page: DEFAULT_PAGE_NUMBER,
+  totalPages: 0,
+  isFirst: true,
+  isLast: true
 };
 
-export const ProductsStore = signalStore(
+const initialState: ProductsState = {
+  productPage: initialProductPage,
+  column: 'name',
+  current: null,
+  loading: false,
+  error: null,
+  message: null,
+};
+
+export const productStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ products, search, type, categoryId, loading }) => ({
-    filtered: computed(() => {
-      const q = (search() || '').toLowerCase();
-      return products().filter(p => {
-        const matchQ = !q || p.name?.toLowerCase().includes(q) || p.code?.toLowerCase().includes(q);
-        const matchType = type() === 'all' || p.type === type();
-        const matchCat = categoryId() === 'all' || (!categoryId() ? !p.categoryId : p.categoryId === categoryId());
-        return matchQ && matchType && matchCat;
-      });
-    }),
-    canSave: computed(() => !loading())
-  })),
   withMethods((store) => {
     const api = inject(ProductsApi);
 
     return {
-      setSearch(q: string) { patchState(store, { search: q }); },
-      setType(t: ProductsState['type']) { patchState(store, { type: t }); },
-      setCategory(c: ProductsState['categoryId']) { patchState(store, { categoryId: c }); },
-      setCurrent(p: Product | null) { patchState(store, { current: p }); },
+      resetForm(): void {
+        patchState(store, { current: null });
+      },
 
-      async loadAll() {
-        patchState(store, { loading: true, error: null });
-        try {
-          const data = await api.list();
-          patchState(store, { products: data ?? [] });
-        } catch (e: any) {
-          patchState(store, { error: e?.message ?? 'Erreur de chargement' });
-        } finally {
-          patchState(store, { loading: false });
+      async search(
+        nameFilter: string,
+        codeFilter: string,
+        typeFilter: string,
+        categoryNameFilter: string,
+        page: number,
+        size: number,
+        direction: Direction,
+        sort: ProductSortColumn
+      ) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.search(nameFilter, codeFilter, typeFilter, categoryNameFilter, page, size, direction, sort );
+        if(response.success) {
+          const payload = response as SuccessApiResponse<Page<Product>>;
+          patchState(store, {productPage: payload.data.content as any, message: payload.message ?? 'products.messages.search.success', loading: false });
+          return payload.data.content;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'products.messages.search.error', loading: false });
+          return null;
+        }
+      },
+      async findById(productId: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response =  await api.get(productId);
+        if(response.success) {
+          const payload = response as SuccessApiResponse<Product>;
+          patchState(store, {current: payload.data.content ?? null, message: payload.message ?? 'products.messages.find.success', loading: false });
+          return payload.data.content;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'products.messages.find.error', loading: false });
+          return null;
         }
       },
       async create(payload: Partial<Product>) {
-        patchState(store, { loading: true, error: null });
-        try {
-          const created = await api.create(payload);
-          if (created) {
-            patchState(store, { products: [created, ...store.products()] });
-          }
-          return created;
-        } catch (e: any) {
-          patchState(store, { error: e?.message ?? 'Erreur de création' });
-          throw e;
-        } finally {
-          patchState(store, { loading: false });
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.create(payload);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Product>;
+          patchState(store, {
+            productPage: {
+              ...store.productPage(),
+              elements: [payload.data.content, ...store.productPage().elements]
+            }, message: payload.message ?? 'products.messages.created.success', loading: false });
+          return payload.data.content;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'products.messages.created.error', loading: false });
+          return null;
         }
       },
       async update(id: string, payload: Partial<Product>) {
-        patchState(store, { loading: true, error: null });
-        try {
-          const updated = await api.update(id, payload);
-          if (updated) {
-            patchState(store, { products: store.products().map(p => p.id === id ? updated : p) });
-          }
-          return updated;
-        } catch (e: any) {
-          patchState(store, { error: e?.message ?? 'Erreur de mise à jour' });
-          throw e;
-        } finally {
-          patchState(store, { loading: false });
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.update(id, payload);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Product>;
+          patchState(store, {
+            productPage: {
+              ...store.productPage(),
+              elements: store.productPage().elements
+                .map(product => product.id === id ? payload.data.content: product)},
+            message: payload.message ?? 'products.messages.update.success', loading: false
+          });
+          return payload.data.content;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'products.messages.update.error', loading: false });
+          return null;
         }
       },
       async remove(id: string) {
-        patchState(store, { loading: true, error: null });
-        try {
-          await api.remove(id);
-          patchState(store, { products: store.products().filter(p => p.id !== id) });
-        } catch (e: any) {
-          patchState(store, { error: e?.message ?? 'Erreur de suppression' });
-          throw e;
-        } finally {
-          patchState(store, { loading: false });
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.remove(id);
+        if(response.success) {
+          const payload = response as SuccessApiResponse<void>;
+          patchState(store, {
+            productPage: {
+              ...store.productPage(),
+              elements: store.productPage().elements.filter(product => product.id !== id)
+            },
+            message: payload.message ?? 'products.messages.deleted.success', loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'products.messages.deleted.error', loading: false });
+          return false;
         }
       }
     };
@@ -104,5 +139,5 @@ export const ProductsStore = signalStore(
 );
 
 export function provideProductsStore() {
-  return [ProductsStore];
+  return [productStore];
 }
