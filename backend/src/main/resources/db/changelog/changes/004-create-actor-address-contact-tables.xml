@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Create t_actor table -->
+    <changeSet id="07092025_2148_create_actor_table" author="brice.mbiandji">
+        <createTable tableName="t_actor">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Domain fields -->
+            <column name="c_reference" type="varchar(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="c_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="c_active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Indexes for t_actor -->
+        <createIndex indexName="idx_t_actor_name" tableName="t_actor">
+            <column name="c_name"/>
+        </createIndex>
+        <createIndex indexName="idx_t_actor_reference" tableName="t_actor">
+            <column name="c_reference"/>
+        </createIndex>
+
+        <!-- Unique constraints (explicit for clarity) -->
+        <addUniqueConstraint constraintName="uk_t_actor_name" tableName="t_actor" columnNames="c_name"/>
+        <addUniqueConstraint constraintName="uk_t_actor_reference" tableName="t_actor" columnNames="c_reference"/>
+    </changeSet>
+
+    <!-- Create t_address table with FK to t_actor -->
+    <changeSet id="07092025_2148_create_address_table" author="brice.mbiandji">
+        <createTable tableName="t_address">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Domain fields -->
+            <column name="c_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_street" type="varchar(255)"/>
+            <column name="c_city" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_country" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_state" type="varchar(255)"/>
+            <column name="c_zip_code" type="varchar(50)"/>
+            <column name="c_active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Relation to actor -->
+            <column name="c_actor_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Indexes for t_address -->
+        <createIndex indexName="idx_t_address_actor_id" tableName="t_address">
+            <column name="c_actor_id"/>
+        </createIndex>
+        <createIndex indexName="idx_t_address_city" tableName="t_address">
+            <column name="c_city"/>
+        </createIndex>
+
+        <!-- Foreign key to t_actor -->
+        <addForeignKeyConstraint
+                baseTableName="t_address"
+                baseColumnNames="c_actor_id"
+                constraintName="fk_t_address_actor"
+                referencedTableName="t_actor"
+                referencedColumnNames="c_id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+    <!-- Create t_contact table with FK to t_actor -->
+    <changeSet id="07092025_2148_create_contact_table" author="brice.mbiandji">
+        <createTable tableName="t_contact">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Domain fields -->
+            <column name="c_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_email" type="varchar(255)"/>
+            <column name="c_phone" type="varchar(100)"/>
+            <column name="c_function" type="varchar(255)"/>
+            <column name="c_active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Relation to actor -->
+            <column name="c_actor_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Indexes for t_contact -->
+        <createIndex indexName="idx_t_contact_actor_id" tableName="t_contact">
+            <column name="c_actor_id"/>
+        </createIndex>
+        <createIndex indexName="idx_t_contact_name" tableName="t_contact">
+            <column name="c_name"/>
+        </createIndex>
+
+        <!-- Foreign key to t_actor -->
+        <addForeignKeyConstraint
+                baseTableName="t_contact"
+                baseColumnNames="c_actor_id"
+                constraintName="fk_t_contact_actor"
+                referencedTableName="t_actor"
+                referencedColumnNames="c_id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>
