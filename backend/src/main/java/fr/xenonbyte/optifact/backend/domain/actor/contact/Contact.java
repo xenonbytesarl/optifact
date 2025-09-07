@@ -19,60 +19,55 @@ public final class Contact extends BaseEntity {
     private final String name;
     private final String email;
     private final String phone;
-    private final String website;
     private final String function;
     private final Boolean active;
     private UUID actorId;
 
-    public Contact(UUID id, ContactType type, String name, String email, String phone,
-                   String website, String function, Boolean active) {
+    public Contact(UUID id, ContactType type, String name, String email, String phone, String function, Boolean active) {
         this.id = id;
         this.type = type;
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.website = website;
         this.function = function;
         this.active = active;
     }
 
-    public Contact(UUID id, ContactType type, String name, String email, String phone,
-                   String website, String function, UUID actorId, Boolean active) {
+    public Contact(UUID id, ContactType type, String name, String email, String phone, String function, UUID actorId, Boolean active) {
         this.id = id;
         this.type = type;
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.website = website;
         this.function = function;
         this.actorId = actorId;
         this.active = active;
     }
 
-    private static Contact create(ContactType type, String name, String email, String phone,
-                                  String website, String function, Boolean active) {
+    public static Contact create(ContactType type, String name, String email, String phone,
+                                  String function, Boolean active) {
         validateParams(type, name, email);
 
-        return new Contact(randomUUID(), type, name, email, phone, website, function, active);
+        return new Contact(randomUUID(), type, name, email, phone, function, active);
     }
 
-    private static Contact create(UUID id, ContactType type, String name, String email, String phone,
-                                  String website, String function, Boolean active) {
+    public static Contact create(UUID id, ContactType type, String name, String email, String phone,
+                                  String function, UUID actorId, Boolean active) {
         validateParams(type, name, email);
 
-        return new Contact(id, type, name, email, phone, website, function, active);
+        return new Contact(id, type, name, email, phone, function, actorId, active);
     }
 
     public Contact update(ContactType type, String name, String email, String phone,
-                          String website, String function, Boolean active) {
+                          String function, Boolean active) {
         validateParams(type, name, email);
-        Contact contact = new Contact(id, type, name, email, phone, website, function, active);
+        Contact contact = new Contact(id, type, name, email, phone, function, active);
         contact.updateAudit(createdAt);
         return contact;
     }
 
     public Contact withActorId(UUID actorId) {
-        return new Contact(id, type, name, email, phone, website, function, actorId, active);
+        return new Contact(id, type, name, email, phone, function, actorId, active);
     }
 
     private static void validateParams(ContactType type, String name, String email) {
@@ -103,10 +98,6 @@ public final class Contact extends BaseEntity {
 
     public String getPhone() {
         return phone;
-    }
-
-    public String getWebsite() {
-        return website;
     }
 
     public String getFunction() {
