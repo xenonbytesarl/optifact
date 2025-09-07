@@ -1,11 +1,11 @@
 package fr.xenonbyte.optifact.backend.api.productcategory;
 
 import fr.xenonbyte.optifact.backend.api.common.locale.MessageUtil;
-import fr.xenonbyte.optifact.backend.api.resource.generated.ProductCategoriesApi;
-import fr.xenonbyte.optifact.backend.api.resource.generated.view.ApiSuccessResponse;
-import fr.xenonbyte.optifact.backend.api.resource.generated.view.ProductCategoryApiRequestView;
-import fr.xenonbyte.optifact.backend.api.resource.generated.view.ProductCategoryApiResponseView;
-import fr.xenonbyte.optifact.backend.api.resource.generated.view.ProductCategoryPageApiResponseView;
+import fr.xenonbyte.optifact.backend.api.productcategory.generated.ProductCategoriesApi;
+import fr.xenonbyte.optifact.backend.api.productcategory.generated.view.ApiSuccessResponse;
+import fr.xenonbyte.optifact.backend.api.productcategory.generated.view.ProductCategoryApiRequestView;
+import fr.xenonbyte.optifact.backend.api.productcategory.generated.view.ProductCategoryApiResponseView;
+import fr.xenonbyte.optifact.backend.api.productcategory.generated.view.ProductCategoryPageApiResponseView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 

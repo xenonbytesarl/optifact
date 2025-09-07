@@ -1,0 +1,370 @@
+openapi: 3.0.3
+info:
+  title: Product API
+  description: API for managing products
+  version: 1.0.0
+servers:
+  - url: /api/v1/optifact
+    description: Default server
+tags:
+  - name: Product
+    description: Operations related to products
+paths:
+  /products:
+    get:
+      tags:
+        - Product
+      summary: Search products
+      description: Searches for products based on the provided criteria
+      operationId: searchProducts
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - $ref: '../../parameters/common.yaml#/pageParam'
+        - $ref: '../../parameters/common.yaml#/sizeParam'
+        - $ref: '../../parameters/common.yaml#/sortFieldParam'
+        - $ref: '../../parameters/common.yaml#/sortDirectionParam'
+        - name: nameFilter
+          in: query
+          description: Optional name filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+        - name: codeFilter
+          in: query
+          description: Optional code filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+        - name: typeFilter
+          in: query
+          description: Optional type filter
+          required: false
+          schema:
+            type: string
+        - name: categoryNameFilter
+          in: query
+          description: Optional category name filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPageApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    post:
+      tags:
+        - Product
+      summary: Create a product
+      description: Creates a new product
+      operationId: createProduct
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductApiRequestView'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Conflict - A product with the same code already exists
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /products/{productId}:
+    get:
+      tags:
+        - Product
+      summary: Find a product by ID
+      description: Retrieves a product by its unique identifier
+      operationId: findProductById
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: productId
+          in: path
+          description: ID of the product to retrieve
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Product found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    put:
+      tags:
+        - Product
+      summary: Update a product
+      description: Updates an existing product
+      operationId: updateProduct
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: productId
+          in: path
+          description: ID of the product to update
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductApiRequestView'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    delete:
+      tags:
+        - Product
+      summary: Delete a product
+      description: Removes a product (soft delete if supported)
+      operationId: deleteProduct
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: productId
+          in: path
+          description: ID of the product to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Product deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+
+components:
+  schemas:
+    ProductApiRequestView:
+      type: object
+      required:
+        - code
+        - name
+        - type
+      properties:
+        code:
+          type: string
+          description: Product code (unique)
+          example: "PRD-001"
+        name:
+          type: string
+          description: Product name
+          example: "Consulting Service"
+        amount:
+          type: number
+          format: decimal
+          description: Base amount (e.g., flat amount or base for percentage)
+          example: 100.0
+        rate:
+          type: number
+          format: double
+          description: Rate value when type is PERCENTAGE (e.g., 0.2 for 20%). Optional for FLAT_AMOUNT.
+          example: 0.2
+        type:
+          type: string
+          description: Pricing type
+          enum: [PERCENTAGE, FLAT_AMOUNT]
+          example: PERCENTAGE
+        currency:
+          type: string
+          description: ISO currency code (e.g., EUR, USD)
+          example: EUR
+        description:
+          type: string
+          description: Product description
+          example: "Monthly subscription"
+        categoryId:
+          type: string
+          format: uuid
+          description: Optional category ID this product belongs to
+    ProductResponseView:
+      type: object
+      required:
+        - id
+        - code
+        - name
+        - type
+        - categoryId
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier
+        code:
+          type: string
+          description: Product code (unique)
+          example: "PRD-001"
+        name:
+          type: string
+          description: Product name
+          example: "Consulting Service"
+        amount:
+          type: number
+          format: decimal
+          description: Base amount (e.g., flat amount or base for percentage)
+          example: 100.0
+        rate:
+          type: number
+          format: double
+          description: Rate value when type is PERCENTAGE (e.g., 0.2 for 20%). May be null for FLAT_AMOUNT.
+          example: 0.2
+        type:
+          type: string
+          description: Pricing type
+          enum: [PERCENTAGE, FLAT_AMOUNT]
+          example: PERCENTAGE
+        currency:
+          type: string
+          description: ISO currency code (e.g., EUR, USD)
+          example: EUR
+        description:
+          type: string
+          description: Product description
+          example: "Monthly subscription"
+        categoryId:
+          type: string
+          format: uuid
+          description: Optional category ID this product belongs to
+        categoryName:
+          type: string
+          description: product category name
+          example: MODIFICATION DES CONDITIONS INITIALES D’AGREMENT
+        active:
+          type: boolean
+          description: Whether the product is active
+    ProductApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/ProductResponseView'
+    ProductPageResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/PaginationResponseView'
+        - type: object
+          required:
+            - elements
+          properties:
+            elements:
+              type: array
+              description: The list of products
+              items:
+                $ref: '#/components/schemas/ProductResponseView'
+    ProductPageApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/ProductPageResponseView'
