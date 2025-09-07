@@ -1,5 +1,7 @@
 package fr.xenonbyte.optifact.backend.api.actor;
 
+import fr.xenonbyte.optifact.backend.api.actor.generated.view.CreateActorApiRequestView;
+import fr.xenonbyte.optifact.backend.api.actor.generated.view.UpdateActorApiRequestView;
 import fr.xenonbyte.optifact.backend.api.common.locale.MessageUtil;
 import fr.xenonbyte.optifact.backend.api.actor.generated.ActorsApi;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.ActorApiRequestView;
@@ -33,7 +35,7 @@ public class ActorResource implements ActorsApi {
     }
 
     @Override
-    public ResponseEntity<ActorApiResponseView> createActor(String acceptLanguage, ActorApiRequestView actorApiRequestView) {
+    public ResponseEntity<ActorApiResponseView> createActor(String acceptLanguage, CreateActorApiRequestView actorApiRequestView) {
         return ResponseEntity.status(CREATED).body(
                 new ActorApiResponseView()
                         .timestamp(ZonedDateTime.now().toString())
@@ -81,7 +83,7 @@ public class ActorResource implements ActorsApi {
     }
 
     @Override
-    public ResponseEntity<ActorApiResponseView> updateActor(String acceptLanguage, UUID actorId, ActorApiRequestView actorApiRequestView) {
+    public ResponseEntity<ActorApiResponseView> updateActor(String acceptLanguage, UUID actorId, UpdateActorApiRequestView actorApiRequestView) {
         return ResponseEntity.status(OK).body(
                 new ActorApiResponseView()
                         .timestamp(ZonedDateTime.now().toString())

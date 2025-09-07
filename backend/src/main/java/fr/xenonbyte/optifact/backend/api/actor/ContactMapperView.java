@@ -3,12 +3,16 @@ package fr.xenonbyte.optifact.backend.api.actor;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.ContactRequestView;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.ContactResponseView;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.ContactTypeView;
+import fr.xenonbyte.optifact.backend.api.actor.generated.view.CreateContactRequestView;
+import fr.xenonbyte.optifact.backend.api.actor.generated.view.UpdateContactRequestView;
 import fr.xenonbyte.optifact.backend.domain.actor.contact.Contact;
 import fr.xenonbyte.optifact.backend.domain.actor.contact.ContactType;
 import org.mapstruct.Mapper;
 import org.mapstruct.ObjectFactory;
 
 import java.util.UUID;
+
+import static java.util.UUID.randomUUID;
 
 /**
  * Dedicated mapper for Contact API <-> Domain mappings.
@@ -17,7 +21,8 @@ import java.util.UUID;
 public interface ContactMapperView {
 
     // API -> Domain
-    Contact toDomain(ContactRequestView view);
+    Contact toDomain(CreateContactRequestView view);
+    Contact toDomain(UpdateContactRequestView view);
 
     // Domain -> API
     default ContactResponseView toResponse(Contact contact) {
@@ -25,7 +30,7 @@ public interface ContactMapperView {
     }
 
     @ObjectFactory
-    default Contact createContact(ContactRequestView view) {
+    default Contact createContact(CreateContactRequestView view) {
         ContactType type = view.getType() == null ? null : ContactType.valueOf(view.getType().getValue());
         return Contact.create(
                 type,
@@ -33,6 +38,21 @@ public interface ContactMapperView {
                 view.getEmail(),
                 view.getPhone(),
                 view.getFunction(),
+                view.getActive()
+        );
+    }
+
+    @ObjectFactory
+    default Contact createContact(UpdateContactRequestView view) {
+        ContactType type = view.getType() == null ? null : ContactType.valueOf(view.getType().getValue());
+        return Contact.create(
+                view.getId() == null? randomUUID() : view.getId(),
+                type,
+                view.getName(),
+                view.getEmail(),
+                view.getPhone(),
+                view.getFunction(),
+                null,
                 view.getActive()
         );
     }

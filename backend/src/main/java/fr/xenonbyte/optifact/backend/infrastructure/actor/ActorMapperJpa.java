@@ -16,7 +16,9 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring", uses = {AddressMapperJpa.class, ContactMapperJpa.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ActorMapperJpa {
     ActorJpa toJpa(Actor actor);
-    Actor toDomain(ActorJpa actorJpa);
+    default Actor toDomain(ActorJpa actorJpa) {
+        return createActor(actorJpa);
+    }
 
     @ObjectFactory
     default Actor createActor(ActorJpa actorJpa) {

@@ -3,12 +3,16 @@ package fr.xenonbyte.optifact.backend.api.actor;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.AddressRequestView;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.AddressResponseView;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.AddressTypeView;
+import fr.xenonbyte.optifact.backend.api.actor.generated.view.CreateAddressRequestView;
+import fr.xenonbyte.optifact.backend.api.actor.generated.view.UpdateAddressRequestView;
 import fr.xenonbyte.optifact.backend.domain.actor.address.Address;
 import fr.xenonbyte.optifact.backend.domain.actor.address.AddressType;
 import org.mapstruct.Mapper;
 import org.mapstruct.ObjectFactory;
 
 import java.util.UUID;
+
+import static java.util.UUID.randomUUID;
 
 /**
  * Dedicated mapper for Address API <-> Domain mappings.
@@ -18,7 +22,8 @@ import java.util.UUID;
 public interface AddressMapperView {
 
     // API -> Domain
-    Address toDomain(AddressRequestView view);
+    Address toDomain(CreateAddressRequestView view);
+    Address toDomain(UpdateAddressRequestView view);
 
     // Domain -> API
     default AddressResponseView toResponse(Address address) {
@@ -26,7 +31,7 @@ public interface AddressMapperView {
     }
 
     @ObjectFactory
-    default Address createAddress(AddressRequestView view) {
+    default Address createAddress(CreateAddressRequestView view) {
         AddressType type = view.getType() == null ? null : AddressType.valueOf(view.getType().getValue());
         return Address.create(
                 type,
@@ -35,6 +40,22 @@ public interface AddressMapperView {
                 view.getCountry(),
                 view.getZipCode(),
                 view.getState(),
+                view.getActive()
+        );
+    }
+
+    @ObjectFactory
+    default Address createAddress(UpdateAddressRequestView view) {
+        AddressType type = view.getType() == null ? null : AddressType.valueOf(view.getType().getValue());
+        return Address.create(
+                view.getId() == null? randomUUID() : view.getId(),
+                type,
+                view.getStreet(),
+                view.getCity(),
+                view.getCountry(),
+                view.getZipCode(),
+                view.getState(),
+                null,
                 view.getActive()
         );
     }

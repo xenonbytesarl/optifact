@@ -28,7 +28,13 @@ public interface ActorMapperView {
     ContactMapperView CONTACT_MAPPER = Mappers.getMapper(ContactMapperView.class);
 
     // API -> Domain
-    Actor toActor(ActorApiRequestView requestView);
+    default Actor toActor(CreateActorApiRequestView requestView) {
+        return createActor(requestView);
+    }
+
+    default Actor toActor(UpdateActorApiRequestView requestView) {
+        return createActor(requestView);
+    }
 
     // Domain -> API
     default ActorResponseView toActorResponseView(Actor actor) {
@@ -38,18 +44,26 @@ public interface ActorMapperView {
                 .reference(actor.getReference())
                 .active(actor.getActive());
         if (actor.getAddresses() != null) {
-            resp.setAddresses(actor.getAddresses().stream().map(ADDRESS_MAPPER::toResponse).collect(Collectors.toList()));
+            resp.setAddresses(actor.getAddresses().stream().map(ADDRESS_MAPPER::toResponse).toList());
         }
         if (actor.getContacts() != null) {
-            resp.setContacts(actor.getContacts().stream().map(CONTACT_MAPPER::toResponse).collect(Collectors.toList()));
+            resp.setContacts(actor.getContacts().stream().map(CONTACT_MAPPER::toResponse).toList());
         }
         return resp;
     }
 
+    default SearchActorResponseView toSearchActorResponseView(Actor actor) {
+        return new SearchActorResponseView()
+                .id(actor.getId())
+                .name(actor.getName())
+                .reference(actor.getReference())
+                .active(actor.getActive());
+    }
+
     default ActorPageResponseView toActorPageResponseView(Pagination<Actor> page) {
-        List<ActorResponseView> elements = page.elements() == null ? List.of() : page.elements().stream()
-                .map(this::toActorResponseView)
-                .collect(Collectors.toList());
+        List<SearchActorResponseView> elements = page.elements() == null ? List.of() : page.elements().stream()
+                .map(this::toSearchActorResponseView)
+                .toList();
         return new ActorPageResponseView(
                 page.totalElements(),
                 page.totalPages(),
@@ -63,15 +77,35 @@ public interface ActorMapperView {
 
     // Factory to create domain from the request view with nested mapping
     @ObjectFactory
-    default Actor createActor(ActorApiRequestView requestView) {
+    default Actor createActor(CreateActorApiRequestView requestView) {
         List<Address> addresses = requestView.getAddresses() == null ? null : requestView.getAddresses().stream()
                 .filter(Objects::nonNull)
                 .map(ADDRESS_MAPPER::createAddress)
-                .collect(Collectors.toList());
+                .toList();
         List<Contact> contacts = requestView.getContacts() == null ? null : requestView.getContacts().stream()
                 .filter(Objects::nonNull)
                 .map(CONTACT_MAPPER::createContact)
-                .collect(Collectors.toList());
+                .toList();
+        return Actor.create(
+                requestView.getName(),
+                requestView.getReference(),
+                addresses,
+                contacts,
+                requestView.getActive()
+        );
+    }
+
+    // Factory to create domain from the request view with nested mapping
+    @ObjectFactory
+    default Actor createActor(UpdateActorApiRequestView requestView) {
+        List<Address> addresses = requestView.getAddresses() == null ? null : requestView.getAddresses().stream()
+                .filter(Objects::nonNull)
+                .map(ADDRESS_MAPPER::createAddress)
+                .toList();
+        List<Contact> contacts = requestView.getContacts() == null ? null : requestView.getContacts().stream()
+                .filter(Objects::nonNull)
+                .map(CONTACT_MAPPER::createContact)
+                .toList();
         return Actor.create(
                 requestView.getName(),
                 requestView.getReference(),

@@ -3,6 +3,7 @@ package fr.xenonbyte.optifact.backend.infrastructure.actor.address;
 import fr.xenonbyte.optifact.backend.domain.actor.address.Address;
 import fr.xenonbyte.optifact.backend.domain.actor.address.AddressType;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
 
 /**
@@ -12,6 +13,7 @@ import org.mapstruct.ObjectFactory;
  */
 @Mapper
 public interface AddressMapperJpa {
+    @Mapping(target = "actor", expression = "java(fr.xenonbyte.optifact.backend.infrastructure.actor.ActorJpa.builder().id(address.getActorId()).build())")
     AddressJpa toJpa(Address address);
     Address toDomain(AddressJpa addressJpa);
 
