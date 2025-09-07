@@ -8,4 +8,5 @@
     <include file="/db/changelog/changes/001-create-product-category-table.xml"/>
     <include file="/db/changelog/changes/002-create-product-table.xml"/>
     <include file="/db/changelog/changes/003-alter-product-rate-nullable.xml"/>
+    <include file="/db/changelog/changes/004-create-actor-address-contact-tables.xml"/>
 </databaseChangeLog>
