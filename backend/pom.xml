@@ -174,8 +174,36 @@
                             <inputSpec>${project.basedir}/../openapi/features/products/product-category.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
-                            <apiPackage>fr.xenonbyte.optifact.backend.api.resource.generated</apiPackage>
-                            <modelPackage>fr.xenonbyte.optifact.backend.api.resource.generated.view</modelPackage>
+                            <apiPackage>fr.xenonbyte.optifact.backend.api.productcategory.generated</apiPackage>
+                            <modelPackage>fr.xenonbyte.optifact.backend.api.productcategory.generated.view</modelPackage>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <configOptions>
+                                <delegatePattern>false</delegatePattern>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java8</dateLibrary>
+                                <documentationProvider>springdoc</documentationProvider>
+                                <requestMappingMode>api_interface</requestMappingMode>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useResponseEntity>true</useResponseEntity>
+                                <useBeanValidation>true</useBeanValidation>
+                                <performBeanValidation>true</performBeanValidation>
+                                <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>product</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/../openapi/features/products/product.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <apiPackage>fr.xenonbyte.optifact.backend.api.product.generated</apiPackage>
+                            <modelPackage>fr.xenonbyte.optifact.backend.api.product.generated.view</modelPackage>
                             <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
                             <configOptions>
                                 <delegatePattern>false</delegatePattern>

@@ -1,8 +1,8 @@
 package fr.xenonbyte.optifact.backend.api.productcategory;
 
-import fr.xenonbyte.optifact.backend.api.resource.generated.view.ProductCategoryApiRequestView;
-import fr.xenonbyte.optifact.backend.api.resource.generated.view.ProductCategoryPageResponseView;
-import fr.xenonbyte.optifact.backend.api.resource.generated.view.ProductCategoryResponseView;
+import fr.xenonbyte.optifact.backend.api.productcategory.generated.view.ProductCategoryApiRequestView;
+import fr.xenonbyte.optifact.backend.api.productcategory.generated.view.ProductCategoryPageResponseView;
+import fr.xenonbyte.optifact.backend.api.productcategory.generated.view.ProductCategoryResponseView;
 import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.domain.product.productcategory.ProductCategory;
 import org.mapstruct.Mapper;
