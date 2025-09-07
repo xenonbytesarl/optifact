@@ -3,6 +3,7 @@ package fr.xenonbyte.optifact.backend.infrastructure.product;
 import fr.xenonbyte.optifact.backend.domain.product.product.Product;
 import fr.xenonbyte.optifact.backend.domain.product.product.ProductType;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
 
 import java.util.Currency;
@@ -15,6 +16,7 @@ import java.util.Currency;
 @Mapper
 public interface ProductMapperJpa {
 
+    @Mapping(target = "category", expression = "java(fr.xenonbyte.optifact.backend.infrastructure.productcategory.ProductCategoryJpa.builder().id(product.getCategoryId()).build())")
     ProductJpa toJpa(Product product);
     Product toDomain(ProductJpa productJpa);
 
@@ -28,7 +30,7 @@ public interface ProductMapperJpa {
                 ProductType.valueOf(productJpa.getType().name()),
                 productJpa.getRate(),
                 productJpa.getAmount(),
-                Currency.getInstance(productJpa.getCurrency()),
+                productJpa.getCurrency() == null? null: Currency.getInstance(productJpa.getCurrency()),
                 productJpa.getDescription()
         );
     }

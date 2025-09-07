@@ -11,6 +11,8 @@ import org.mapstruct.ObjectFactory;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author bamk

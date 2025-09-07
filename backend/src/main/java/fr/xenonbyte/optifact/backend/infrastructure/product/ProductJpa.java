@@ -37,7 +37,7 @@ public class ProductJpa extends BaseEntityJpa {
     @Enumerated(EnumType.STRING)
     @Column(name = "c_type", nullable = false)
     private ProductTypeJpa type;
-    @Column(name = "c_rate", nullable = false)
+    @Column(name = "c_rate")
     private Double rate;
     @Column(name = "c_amount")
     private BigDecimal amount;

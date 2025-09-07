@@ -5,7 +5,9 @@ import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.product.productcategory.ProductCategory;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -31,4 +33,6 @@ public interface ProductCategoryRepository {
     Boolean existById(UUID categoryId);
 
     void delete(ProductCategory productCategory);
+
+    List<ProductCategory> findByIds(Set<UUID> categoryIds);
 }
