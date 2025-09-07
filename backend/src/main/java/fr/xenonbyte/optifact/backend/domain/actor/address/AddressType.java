@@ -6,5 +6,5 @@ package fr.xenonbyte.optifact.backend.domain.actor.address;
  * @since 07/09/2025
  */
 public enum AddressType {
-    DEFAULT, INVOICE, OTHER
+    DEFAULT, INVOICE, SHIPPING, OTHER
 }

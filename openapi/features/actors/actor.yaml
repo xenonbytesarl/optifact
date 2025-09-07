@@ -1,0 +1,420 @@
+openapi: 3.0.3
+info:
+  title: Actor API
+  description: API pour la gestion des acteurs (clients, fournisseurs, etc.)
+  version: 1.0.0
+servers:
+  - url: /api/v1/optifact
+    description: Serveur par défaut
+tags:
+  - name: Actor
+    description: Opérations liées aux acteurs
+paths:
+  /actors:
+    get:
+      tags:
+        - Actor
+      summary: Rechercher des acteurs
+      description: Recherche des acteurs selon les critères fournis
+      operationId: searchActors
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - $ref: '../../parameters/common.yaml#/pageParam'
+        - $ref: '../../parameters/common.yaml#/sizeParam'
+        - $ref: '../../parameters/common.yaml#/sortFieldParam'
+        - $ref: '../../parameters/common.yaml#/sortDirectionParam'
+        - name: nameFilter
+          in: query
+          description: Filtre optionnel sur le nom (insensible à la casse, correspondance partielle)
+          required: false
+          schema:
+            type: string
+        - name: referenceFilter
+          in: query
+          description: Filtre optionnel sur la référence (insensible à la casse, correspondance partielle)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recherche effectuée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActorPageApiResponseView'
+        '400':
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    post:
+      tags:
+        - Actor
+      summary: Créer un acteur
+      description: Crée un nouvel acteur
+      operationId: createActor
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActorApiRequestView'
+      responses:
+        '201':
+          description: Acteur créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActorApiResponseView'
+        '400':
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Conflit - Un acteur avec la même référence existe déjà
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /actors/{actorId}:
+    get:
+      tags:
+        - Actor
+      summary: Trouver un acteur par ID
+      description: Récupère un acteur par son identifiant unique
+      operationId: findActorById
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: actorId
+          in: path
+          description: ID de l'acteur à récupérer
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Acteur trouvé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActorApiResponseView'
+        '400':
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Acteur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    put:
+      tags:
+        - Actor
+      summary: Mettre à jour un acteur
+      description: Met à jour un acteur existant
+      operationId: updateActor
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: actorId
+          in: path
+          description: ID de l'acteur à mettre à jour
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActorApiRequestView'
+      responses:
+        '200':
+          description: Acteur mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActorApiResponseView'
+        '400':
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Acteur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Conflit
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    delete:
+      tags:
+        - Actor
+      summary: Supprimer un acteur
+      description: Marque un acteur comme supprimé (soft delete)
+      operationId: deleteActor
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: actorId
+          in: path
+          description: ID de l'acteur à supprimer
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Acteur supprimé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        '400':
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Acteur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+
+components:
+  schemas:
+    ActorApiRequestView:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Nom de l'acteur
+          example: "Société ACME"
+        reference:
+          type: string
+          description: Référence interne ou code de l'acteur
+          example: "CLI-2025-0001"
+        addresses:
+          type: array
+          description: Adresses associées à l'acteur
+          items:
+            $ref: '#/components/schemas/AddressRequestView'
+        contacts:
+          type: array
+          description: Contacts associés à l'acteur
+          items:
+            $ref: '#/components/schemas/ContactRequestView'
+        active:
+          type: boolean
+          description: Indique si l'acteur est actif
+          default: true
+    ActorResponseView:
+      type: object
+      required:
+        - id
+        - name
+        - active
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identifiant unique de l'acteur
+        name:
+          type: string
+          description: Nom de l'acteur
+          example: "Société ACME"
+        reference:
+          type: string
+          description: Référence interne ou code de l'acteur
+          example: "CLI-2025-0001"
+        addresses:
+          type: array
+          description: Adresses associées à l'acteur
+          items:
+            $ref: '#/components/schemas/AddressResponseView'
+        contacts:
+          type: array
+          description: Contacts associés à l'acteur
+          items:
+            $ref: '#/components/schemas/ContactResponseView'
+        active:
+          type: boolean
+          description: Indique si l'acteur est actif
+    ActorApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/ActorResponseView'
+    ActorPageResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/PaginationResponseView'
+        - type: object
+          required:
+            - elements
+          properties:
+            elements:
+              type: array
+              description: Liste des acteurs
+              items:
+                $ref: '#/components/schemas/ActorResponseView'
+    ActorPageApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/ActorPageResponseView'
+
+    AddressTypeView:
+      type: string
+      description: Type d'adresse
+      enum: [DEFAULT, INVOICE, SHIPPING, OTHER]
+    AddressRequestView:
+      type: object
+      required:
+        - type
+        - city
+        - country
+      properties:
+        type:
+          $ref: '#/components/schemas/AddressTypeView'
+        street:
+          type: string
+          description: Rue et numéro
+          example: "12 rue des Fleurs"
+        city:
+          type: string
+          description: Ville
+          example: "Paris"
+        country:
+          type: string
+          description: Pays
+          example: "FR"
+        zipCode:
+          type: string
+          description: Code postal
+          example: "75001"
+        state:
+          type: string
+          description: État / Région
+          example: "Île-de-France"
+        active:
+          type: boolean
+          description: Adresse active
+          default: true
+    AddressResponseView:
+      allOf:
+        - $ref: '#/components/schemas/AddressRequestView'
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: string
+              format: uuid
+            actorId:
+              type: string
+              format: uuid
+              description: Identifiant de l'acteur propriétaire de l'adresse
+
+    ContactTypeView:
+      type: string
+      description: Type de contact
+      enum: [DEFAULT, PROJECT, ACCOUNTING, COMMERCIAL, TECHNICAL, OTHER]
+    ContactRequestView:
+      type: object
+      required:
+        - type
+        - name
+        - email
+      properties:
+        type:
+          $ref: '#/components/schemas/ContactTypeView'
+        name:
+          type: string
+          description: Nom du contact
+          example: "Jean Dupont"
+        email:
+          type: string
+          format: email
+          description: Email du contact
+          example: "jean.dupont@example.com"
+        phone:
+          type: string
+          description: Téléphone du contact
+          example: "+33 1 23 45 67 89"
+        function:
+          type: string
+          description: Fonction/Intitulé du poste
+          example: "Responsable achats"
+        active:
+          type: boolean
+          description: Contact actif
+          default: true
+    ContactResponseView:
+      allOf:
+        - $ref: '#/components/schemas/ContactRequestView'
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: string
+              format: uuid
+            actorId:
+              type: string
+              format: uuid
+              description: Identifiant de l'acteur propriétaire du contact
+
