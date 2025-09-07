@@ -61,7 +61,22 @@ public class ProductCategoryAdapterView {
     }
 
     public ProductCategoryPageResponseView searchProductCategories(String nameFilter, Integer page, Integer size, String sortField, String sortDirection) {
-        return mapperView.toResponsePageView(searchProductCategoriesUseCase.searchProductCategories(nameFilter, new CommonSearch(page.longValue(), size.longValue(), sortField, Direction.valueOf(sortDirection))));
+        // Defaults and normalization to avoid NPEs and IllegalArgumentException
+        long safePage = page == null ? 0L : page.longValue();
+        long safeSize = size == null ? 20L : size.longValue();
+        String safeSort = (sortField == null || sortField.isBlank()) ? "name" : sortField;
+        Direction safeDirection;
+        if (sortDirection == null) {
+            safeDirection = Direction.ASC;
+        } else {
+            try {
+                safeDirection = Direction.valueOf(sortDirection.trim().toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                safeDirection = Direction.ASC;
+            }
+        }
+        return mapperView.toResponsePageView(searchProductCategoriesUseCase.searchProductCategories(
+                nameFilter, new CommonSearch(safePage, safeSize, safeSort, safeDirection)));
     }
 
 }
