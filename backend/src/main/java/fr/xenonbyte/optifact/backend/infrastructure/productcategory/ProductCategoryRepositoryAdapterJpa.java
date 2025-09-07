@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -91,5 +92,10 @@ public class ProductCategoryRepositoryAdapterJpa implements ProductCategoryRepos
     @Override
     public void delete(ProductCategory productCategory) {
         repositoryJpa.delete(mapperJpa.toJpa(productCategory));
+    }
+
+    @Override
+    public List<ProductCategory> findByIds(Set<UUID> categoryIds) {
+        return repositoryJpa.findByIdIn(categoryIds.stream().toList()).stream().map(mapperJpa::toDomain).toList();
     }
 }
