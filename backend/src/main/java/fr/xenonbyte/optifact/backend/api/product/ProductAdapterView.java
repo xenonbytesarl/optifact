@@ -69,7 +69,7 @@ public class ProductAdapterView {
     }
 
     public void deleteProductById(UUID productId) {
-        deleteProductByIdUseCase.deleteProduct(productId);
+        deleteProductByIdUseCase.deleteProductById(productId);
     }
 
     public ProductPageResponseView searchProducts(String nameFilter,
@@ -96,7 +96,7 @@ public class ProductAdapterView {
             }
         }
 
-        Pagination<Product> productPage = searchProductsUseCase.searchProduct(
+        Pagination<Product> productPage = searchProductsUseCase.searchProducts(
                 nameFilter,
                 codeFilter,
                 categoryNameFilter,

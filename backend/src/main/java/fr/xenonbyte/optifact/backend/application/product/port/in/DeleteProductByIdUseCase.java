@@ -12,5 +12,5 @@ import java.util.UUID;
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
 public interface DeleteProductByIdUseCase {
-    void deleteProduct(UUID productId);
+    void deleteProductById(UUID productId);
 }

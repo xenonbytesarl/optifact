@@ -28,7 +28,7 @@ public final class DeleteProductByIdApplicationService implements DeleteProductB
     }
 
     @Override
-    public void deleteProduct(UUID productId) {
+    public void deleteProductById(UUID productId) {
         LOGGER.info("deleting product with id: '" + productId + "'" );
         Product product = repository.findById(productId)
                 .orElseThrow(() -> new ProductIdNotFoundException(productId));

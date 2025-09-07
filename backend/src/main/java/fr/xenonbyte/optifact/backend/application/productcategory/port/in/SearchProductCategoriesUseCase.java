@@ -5,8 +5,6 @@ import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.product.productcategory.ProductCategory;
 
-import java.util.UUID;
-
 /**
  * @author bamk
  * @version 1.0
@@ -15,5 +13,5 @@ import java.util.UUID;
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
 public interface SearchProductCategoriesUseCase {
-    Pagination<ProductCategory> createProductCategory(String nameFilter, CommonSearch search);
+    Pagination<ProductCategory> searchProductCategories(String nameFilter, CommonSearch search);
 }
