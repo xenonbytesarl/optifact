@@ -57,11 +57,11 @@ public class ProductCategoryAdapterView {
     }
 
     public void deleteProductCategoryById(UUID categoryId) {
-        deleteProductCategoryByIdUseCase.deleteProductCategory(categoryId);
+        deleteProductCategoryByIdUseCase.deleteProductCategoryById(categoryId);
     }
 
     public ProductCategoryPageResponseView searchProductCategories(String nameFilter, Integer page, Integer size, String sortField, String sortDirection) {
-        return mapperView.toResponsePageView(searchProductCategoriesUseCase.createProductCategory(nameFilter, new CommonSearch(page.longValue(), size.longValue(), sortField, Direction.valueOf(sortDirection))));
+        return mapperView.toResponsePageView(searchProductCategoriesUseCase.searchProductCategories(nameFilter, new CommonSearch(page.longValue(), size.longValue(), sortField, Direction.valueOf(sortDirection))));
     }
 
 }

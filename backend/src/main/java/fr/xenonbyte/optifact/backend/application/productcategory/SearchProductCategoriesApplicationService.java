@@ -31,7 +31,7 @@ public final class SearchProductCategoriesApplicationService implements SearchPr
     }
     
     @Override
-    public Pagination<ProductCategory> createProductCategory(String nameFilter, CommonSearch search) {
+    public Pagination<ProductCategory> searchProductCategories(String nameFilter, CommonSearch search) {
         LOGGER.info("Searching product category with nameFilter: '" + nameFilter + "'" );
 
         Pagination<ProductCategory> productCategoriesPage = repository.search(nameFilter, search);

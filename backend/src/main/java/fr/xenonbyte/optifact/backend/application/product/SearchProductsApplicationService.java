@@ -30,8 +30,8 @@ public final class SearchProductsApplicationService implements SearchProductsUse
     }
     
     @Override
-    public Pagination<Product> searchProduct(String nameFilter, String codeFilter,
-                                             String categoryNameFilter, String typeFilter, CommonSearch search) {
+    public Pagination<Product> searchProducts(String nameFilter, String codeFilter,
+                                              String categoryNameFilter, String typeFilter, CommonSearch search) {
         LOGGER.info("Searching products with nameFilter: '" + nameFilter + "', typeFilter: '" + typeFilter
                 + "', categoryNameFilter: '" + categoryNameFilter + "', codeFilter: '" + codeFilter + "'" );
 

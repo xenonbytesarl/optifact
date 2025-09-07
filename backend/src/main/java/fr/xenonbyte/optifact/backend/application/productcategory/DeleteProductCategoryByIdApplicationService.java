@@ -29,7 +29,7 @@ public final class DeleteProductCategoryByIdApplicationService implements Delete
     }
 
     @Override
-    public void deleteProductCategory(UUID categoryId) {
+    public void deleteProductCategoryById(UUID categoryId) {
         LOGGER.info("deleting product category with id: '" + categoryId + "'" );
         ProductCategory productCategory = repository.findById(categoryId)
                 .orElseThrow(() -> new ProductCategoryIdNotFoundException(categoryId));
