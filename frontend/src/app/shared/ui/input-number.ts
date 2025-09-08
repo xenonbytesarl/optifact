@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
            [attr.step]="step() ?? (allowDecimal() ? 'any' : '1')"
            [value]="value() ?? ''"
            (input)="onInput($event)"
+           (blur)="onBlur()"
            [class]="inputClass()" />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -27,6 +28,7 @@ export class InputNumberComponent {
   step = input<number | null>(null);
   allowDecimal = input<boolean>(true);
   value = model<number | null>(null);
+  blurred = output<void>();
 
   inputClass() {
     const base = 'w-full h-11 border bg-surface text-fg placeholder-muted px-3 text-base outline-none shadow-sm';
@@ -51,5 +53,9 @@ export class InputNumberComponent {
     if (min != null && v < min) v = min;
     if (max != null && v > max) v = max;
     this.value.set(v);
+  }
+
+  onBlur() {
+    this.blurred.emit();
   }
 }

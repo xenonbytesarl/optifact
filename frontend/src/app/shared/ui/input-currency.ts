@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, effect, input, model, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, effect, input, model, output, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
 function parseNumberLoose(v: string): number | null {
@@ -42,6 +42,7 @@ export class InputCurrencyComponent {
   min = input<number | null>(null);
   max = input<number | null>(null);
   value = model<number | null>(null);
+  blurred = output<void>();
 
   // Internal state for editing vs formatted display
   private editing = signal<boolean>(false);
@@ -107,6 +108,7 @@ export class InputCurrencyComponent {
     // Reformat on blur
     const v = this.value();
     this.displayValue.set(this.format(v));
+    this.blurred.emit();
   }
 
   onInput(e: Event) {

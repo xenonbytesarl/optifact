@@ -11,7 +11,8 @@ import {CommonModule} from '@angular/common';
   },
   template: `
     <span [ngClass]="{
-        'bg-[color-mix(in_oklab,var(--color-accent)_20%,white)] text-[color-mix(in_oklab,var(--color-accent)_80%,black)] dark:bg-[color-mix(in_oklab,var(--color-accent)_30%,black)] dark:text-[color-mix(in_oklab,var(--color-accent)_90%,white)]': tone() === 'info',
+
+        'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100': tone() === 'info',
         'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100': tone() === 'success',
         'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100': tone() === 'warn',
         'bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-100': tone() === 'neutral'
@@ -21,5 +22,5 @@ import {CommonModule} from '@angular/common';
   `
 })
 export class BadgeComponent {
-  tone = input<'info' | 'success' | 'warn' | 'neutral'>('info');
+  tone = input<'info' | 'success' | 'warn' | 'neutral' >('info');
 }
