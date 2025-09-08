@@ -19,10 +19,13 @@ import { SpinnerComponent } from '../../../shared/ui/spinner';
         <app-spinner [overlay]="true" />
       }
       <app-card>
-        <div class="grid gap-4 md:grid-cols-2">
-          <div>
-            <div class="text-sm text-muted">Nom</div>
-            <div class="text-base">{{ name() }}</div>
+        <div class="flex items-start gap-4 md:gap-6">
+          <div class="hidden md:flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
+            <span class="material-symbols-outlined text-neutral-600 dark:text-neutral-300 text-3xl">category</span>
+          </div>
+          <div class="flex-1">
+            <div class="text-2xl font-semibold leading-tight">{{ name() || '-' }}</div>
+            <div class="text-sm text-muted">Catégorie de produits</div>
           </div>
         </div>
       </app-card>
