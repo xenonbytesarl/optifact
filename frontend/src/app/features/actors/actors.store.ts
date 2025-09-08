@@ -1,146 +1,144 @@
-import { inject, computed } from '@angular/core';
-import { signalStore, withState, withComputed, withMethods, patchState } from '@ngrx/signals';
+import { inject } from '@angular/core';
+import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 import { ActorsApi } from '../../core/api/actor/actors.api';
-import { Address, Contact, Actor } from '../../core/api/actor/models';
+import {Actor, ActorSortColumn} from '../../core/api/actor/models';
+import {ErrorApiResponse, Page, SuccessApiResponse} from '../../core/model/response.model';
+import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../core/constant/constant';
+import {Direction} from '../../core/model/direction.enum';
 
 export interface ActorsState {
-  currentActor: Actor | null;
-  addresses: Address[];
-  contacts: Contact[];
+  actorPage: Page<Actor>;
+  column: ActorSortColumn;
+  current: Actor | null;
   loading: boolean;
   error: string | null;
-  formDirty: boolean;
+  message: string | null;
 }
 
-const initialState: ActorsState = {
-  currentActor: null,
-  addresses: [],
-  contacts: [],
-  loading: false,
-  error: null,
-  formDirty: false,
+let initialActorPage = {
+  elements: [],
+  totalElements: 0,
+  size: DEFAULT_PAGE_SIZE,
+  page: DEFAULT_PAGE_NUMBER,
+  totalPages: 0,
+  isFirst: true,
+  isLast: true
 };
 
-export const ActorsStore = signalStore(
+const initialState: ActorsState = {
+  actorPage: initialActorPage,
+  column: 'name',
+  current: null,
+  loading: false,
+  error: null,
+  message: null
+};
+
+export const actorStore = signalStore(
   // Keep providedIn so it can be root-provided; component-level providers can still override per injector
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ addresses, contacts, loading, currentActor }) => ({
-    addressesCount: computed(() => addresses().length),
-    contactsCount: computed(() => contacts().length),
-    canSave: computed(() => {
-      const c = currentActor();
-      return !!c && (c.name?.trim().length ?? 0) >= 2 && !loading();
-    }),
-  })),
   withMethods((store) => {
     const api = inject(ActorsApi);
 
     return {
-      setActor(c: Actor | null) {
-        patchState(store, {
-          currentActor: c,
-          addresses: c?.addresses ?? [],
-          contacts: c?.contacts ?? [],
-          formDirty: false,
-        });
+      resetForm(): void {
+        patchState(store, { current: null });
       },
 
-      addAddress(a: Address) {
-        const list = [...store.addresses()];
-        // ensure only one default
-        if (a.type === 'défaut') {
-          for (const item of list) {
-            if (item.type === 'défaut') item.type = 'autres';
-          }
-        }
-        patchState(store, { addresses: [a, ...list], formDirty: true });
-      },
-
-      updateAddress(a: Address) {
-        patchState(store, {
-          addresses: store.addresses().map((x) => (x.id === a.id ? a : x)),
-          formDirty: true,
-        });
-      },
-
-      removeAddress(id: string) {
-        patchState(store, {
-          addresses: store.addresses().filter((x) => x.id !== id),
-          formDirty: true,
-        });
-      },
-
-      addContact(c: Contact) {
-        patchState(store, { contacts: [c, ...store.contacts()], formDirty: true });
-      },
-
-      updateContact(c: Contact) {
-        patchState(store, {
-          contacts: store.contacts().map((x) => (x.id === c.id ? c : x)),
-          formDirty: true,
-        });
-      },
-
-      removeContact(id: string) {
-        patchState(store, {
-          contacts: store.contacts().filter((x) => x.id !== id),
-          formDirty: true,
-        });
-      },
-
-      async load(id: string) {
-        patchState(store, { loading: true, error: null });
-        try {
-          const data = await api.get(id);
-          if (data) this.setActor(data);
-        } catch (e: any) {
-          patchState(store, { error: e?.message ?? 'Erreur de chargement' });
-        } finally {
-          patchState(store, { loading: false });
+      async search(
+        nameFilter: string,
+        referenceFilter: string,
+        page: number,
+        size: number,
+        direction: Direction,
+        sort: ActorSortColumn
+      ) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.search(nameFilter, referenceFilter, page, size, direction, sort );
+        if(response.success) {
+          const payload = response as SuccessApiResponse<Page<Actor>>;
+          patchState(store, {actorPage: payload.data.content as any, message: payload.message ?? 'actors.messages.search.success', loading: false });
+          return payload.data.content;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'actors.messages.search.error', loading: false });
+          return null;
         }
       },
-
+      async findById(actorId: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response =  await api.get(actorId);
+        if(response.success) {
+          const payload = response as SuccessApiResponse<Actor>;
+          patchState(store, {current: payload.data.content ?? null, message: payload.message ?? 'actors.messages.find.success', loading: false });
+          return payload.data.content;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'actors.messages.find.error', loading: false });
+          return null;
+        }
+      },
       async create(payload: Partial<Actor>) {
-        patchState(store, { loading: true, error: null });
-        try {
-          const created = await api.create({
-            ...payload,
-            addresses: store.addresses(),
-            contacts: store.contacts(),
-          });
-          this.setActor(created as Actor);
-          return created;
-        } catch (e: any) {
-          patchState(store, { error: e?.message ?? 'Erreur de création' });
-          throw e;
-        } finally {
-          patchState(store, { loading: false });
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.create(payload);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Actor>;
+          patchState(store, {
+            actorPage: {
+              ...store.actorPage(),
+              elements: [payload.data.content, ...store.actorPage().elements]
+            }, message: payload.message ?? 'actors.messages.created.success', loading: false });
+          return payload.data.content;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'actors.messages.created.error', loading: false });
+          return null;
         }
       },
-
       async update(id: string, payload: Partial<Actor>) {
-        patchState(store, { loading: true, error: null });
-        try {
-          const updated = await api.update(id, {
-            ...payload,
-            addresses: store.addresses(),
-            contacts: store.contacts(),
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.update(id, payload);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Actor>;
+          patchState(store, {
+            actorPage: {
+              ...store.actorPage(),
+              elements: store.actorPage().elements
+                .map(actor => actor.id === id ? payload.data.content: actor)},
+            message: payload.message ?? 'actors.messages.update.success', loading: false
           });
-          this.setActor(updated as Actor);
-          return updated;
-        } catch (e: any) {
-          patchState(store, { error: e?.message ?? 'Erreur de mise à jour' });
-          throw e;
-        } finally {
-          patchState(store, { loading: false });
+          return payload.data.content;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'actors.messages.update.error', loading: false });
+          return null;
         }
       },
+      async remove(id: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.remove(id);
+        if(response.success) {
+          const payload = response as SuccessApiResponse<void>;
+          patchState(store, {
+            actorPage: {
+              ...store.actorPage(),
+              elements: store.actorPage().elements.filter(actor => actor.id !== id)
+            },
+            message: payload.message ?? 'actors.messages.deleted.success', loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'actors.messages.deleted.error', loading: false });
+          return false;
+        }
+      }
     };
   })
 );
 
-export function provideActorsStore() {
+export function provideActorStore() {
   // Providing the store at component/route level will create a new instance scoped to that injector
-  return [ActorsStore];
+  return [actorStore];
 }
