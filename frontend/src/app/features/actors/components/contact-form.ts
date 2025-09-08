@@ -5,7 +5,7 @@ import { InputTextComponent } from '../../../shared/ui/input';
 import { SelectComponent, SelectOption } from '../../../shared/ui/select';
 import { InputPhoneComponent } from '../../../shared/ui/input-phone';
 import { InputEmailComponent } from '../../../shared/ui/input-email';
-import { ContactType } from '../models';
+import { ContactType } from '../../../core/api/actor/models';
 
 export interface ContactFormModel { type: ContactType; name: string; email: string; phone: string; role?: string }
 

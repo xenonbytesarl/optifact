@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Address, Contact } from '../models';
+import { Address, Contact } from '../../../core/api/actor/models';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { TableComponent } from '../../../shared/ui/table';
