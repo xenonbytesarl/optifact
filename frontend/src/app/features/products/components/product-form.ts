@@ -35,20 +35,20 @@ export interface ProductFormValue {
   template: `
     <form class="flex flex-col gap-3">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <app-form-field [label]="('products.fields.code' | t)" [required]="true">
-          <app-input [disabled]="disabled()" [error]="codeRequiredError()" [value]="value().code" (valueChange)="onCode($event)" (blurred)="blur.emit()" />
+        <app-form-field [label]="('products.fields.code' | t)" [required]="true" [error]="codeRequiredError() ? ('validation.required' | t) : null">
+          <app-input [disabled]="disabled()" [error]="codeRequiredError()" [value]="value().code" (valueChange)="onCode($event)" (blurred)="blurCode.emit()" />
         </app-form-field>
-        <app-form-field [label]="('products.fields.name' | t)" [required]="true">
-          <app-input [disabled]="disabled()" [error]="nameRequiredError()" [value]="value().name" (valueChange)="onName($event)" (blurred)="blur.emit()" />
+        <app-form-field [label]="('products.fields.name' | t)" [required]="true" [error]="nameRequiredError() ? ('validation.required' | t) : null">
+          <app-input [disabled]="disabled()" [error]="nameRequiredError()" [value]="value().name" (valueChange)="onName($event)" (blurred)="blurName.emit()" />
         </app-form-field>
 
         <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-3">
-          <app-form-field [label]="('products.fields.category' | t)" [required]="true">
-            <app-autocomplete [disabled]="disabled()"  [placeholder]="('products.fields.selectCategory' | t)"
-                               [items]="categoryItems()" [value]="value().categoryId ?? null" (valueChange)="onCategoryId($event)" />
+          <app-form-field [label]="('products.fields.category' | t)" [required]="true" [error]="codeRequiredError() ? ('validation.required' | t) : null">
+            <app-autocomplete [disabled]="disabled()"   [placeholder]="('products.fields.selectCategory' | t)"
+                               [items]="categoryItems()" [value]="value().categoryId ?? null" (valueChange)="onCategoryId($event)" [error]="categoryIdRequiredError()" (blurred)="blurCategory.emit()" />
           </app-form-field>
-          <app-form-field [label]="('products.fields.type' | t)" [required]="true">
-            <app-select [disabled]="disabled()"  [options]="typeOptions()" [value]="value().type" (valueChange)="onType($event)"  />
+          <app-form-field [label]="('products.fields.type' | t)" [required]="true" [error]="codeRequiredError() ? ('validation.required' | t) : null">
+            <app-select [disabled]="disabled()"  [options]="typeOptions()" [value]="value().type" (valueChange)="onType($event)" [error]="typeRequiredError()" (blurred)="blurType.emit()" />
           </app-form-field>
           @if (value().type === 'FLAT_AMOUNT') {
             <app-form-field [label]="('products.fields.amount' | t)" [hint]="('products.hints.amount' | t)">
@@ -92,7 +92,10 @@ export class ProductFormComponent {
 
   submit = output<CategoryFormValue>();
   cancel = output<void>();
-  blur = output<void>();
+  blurCode = output<void>();
+  blurName = output<void>();
+  blurCategory = output<void>();
+  blurType = output<void>();
 
   // Build type options from i18n so labels are translated
   typeOptions = computed<SelectOption[]>(() => {

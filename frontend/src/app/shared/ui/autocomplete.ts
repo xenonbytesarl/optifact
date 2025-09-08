@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, computed, effect, input, model, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, computed, effect, input, model, output, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface AutocompleteItem { value: string; label: string; icon?: string } // icon can be emoji or text
@@ -9,7 +9,12 @@ export interface AutocompleteItem { value: string; label: string; icon?: string 
   imports: [CommonModule],
   template: `
     <div class="relative">
-      <div class="flex items-center gap-2 w-full h-11 border border-token bg-surface text-fg px-3 pr-9 text-base focus-within:ring-1 ring-primary shadow-sm relative">
+      <div class="flex items-center gap-2 w-full h-11 border bg-surface text-fg px-3 pr-9 text-base shadow-sm relative"
+           [class.border-token]="!error()"
+           [class.focus-within:ring-1]="!error()"
+           [class.ring-primary]="!error()"
+           [class.border-red-500]="error()"
+           [class.ring-red-500]="error()">
         <input
           #inputEl
           type="text"
@@ -20,6 +25,7 @@ export interface AutocompleteItem { value: string; label: string; icon?: string 
           (input)="onInput($event)"
           (focus)="open.set(true)"
           (keydown)="onKeydown($event)"
+          (blur)="onBlur()"
         />
         @if (clearable() && (query() || value())) {
           <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-muted hover:text-fg p-1 h-6 w-6 inline-flex items-center justify-center" (click)="clear($event)">
@@ -58,9 +64,12 @@ export class AutocompleteComponent {
   placeholder = input<string>('');
   disabled = input<boolean>(false);
   clearable = input<boolean>(true);
+  error = input<boolean>(false);
   value = model<string | null>(null);
   // when placed left of another input (e.g., phone), square the right corners
   rightSquare = input<boolean>(false);
+
+  blurred = output<void>();
 
   // internal state
   open = signal(false);
@@ -156,4 +165,6 @@ export class AutocompleteComponent {
       }
     }
   }
+
+  onBlur() { this.blurred.emit(); }
 }
