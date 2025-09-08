@@ -1,7 +1,7 @@
 import { inject, computed } from '@angular/core';
 import { signalStore, withState, withComputed, withMethods, patchState } from '@ngrx/signals';
-import { ActorsApi } from '../../core/api/actors.api';
-import type { Actor } from './models';
+import { ActorsApi } from '../../core/api/actor/actors.api';
+import type { Actor } from '../../core/api/actor/models';
 
 export interface ActorsListState {
   items: Actor[];

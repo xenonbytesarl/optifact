@@ -5,7 +5,7 @@ import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { TranslateService } from '../../../core/i18n/translate.service';
 import { TableComponent } from '../../../shared/ui/table';
-import { Actor } from '../models';
+import { Actor } from '../../../core/api/actor/models';
 
 @Component({
   selector: 'app-actor-list',

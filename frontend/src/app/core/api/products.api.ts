@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {firstValueFrom} from 'rxjs';
-import {GlobalHttpRepository} from './global-http-repository.service';
+import {GlobalHttpApi} from './global-http-repository.service';
 import {Direction} from '../model/direction.enum';
 import {ErrorApiResponse, Page, SuccessApiResponse} from '../model/response.model';
 
@@ -21,7 +21,7 @@ export interface Product {
 export type ProductSortColumn = 'name' | 'reference';
 
 @Injectable({providedIn: 'root'})
-export class ProductsApi extends GlobalHttpRepository {
+export class ProductsApi extends GlobalHttpApi {
 
   private base = this.apiUrl + '/products';
 

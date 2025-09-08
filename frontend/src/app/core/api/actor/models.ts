@@ -1,5 +1,5 @@
-export type AddressType = 'facturation' | 'livraison' | 'défaut' | 'autres';
-export type ContactType = 'commercial' | 'technique' | 'comptabilité' | 'autres';
+export type AddressType = 'DEFAULT' | 'PROJECT' | 'ACCOUNTING' | 'COMMERCIAL' | 'OTHERS' | 'TECHNICAL';
+export type ContactType = 'DEFAULT' | 'INVOICE' | 'SHIPPING' | 'OTHER';
 
 export interface Address {
   id: string;
@@ -26,3 +26,5 @@ export interface Actor {
   addresses: Address[];
   contacts: Contact[];
 }
+
+export type ActorSortColumn = 'name' | 'reference';

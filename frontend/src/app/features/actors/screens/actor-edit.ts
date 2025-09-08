@@ -4,7 +4,7 @@ import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { ActorFormComponent, ActorBaseModel } from '../components/actor-form';
 import { ActorTabsComponent } from '../components/actor-tabs';
 import { ActorsStore, provideActorsStore } from '../actors.store';
-import { Address, Contact } from '../models';
+import { Address, Contact } from '../../../core/api/actor/models';
 import { CardComponent } from '../../../shared/ui/card';
 import { DialogComponent } from '../../../shared/ui/dialog';
 import { AddressFormComponent } from '../components/address-form';

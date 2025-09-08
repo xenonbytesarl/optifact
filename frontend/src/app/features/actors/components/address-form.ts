@@ -4,7 +4,7 @@ import { FormFieldComponent } from '../../../shared/ui/form-field';
 import { InputTextComponent } from '../../../shared/ui/input';
 import { SelectComponent, SelectOption } from '../../../shared/ui/select';
 import { CountryAutocompleteComponent } from '../../../shared/ui/country-autocomplete';
-import { Address, AddressType } from '../models';
+import { Address, AddressType } from '../../../core/api/actor/models';
 
 export interface AddressFormModel { type: AddressType; street: string; city: string; country: string }
 
