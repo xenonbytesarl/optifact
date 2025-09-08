@@ -28,9 +28,13 @@ import {useProductScreen} from './product-screen.util';
         <app-product-form
           [disabled]="loading()"
           [value]="formValue()"
+          [codeRequiredError]="codeHasError()"
           [nameRequiredError]="nameHasError()"
+          [typeRequiredError]="typeHasError()"
+          [categoryIdRequiredError]="categoryIdHasError()"
           (valueChange)="onValueChange($event)"
-          (blur)="onNameBlur()"
+          (blurCode)="onCodeBlur()"
+          (blurName)="onNameBlur()"
         />
       </app-card>
     </div>
@@ -44,9 +48,15 @@ export class ProductNewPage {
   get formValue() { return this.ui.formValue; }
   get loading() { return this.ui.loading; }
 
+  codeHasError() { return this.ui.codeHasError(); }
   nameHasError() { return this.ui.nameHasError(); }
+  typeHasError() { return this.ui.typeHasError(); }
+  categoryIdHasError() { return this.ui.categoryIdHasError(); }
   onValueChange(v: any) { return this.ui.onValueChange(v); }
+  onCodeBlur() { return this.ui.onCodeBlur(); }
   onNameBlur() { return this.ui.onNameBlur(); }
+  onTypeBlur() { return this.ui.onTypeBlur(); }
+  onCategoryIdBlur() { return this.ui.onCategoryIdBlur(); }
 
   save() { return this.ui.saveNew(); }
   goBack() { return this.ui.goBack(); }

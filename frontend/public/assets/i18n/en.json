@@ -141,5 +141,8 @@
       "product": "Delete this product?",
       "productCategory": "Delete this category?"
     }
+  },
+  "validation": {
+    "required": "This fiels is required."
   }
 }

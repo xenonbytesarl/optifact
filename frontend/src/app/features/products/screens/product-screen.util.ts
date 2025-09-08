@@ -1,11 +1,27 @@
 import { inject, computed, signal } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../shared/ui/toast';
 import {productStore} from '../products.store';
 import {ProductFormValue} from '../components/product-form';
 
-export type ScreenMode = 'new' | 'edit' | 'view';
+function productTypeAmountRateValidator(ctrl: AbstractControl): ValidationErrors | null {
+  const type = ctrl.get('type')?.value as string | null | undefined;
+  const amount = ctrl.get('amount')?.value as number | null | undefined;
+  const rate = ctrl.get('rate')?.value as number | null | undefined;
+
+  if (type === 'FLAT_AMOUNT') {
+    // amount required
+    const validAmount = amount !== null && amount !== undefined;
+    return validAmount ? null : { amountRequired: true };
+  }
+  if (type === 'PERCENTAGE') {
+    // rate required
+    const validRate = rate !== null && rate !== undefined;
+    return validRate ? null : { rateRequired: true };
+  }
+  return null;
+}
 
 export function useProductScreen() {
   const store = inject(productStore);
@@ -17,11 +33,11 @@ export function useProductScreen() {
     code: ['', [Validators.required]],
     name: ['', [Validators.required]],
     type: ['FLAT_AMOUNT', [Validators.required]],
-    amount: [0, [Validators.required]],
-    rate: [null, [Validators.required]],
+    amount: [0],
+    rate: [null],
     categoryId: [null, [Validators.required]],
-    description: ['', [Validators.required]]
-  });
+    description: ['']
+  }, { validators: productTypeAmountRateValidator });
 
   const initialProductFormValue: ProductFormValue = {
     code: '',
@@ -152,9 +168,15 @@ export function useProductScreen() {
     form,
     formValue,
     loading,
+    codeHasError,
     nameHasError,
+    typeHasError,
+    categoryIdHasError,
     onValueChange,
+    onCodeBlur,
     onNameBlur,
+    onTypeBlur,
+    onCategoryIdBlur,
     resetForm,
     saveNew,
     saveEdit,

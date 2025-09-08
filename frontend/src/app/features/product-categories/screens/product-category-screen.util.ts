@@ -5,8 +5,6 @@ import { productCategoryStore } from '../product-category.store';
 import { ToastService } from '../../../shared/ui/toast';
 import { CategoryFormValue } from '../components/product-category-form';
 
-export type ScreenMode = 'new' | 'edit' | 'view';
-
 export function useProductCategoryScreen() {
   const store = inject(productCategoryStore);
   const fb = inject(FormBuilder);
