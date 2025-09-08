@@ -1,18 +1,19 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 import { ActorTabsComponent } from '../components/actor-tabs';
-import { ActorsStore, provideActorsStore } from '../actors.store';
+import { actorStore } from '../actors.store';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import {TranslateService} from '../../../core/i18n/translate.service';
 
 @Component({
   selector: 'app-actor-view-page',
   standalone: true,
   imports: [CommonModule, ActionBarComponent, CardComponent, ActorTabsComponent, RouterLink],
-  providers: [provideActorsStore()],
+  providers: [],
   template: `
-    <app-action-bar [disableNew]="false" [disableEdit]="false" [disableCancel]="true" [disableSave]="true" />
+    <app-action-bar [showCancel]="false" [showSave]="false" (newClicked)="goNew()" (editClicked)="goEdit()" />
 
     <div class="p-4 space-y-4">
       <app-card>
@@ -23,7 +24,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
           </div>
           <div>
             <div class="text-sm text-muted">Référence</div>
-            <div class="text-base">{{ actorRef() }}</div>
+            <div class="text-base">{{ actorReference() }}</div>
           </div>
         </div>
         <div class="mt-4">
@@ -41,14 +42,24 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ActorViewPage {
-  store = inject(ActorsStore);
-  route = inject(ActivatedRoute);
+  readonly store = inject(actorStore);
+  readonly route = inject(ActivatedRoute);
+  readonly router = inject(Router);
+  readonly i18n = inject(TranslateService);
 
-  actorName = computed(() => this.store.currentActor()?.name ?? '');
-  actorRef = computed(() => this.store.currentActor()?.reference ?? '');
+  loading = computed(() => this.store.loading());
 
-  constructor() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) this.store.load(id);
+  id = computed(() => this.store.current()?.id ?? '');
+  actorName = computed(() => this.store.current()?.name ?? '');
+  actorReference = computed(() => this.store.current()?.reference ?? '');
+
+  constructor() {}
+
+  goNew() {
+    this.router.navigate(['/actors', 'new']);
+  }
+
+  goEdit() {
+    this.router.navigate(['/actors', this.id(), 'edit']);
   }
 }

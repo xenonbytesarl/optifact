@@ -3,16 +3,14 @@ import { CommonModule } from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
-import { BadgeComponent } from '../../../shared/ui/badge';
 import { productStore} from '../products.store';
 import { productCategoryStore } from '../../product-categories/product-category.store';
-import {SelectOption} from '../../../shared/ui/select';
 import {TranslateService} from '../../../core/i18n/translate.service';
 
 @Component({
   selector: 'app-product-view-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, BadgeComponent],
+  imports: [CommonModule, ActionBarComponent, CardComponent],
   providers: [],
   template: `
     <app-action-bar [showCancel]="false" [showSave]="false" (newClicked)="goNew()" (editClicked)="goEdit()" />
@@ -105,16 +103,6 @@ export class ProductViewPage {
     const c = this.categoryStore.categoryPage().elements.find(x => x.id === cid);
     return c?.name ?? '';
   });
-
-  typeOptions = computed<SelectOption[]>(() => {
-    // depend on lang signal for recomputation
-    this.i18n.lang();
-    return [
-      { value: 'FLAT_AMOUNT', label: this.i18n.t('products.types.forfait') },
-      { value: 'PERCENTAGE', label: this.i18n.t('products.types.pourcentage') },
-    ];
-  });
-
   constructor() {}
 
   goNew() {
