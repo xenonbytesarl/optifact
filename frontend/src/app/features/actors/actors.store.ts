@@ -1,5 +1,5 @@
-import { inject } from '@angular/core';
-import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
+import {computed, inject} from '@angular/core';
+import {signalStore, withState, withMethods, patchState, withComputed} from '@ngrx/signals';
 import { ActorsApi } from '../../core/api/actor/actors.api';
 import {Actor, ActorSortColumn} from '../../core/api/actor/models';
 import {ErrorApiResponse, Page, SuccessApiResponse} from '../../core/model/response.model';
@@ -38,6 +38,10 @@ export const actorStore = signalStore(
   // Keep providedIn so it can be root-provided; component-level providers can still override per injector
   { providedIn: 'root' },
   withState(initialState),
+  withComputed(({current}) => ({
+    addresses: computed(() => current()?.addresses ?? []),
+    contacts: computed(() => current()?.contacts ?? [])
+  })),
   withMethods((store) => {
     const api = inject(ActorsApi);
 
