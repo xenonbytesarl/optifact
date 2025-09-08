@@ -32,9 +32,15 @@ import {useProductScreen} from './product-screen.util';
           [nameRequiredError]="nameHasError()"
           [typeRequiredError]="typeHasError()"
           [categoryIdRequiredError]="categoryIdHasError()"
-          (valueChange)="onValueChange($event)"
+          [rateRequiredError]="rateHasError()"
+          [amountRequiredError]="amountHasError()"
           (blurCode)="onCodeBlur()"
           (blurName)="onNameBlur()"
+          (blurType)="onTypeBlur()"
+          (blurCategory)="onCategoryIdBlur()"
+          (blurAmount)="onAmountBlur()"
+          (blurRate)="onRateBlur()"
+          (valueChange)="onValueChange($event)"
         />
       </app-card>
     </div>
@@ -51,12 +57,16 @@ export class ProductNewPage {
   codeHasError() { return this.ui.codeHasError(); }
   nameHasError() { return this.ui.nameHasError(); }
   typeHasError() { return this.ui.typeHasError(); }
+  rateHasError() { return this.ui.rateHasError(); }
+  amountHasError() { return this.ui.amountHasError(); }
   categoryIdHasError() { return this.ui.categoryIdHasError(); }
   onValueChange(v: any) { return this.ui.onValueChange(v); }
   onCodeBlur() { return this.ui.onCodeBlur(); }
   onNameBlur() { return this.ui.onNameBlur(); }
   onTypeBlur() { return this.ui.onTypeBlur(); }
   onCategoryIdBlur() { return this.ui.onCategoryIdBlur(); }
+  onRateBlur() { return this.ui.onRateBlur(); }
+  onAmountBlur() { return this.ui.onAmountBlur(); }
 
   save() { return this.ui.saveNew(); }
   goBack() { return this.ui.goBack(); }

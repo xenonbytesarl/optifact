@@ -5,6 +5,8 @@ import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 import { productStore} from '../products.store';
 import { productCategoryStore } from '../../product-categories/product-category.store';
+import {SelectOption} from '../../../shared/ui/select';
+import {TranslateService} from '../../../core/i18n/translate.service';
 
 @Component({
   selector: 'app-product-view-page',
@@ -58,24 +60,40 @@ export class ProductViewPage {
   readonly categoryStore = inject(productCategoryStore);
   readonly route = inject(ActivatedRoute);
   readonly router = inject(Router);
+  protected i18n = inject(TranslateService);
 
   loading = computed(() => this.store.loading());
   id = computed(() => this.store.current()?.id ?? '');
   code = computed(() => this.store.current()?.code ?? '');
   name = computed(() => this.store.current()?.name ?? '');
-  type = computed(() => this.store.current()?.type ?? '');
+  type = computed(() => {
+    const t = this.store.current()?.type ?? '';
+    switch (t) {
+      case 'FLAT_AMOUNT':
+        return this.i18n.t('products.types.forfait');
+      case 'PERCENTAGE':
+        return this.i18n.t('products.types.pourcentage');
+      default:
+        return '';
+    }
+  });
   amount = computed(() => this.store.current()?.amount ?? '');
   rate = computed(() => this.store.current()?.rate ?? '');
   description = computed(() => this.store.current()?.description ?? '');
   categoryName = computed(() => {
     const cid = this.store.current()?.categoryId ?? null;
-    console.log('categoryId', cid);
-    console.log('categoryId', !cid);
-    console.log('category elements', this.categoryStore.categoryPage().elements);
     if (!cid) return '';
     const c = this.categoryStore.categoryPage().elements.find(x => x.id === cid);
-    console.log('category', c);
     return c?.name ?? '';
+  });
+
+  typeOptions = computed<SelectOption[]>(() => {
+    // depend on lang signal for recomputation
+    this.i18n.lang();
+    return [
+      { value: 'FLAT_AMOUNT', label: this.i18n.t('products.types.forfait') },
+      { value: 'PERCENTAGE', label: this.i18n.t('products.types.pourcentage') },
+    ];
   });
 
   constructor() {}

@@ -88,6 +88,18 @@ export function useProductScreen() {
     return !!c && c.invalid && (c.dirty || c.touched);
   }
 
+  function rateHasError(): boolean {
+    const c = form.get('rate');
+    const groupError = !!form.errors?.['rateRequired'];
+    return !!c && (c.invalid || groupError) && (c.dirty || c.touched);
+  }
+
+  function amountHasError(): boolean {
+    const c = form.get('amount');
+    const groupError = !!form.errors?.['amountRequired'];
+    return !!c && (c.invalid || groupError) && (c.dirty || c.touched);
+  }
+
   function onValueChange(v: ProductFormValue) {
     formValue.set(v);
     form.patchValue({
@@ -115,6 +127,14 @@ export function useProductScreen() {
 
   function onCategoryIdBlur() {
     form.get('categoryId')?.markAsTouched();
+  }
+
+  function onRateBlur() {
+    form.get('rate')?.markAsTouched();
+  }
+
+  function onAmountBlur() {
+    form.get('amount')?.markAsTouched();
   }
 
   function resetForm() {
@@ -172,11 +192,15 @@ export function useProductScreen() {
     nameHasError,
     typeHasError,
     categoryIdHasError,
+    rateHasError,
+    amountHasError,
     onValueChange,
     onCodeBlur,
     onNameBlur,
     onTypeBlur,
     onCategoryIdBlur,
+    onRateBlur,
+    onAmountBlur,
     resetForm,
     saveNew,
     saveEdit,
