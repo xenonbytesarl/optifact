@@ -6,7 +6,7 @@ import fr.xenonbyte.optifact.backend.domain.common.attachementtype.message.Attac
 /**
  * @author bamk
  * @version 1.0
- * @since 05/09/2025
+ * @since 09/09/2025
  */
 public final class AttachmentTypeNameConflictException extends ConflictException {
     public AttachmentTypeNameConflictException(String name) {
