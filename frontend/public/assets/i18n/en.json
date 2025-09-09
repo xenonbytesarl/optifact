@@ -206,5 +206,8 @@
   },
   "validation": {
     "required": "This fiels is required."
+  },
+  "email": {
+    "invalid": "Invalid email address."
   }
 }

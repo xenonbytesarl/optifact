@@ -69,9 +69,9 @@ export class ProductListComponent {
     // Depend on lang() so headers update when the language changes
     this.i18n.lang();
     return [
-      { key: 'code', header: this.i18n.t('products.fields.code') },
-      { key: 'name', header: this.i18n.t('products.fields.name') },
-      { key: 'type', header: this.i18n.t('products.fields.type'), template: this.typeTpl() },
+      { key: 'code', header: this.i18n.t('products.fields.code'), sortable: true },
+      { key: 'name', header: this.i18n.t('products.fields.name'), sortable: true },
+      { key: 'type', header: this.i18n.t('products.fields.type'), template: this.typeTpl(), sortable: true },
       { key: 'categoryName', header: this.i18n.t('products.fields.category') },
     ];
   }

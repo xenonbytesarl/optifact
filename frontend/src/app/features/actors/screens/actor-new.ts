@@ -53,16 +53,18 @@ import {TranslatePipe} from '../../../core/i18n/translate.pipe';
             (valueChange)="onValueChange($event)"
           />
         </div>
-        <app-actor-tabs
-          [addresses]="ui.addresses()"
-          [contacts]="ui.contacts()"
-          (addAddress)="openAddressDialog()"
-          (editAddress)="editAddress($event)"
-          (removeAddress)="removeAddress($event)"
-          (addContact)="openContactDialog()"
-          (editContact)="editContact($event)"
-          (removeContact)="removeContact($event)"
-        />
+        <div class="mt-6">
+          <app-actor-tabs
+            [addresses]="ui.addresses()"
+            [contacts]="ui.contacts()"
+            (addAddress)="openAddressDialog()"
+            (editAddress)="editAddress($event)"
+            (removeAddress)="removeAddress($event)"
+            (addContact)="openContactDialog()"
+            (editContact)="editContact($event)"
+            (removeContact)="removeContact($event)"
+          />
+        </div>
       </app-card>
     </div>
 
@@ -83,7 +85,8 @@ import {TranslatePipe} from '../../../core/i18n/translate.pipe';
     <app-dialog [(open)]="contactDialogOpen" [title]="'actors.contacts.dialog.title' | t" (closed)="onContactDialogClosed()">
       <app-contact-form [value]="contactModel()" (valueChange)="onContactFormChange($event)"
                         [nameRequiredError]="contactNameInteracted() && !contactModel().name"
-                        [typeRequiredError]="false" (blurName)="onContactNameBlur()" />
+                        [emailError]="contactEmailInteracted() && isInvalidEmail(contactModel().email)"
+                        [typeRequiredError]="false" (blurName)="onContactNameBlur()" (blurEmail)="onContactEmailBlur()"/>
       <div dialog-actions class="flex flex-col sm:flex-row gap-2">
         <app-button [fullWidth]="true" class="sm:w-auto" variant="secondary" size="md" (clicked)="closeContactDialog()"><span class="material-symbols-outlined text-base">close</span><span class="ml-1">{{ 'actors.contacts.dialog.action.cancel' | t }}</span></app-button>
         <app-button [disabled]="contactDialogInvalid()" [fullWidth]="true" class="sm:w-auto" variant="primary" size="md" (clicked)="saveContactAndNew()"><span class="material-symbols-outlined text-base">person_add</span><span class="ml-1">{{ 'actors.contacts.dialog.action.addNew' | t }}</span></app-button>
@@ -125,12 +128,13 @@ export class ActorNewPage {
 
   // Track when the user has interacted with the contact name field (blurred or typed non-empty once)
   contactNameInteracted = signal(false);
+  contactEmailInteracted = signal(false);
   // Track when the user has interacted with the address country field (blurred or typed non-empty once)
   addressCountryInteracted = signal(false);
   // Track when the user has interacted with the address city field (blurred or typed non-empty once)
   addressCityInteracted = signal(false);
 
-  contactDialogInvalid = computed(() => !this.contactModel().name.trim());
+  contactDialogInvalid = computed(() => !this.contactModel().name.trim() && this.isInvalidEmail(this.contactModel().email));
   addressDialogInvalid = computed(() => !this.addressModel().city.trim() || !((this.addressModel().country ?? '').trim()));
 
   get form() { return this.ui.form; }
@@ -176,6 +180,7 @@ export class ActorNewPage {
   openContactDialog() {
     this.contactDialogOpen.set(true);
     this.contactNameInteracted.set(false);
+    this.contactEmailInteracted.set(false);
   }
   private addContactCommon(closeAfter: boolean) {
     const m = this.contactModel();
@@ -188,6 +193,7 @@ export class ActorNewPage {
     // reset the form for a new entry
     this.contactModel.set(this.initialContactValue);
     this.contactNameInteracted.set(false);
+    this.contactEmailInteracted.set(false);
   }
   saveContactAndNew() { this.addContactCommon(false); }
   saveContactAndClose() { this.addContactCommon(true); }
@@ -215,12 +221,16 @@ export class ActorNewPage {
   onContactDialogClosed() {
     this.contactModel.set(this.initialContactValue);
     this.contactNameInteracted.set(false);
+    this.contactEmailInteracted.set(false);
   }
 
   onContactFormChange(v: ContactFormValue) {
     this.contactModel.set(v);
     if (!this.contactNameInteracted() && v.name?.trim()) {
       this.contactNameInteracted.set(true);
+    }
+    if (!this.contactEmailInteracted() && v.email?.trim()) {
+      this.contactEmailInteracted.set(true);
     }
   }
 
@@ -244,5 +254,17 @@ export class ActorNewPage {
 
   onAddressCountryBlur() {
     this.addressCountryInteracted.set(true);
+  }
+
+  onContactEmailBlur() {
+    this.contactEmailInteracted.set(true);
+  }
+
+  isInvalidEmail(email: string | null) {
+    if(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return !re.test(email);
+    }
+    return false;
   }
 }

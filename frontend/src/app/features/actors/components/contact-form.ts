@@ -33,8 +33,8 @@ export interface ContactFormModel { type: ContactType; name: string; email: stri
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">
-        <app-form-field [label]="('actors.contacts.fields.email' | t)">
-          <app-input-email [disabled]="disabled()" [value]="value().email" (valueChange)="onEmail($event)" [error]="false" (blurred)="blurEmail.emit()" />
+        <app-form-field [label]="('actors.contacts.fields.email' | t)" [error]="emailError() ? ('email.invalid' | t) : null">
+          <app-input-email [disabled]="disabled()" [value]="value().email" (valueChange)="onEmail($event)" [error]="emailError()" (blurred)="blurEmail.emit()" />
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">
@@ -58,6 +58,7 @@ export class ContactFormComponent {
 
   typeRequiredError = input<boolean>(false);
   nameRequiredError = input<boolean>(false);
+  emailError = input<boolean>(false);
 
   value = model<ContactFormValue>({
     id: null,
