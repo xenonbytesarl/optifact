@@ -46,7 +46,16 @@ public final class Actor extends BaseEntity {
 
         contacts = normalizeContacts(id, contacts);
 
+        reference = normalizeReference(reference);
+
         return new Actor(id, name, reference, addresses, contacts, active);
+    }
+
+    private static String normalizeReference(String reference) {
+        if(reference != null && reference.isBlank()) {
+            reference = null;
+        }
+        return reference;
     }
 
     private static List<Address> normalizeAddresses(List<Address> addresses, UUID id) {
@@ -65,6 +74,8 @@ public final class Actor extends BaseEntity {
 
         contacts = normalizeContacts(id, contacts);
 
+        reference = normalizeReference(reference);
+
         return new Actor(id, name, reference, addresses, contacts, active);
     }
 
@@ -79,6 +90,7 @@ public final class Actor extends BaseEntity {
         if(name == null || name.isBlank()) {
             throw new IllegalArgumentException(ActorMessage.ACTOR_NAME_REQUIRED);
         }
+        reference = normalizeReference(reference);
         addresses = normalizeAddresses(addresses, id);
         contacts = normalizeContacts(id, contacts);
         Actor actor = new Actor(id, name, reference, addresses, contacts, active);
