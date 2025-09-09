@@ -33,17 +33,17 @@ export interface ContactFormModel { type: ContactType; name: string; email: stri
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">
-        <app-form-field [label]="('actors.contacts.fields.email' | t)" [required]="true">
+        <app-form-field [label]="('actors.contacts.fields.email' | t)">
           <app-input-email [disabled]="disabled()" [value]="value().email" (valueChange)="onEmail($event)" [error]="false" (blurred)="blurEmail.emit()" />
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">
-        <app-form-field [label]="('actors.contacts.fields.phone' | t)" [required]="true">
+        <app-form-field [label]="('actors.contacts.fields.phone' | t)">
           <app-input-phone [disabled]="disabled()" [value]="value().phone" (valueChange)="onPhone($event)" [error]="false" (blurred)="blurPhone.emit()" />
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">
-        <app-form-field [label]="('actors.contacts.fields.function' | t)" [required]="true" >
+        <app-form-field [label]="('actors.contacts.fields.function' | t)" >
           <app-input [disabled]="disabled()"  [value]="value().function" (valueChange)="onFunction($event)" (blurred)="blurFunction.emit()" />
         </app-form-field>
       </div>

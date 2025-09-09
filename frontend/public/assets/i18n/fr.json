@@ -23,6 +23,64 @@
       "reference": "Référence",
       "actions": "Actions"
     },
+    "tabs": {
+      "addresses": "Adresses",
+      "contacts": "Contacts"
+    },
+    "addresses": {
+      "actions": {
+        "add": "Ajouter une adresse"
+      },
+      "dialog": {
+        "title": "Ajouter/Modifier une adresse",
+        "action": {
+          "cancel": "Fermer",
+          "addNew": "Enregistrer et ajouter",
+          "addClose": "Enregistrer et fermer"
+        }
+      },
+      "fields": {
+        "type": "Type",
+        "street": "Rue",
+        "city": "Ville",
+        "country": "Pays",
+        "zipCode": "Code postal",
+        "state": "Région"
+      },
+      "types": {
+        "default": "Par défaut",
+        "invoice": "Facturation",
+        "shipping": "Livraison",
+        "other": "Autre"
+      }
+    },
+    "contacts": {
+      "actions": {
+        "add": "Ajouter un contact"
+      },
+      "dialog": {
+        "title": "Ajouter/Modifier un contact",
+        "action": {
+          "cancel": "Fermer",
+          "addNew": "Enregistrer et ajouter",
+          "addClose": "Enregistrer et fermer"
+        }
+      },
+      "fields": {
+        "type": "Type",
+        "name": "Nom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "function": "Fonction"
+      },
+      "types": {
+        "commercial": "Commercial",
+        "project": "Projet",
+        "accounting": "Comptabilité",
+        "technical": "Technique",
+        "other": "Autre"
+      }
+    },
     "empty": "Aucun acteur"
   },
   "nav": {
