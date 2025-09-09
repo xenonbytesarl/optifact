@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { ActorFormComponent } from '../components/actor-form';
@@ -13,11 +13,12 @@ import { SpinnerComponent } from '../../../shared/ui/spinner';
 import { ActivatedRoute } from '@angular/router';
 import { useActorScreen } from './actor-screen.util';
 import {AddressFormValue, ContactFormValue} from '../components/actor.form.value';
+import {TranslatePipe} from '../../../core/i18n/translate.pipe';
 
 @Component({
   selector: 'app-actor-edit-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, ActorFormComponent, ActorTabsComponent, CardComponent, DialogComponent, AddressFormComponent, ContactFormComponent, ButtonComponent, SpinnerComponent],
+  imports: [CommonModule, ActionBarComponent, ActorFormComponent, ActorTabsComponent, CardComponent, DialogComponent, AddressFormComponent, ContactFormComponent, ButtonComponent, SpinnerComponent, TranslatePipe],
   providers: [],
   template: `
     <app-action-bar
@@ -55,20 +56,27 @@ import {AddressFormValue, ContactFormValue} from '../components/actor.form.value
     </div>
 
     <!-- Address Dialog -->
-    <app-dialog [(open)]="addressDialogOpen" title="Ajouter/Modifier une adresse">
-      <app-address-form [value]="addressModel()" (valueChange)="addressModel.set($event)" />
+    <app-dialog [(open)]="addressDialogOpen" [title]="'actors.addresses.dialog.title' | t">
+      <app-address-form [value]="addressModel()" (valueChange)="onAddressFormChange($event)"
+                        [cityRequiredError]="addressCityInteracted() && !addressModel().city?.trim()"
+                        [countryRequiredError]="addressCountryInteracted() && !addressModel().country?.trim()"
+                        [typeRequiredError]="false" (blurCity)="onAddressCityBlur()" (blurCountry)="onAddressCountryBlur()" />
       <div dialog-actions class="flex flex-col sm:flex-row gap-2">
-        <app-button [fullWidth]="true" class="sm:w-auto" variant="secondary" size="md" (clicked)="addressDialogOpen.set(false)"><span class="material-symbols-outlined text-base">close</span><span class="ml-1">Fermer</span></app-button>
-        <app-button [fullWidth]="true" class="sm:w-auto" variant="primary" size="md" (clicked)="saveAddressAndClose()"><span class="material-symbols-outlined text-base">check_circle</span><span class="ml-1">Enregistrer</span></app-button>
+        <app-button [fullWidth]="true" class="sm:w-auto" variant="secondary" size="md" (clicked)="closeAddressDialog()"><span class="material-symbols-outlined text-base">close</span><span class="ml-1">{{ 'actors.addresses.dialog.action.cancel' | t }}</span></app-button>
+        <app-button [disabled]="addressDialogInvalid()" [fullWidth]="true" class="sm:w-auto" variant="primary" size="md" (clicked)="saveAddressAndNew()"><span class="material-symbols-outlined text-base">add_circle</span><span class="ml-1">{{ 'actors.addresses.dialog.action.addNew' | t }}</span></app-button>
+        <app-button [disabled]="addressDialogInvalid()" [fullWidth]="true" class="sm:w-auto" variant="primary" size="md" (clicked)="saveAddressAndClose()"><span class="material-symbols-outlined text-base">check_circle</span><span class="ml-1">{{ 'actors.addresses.dialog.action.addClose' | t }}</span></app-button>
       </div>
     </app-dialog>
 
     <!-- Contact Dialog -->
-    <app-dialog [(open)]="contactDialogOpen" title="Ajouter/Modifier un contact">
-      <app-contact-form [value]="contactModel()" (valueChange)="contactModel.set($event)" />
+    <app-dialog [(open)]="contactDialogOpen" [title]="'actors.contacts.dialog.title' | t">
+      <app-contact-form [value]="contactModel()" (valueChange)="onContactFormChange($event)"
+                        [nameRequiredError]="contactNameInteracted() && !contactModel().name?.trim()"
+                        [typeRequiredError]="false" (blurName)="onContactNameBlur()" />
       <div dialog-actions class="flex flex-col sm:flex-row gap-2">
-        <app-button [fullWidth]="true" class="sm:w-auto" variant="secondary" size="md" (clicked)="contactDialogOpen.set(false)"><span class="material-symbols-outlined text-base">close</span><span class="ml-1">Fermer</span></app-button>
-        <app-button [fullWidth]="true" class="sm:w-auto" variant="primary" size="md" (clicked)="saveContactAndClose()"><span class="material-symbols-outlined text-base">check_circle</span><span class="ml-1">Enregistrer</span></app-button>
+        <app-button [fullWidth]="true" class="sm:w-auto" variant="secondary" size="md" (clicked)="closeContactDialog()"><span class="material-symbols-outlined text-base">close</span><span class="ml-1">{{ 'actors.contacts.dialog.action.cancel' | t }}</span></app-button>
+        <app-button [disabled]="contactDialogInvalid()" [fullWidth]="true" class="sm:w-auto" variant="primary" size="md" (clicked)="saveContactAndNew()"><span class="material-symbols-outlined text-base">add_circle</span><span class="ml-1">{{ 'actors.contacts.dialog.action.addNew' | t }}</span></app-button>
+        <app-button [disabled]="contactDialogInvalid()" [fullWidth]="true" class="sm:w-auto" variant="primary" size="md" (clicked)="saveContactAndClose()"><span class="material-symbols-outlined text-base">check_circle</span><span class="ml-1">{{ 'actors.contacts.dialog.action.addClose' | t }}</span></app-button>
       </div>
     </app-dialog>
   `,
@@ -105,6 +113,16 @@ export class ActorEditPage {
   addressModel = signal<AddressFormValue>(this.initialAddressFormValue);
   contactModel = signal<ContactFormValue>(this.initialContactValue);
 
+  // Track when the user has interacted with the contact name field (blurred or typed non-empty once)
+  contactNameInteracted = signal(false);
+  // Track when the user has interacted with the address country field (blurred or typed non-empty once)
+  addressCountryInteracted = signal(false);
+  // Track when the user has interacted with the address city field (blurred or typed non-empty once)
+  addressCityInteracted = signal(false);
+
+  contactDialogInvalid = computed(() => !this.contactModel().name.trim());
+  addressDialogInvalid = computed(() => !this.addressModel().city.trim() || !this.addressModel().country.trim());
+
   get form() { return this.ui.form; }
   get formValue() { return this.ui.formValue; }
   get loading() { return this.ui.loading; }
@@ -135,20 +153,33 @@ export class ActorEditPage {
       actorId: a.actorId ?? null
     });
     this.addressDialogOpen.set(true);
+    this.addressCityInteracted.set(!!this.addressModel().city?.trim());
+    this.addressCountryInteracted.set(!!this.addressModel().country?.trim());
   }
-  private addOrUpdateAddressClose() {
+  private addOrUpdateAddressClose(closeAfter: boolean) {
     const m = this.addressModel();
     if (!m?.street?.trim() || !m.city.trim() || !m.country.trim()) return;
     const a: Address = { ...m, id: m.id ?? crypto.randomUUID() } as Address;
     // decide update vs add based on presence of id in the current list
     const exists = this.ui.addresses().some(x => x.id === a.id);
     exists ? this.ui.updateAddress(a) : this.ui.addAddress(a);
-    this.addressDialogOpen.set(false);
+    if(closeAfter) {
+      this.addressDialogOpen.set(false);
+    }
     this.addressModel.set(this.initialAddressFormValue);
   }
-  saveAddressAndClose() { this.addOrUpdateAddressClose(); }
+  saveAddressAndNew() { this.addOrUpdateAddressClose(false); }
+  saveAddressAndClose() { this.addOrUpdateAddressClose(true); }
   editAddress(a: Address) { this.openAddressDialog(a); }
   removeAddress(id: string) { this.ui.removeAddress(id); }
+
+  closeAddressDialog() {
+    this.addressDialogOpen.set(false);
+    this.addressModel.set(this.initialAddressFormValue);
+    this.addressCityInteracted.set(false);
+    this.addressCountryInteracted.set(false);
+  }
+
 
   openContactDialog(c?: Contact) {
     if (c) this.contactModel.set({
@@ -160,18 +191,57 @@ export class ActorEditPage {
       function: c.function ?? null,
       actorId: c.actorId ?? null,
     });
+    // initialize interacted to whether initial name is non-empty (prefilled)
+    this.contactNameInteracted.set(!!this.contactModel().name?.trim());
     this.contactDialogOpen.set(true);
   }
-  private addOrUpdateContactClose() {
+  private addOrUpdateContactClose(closeAfter: boolean) {
     const m = this.contactModel();
     if (!m.name.trim()) return;
     const c: Contact = { ...m, id: m.id ?? crypto.randomUUID() } as Contact;
     const exists = this.ui.contacts().some(x => x.id === c.id);
     exists ? this.ui.updateContact(c) : this.ui.addContact(c);
-    this.contactDialogOpen.set(false);
+    if(closeAfter) {
+      this.contactDialogOpen.set(false);
+    }
     this.contactModel.set(this.initialContactValue);
   }
-  saveContactAndClose() { this.addOrUpdateContactClose(); }
+  saveContactAndNew() { this.addOrUpdateContactClose(false); }
+  saveContactAndClose() { this.addOrUpdateContactClose(true); }
   editContact(c: Contact) { this.openContactDialog(c); }
   removeContact(id: string) { this.ui.removeContact(id); }
+
+  closeContactDialog() {
+    this.contactDialogOpen.set(false);
+    this.contactModel.set(this.initialContactValue);
+    this.contactNameInteracted.set(false);
+  }
+
+  onContactFormChange(v: ContactFormValue) {
+    this.contactModel.set(v);
+    if (!this.contactNameInteracted() && v.name?.trim()) {
+      this.contactNameInteracted.set(true);
+    }
+  }
+
+  onAddressFormChange(v: AddressFormValue) {
+    this.addressModel.set(v);
+    if (!this.addressCityInteracted() && v.city?.trim()) {
+      this.addressCityInteracted.set(true);
+    }
+    if (!this.addressCountryInteracted() && v.country?.trim()) {
+      this.addressCountryInteracted.set(true);
+    }
+  }
+
+  onContactNameBlur() {
+    this.contactNameInteracted.set(true);
+  }
+  onAddressCityBlur() {
+    this.addressCityInteracted.set(true);
+  }
+
+  onAddressCountryBlur() {
+    this.addressCountryInteracted.set(true);
+  }
 }

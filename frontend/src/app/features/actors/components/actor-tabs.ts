@@ -8,26 +8,27 @@ import { PaginatorComponent } from '../../../shared/ui/paginator';
 
 import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog';
 import { TranslateService } from '../../../core/i18n/translate.service';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 
 @Component({
   selector: 'app-actor-tabs',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, TabsComponent, TableComponent, PaginatorComponent],
+  imports: [CommonModule, ButtonComponent, TabsComponent, TableComponent, PaginatorComponent, TranslatePipe],
   template: `
   <div>
-    <app-tabs [items]="tabItems" [(active)]="tab">
+    <app-tabs [items]="tabItems()" [(active)]="tab">
       @if (tab==='addresses') {
         <div>
           @if (!readonly()) {
-            <div class="mb-2"><app-button (clicked)="addAddress.emit()"><span class="material-symbols-outlined text-base">add</span><span class="ml-1">Ajouter une adresse</span></app-button></div>
+            <div class="mb-2"><app-button (clicked)="addAddress.emit()"><span class="material-symbols-outlined text-base">add</span><span class="ml-1">{{ 'actors.addresses.actions.add' | t }}</span></app-button></div>
           }
           <app-table [rows]="addressesPaged()" [columns]="addressColumns()">
             <ng-template #actions let-row>
               @if (!readonly()) {
-                <app-button size="sm" variant="ghost" shadow="none" hoverShadow="none" (clicked)="editAddress.emit(row)" aria-label="Modifier">
+                <app-button size="sm" variant="ghost" shadow="none" hoverShadow="none" (clicked)="editAddress.emit(row)" [attr.aria-label]="('common.actions.edit' | t)">
                   <span class="material-symbols-outlined text-base">edit</span>
                 </app-button>
-                <app-button size="sm" variant="ghost" shadow="none" hoverShadow="none" (clicked)="confirmRemoveAddress(row)" aria-label="Supprimer">
+                <app-button size="sm" variant="ghost" shadow="none" hoverShadow="none" (clicked)="confirmRemoveAddress(row)" [attr.aria-label]="('common.actions.delete' | t)">
                   <span class="material-symbols-outlined text-base text-red-600">delete</span>
                 </app-button>
               }
@@ -40,15 +41,15 @@ import { TranslateService } from '../../../core/i18n/translate.service';
       @if (tab==='contacts') {
         <div>
           @if (!readonly()) {
-            <div class="mb-2"><app-button (clicked)="addContact.emit()"><span class="material-symbols-outlined text-base">person_add</span><span class="ml-1">Ajouter un contact</span></app-button></div>
+            <div class="mb-2"><app-button (clicked)="addContact.emit()"><span class="material-symbols-outlined text-base">person_add</span><span class="ml-1">{{ 'actors.contacts.actions.add' | t }}</span></app-button></div>
           }
           <app-table [rows]="contactsPaged()" [columns]="contactColumns()">
             <ng-template #actions let-row>
               @if (!readonly()) {
-                <app-button size="sm" shadow="none" variant="ghost" (clicked)="editContact.emit(row)" aria-label="Modifier">
+                <app-button size="sm" shadow="none" variant="ghost" (clicked)="editContact.emit(row)" [attr.aria-label]="('common.actions.edit' | t)">
                   <span class="material-symbols-outlined text-base">edit</span>
                 </app-button>
-                <app-button size="sm" shadow="none" variant="ghost" (clicked)="confirmRemoveContact(row)" aria-label="Supprimer">
+                <app-button size="sm" shadow="none" variant="ghost" (clicked)="confirmRemoveContact(row)" [attr.aria-label]="('common.actions.delete' | t)">
                   <span class="material-symbols-outlined text-base text-red-600">delete</span>
                 </app-button>
               }
@@ -65,20 +66,26 @@ import { TranslateService } from '../../../core/i18n/translate.service';
 export class ActorTabsComponent {
   private confirm = inject(ConfirmDialogService);
   private i18n = inject(TranslateService);
-  addressColumns = signal<{key: string, header: string}[]>([
-    { key: 'type', header: 'Type' },
-    { key: 'street', header: 'Rue' },
-    { key: 'city', header: 'Ville' },
-    { key: 'country', header: 'Pays' }
-  ]);
-  contactColumns = signal<{key: string, header: string}[]>([
-    { key: 'type', header: 'Type' },
-    { key: 'name', header: 'Nom' },
-    { key: 'email', header: 'Email' },
-    { key: 'phone', header: 'Téléphone' },
-    { key: 'role', header: 'Fonction' }
+  addressColumns = computed<{key: string, header: string}[]>(() => {
+    this.i18n.lang();
+    return [
+      { key: 'type', header: this.i18n.t('actors.addresses.fields.type') },
+      { key: 'street', header: this.i18n.t('actors.addresses.fields.street') },
+      { key: 'city', header: this.i18n.t('actors.addresses.fields.city') },
+      { key: 'country', header: this.i18n.t('actors.addresses.fields.country') }
+    ];
+  });
+  contactColumns = computed<{key: string, header: string}[]>(() => {
+    this.i18n.lang();
+    return [
+      { key: 'type', header: this.i18n.t('actors.contacts.fields.type') },
+      { key: 'name', header: this.i18n.t('actors.contacts.fields.name') },
+      { key: 'email', header: this.i18n.t('actors.contacts.fields.email') },
+      { key: 'phone', header: this.i18n.t('actors.contacts.fields.phone') },
+      { key: 'role', header: this.i18n.t('actors.contacts.fields.function') }
 
-  ]);
+    ];
+  });
   addresses = input.required<Address[]>();
   contacts = input.required<Contact[]>();
   readonly = input<boolean>(false);
@@ -91,12 +98,13 @@ export class ActorTabsComponent {
   editContact = output<Contact>();
   removeContact = output<string>();
 
-  get tabItems(): TabItem[] {
+  tabItems = computed<TabItem[]>(() => {
+    this.i18n.lang();
     return [
-      { id: 'addresses', label: 'Adresses' },
-      { id: 'contacts', label: 'Contacts' }
+      { id: 'addresses', label: this.i18n.t('actors.tabs.addresses') },
+      { id: 'contacts', label: this.i18n.t('actors.tabs.contacts') }
     ];
-  }
+  });
 
   tab: 'addresses' | 'contacts' = 'addresses';
 

@@ -192,6 +192,6 @@ export function useActorScreen() {
     removeAddress,
     addContact,
     updateContact,
-    removeContact,
+    removeContact
   };
 }

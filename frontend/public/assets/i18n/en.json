@@ -22,7 +22,65 @@
       "reference": "Reference",
       "actions": "Actions"
     },
-    "empty": "Aucun acteur"
+    "tabs": {
+      "addresses": "Addresses",
+      "contacts": "Contacts"
+    },
+    "addresses": {
+      "actions": {
+        "add": "Add address"
+      },
+      "dialog": {
+        "title": "Add/Edit address",
+        "action": {
+          "cancel": "Close",
+          "addNew": "Save and add another",
+          "addClose": "Save and close"
+        }
+      },
+      "fields": {
+        "type": "Type",
+        "street": "Street",
+        "city": "City",
+        "country": "Country",
+        "zipCode": "Zip code",
+        "state": "State"
+      },
+      "types": {
+        "default": "Default",
+        "invoice": "Invoice",
+        "shipping": "Shipping",
+        "other": "Other"
+      }
+    },
+    "contacts": {
+      "actions": {
+        "add": "Add contact"
+      },
+      "dialog": {
+        "title": "Add/Edit contact",
+        "action": {
+          "cancel": "Close",
+          "addNew": "Save and add another",
+          "addClose": "Save and close"
+        }
+      },
+      "fields": {
+        "type": "Type",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "function": "Role"
+      },
+      "types": {
+        "commercial": "Commercial",
+        "project": "Project",
+        "accounting": "Accounting",
+        "technical": "Technical",
+        "other": "Other"
+      }
+    },
+    "empty": "No actors"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -115,7 +173,11 @@
     "refresh": "Refresh"
   },
   "common": {
-    "deleted": "Deleted successfully."
+    "deleted": "Deleted successfully.",
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    }
   },
   "paginator": {
     "noItems": "No items",

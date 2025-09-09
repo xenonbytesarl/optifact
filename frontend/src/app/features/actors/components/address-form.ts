@@ -29,8 +29,8 @@ import {TranslatePipe} from '../../../core/i18n/translate.pipe';
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">
-        <app-form-field [label]="('actors.addresses.fields.city' | t)" [required]="true" [error]="typeRequiredError() ? ('validation.required' | t) : null">
-          <app-input [disabled]="disabled()"  [value]="value().city" (valueChange)="onCity($event)" [error]="typeRequiredError()" (blurred)="blurCity.emit()" />
+        <app-form-field [label]="('actors.addresses.fields.city' | t)" [required]="true" [error]="cityRequiredError() ? ('validation.required' | t) : null">
+          <app-input [disabled]="disabled()"  [value]="value().city" (valueChange)="onCity($event)" [error]="cityRequiredError()" (blurred)="blurCity.emit()" />
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">
@@ -39,15 +39,16 @@ import {TranslatePipe} from '../../../core/i18n/translate.pipe';
         </app-form-field>
       </div>
       <div class="col-span-2 md:col-span-1">
-        <app-form-field [label]="('actors.addresses.fields.state' | t)">
-          <app-input [disabled]="disabled()"  [value]="value().state" (valueChange)="onState($event)" (blurred)="blurState.emit()" />
-        </app-form-field>
-      </div>
-      <div class="col-span-2 md:col-span-1">
         <app-form-field [label]="('actors.addresses.fields.country' | t)" [required]="true" [error]="countryRequiredError() ? ('validation.required' | t) : null">
           <app-country-autocomplete [disabled]="disabled()"  [value]="value().country" (valueChange)="onCountry($event)" [error]="countryRequiredError()" (blurred)="blurCountry.emit()" />
         </app-form-field>
       </div>
+      <div class="col-span-2 md:col-span-1">
+        <app-form-field [label]="('actors.addresses.fields.state' | t)">
+          <app-input [disabled]="disabled()"  [value]="value().state" (valueChange)="onState($event)" (blurred)="blurState.emit()" />
+        </app-form-field>
+      </div>
+
     </form>
   `,
   changeDetection: ChangeDetectionStrategy.Default
