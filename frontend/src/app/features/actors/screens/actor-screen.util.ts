@@ -15,24 +15,8 @@ export function useActorScreen() {
   const form: FormGroup = fb.group({
     name: ['', [Validators.required]],
     reference: [''],
-    contacts: fb.array([fb.group({
-      id: [null],
-      name: ['', [Validators.required]],
-      email: ['', [Validators.email]],
-      phone: [''],
-      function: [''],
-      actorId: [''],
-      type: ['', [Validators.required]]
-    })]),
-    addresses: fb.array([fb.group({
-      id: [null],
-      street: [''],
-      city: ['', [Validators.required]],
-      country: ['', [Validators.required]],
-      zipCode: [''],
-      state: [''],
-      actorId: [''],
-    })])
+    contacts: fb.array([]),
+    addresses: fb.array([])
   });
 
   const initialActorFormValue: ActorFormValue = {

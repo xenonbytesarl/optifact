@@ -88,7 +88,9 @@ export const productStore = signalStore(
             productPage: {
               ...store.productPage(),
               elements: [payload.data.content, ...store.productPage().elements]
-            }, message: payload.message ?? 'products.messages.created.success', loading: false });
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'products.messages.created.success', loading: false });
           return payload.data.content;
         } else {
           const payload = response as ErrorApiResponse;
@@ -106,6 +108,7 @@ export const productStore = signalStore(
               ...store.productPage(),
               elements: store.productPage().elements
                 .map(product => product.id === id ? payload.data.content: product)},
+            current: payload.data.content,
             message: payload.message ?? 'products.messages.update.success', loading: false
           });
           return payload.data.content;
