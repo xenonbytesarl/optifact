@@ -42,16 +42,19 @@ import {TranslatePipe} from '../../../core/i18n/translate.pipe';
             (valueChange)="onValueChange($event)"
           />
         </div>
-        <app-actor-tabs
-          [addresses]="ui.addresses()"
-          [contacts]="ui.contacts()"
-          (addAddress)="openAddressDialog()"
-          (editAddress)="editAddress($event)"
-          (removeAddress)="removeAddress($event)"
-          (addContact)="openContactDialog()"
-          (editContact)="editContact($event)"
-          (removeContact)="removeContact($event)"
-        />
+        <div class="mt-6">
+          <app-actor-tabs
+            [addresses]="ui.addresses()"
+            [contacts]="ui.contacts()"
+            (addAddress)="openAddressDialog()"
+            (editAddress)="editAddress($event)"
+            (removeAddress)="removeAddress($event)"
+            (addContact)="openContactDialog()"
+            (editContact)="editContact($event)"
+            (removeContact)="removeContact($event)"
+          />
+        </div>
+
       </app-card>
     </div>
 

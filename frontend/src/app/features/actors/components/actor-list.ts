@@ -50,8 +50,8 @@ export class ActorListComponent {
     // Depend on lang so headers update with language
     this.i18n.lang();
     return [
-      { key: 'name', header: this.i18n.t('actors.fields.name') ?? 'Nom' },
-      { key: 'reference', header: this.i18n.t('actors.fields.reference') ?? 'Référence' },
+      { key: 'name', header: this.i18n.t('actors.fields.name'), sortable: true },
+      { key: 'reference', header: this.i18n.t('actors.fields.reference'), sortable: true },
     ];
   }
 

@@ -203,5 +203,8 @@
   },
   "validation": {
     "required": "Ce champ est obligatoire."
+  },
+  "email": {
+    "invalid": "Email invalide"
   }
 }
