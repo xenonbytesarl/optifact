@@ -92,7 +92,9 @@ export const actorStore = signalStore(
             actorPage: {
               ...store.actorPage(),
               elements: [payload.data.content, ...store.actorPage().elements]
-            }, message: payload.message ?? 'actors.messages.created.success', loading: false });
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'actors.messages.created.success', loading: false });
           return payload.data.content;
         } else {
           const payload = response as ErrorApiResponse;
@@ -110,6 +112,7 @@ export const actorStore = signalStore(
               ...store.actorPage(),
               elements: store.actorPage().elements
                 .map(actor => actor.id === id ? payload.data.content: actor)},
+            current: payload.data.content,
             message: payload.message ?? 'actors.messages.update.success', loading: false
           });
           return payload.data.content;

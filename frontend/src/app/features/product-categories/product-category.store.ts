@@ -81,7 +81,9 @@ export const productCategoryStore = signalStore(
             categoryPage: {
               ...store.categoryPage(),
               elements: [payload.data.content, ...store.categoryPage().elements]
-            }, message: payload.message ?? 'productCategories.messages.created.success', loading: false });
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'productCategories.messages.created.success', loading: false });
           return payload.data.content;
         } else {
           const payload = response as ErrorApiResponse;
@@ -99,6 +101,7 @@ export const productCategoryStore = signalStore(
               ...store.categoryPage(),
               elements: store.categoryPage().elements
                 .map(productCategory => productCategory.id === id ? payload.data.content: productCategory)},
+            current: payload.data.content,
             message: payload.message ?? 'productCategories.messages.update.success', loading: false
           });
           return payload.data.content;
