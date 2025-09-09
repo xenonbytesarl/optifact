@@ -5,7 +5,7 @@ export interface AddressFormValue {
   type: AddressType;
   street: string | null;
   city: string;
-  country: string;
+  country: string | null;
   zipCode: string | null;
   state: string | null;
   actorId: string | null;
