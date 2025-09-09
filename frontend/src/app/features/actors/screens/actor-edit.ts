@@ -58,8 +58,8 @@ import {TranslatePipe} from '../../../core/i18n/translate.pipe';
     <!-- Address Dialog -->
     <app-dialog [(open)]="addressDialogOpen" [title]="'actors.addresses.dialog.title' | t">
       <app-address-form [value]="addressModel()" (valueChange)="onAddressFormChange($event)"
-                        [cityRequiredError]="addressCityInteracted() && !addressModel().city?.trim()"
-                        [countryRequiredError]="addressCountryInteracted() && !addressModel().country?.trim()"
+                        [cityRequiredError]="addressCityInteracted() && !addressModel().city"
+                        [countryRequiredError]="addressCountryInteracted() && !addressModel().country"
                         [typeRequiredError]="false" (blurCity)="onAddressCityBlur()" (blurCountry)="onAddressCountryBlur()" />
       <div dialog-actions class="flex flex-col sm:flex-row gap-2">
         <app-button [fullWidth]="true" class="sm:w-auto" variant="secondary" size="md" (clicked)="closeAddressDialog()"><span class="material-symbols-outlined text-base">close</span><span class="ml-1">{{ 'actors.addresses.dialog.action.cancel' | t }}</span></app-button>
@@ -71,7 +71,7 @@ import {TranslatePipe} from '../../../core/i18n/translate.pipe';
     <!-- Contact Dialog -->
     <app-dialog [(open)]="contactDialogOpen" [title]="'actors.contacts.dialog.title' | t">
       <app-contact-form [value]="contactModel()" (valueChange)="onContactFormChange($event)"
-                        [nameRequiredError]="contactNameInteracted() && !contactModel().name?.trim()"
+                        [nameRequiredError]="contactNameInteracted() && !contactModel().name"
                         [typeRequiredError]="false" (blurName)="onContactNameBlur()" />
       <div dialog-actions class="flex flex-col sm:flex-row gap-2">
         <app-button [fullWidth]="true" class="sm:w-auto" variant="secondary" size="md" (clicked)="closeContactDialog()"><span class="material-symbols-outlined text-base">close</span><span class="ml-1">{{ 'actors.contacts.dialog.action.cancel' | t }}</span></app-button>
@@ -121,7 +121,7 @@ export class ActorEditPage {
   addressCityInteracted = signal(false);
 
   contactDialogInvalid = computed(() => !this.contactModel().name.trim());
-  addressDialogInvalid = computed(() => !this.addressModel().city.trim() || !this.addressModel().country.trim());
+  addressDialogInvalid = computed(() => !this.addressModel().city.trim() || !((this.addressModel().country ?? '').trim()));
 
   get form() { return this.ui.form; }
   get formValue() { return this.ui.formValue; }
@@ -158,7 +158,7 @@ export class ActorEditPage {
   }
   private addOrUpdateAddressClose(closeAfter: boolean) {
     const m = this.addressModel();
-    if (!m?.street?.trim() || !m.city.trim() || !m.country.trim()) return;
+    if (!m?.street?.trim() || !m.city.trim() || !m.country?.trim()) return;
     const a: Address = { ...m, id: m.id ?? crypto.randomUUID() } as Address;
     // decide update vs add based on presence of id in the current list
     const exists = this.ui.addresses().some(x => x.id === a.id);

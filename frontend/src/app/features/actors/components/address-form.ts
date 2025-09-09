@@ -67,7 +67,7 @@ export class AddressFormComponent {
     type: 'DEFAULT',
     street: '',
     city: '',
-    country: '',
+    country: null,
     state: '',
     zipCode: '',
     actorId: ''
@@ -109,8 +109,7 @@ export class AddressFormComponent {
   }
 
   onCountry(v: string | null) {
-    const country = (v ?? '').toString();
-    this.value.set({ ...this.value(), country });
+    this.value.set({ ...this.value(), country: v });
   }
 
   onZipCode(v: string | null) {
