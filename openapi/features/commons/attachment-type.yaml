@@ -1,0 +1,283 @@
+openapi: 3.0.3
+info:
+  title: Attachment Type API
+  description: API for managing attachment types
+  version: 1.0.0
+servers:
+  - url: /api/v1/optifact
+    description: Default server
+tags:
+  - name: AttachmentType
+    description: Operations related to attachment types
+paths:
+  /attachment-types:
+    get:
+      tags:
+        - AttachmentType
+      summary: Search attachment types
+      description: Searches for attachment type based on the provided criteria
+      operationId: searchAttachmentTypes
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - $ref: '../../parameters/common.yaml#/pageParam'
+        - $ref: '../../parameters/common.yaml#/sizeParam'
+        - $ref: '../../parameters/common.yaml#/sortFieldParam'
+        - $ref: '../../parameters/common.yaml#/sortDirectionParam'
+        - name: nameFilter
+          in: query
+          description: Optional name filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentTypePageApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    post:
+      tags:
+        - AttachmentType
+      summary: Create a attachment type
+      description: Creates a new attachment type
+      operationId: createAttachmentType
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachmentTypeApiRequestView'
+      responses:
+        '201':
+          description: Attachment type created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentTypeApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Conflict - A attachment type with the same name or code already exists
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /attachment-types/{attachmentTypeId}:
+    get:
+      tags:
+        - AttachmentType
+      summary: Find a attachment type by ID
+      description: Retrieves a attachment type by its unique identifier
+      operationId: findAttachmentTypeById
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: attachmentTypeId
+          in: path
+          description: ID of the attachment type to retrieve
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Attachment type found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentTypeApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Attachment type not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    put:
+      tags:
+        - AttachmentType
+      summary: Update a attachment type
+      description: Updates an existing attachment type
+      operationId: updateAttachmentType
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: attachmentTypeId
+          in: path
+          description: ID of the attachment type to update
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachmentTypeApiRequestView'
+      responses:
+        '200':
+          description: Sequence updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentTypeApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Attachment type not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    delete:
+      tags:
+        - AttachmentType
+      summary: Delete a attachment type
+      description: Marks a attachment type as deleted (soft delete)
+      operationId: deleteAttachmentType
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: attachmentTypeId
+          in: path
+          description: ID of the attachment type to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: AttachmentType deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Attachment type not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+
+components:
+  schemas:
+    AttachmentTypeApiRequestView:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Name of the attachment type
+          example: "MODIFICATION DES CONDITIONS INITIALES D’AGREMENT"
+    AttachmentTypeResponseView:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier
+        name:
+          type: string
+          description: Name of the attachment type
+          example: "MODIFICATION DES CONDITIONS INITIALES D’AGREMENT"
+        active:
+          type: boolean
+          description: Whether the sequence is active
+
+    AttachmentTypeApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/AttachmentTypeResponseView'
+
+    AttachmentTypePageResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/PaginationResponseView'
+        - type: object
+          required:
+            - elements
+          properties:
+            elements:
+              type: array
+              description: The list of attachment types
+              items:
+                $ref: '#/components/schemas/AttachmentTypeResponseView'
+    AttachmentTypePageApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/AttachmentTypePageResponseView'

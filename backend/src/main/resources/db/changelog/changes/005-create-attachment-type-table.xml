@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="10092025_000535" author="brice.mbiandji">
+        <createTable tableName="t_attachment_type">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <column name="c_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="c_active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_t_attachment_type_name" tableName="t_attachment_type">
+            <column name="c_name"/>
+        </createIndex>
+
+        <addUniqueConstraint
+                constraintName="uk_t_attachment_type_name"
+                tableName="t_attachment_type"
+                columnNames="c_name"/>
+    </changeSet>
+
+</databaseChangeLog>
