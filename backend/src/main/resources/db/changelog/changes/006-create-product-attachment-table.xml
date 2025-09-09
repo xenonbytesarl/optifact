@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="10092025_0100_create_product_attachment_table" author="brice.mbiandji">
+        <createTable tableName="t_product_attachment_type">
+            <column name="c_product_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_attachment_type_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Indexes for faster joins/filters -->
+        <createIndex indexName="idx_t_product_attachment_type_product_id" tableName="t_product_attachment_type">
+            <column name="c_product_id"/>
+        </createIndex>
+        <createIndex indexName="idx_t_product_attachment_type_attachment_type_id" tableName="t_product_attachment_type">
+            <column name="c_attachment_type_id"/>
+        </createIndex>
+
+        <!-- Unique constraint to avoid duplicate pairs -->
+        <addUniqueConstraint constraintName="uk_t_product_attachment_type_pair"
+                             tableName="t_product_attachment_type"
+                             columnNames="c_product_id, c_attachment_type_id"/>
+
+        <!-- Foreign keys -->
+        <addForeignKeyConstraint
+                baseTableName="t_product_attachment_type"
+                baseColumnNames="c_product_id"
+                constraintName="fk_t_product_attachment_type_product"
+                referencedTableName="t_product"
+                referencedColumnNames="c_id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="t_product_attachment_type"
+                baseColumnNames="c_attachment_type_id"
+                constraintName="fk_t_product_attachment_type_attachment_type"
+                referencedTableName="t_attachment_type"
+                referencedColumnNames="c_id"
+                onDelete="RESTRICT"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -58,9 +58,9 @@ public final class ProductRepositoryAdapterJpa implements ProductRepository {
         PageRequest pageRequest = PageRequest.of(search.page().intValue(), search.size().intValue(), sort);
 
         Page<ProductJpa> productJpaPage = repositoryJpa.findAll(spec, pageRequest);
-        List<Product> productCategories = productJpaPage.getContent().stream().map(mapperJpa::toDomain).toList();
+        List<Product> products = productJpaPage.getContent().stream().map(mapperJpa::toDomain).toList();
         return Pagination.create(
-                productCategories,
+                products,
                 productJpaPage.getTotalPages(),
                 productJpaPage.getTotalElements(),
                 search.page(),

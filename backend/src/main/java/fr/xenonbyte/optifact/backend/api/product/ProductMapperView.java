@@ -7,6 +7,7 @@ import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.domain.product.product.Product;
 import fr.xenonbyte.optifact.backend.domain.product.product.ProductType;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ public interface ProductMapperView {
 
     Product toDomain(ProductApiRequestView requestView);
 
+    @Mapping(target = "attachmentTypeIds", expression = "java(product.getAttachementTypeIds())")
     ProductResponseView toResponseView(Product product);
 
     ProductPageResponseView toResponsePageView(Pagination<Product> productPage);
@@ -42,7 +44,8 @@ public interface ProductMapperView {
                 requestView.getRate(),
                 requestView.getAmount(),
                 currency,
-                requestView.getDescription()
+                requestView.getDescription(),
+                requestView.getAttachmentTypeIds()
         );
     }
 }

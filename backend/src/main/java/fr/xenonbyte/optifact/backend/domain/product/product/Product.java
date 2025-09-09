@@ -6,6 +6,7 @@ import fr.xenonbyte.optifact.backend.domain.product.product.message.ProductMessa
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.List;
 import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
@@ -27,6 +28,7 @@ public final class Product extends BaseEntity {
     private final Currency currency; // optional (ISO code like "EUR", "USD")
     private final String description; // optional
     private final Boolean active;
+    private final List<UUID> attachementTypeIds;
 
     public Product(UUID id,
                    String code,
@@ -37,7 +39,8 @@ public final class Product extends BaseEntity {
                    BigDecimal amount,
                    Currency currency,
                    String description,
-                   Boolean active) {
+                   Boolean active,
+                   List<UUID> attachementTypeIds) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -48,6 +51,7 @@ public final class Product extends BaseEntity {
         this.currency = currency;
         this.description = description;
         this.active = active;
+        this.attachementTypeIds = attachementTypeIds;
     }
 
     public static Product create(String code,
@@ -57,7 +61,8 @@ public final class Product extends BaseEntity {
                                  Double rate,
                                  BigDecimal amount,
                                  Currency currency,
-                                 String description) {
+                                 String description,
+                                 List<UUID> attachementTypeIds) {
         validateParams(code, name, categoryId, type, rate, amount);
         return new Product(
                 randomUUID(),
@@ -69,7 +74,8 @@ public final class Product extends BaseEntity {
                 normalizeAmount(amount),
                 currency,
                 normalizeDescription(description),
-                true
+                true,
+                attachementTypeIds == null? List.of() : attachementTypeIds
         );
     }
 
@@ -82,7 +88,8 @@ public final class Product extends BaseEntity {
               Double rate,
               BigDecimal amount,
               Currency currency,
-              String description) {
+              String description,
+              List<UUID> attachementTypeIds) {
         validateParams(code, name, categoryId, type, rate, amount);
         return new Product(
                 id,
@@ -94,7 +101,8 @@ public final class Product extends BaseEntity {
                 normalizeAmount(amount),
                 currency,
                 normalizeDescription(description),
-                true
+                true,
+                attachementTypeIds == null? List.of() : attachementTypeIds
         );
     }
 
@@ -105,15 +113,16 @@ public final class Product extends BaseEntity {
                           Double rate,
                           BigDecimal amount,
                           Currency currency,
-                          String description) {
+                          String description,
+                          List<UUID> attachementTypeIds) {
         validateParams(code, name, categoryId, type, rate, amount);
-        Product product = new Product(id, code.trim(), name.trim(), categoryId, type, rate, normalizeAmount(amount), currency, normalizeDescription(description), true);
+        Product product = new Product(id, code.trim(), name.trim(), categoryId, type, rate, normalizeAmount(amount), currency, normalizeDescription(description), true, attachementTypeIds);
         product.updateAudit(createdAt);
         return product;
     }
 
     public Product withActive(Boolean active) {
-        Product product = new Product(id, code, name, categoryId, type, rate, amount, currency, description, active);
+        Product product = new Product(id, code, name, categoryId, type, rate, amount, currency, description, active, attachementTypeIds);
         product.updateAudit(createdAt);
         return product;
     }
@@ -187,5 +196,9 @@ public final class Product extends BaseEntity {
 
     public Boolean getActive() {
         return active;
+    }
+
+    public List<UUID> getAttachementTypeIds() {
+        return attachementTypeIds;
     }
 }
