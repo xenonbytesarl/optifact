@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AutocompleteComponent, AutocompleteItem } from './autocomplete';
 import { COUNTRIES } from './countries.data';
@@ -15,7 +15,9 @@ import { COUNTRIES } from './countries.data';
       [value]="value()"
       [rightSquare]="rightSquare()"
       [clearable]="clearable()"
+      [error]="error()"
       (valueChange)="value.set($event)"
+      (blurred)="blurred.emit()"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,6 +32,11 @@ export class CountryAutocompleteComponent {
   clearable = input<boolean>(true);
   // show only the flag as trigger (used by input-phone composition)
   flagOnly = input<boolean>(false);
+  // error state pass-through to underlying autocomplete (border/red ring)
+  error = input<boolean>(false);
+
+  // expose blurred event to parents
+  blurred = output<void>();
 
   items = computed<AutocompleteItem[]>(() => {
     const fo = this.flagOnly();

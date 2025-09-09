@@ -119,12 +119,12 @@ export class ActorTabsComponent {
   async confirmRemoveAddress(row: Address) {
     const ok = await this.confirm.open({ message: this.i18n.t('confirm.delete.address') });
     if (!ok) return;
-    this.removeAddress.emit(row.id);
+    this.removeAddress.emit(row?.id as string);
   }
 
   async confirmRemoveContact(row: Contact) {
     const ok = await this.confirm.open({ message: this.i18n.t('confirm.delete.contact') });
     if (!ok) return;
-    this.removeContact.emit(row.id);
+    this.removeContact.emit(row.id as string);
   }
 }

@@ -2,27 +2,30 @@ export type AddressType = 'DEFAULT' | 'PROJECT' | 'ACCOUNTING' | 'COMMERCIAL' | 
 export type ContactType = 'DEFAULT' | 'INVOICE' | 'SHIPPING' | 'OTHER';
 
 export interface Address {
-  id: string;
+  id?: string;
   type: AddressType;
-  street: string;
+  street?: string;
   city: string;
   country: string;
+  zipCode?: string;
+  state?: string;
+  actorId?: string;
 }
 
 export interface Contact {
-  id: string;
+  id?: string;
   type: ContactType;
   name: string;
-  phone: string;
-  email: string;
-  role?: string;
+  phone?: string;
+  email?: string;
+  function?: string;
+  actorId?: string;
 }
 
 export interface Actor {
   id: string;
   name: string;
   reference?: string;
-  category?: string;
   addresses: Address[];
   contacts: Contact[];
 }
