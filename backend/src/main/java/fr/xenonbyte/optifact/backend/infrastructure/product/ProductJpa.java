@@ -1,12 +1,17 @@
 package fr.xenonbyte.optifact.backend.infrastructure.product;
 
+import fr.xenonbyte.optifact.backend.infrastructure.actor.ActorJpa;
 import fr.xenonbyte.optifact.backend.infrastructure.common.BaseEntityJpa;
+import fr.xenonbyte.optifact.backend.infrastructure.common.attachmenttype.AttachmentTypeJpa;
 import fr.xenonbyte.optifact.backend.infrastructure.productcategory.ProductCategoryJpa;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -16,6 +21,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author bamk
@@ -50,4 +57,11 @@ public class ProductJpa extends BaseEntityJpa {
     @ManyToOne
     @JoinColumn(name = "c_category_id", nullable = false)
     private ProductCategoryJpa category;
+    @ManyToMany
+    @JoinTable(
+        name = "t_product_attachment_type",
+        joinColumns = @JoinColumn(name = "c_product_id"),
+        inverseJoinColumns = @JoinColumn(name = "c_attachment_type_id")
+    )
+    private List<AttachmentTypeJpa> attachmentTypes;
 }

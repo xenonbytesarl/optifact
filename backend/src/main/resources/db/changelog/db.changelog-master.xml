@@ -10,4 +10,5 @@
     <include file="/db/changelog/changes/003-alter-product-rate-nullable.xml"/>
     <include file="/db/changelog/changes/004-create-actor-address-contact-tables.xml"/>
     <include file="/db/changelog/changes/005-create-attachment-type-table.xml"/>
+    <include file="/db/changelog/changes/006-create-product-attachment-table.xml"/>
 </databaseChangeLog>

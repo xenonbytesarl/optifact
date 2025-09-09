@@ -283,6 +283,12 @@ components:
           type: string
           format: uuid
           description: Optional category ID this product belongs to
+        attachmentTypeIds:
+          type: array
+          description: List of attachment types supported by this product
+          items:
+            type: string
+            format: uuid
     ProductResponseView:
       type: object
       required:
@@ -338,6 +344,12 @@ components:
         active:
           type: boolean
           description: Whether the product is active
+        attachmentTypeIds:
+          type: array
+          description: List of attachment types supported by this product
+          items:
+            type: string
+            format: uuid
     ProductApiResponseView:
       allOf:
         - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'

@@ -58,7 +58,8 @@ public final class UpdateProductApplicationService implements UpdateProductUseCa
                 product.getRate(),
                 product.getAmount(),
                 product.getCurrency(),
-                product.getDescription()
+                product.getDescription(),
+                product.getAttachementTypeIds()
         );
 
         product = repository.save(existing);
