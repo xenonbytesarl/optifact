@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, input, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, model, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CountryAutocompleteComponent } from './country-autocomplete';
 import { COUNTRIES } from './countries.data';
@@ -49,6 +49,7 @@ import { COUNTRIES } from './countries.data';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputPhoneComponent {
+  blurred = output<void>();
   placeholder = input<string>('');
   countryPlaceholder = input<string>('Pays');
   disabled = input<boolean>(false);
@@ -281,6 +282,7 @@ export class InputPhoneComponent {
   }
 
   onBlur() {
+    this.blurred.emit();
     if (!this.autoApplyDialOnBlur()) return;
     const v = this.value() || '';
     if (!v) return;

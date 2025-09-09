@@ -75,7 +75,7 @@ export class ProductFormComponent {
   protected i18n = inject(TranslateService);
 
   disabled = input<boolean>(false);
-  // Flag from parent to indicate whether to show the required error for name
+
   nameRequiredError = input<boolean>(false);
   codeRequiredError = input<boolean>(false);
   categoryIdRequiredError = input<boolean>(false);

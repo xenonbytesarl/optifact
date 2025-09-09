@@ -1,42 +1,49 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
-import { ActorFormComponent, ActorBaseModel } from '../components/actor-form';
+import { ActorFormComponent } from '../components/actor-form';
 import { ActorTabsComponent } from '../components/actor-tabs';
-import { ActorsStore, provideActorsStore } from '../actors.store';
 import { Address, Contact } from '../../../core/api/actor/models';
 import { CardComponent } from '../../../shared/ui/card';
 import { DialogComponent } from '../../../shared/ui/dialog';
 import { AddressFormComponent } from '../components/address-form';
 import { ContactFormComponent } from '../components/contact-form';
 import { ButtonComponent } from '../../../shared/ui/button';
-import { ActivatedRoute, Router } from '@angular/router';
+import { SpinnerComponent } from '../../../shared/ui/spinner';
+import { ActivatedRoute } from '@angular/router';
+import { useActorScreen } from './actor-screen.util';
+import {AddressFormValue, ContactFormValue} from '../components/actor.form.value';
 
 @Component({
   selector: 'app-actor-edit-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, ActorFormComponent, ActorTabsComponent, CardComponent, DialogComponent, AddressFormComponent, ContactFormComponent, ButtonComponent],
-  providers: [provideActorsStore()],
+  imports: [CommonModule, ActionBarComponent, ActorFormComponent, ActorTabsComponent, CardComponent, DialogComponent, AddressFormComponent, ContactFormComponent, ButtonComponent, SpinnerComponent],
+  providers: [],
   template: `
     <app-action-bar
-      [disableNew]="false"
-      [disableEdit]="true"
-      [disableCancel]="false"
-      [disableSave]="!canSave()"
-      (cancelClicked)="goView()"
+      [showNew]="false"
+      [showEdit]="false"
+      [disableSave]="form.invalid || loading()"
+      (cancelClicked)="goBack()"
       (saveClicked)="save()"
     />
 
     <div class="p-4 space-y-4">
+      @if (loading()) {
+        <app-spinner [overlay]="true" />
+      }
       <app-card>
         <div class="space-y-6">
-          <app-actor-form [model]="actorModel()" (modelChange)="onBaseChange($event)"></app-actor-form>
+          <app-actor-form
+            [disabled]="loading()"
+            [value]="formValue()"
+            [nameRequiredError]="nameHasError()"
+            (valueChange)="onValueChange($event)"
+          />
         </div>
-      </app-card>
-      <app-card>
         <app-actor-tabs
-          [addresses]="store.addresses()"
-          [contacts]="store.contacts()"
+          [addresses]="ui.addresses()"
+          [contacts]="ui.contacts()"
           (addAddress)="openAddressDialog()"
           (editAddress)="editAddress($event)"
           (removeAddress)="removeAddress($event)"
@@ -49,7 +56,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
     <!-- Address Dialog -->
     <app-dialog [(open)]="addressDialogOpen" title="Ajouter/Modifier une adresse">
-      <app-address-form [model]="addressModel()" (modelChange)="addressModel.set($event)" />
+      <app-address-form [value]="addressModel()" (valueChange)="addressModel.set($event)" />
       <div dialog-actions class="flex flex-col sm:flex-row gap-2">
         <app-button [fullWidth]="true" class="sm:w-auto" variant="secondary" size="md" (clicked)="addressDialogOpen.set(false)"><span class="material-symbols-outlined text-base">close</span><span class="ml-1">Fermer</span></app-button>
         <app-button [fullWidth]="true" class="sm:w-auto" variant="primary" size="md" (clicked)="saveAddressAndClose()"><span class="material-symbols-outlined text-base">check_circle</span><span class="ml-1">Enregistrer</span></app-button>
@@ -58,7 +65,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
     <!-- Contact Dialog -->
     <app-dialog [(open)]="contactDialogOpen" title="Ajouter/Modifier un contact">
-      <app-contact-form [model]="contactModel()" (modelChange)="contactModel.set($event)" />
+      <app-contact-form [value]="contactModel()" (valueChange)="contactModel.set($event)" />
       <div dialog-actions class="flex flex-col sm:flex-row gap-2">
         <app-button [fullWidth]="true" class="sm:w-auto" variant="secondary" size="md" (clicked)="contactDialogOpen.set(false)"><span class="material-symbols-outlined text-base">close</span><span class="ml-1">Fermer</span></app-button>
         <app-button [fullWidth]="true" class="sm:w-auto" variant="primary" size="md" (clicked)="saveContactAndClose()"><span class="material-symbols-outlined text-base">check_circle</span><span class="ml-1">Enregistrer</span></app-button>
@@ -68,84 +75,103 @@ import { ActivatedRoute, Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ActorEditPage {
-  store = inject(ActorsStore);
-  route = inject(ActivatedRoute);
-  router = inject(Router);
+  readonly ui = useActorScreen();
+  readonly route = inject(ActivatedRoute);
 
-  actorModel = signal<ActorBaseModel>({ name: '', reference: '', category: '' });
-  canSave = computed(() => (this.actorModel().name?.trim().length ?? 0) >= 2 && !this.store.loading());
-
-  constructor() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.store.load(id).then(() => {
-        const a = this.store.currentActor();
-        if (a) {
-          this.actorModel.set({ name: a.name, reference: a.reference, category: a.category });
-        }
-      });
-    }
-  }
-
-  onBaseChange(v: ActorBaseModel) {
-    this.actorModel.set(v);
-    const a = this.store.currentActor();
-    this.store.setActor({ id: a?.id || '', ...v, addresses: this.store.addresses(), contacts: this.store.contacts() } as any);
-  }
-
-  async save() {
-    const a = this.store.currentActor();
-    if (!a) return;
-    try {
-      await this.store.update(a.id, { ...this.actorModel() } as any);
-      alert('Acteur mis à jour');
-      this.goView();
-    } catch {}
-  }
-
-  goView() {
-    const a = this.store.currentActor();
-    if (a) this.router.navigate(['../'], { relativeTo: this.route });
-  }
-
-  // Dialogs
   addressDialogOpen = signal(false);
   contactDialogOpen = signal(false);
-  addressModel = signal<{ type: Address['type']; street: string; city: string; country: string }>({ type: 'autres', street: '', city: '', country: '' });
-  contactModel = signal<{ type: Contact['type']; name: string; phone: string; email: string; role?: string }>({ type: 'commercial', name: '', phone: '', email: '', role: '' });
+
+  readonly initialAddressFormValue: AddressFormValue = {
+    id: '',
+    type: 'DEFAULT',
+    street: '',
+    city: '',
+    country: '',
+    zipCode: '',
+    state: '',
+    actorId: ''
+  };
+
+  readonly initialContactValue: ContactFormValue = {
+    id: '',
+    type: 'DEFAULT',
+    name: '',
+    phone: '',
+    email: '',
+    actorId: '',
+    function: '',
+  };
+
+  addressModel = signal<AddressFormValue>(this.initialAddressFormValue);
+  contactModel = signal<ContactFormValue>(this.initialContactValue);
+
+  get form() { return this.ui.form; }
+  get formValue() { return this.ui.formValue; }
+  get loading() { return this.ui.loading; }
+
+  constructor() {
+    // Ensure form mirrors the resolved current actor
+    this.ui.syncFromCurrentIfPristine();
+  }
+
+  nameHasError() { return this.ui.nameHasError(); }
+  onValueChange(v: any) { return this.ui.onValueChange(v); }
+
+  save() {
+    const id = this.route.snapshot.paramMap.get('id') || '';
+    return this.ui.saveEdit(id);
+  }
+  goBack() { return this.ui.goBack(); }
 
   openAddressDialog(a?: Address) {
-    if (a) this.addressModel.set({ type: a.type, street: a.street, city: a.city, country: a.country });
+    if (a) this.addressModel.set({
+      id: a.id ?? null,
+      type: a.type,
+      street: a.street ?? null,
+      city: a.city,
+      country: a.country,
+      zipCode: a.zipCode ?? null,
+      state: a.state ?? null,
+      actorId: a.actorId ?? null
+    });
     this.addressDialogOpen.set(true);
   }
-  saveAddressAndClose() {
+  private addOrUpdateAddressClose() {
     const m = this.addressModel();
-    if (!m.street.trim() || !m.city.trim() || !m.country.trim()) return;
-    // when editing, we should have selected address; for simplicity treat as add/update when same fields
-    const existing = this.store.addresses().find(x => x.street === m.street && x.city === m.city && x.country === m.country);
-    const a: Address = existing ? { ...existing, ...m } as Address : { id: crypto.randomUUID(), ...m } as Address;
-    existing ? this.store.updateAddress(a) : this.store.addAddress(a);
+    if (!m?.street?.trim() || !m.city.trim() || !m.country.trim()) return;
+    const a: Address = { ...m, id: m.id ?? crypto.randomUUID() } as Address;
+    // decide update vs add based on presence of id in the current list
+    const exists = this.ui.addresses().some(x => x.id === a.id);
+    exists ? this.ui.updateAddress(a) : this.ui.addAddress(a);
     this.addressDialogOpen.set(false);
-    // Reset country as requested (leave other fields intact for convenience)
-    this.addressModel.set({ ...this.addressModel(), country: '' });
+    this.addressModel.set(this.initialAddressFormValue);
   }
-
+  saveAddressAndClose() { this.addOrUpdateAddressClose(); }
   editAddress(a: Address) { this.openAddressDialog(a); }
-  removeAddress(id: string) { this.store.removeAddress(id); }
+  removeAddress(id: string) { this.ui.removeAddress(id); }
 
   openContactDialog(c?: Contact) {
-    if (c) this.contactModel.set({ type: c.type, name: c.name, phone: c.phone, email: c.email, role: c.role || '' });
+    if (c) this.contactModel.set({
+      id: c.id ?? null,
+      type: c.type,
+      name: c.name,
+      phone: c.phone ?? null,
+      email: c.email ?? null,
+      function: c.function ?? null,
+      actorId: c.actorId ?? null,
+    });
     this.contactDialogOpen.set(true);
   }
-  saveContactAndClose() {
+  private addOrUpdateContactClose() {
     const m = this.contactModel();
     if (!m.name.trim()) return;
-    const existing = this.store.contacts().find(x => x.email === m.email && !!m.email);
-    const c: Contact = existing ? { ...existing, ...m } as Contact : { id: crypto.randomUUID(), ...m } as Contact;
-    existing ? this.store.updateContact(c) : this.store.addContact(c);
+    const c: Contact = { ...m, id: m.id ?? crypto.randomUUID() } as Contact;
+    const exists = this.ui.contacts().some(x => x.id === c.id);
+    exists ? this.ui.updateContact(c) : this.ui.addContact(c);
     this.contactDialogOpen.set(false);
+    this.contactModel.set(this.initialContactValue);
   }
-
+  saveContactAndClose() { this.addOrUpdateContactClose(); }
   editContact(c: Contact) { this.openContactDialog(c); }
-  removeContact(id: string) { this.store.removeContact(id); }
+  removeContact(id: string) { this.ui.removeContact(id); }
 }

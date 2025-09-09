@@ -4,13 +4,13 @@ import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 import { ActorTabsComponent } from '../components/actor-tabs';
 import { actorStore } from '../actors.store';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {TranslateService} from '../../../core/i18n/translate.service';
 
 @Component({
   selector: 'app-actor-view-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, ActorTabsComponent, RouterLink],
+  imports: [CommonModule, ActionBarComponent, CardComponent, ActorTabsComponent],
   providers: [],
   template: `
     <app-action-bar [showCancel]="false" [showSave]="false" (newClicked)="goNew()" (editClicked)="goEdit()" />
@@ -27,16 +27,12 @@ import {TranslateService} from '../../../core/i18n/translate.service';
             <div class="text-base">{{ actorReference() }}</div>
           </div>
         </div>
-        <div class="mt-4">
-          <a class="inline-flex items-center text-primary hover:underline" [routerLink]="['edit']">
-            <span class="material-symbols-outlined text-base mr-1">edit</span>Modifier
-          </a>
+        <div class="mt-6">
+          <app-actor-tabs [addresses]="store.addresses()" [contacts]="store.contacts()" [readonly]="true" />
         </div>
       </app-card>
 
-      <app-card>
-        <app-actor-tabs [addresses]="store.addresses()" [contacts]="store.contacts()" [readonly]="true" />
-      </app-card>
+
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Default

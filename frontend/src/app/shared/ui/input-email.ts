@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
            [disabled]="disabled()"
            [value]="value() ?? ''"
            (input)="onInput($event)"
+           (blur)="onBlur()"
            [class]="inputClass()" />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -20,6 +21,7 @@ export class InputEmailComponent {
   disabled = input<boolean>(false);
   error = input<boolean>(false);
   value = model<string | null>(null);
+  blurred = output<void>();
 
   inputClass() {
     const base = 'w-full h-11 border bg-surface text-fg placeholder-muted px-3 text-base outline-none shadow-sm';
@@ -32,5 +34,9 @@ export class InputEmailComponent {
   onInput(e: Event) {
     const target = e.target as HTMLInputElement;
     this.value.set(target.value || '');
+  }
+
+  onBlur() {
+    this.blurred.emit();
   }
 }
