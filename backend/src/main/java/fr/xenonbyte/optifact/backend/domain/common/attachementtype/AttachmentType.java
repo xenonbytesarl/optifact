@@ -1,7 +1,7 @@
 package fr.xenonbyte.optifact.backend.domain.common.attachementtype;
 
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
-import fr.xenonbyte.optifact.backend.domain.common.attachementtype.message.AttachementTypeMessage;
+import fr.xenonbyte.optifact.backend.domain.common.attachementtype.message.AttachmentTypeMessage;
 import fr.xenonbyte.optifact.backend.domain.common.entity.BaseEntity;
 
 import java.time.ZonedDateTime;
@@ -16,38 +16,38 @@ import static java.util.UUID.randomUUID;
  */
 @Hexagonal(layer = Hexagonal.Layer.DOMAIN, componentType = Hexagonal.ComponentType.ENTITY)
 @Hexagonal.Entity
-public final class AttachementType extends BaseEntity {
+public final class AttachmentType extends BaseEntity {
     private final String name;
     private final Boolean active;
 
-    private AttachementType(UUID id, String name, Boolean active) {
+    private AttachmentType(UUID id, String name, Boolean active) {
         this.id = id;
         this.name = name;
         this.active = active;
     }
 
-    public static AttachementType create(String name) {
+    public static AttachmentType create(String name) {
         validateParam(name);
 
-        return new AttachementType(randomUUID(), name, true);
+        return new AttachmentType(randomUUID(), name, true);
     }
 
-    public static AttachementType create(UUID id, ZonedDateTime createdAt, ZonedDateTime updatedAt, String name, Boolean active) {
+    public static AttachmentType create(UUID id, ZonedDateTime createdAt, ZonedDateTime updatedAt, String name, Boolean active) {
         validateParam(name);
-        AttachementType attachmentType = new AttachementType(id, name, active);
+        AttachmentType attachmentType = new AttachmentType(id, name, active);
         attachmentType.updateAudit(createdAt, updatedAt);
         return attachmentType;
     }
 
-    public AttachementType update(String name) {
+    public AttachmentType update(String name) {
         validateParam(name);
-        AttachementType attachmentType = new AttachementType(id, name, true);
+        AttachmentType attachmentType = new AttachmentType(id, name, true);
         attachmentType.updateAudit(createdAt);
         return attachmentType;
     }
 
-    public AttachementType withActive(Boolean active) {
-        AttachementType attachmentType = new AttachementType(id, name, active);
+    public AttachmentType withActive(Boolean active) {
+        AttachmentType attachmentType = new AttachmentType(id, name, active);
         attachmentType.updateAudit(createdAt);
         return attachmentType;
     }
@@ -62,7 +62,7 @@ public final class AttachementType extends BaseEntity {
 
     private static void validateParam(String name) {
         if(name == null || name.isBlank()) {
-            throw new IllegalArgumentException(AttachementTypeMessage.ATTACHMENT_TYPE_NAME_REQUIRED);
+            throw new IllegalArgumentException(AttachmentTypeMessage.ATTACHMENT_TYPE_NAME_REQUIRED);
         }
     }
 }
