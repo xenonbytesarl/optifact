@@ -75,7 +75,7 @@ public final class Actor extends BaseEntity {
         return contacts;
     }
 
-    public Actor update(String name, String reference, List<Address> addresses, List<Contact> contacts, Boolean active) {
+    public Actor update(String name, String reference, List<Address> addresses, List<Contact> contacts) {
         if(name == null || name.isBlank()) {
             throw new IllegalArgumentException(ActorMessage.ACTOR_NAME_REQUIRED);
         }
