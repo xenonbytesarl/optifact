@@ -452,6 +452,11 @@ components:
           type: string
           description: État / Région
           example: "Île-de-France"
+        actorId:
+          type: string
+          format: uuid
+          description: the id of the actor that owns this contact
+          example: "123e4567-e89b-12d3-a456-426655440000"
         active:
           type: boolean
           description: Adresse active
@@ -500,6 +505,11 @@ components:
           type: string
           description: Fonction/Intitulé du poste
           example: "Responsable achats"
+        actorId:
+          type: string
+          format: uuid
+          description: the id of the actor that owns this contact
+          example: "123e4567-e89b-12d3-a456-426655440000"
         active:
           type: boolean
           description: Contact actif
