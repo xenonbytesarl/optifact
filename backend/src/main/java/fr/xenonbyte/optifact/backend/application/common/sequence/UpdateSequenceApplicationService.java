@@ -46,7 +46,18 @@ public final class UpdateSequenceApplicationService implements UpdateSequencePri
             throw new SequenceNameConflictException(name);
         }
 
-        sequence = repository.save(sequence);
+        existing = existing.update(
+                sequence.getName(),
+                sequence.getCode(),
+                sequence.getStep(),
+                sequence.getSize(),
+                sequence.getNext(),
+                sequence.getPrefix(),
+                sequence.getSuffix(),
+                sequence.getActive()
+        );
+
+        sequence = repository.save(existing);
         LOGGER.info("Sequence updated successfully with id: '" + sequence.getId() + "'");
         return sequence;
     }
