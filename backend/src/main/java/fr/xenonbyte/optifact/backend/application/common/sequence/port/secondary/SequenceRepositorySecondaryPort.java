@@ -14,17 +14,15 @@ public interface SequenceRepositorySecondaryPort {
 
     Sequence save(Sequence sequence);
 
-    Sequence update(Sequence sequence);
-
     boolean existsByCode(String code);
 
     boolean existsByName(String name);
 
-    boolean existsByCodeExcludingId(String code, UUID id);
+    boolean existsByCodeExcludingId(String code, UUID sequenceId);
 
-    boolean existsByNameExcludingId(String name, UUID id);
+    boolean existsByNameExcludingId(String name, UUID sequenceId);
 
-    Optional<Sequence> findById(UUID id);
+    Optional<Sequence> findById(UUID sequenceId);
 
     Optional<Sequence> findByCode(String code);
 
