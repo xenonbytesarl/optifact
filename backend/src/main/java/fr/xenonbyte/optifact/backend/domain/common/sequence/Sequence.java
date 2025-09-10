@@ -77,6 +77,29 @@ public final class Sequence extends BaseEntity {
         return new Sequence(id, name, code, step, size, next, prefix, suffix, active);
     }
 
+    public static Sequence create(UUID id, String code, String name, Long step, Long size, BigInteger next, String prefix, String suffix, Boolean active) {
+
+        validateParams(code, name);
+
+        if(step == null) {
+            step = 1L;
+        }
+
+        if(size == null) {
+            size = 5L;
+        }
+
+        if(next == null) {
+            next = BigInteger.ZERO;
+        }
+
+        if(active == null) {
+            active = true;
+        }
+
+        return new Sequence(id, name, code, step, size, next, prefix, suffix, active);
+    }
+
 
     public Sequence update(String name, String code, Long step, Long size, BigInteger next, String prefix, String suffix, Boolean active) {
 
