@@ -94,6 +94,10 @@
   "products": {
     "title": "Products",
     "subtitle": "Product catalog",
+    "tabs": {
+      "info": "General information",
+      "docTypes": "Document types"
+    },
     "new": "New product",
     "fields": {
       "code": "Code",
@@ -113,6 +117,13 @@
     "hints": {
       "amount": "Used when the type is flat amount",
       "rate": "Used when the type is percentage"
+    },
+    "docTypes": {
+      "sectionTitle": "Document Types",
+      "searchPlaceholder": "Search a document type",
+      "add": "Add",
+      "empty": "No document type associated. Select a type then click Add.",
+      "alreadyAssociated": "This document type is already associated"
     },
     "empty": "No products"
   },

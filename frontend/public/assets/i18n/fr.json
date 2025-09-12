@@ -95,6 +95,10 @@
   "products": {
     "title": "Produits",
     "subtitle": "Catalogue des produits",
+    "tabs": {
+      "info": "Informations générales",
+      "docTypes": "Types de document"
+    },
     "new": "Nouveau produit",
     "fields": {
       "code": "Code",
@@ -114,6 +118,13 @@
     "hints": {
       "amount": "Utilisé lorsque le type est forfait",
       "rate": "Utilisé lorsque le type est pourcentage"
+    },
+    "docTypes": {
+      "sectionTitle": "Type de Documents",
+      "searchPlaceholder": "Rechercher un type de document",
+      "add": "Ajouter",
+      "empty": "Aucun type de document associé. Sélectionnez un type puis cliquez sur Ajouter.",
+      "alreadyAssociated": "Ce type de document est déjà associé"
     },
     "empty": "Aucun produit"
   },

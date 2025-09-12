@@ -36,7 +36,9 @@ export function useProductScreen() {
     amount: [0],
     rate: [null],
     categoryId: [null, [Validators.required]],
-    description: ['']
+    description: [''],
+    currency: [null],
+    attachmentTypeIds: [[]]
   }, { validators: productTypeAmountRateValidator });
 
   const initialProductFormValue: ProductFormValue = {
@@ -46,7 +48,9 @@ export function useProductScreen() {
     amount: 0,
     rate: null,
     categoryId: null,
-    description: ''
+    description: '',
+    currency: null,
+    attachmentTypeIds: []
   };
   const formValue = signal<ProductFormValue>(initialProductFormValue);
   const loading = computed(() => store.loading());
@@ -61,8 +65,10 @@ export function useProductScreen() {
       const rate = current.rate ?? null;
       const categoryId = current.categoryId ?? null;
       const description = current.description ?? '';
-      formValue.set({ code, name, type, amount, rate, categoryId, description });
-      form.patchValue({ code, name, type, amount, rate, categoryId, description });
+      const currency = (current as any).currency ?? null;
+      const attachmentTypeIds = current.attachmentTypeIds ?? [];
+      formValue.set({ code, name, type, amount, rate, categoryId, description, currency, attachmentTypeIds });
+      form.patchValue({ code, name, type, amount, rate, categoryId, description, currency, attachmentTypeIds });
       form.markAsPristine();
       form.markAsUntouched();
     }
@@ -109,7 +115,9 @@ export function useProductScreen() {
       amount: v.amount,
       rate: v.rate,
       categoryId: v.categoryId,
-      description: v.description
+      description: v.description,
+      currency: v.currency ?? null,
+      attachmentTypeIds: v.attachmentTypeIds ?? []
     });
   }
 
