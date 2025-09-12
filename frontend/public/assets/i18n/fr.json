@@ -180,6 +180,43 @@
     "title": "Paramètres",
     "subtitle": "Préférences de l’application"
   },
+  "sequences": {
+    "title": "Séquences",
+    "subtitle": "Gérez les séquences de numérotation",
+    "new": "Nouvelle séquence",
+    "fields": {
+      "name": "Nom",
+      "code": "Code",
+      "step": "Pas",
+      "size": "Taille",
+      "next": "Prochain",
+      "prefix": "Préfixe",
+      "suffix": "Suffixe",
+      "active": "Actif",
+      "actions": "Actions"
+    },
+    "empty": "Aucune séquence",
+    "patterns": {
+      "title": "Motifs disponibles",
+      "year": "Année sur 4 chiffres (ex. 2025)",
+      "y": "Année sur 2 chiffres (ex. 25)",
+      "month": "Mois 01..12",
+      "weekday": "Jour de semaine ISO 1..7 (Lun=1)",
+      "day": "Jour du mois 01..31",
+      "doy": "Jour de l'année 001..366",
+      "woy": "Semaine ISO de l'année 01..53",
+      "h24": "Heure 00..23",
+      "min": "Minute 00..59",
+      "sec": "Seconde 00..59"
+    },
+    "messages": {
+      "deleted": { "success": "Séquence supprimée avec succès.", "error": "Échec de la suppression de la séquence." },
+      "created": { "success": "Séquence créée avec succès.", "error": "Échec de la création de la séquence." },
+      "update": { "success": "Séquence mise à jour avec succès.", "error": "Échec de la mise à jour de la séquence." },
+      "find": { "success": "Séquence récupérée avec succès.", "error": "Échec de la récupération de la séquence." },
+      "search": { "success": "Séquences chargées avec succès.", "error": "Échec du chargement des séquences." }
+    }
+  },
   "attachmentTypes": {
     "title": "Types de documents",
     "subtitle": "Gérez les types de documents",
@@ -217,7 +254,10 @@
     "refresh": "Actualiser"
   },
   "common": {
-    "deleted": "Supprimé avec succès."
+    "deleted": "Supprimé avec succès.",
+    "yes": "Oui",
+    "no": "Non",
+    "error": "Une erreur est survenue"
   },
   "paginator": {
     "noItems": "Aucun élément",
