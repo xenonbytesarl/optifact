@@ -6,6 +6,7 @@ import fr.xenonbyte.optifact.backend.api.common.attachmenttype.generated.view.Ap
 import fr.xenonbyte.optifact.backend.api.common.attachmenttype.generated.view.AttachmentTypeApiRequestView;
 import fr.xenonbyte.optifact.backend.api.common.attachmenttype.generated.view.AttachmentTypeApiResponseView;
 import fr.xenonbyte.optifact.backend.api.common.attachmenttype.generated.view.AttachmentTypePageApiResponseView;
+import fr.xenonbyte.optifact.backend.api.common.attachmenttype.generated.view.AttachmentTypeListApiResponseView;
 import fr.xenonbyte.optifact.backend.api.common.locale.MessageUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,6 +95,19 @@ public class AttachmentTypeResource implements AttachmentTypesApi {
                         .status(OK.name())
                         .message(MessageUtil.getMessage(AttachmentTypeMessageView.ATTACHMENT_TYPE_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(of(CONTENT, adapterView.updateAttachmentType(attachmentTypeId, attachmentTypeApiRequestView)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<AttachmentTypeListApiResponseView> findAttachmentByIds(String acceptLanguage, java.util.List<java.util.UUID> ids) {
+        java.util.Set<java.util.UUID> set = new java.util.HashSet<>(ids);
+        return ResponseEntity.status(OK).body(
+                new AttachmentTypeListApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(AttachmentTypeMessageView.ATTACHMENT_TYPES_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.findAttachmentTypesByIds(set)))
         );
     }
 }

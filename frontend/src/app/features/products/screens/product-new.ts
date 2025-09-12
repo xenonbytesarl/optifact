@@ -25,7 +25,7 @@ import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 
     <div class="p-4 flex flex-col gap-4">
       @if (loading()) {
-        <app-spinner [overlay]="true" />
+        <app-spinner [overlay]="true"/>
       }
       <app-card>
         <app-tabs [items]="tabItems()" [(active)]="activeTab">
@@ -39,6 +39,7 @@ import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
               [categoryIdRequiredError]="categoryIdHasError()"
               [rateRequiredError]="rateHasError()"
               [amountRequiredError]="amountHasError()"
+              [productCategories]="productCategories()"
               (blurCode)="onCodeBlur()"
               (blurName)="onNameBlur()"
               (blurType)="onTypeBlur()"
@@ -49,7 +50,11 @@ import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
             />
           }
           @if (activeTab === 'docTypes') {
-            <app-product-document-types-tab [modelIds]="formValue().attachmentTypeIds ?? []" (modelIdsChange)="onAttachmentTypeIds($event)" />
+            <app-product-document-types-tab
+              [loading]="loading()"
+              [modelIds]="formValue().attachmentTypeIds ?? []"
+              [attachmentTypes]="attachmentTypes()"
+              (modelIdsChange)="onAttachmentTypeIds($event)"/>
           }
         </app-tabs>
       </app-card>
@@ -61,6 +66,8 @@ export class ProductNewPage {
   ui = useProductScreen();
 
   private i18n = inject(TranslateService);
+  productCategories = computed(() => this.ui.categoryStore.categoryPage().elements);
+  attachmentTypes = computed(() => this.ui.docTypeStore.attachmentTypePage().elements);
   tabItems = computed<TabItem[]>(() => {
     this.i18n.lang();
     return [

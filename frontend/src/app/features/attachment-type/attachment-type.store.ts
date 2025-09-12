@@ -9,6 +9,7 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../core/constant/consta
 
 export interface AttachmentTypeState {
   attachmentTypePage: Page<AttachmentType>;
+  currentAttachmentTypes: AttachmentType[];
   column: AttachmentTypeSortColumn;
   current: AttachmentType | null;
   loading: boolean;
@@ -27,6 +28,7 @@ let initialAttachmentTypePage = {
 };
 const initialState: AttachmentTypeState = {
   attachmentTypePage: initialAttachmentTypePage,
+  currentAttachmentTypes: [],
   column: 'name',
   current: null,
   loading: false,
@@ -129,6 +131,25 @@ export const attachmentTypeStore = signalStore(
             patchState(store, { error: payload.reason ?? 'attachmentTypes.messages.deleted.error', loading: false });
             return false;
           }
+      },
+      async findByIds(ids: string[]) {
+        if (!ids || ids.length === 0) return [] as AttachmentType[];
+        patchState(store, { loading: true, error: null, message: null, currentAttachmentTypes: [] as AttachmentType[] });
+        const response = await api.findByIds(ids);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<AttachmentType[]>;
+          // do not override the page; just return and let caller merge/use
+          patchState(store, {
+            loading: false,
+            message: payload.message ?? 'attachmentTypes.messages.findMany.success',
+            currentAttachmentTypes: payload.data.content ?? [] as AttachmentType[]
+          });
+          return (payload.data.content ?? []) as AttachmentType[];
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { loading: false, error: payload.reason ?? 'attachmentTypes.messages.findMany.error' });
+          return [] as AttachmentType[];
+        }
       }
     };
   })

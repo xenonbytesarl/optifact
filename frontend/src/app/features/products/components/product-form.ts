@@ -15,8 +15,8 @@ import { ProductType } from '../../../core/api/products.api';
 import {AutocompleteComponent, AutocompleteItem} from '../../../shared/ui/autocomplete';
 import { InputCurrencyComponent } from '../../../shared/ui/input-currency';
 import {CategoryFormValue} from '../../product-categories/components/product-category-form';
-import {productCategoryStore} from '../../product-categories/product-category.store';
 import {TranslateService} from '../../../core/i18n/translate.service';
+import {ProductCategory} from '../../../core/api/product-categories.api';
 
 export interface ProductFormValue {
   code: string;
@@ -73,7 +73,7 @@ export interface ProductFormValue {
 })
 export class ProductFormComponent {
 
-  private categoryStore = inject(productCategoryStore);
+
   protected i18n = inject(TranslateService);
 
   disabled = input<boolean>(false);
@@ -84,6 +84,7 @@ export class ProductFormComponent {
   typeRequiredError = input<boolean>(false);
   rateRequiredError = input<boolean>(false);
   amountRequiredError = input<boolean>(false);
+  productCategories = input<ProductCategory[]>([]);
   value = model<ProductFormValue>({
     code: '',
     name: '',
@@ -116,7 +117,7 @@ export class ProductFormComponent {
   });
 
   categoryItems = computed<AutocompleteItem[]>(() =>
-    this.categoryStore.categoryPage().elements.map(c => ({ value: c.id, label: c.name }))
+    this.productCategories().map(c => ({ value: c.id, label: c.name }))
   );
 
 

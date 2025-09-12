@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, effect, inject, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
@@ -8,6 +8,8 @@ import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { productStore} from '../products.store';
 import { productCategoryStore } from '../../product-categories/product-category.store';
 import {TranslateService} from '../../../core/i18n/translate.service';
+import {useProductScreen} from './product-screen.util';
+import {attachmentTypeStore} from '../../attachment-type/attachment-type.store';
 
 @Component({
   selector: 'app-product-view-page',
@@ -70,8 +72,15 @@ import {TranslateService} from '../../../core/i18n/translate.service';
             </div>
           }
           @if (activeTab === 'docTypes') {
-            <app-product-document-types-tab [readonly]="true" />
+            <app-product-document-types-tab
+              [modelIds]="modelIds()"
+              [loading]="loading()"
+              [attachmentTypes]="attachmentTypes()"
+              [currentAttachmentTypes]="currentAttachmentTypes()"
+              [readonly]="true"
+            />
           }
+
         </app-tabs>
       </app-card>
     </div>
@@ -79,6 +88,7 @@ import {TranslateService} from '../../../core/i18n/translate.service';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ProductViewPage {
+
   tabItems = computed<TabItem[]>(() => {
     this.i18n.lang();
     return [
@@ -89,9 +99,10 @@ export class ProductViewPage {
   activeTab: 'info' | 'docTypes' = 'info';
   readonly store = inject(productStore);
   readonly categoryStore = inject(productCategoryStore);
+  readonly docTypeStore = inject(attachmentTypeStore);
   readonly route = inject(ActivatedRoute);
   readonly router = inject(Router);
-  protected i18n = inject(TranslateService);
+  readonly i18n = inject(TranslateService);
 
   loading = computed(() => this.store.loading());
   id = computed(() => this.store.current()?.id ?? '');
@@ -118,7 +129,20 @@ export class ProductViewPage {
     const c = this.categoryStore.categoryPage().elements.find(x => x.id === cid);
     return c?.name ?? '';
   });
-  constructor() {}
+  attachmentTypes = computed(() => this.docTypeStore.attachmentTypePage().elements);
+  currentAttachmentTypes = computed(() => this.docTypeStore.currentAttachmentTypes() ?? []);
+  modelIds = computed(() => this.store.current()?.attachmentTypeIds ?? []);
+
+  constructor() {
+    effect(() => {
+      if(this.store.current()) {
+        const attachmentIds = this.store.current()?.attachmentTypeIds ?? [];
+        if(attachmentIds.length > 0) {
+          this.docTypeStore.findByIds(attachmentIds);
+        }
+      }
+    });
+  }
 
   goNew() {
     this.router.navigate(['/products', 'new']);

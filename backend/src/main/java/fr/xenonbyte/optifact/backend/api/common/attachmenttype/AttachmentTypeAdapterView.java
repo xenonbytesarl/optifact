@@ -9,11 +9,15 @@ import fr.xenonbyte.optifact.backend.application.common.attachmenttype.port.in.D
 import fr.xenonbyte.optifact.backend.application.common.attachmenttype.port.in.FindAttachmentTypeByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachmenttype.port.in.SearchAttachmentTypesUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachmenttype.port.in.UpdateAttachmentTypeUseCase;
+import fr.xenonbyte.optifact.backend.application.common.attachmenttype.port.in.FindAttachmentTypeByIdsUseCase;
 import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
 import fr.xenonbyte.optifact.backend.application.common.payload.Direction;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 
 import java.util.UUID;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author bamk
@@ -26,6 +30,7 @@ public class AttachmentTypeAdapterView {
     private final CreateAttachmentTypeUseCase createAttachmentTypeUseCase;
     private final UpdateAttachmentTypeUseCase updateAttachmentTypeUseCase;
     private final FindAttachmentTypeByIdUseCase findAttachmentTypeByIdUseCase;
+    private final FindAttachmentTypeByIdsUseCase findAttachmentTypeByIdsUseCase;
     private final DeleteAttachmentTypeByIdUseCase deleteAttachmentTypeByIdUseCase;
     private final SearchAttachmentTypesUseCase searchAttachmentTypesUseCase;
     private final AttachmentTypeMapperView mapperView;
@@ -34,12 +39,14 @@ public class AttachmentTypeAdapterView {
             CreateAttachmentTypeUseCase createAttachmentTypeUseCase,
             UpdateAttachmentTypeUseCase updateAttachmentTypeUseCase,
             FindAttachmentTypeByIdUseCase findAttachmentTypeByIdUseCase,
+            FindAttachmentTypeByIdsUseCase findAttachmentTypeByIdsUseCase,
             DeleteAttachmentTypeByIdUseCase deleteAttachmentTypeByIdUseCase,
             SearchAttachmentTypesUseCase searchAttachmentTypesUseCase,
             AttachmentTypeMapperView mapperView) {
         this.createAttachmentTypeUseCase = createAttachmentTypeUseCase;
         this.updateAttachmentTypeUseCase = updateAttachmentTypeUseCase;
         this.findAttachmentTypeByIdUseCase = findAttachmentTypeByIdUseCase;
+        this.findAttachmentTypeByIdsUseCase = findAttachmentTypeByIdsUseCase;
         this.deleteAttachmentTypeByIdUseCase = deleteAttachmentTypeByIdUseCase;
         this.searchAttachmentTypesUseCase = searchAttachmentTypesUseCase;
         this.mapperView = mapperView;
@@ -78,6 +85,12 @@ public class AttachmentTypeAdapterView {
         }
         return mapperView.toResponsePageView(searchAttachmentTypesUseCase.searchAttachmentTypes(
                 nameFilter, new CommonSearch(safePage, safeSize, safeSort, safeDirection)));
+    }
+
+    public List<AttachmentTypeResponseView> findAttachmentTypesByIds(Set<UUID> ids) {
+        return findAttachmentTypeByIdsUseCase.findAttachmentTypeByIds(ids).stream()
+                .map(mapperView::toResponseView)
+                .collect(Collectors.toList());
     }
 
 }
