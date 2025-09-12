@@ -26,6 +26,8 @@ export interface ProductFormValue {
   rate?: number | null;
   categoryId?: string | null;
   description?: string | null;
+  currency?: string | null;
+  attachmentTypeIds?: string[] | null;
 }
 
 @Component({
@@ -89,7 +91,9 @@ export class ProductFormComponent {
     amount: null,
     rate: null,
     categoryId: null,
-    description: ''
+    description: '',
+    currency: null,
+    attachmentTypeIds: []
   });
 
   submit = output<CategoryFormValue>();

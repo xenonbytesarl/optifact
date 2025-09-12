@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, signal, effect} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal, effect, computed} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ProductFormComponent } from '../components/product-form';
@@ -6,11 +6,14 @@ import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 import {SpinnerComponent} from '../../../shared/ui/spinner';
 import {useProductScreen} from './product-screen.util';
+import { ProductDocumentTypesTabComponent } from '../components/product-document-types-tab';
+import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
+import { TranslateService } from '../../../core/i18n/translate.service';
 
 @Component({
   selector: 'app-product-edit-page',
   standalone: true,
-  imports: [CommonModule, ProductFormComponent, ActionBarComponent, CardComponent, SpinnerComponent],
+  imports: [CommonModule, ProductFormComponent, ActionBarComponent, CardComponent, SpinnerComponent, ProductDocumentTypesTabComponent, TabsComponent],
   providers: [],
   template: `
     <app-action-bar
@@ -26,23 +29,30 @@ import {useProductScreen} from './product-screen.util';
         <app-spinner [overlay]="true" />
       }
       <app-card>
-        <app-product-form
-          [disabled]="loading()"
-          [value]="formValue()"
-          [codeRequiredError]="codeHasError()"
-          [nameRequiredError]="nameHasError()"
-          [typeRequiredError]="typeHasError()"
-          [categoryIdRequiredError]="categoryIdHasError()"
-          [rateRequiredError]="rateHasError()"
-          [amountRequiredError]="amountHasError()"
-          (blurCode)="onCodeBlur()"
-          (blurName)="onNameBlur()"
-          (blurType)="onTypeBlur()"
-          (blurCategory)="onCategoryIdBlur()"
-          (blurAmount)="onAmountBlur()"
-          (blurRate)="onRateBlur()"
-          (valueChange)="onValueChange($event)"
-        />
+        <app-tabs [items]="tabItems()" [(active)]="activeTab">
+          @if (activeTab === 'info') {
+            <app-product-form
+              [disabled]="loading()"
+              [value]="formValue()"
+              [codeRequiredError]="codeHasError()"
+              [nameRequiredError]="nameHasError()"
+              [typeRequiredError]="typeHasError()"
+              [categoryIdRequiredError]="categoryIdHasError()"
+              [rateRequiredError]="rateHasError()"
+              [amountRequiredError]="amountHasError()"
+              (blurCode)="onCodeBlur()"
+              (blurName)="onNameBlur()"
+              (blurType)="onTypeBlur()"
+              (blurCategory)="onCategoryIdBlur()"
+              (blurAmount)="onAmountBlur()"
+              (blurRate)="onRateBlur()"
+              (valueChange)="onValueChange($event)"
+            />
+          }
+          @if (activeTab === 'docTypes') {
+            <app-product-document-types-tab [modelIds]="formValue().attachmentTypeIds ?? []" (modelIdsChange)="onAttachmentTypeIds($event)" />
+          }
+        </app-tabs>
       </app-card>
     </div>
   `,
@@ -51,6 +61,16 @@ import {useProductScreen} from './product-screen.util';
 export class ProductEditPage {
   readonly route = inject(ActivatedRoute);
   ui = useProductScreen();
+
+  private i18n = inject(TranslateService);
+  tabItems = computed<TabItem[]>(() => {
+    this.i18n.lang();
+    return [
+      { id: 'info', label: this.i18n.t('products.tabs.info') },
+      { id: 'docTypes', label: this.i18n.t('products.tabs.docTypes') }
+    ];
+  });
+  activeTab: 'info' | 'docTypes' = 'info';
 
   editedId = signal<string>('');
 
@@ -83,4 +103,8 @@ export class ProductEditPage {
 
   save() { return this.ui.saveEdit(this.editedId()); }
   goBack() { return this.ui.goBack(); }
+  onAttachmentTypeIds(ids: string[] | null) {
+    const v = { ...this.formValue(), attachmentTypeIds: ids } as any;
+    this.ui.onValueChange(v);
+  }
 }

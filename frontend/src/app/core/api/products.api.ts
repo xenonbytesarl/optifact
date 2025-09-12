@@ -16,6 +16,8 @@ export interface Product {
   rate?: number | null;   // taux (pourcentage)
   categoryId?: string | null;
   description?: string | null;
+  currency?: string | null;
+  attachmentTypeIds?: string[] | null;
 }
 
 export type ProductSortColumn = 'name' | 'reference';
