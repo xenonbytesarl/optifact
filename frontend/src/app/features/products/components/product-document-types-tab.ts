@@ -4,9 +4,6 @@ import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { AutocompleteComponent, AutocompleteItem } from '../../../shared/ui/autocomplete';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { SpinnerComponent } from '../../../shared/ui/spinner';
-import { attachmentTypeStore } from '../../attachment-type/attachment-type.store';
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '../../../core/constant/constant';
-import { Direction } from '../../../core/model/direction.enum';
 import { AttachmentType } from '../../../core/api/attachment-types.api';
 import { TranslateService } from '../../../core/i18n/translate.service';
 
@@ -51,9 +48,11 @@ import { TranslateService } from '../../../core/i18n/translate.service';
                   <span class="material-symbols-outlined text-neutral-600 dark:text-neutral-300">description</span>
                   <div class="font-medium">{{ t.name }}</div>
                 </div>
-                <button class="text-red-600 hover:text-red-700 focus:outline-none" [disabled]="readonly()" (click)="removeType(t)" [attr.aria-label]="('common.actions.delete' | t)">
-                  <span class="material-symbols-outlined text-base">delete</span>
-                </button>
+               @if(!readonly()) {
+                 <button class="text-red-600 hover:text-red-700 focus:outline-none" [disabled]="readonly()" (click)="removeType(t)" [attr.aria-label]="('common.actions.delete' | t)">
+                   <span class="material-symbols-outlined text-base">delete</span>
+                 </button>
+               }
               </div>
             </div>
           }
@@ -69,40 +68,40 @@ import { TranslateService } from '../../../core/i18n/translate.service';
 })
 export class ProductDocumentTypesTabComponent {
   readonly = input<boolean>(false);
-  // bind selected ids with parent form
+  // bind selected ids with a parent form
   modelIds = model<string[] | null>(null);
 
-  private store = inject(attachmentTypeStore);
   private i18n = inject(TranslateService);
+  attachmentTypes = input<AttachmentType[]>([]);
+  currentAttachmentTypes = input<AttachmentType[]>([]);
+  loading = input<boolean>(false);
 
   // available attachment types as autocomplete items
   attachmentTypeItems = computed<AutocompleteItem[]>(() => {
-    return this.store.attachmentTypePage().elements.map(at => ({ value: at.id, label: at.name }));
+    return this.attachmentTypes().map(at => ({ value: at.id, label: at.name }));
   });
 
-  loading = computed(() => this.store.loading());
   errorMsg = signal<string | null>(null);
 
   selectedTypeId = model<string | null>(null);
   selectedTypes = signal<AttachmentType[]>([]);
 
   constructor() {
-    // initial load
-    this.refresh();
     // hydrate from incoming modelIds if any
     effect(() => {
       const ids = this.modelIds();
-      const all = this.store.attachmentTypePage().elements;
-      if (ids && all.length > 0) {
+      const all = this.currentAttachmentTypes().length > 0? this.currentAttachmentTypes():  this.attachmentTypes();
+      console.log(ids, all);
+      if (ids && ids.length > 0) {
+        // first map those available in current page
         const mapped = ids.map(id => all.find(a => a.id === id)).filter(Boolean) as AttachmentType[];
         this.selectedTypes.set(mapped);
+      } else if (!ids || ids.length === 0) {
+        this.selectedTypes.set([]);
       }
     });
   }
 
-  async refresh() {
-    await this.store.search('', DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, Direction.DESC, 'name');
-  }
 
   onSelectType(id: string | null) {
     this.selectedTypeId.set(id);
@@ -112,7 +111,7 @@ export class ProductDocumentTypesTabComponent {
   addSelected() {
     const id = this.selectedTypeId();
     if (!id) return;
-    const found = this.store.attachmentTypePage().elements.find(x => x.id === id);
+    const found = this.attachmentTypes().find(x => x.id === id);
     if (!found) return;
     const exists = this.selectedTypes().some(x => x.id === id);
     if (exists) {

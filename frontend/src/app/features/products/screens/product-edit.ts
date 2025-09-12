@@ -9,6 +9,7 @@ import {useProductScreen} from './product-screen.util';
 import { ProductDocumentTypesTabComponent } from '../components/product-document-types-tab';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { TranslateService } from '../../../core/i18n/translate.service';
+import {AttachmentType} from '../../../core/api/attachment-types.api';
 
 @Component({
   selector: 'app-product-edit-page',
@@ -40,6 +41,7 @@ import { TranslateService } from '../../../core/i18n/translate.service';
               [categoryIdRequiredError]="categoryIdHasError()"
               [rateRequiredError]="rateHasError()"
               [amountRequiredError]="amountHasError()"
+              [productCategories]="productCategories()"
               (blurCode)="onCodeBlur()"
               (blurName)="onNameBlur()"
               (blurType)="onTypeBlur()"
@@ -50,7 +52,12 @@ import { TranslateService } from '../../../core/i18n/translate.service';
             />
           }
           @if (activeTab === 'docTypes') {
-            <app-product-document-types-tab [modelIds]="formValue().attachmentTypeIds ?? []" (modelIdsChange)="onAttachmentTypeIds($event)" />
+            <app-product-document-types-tab
+              [modelIds]="formValue().attachmentTypeIds ?? []"
+              [attachmentTypes]="attachmentTypes()"
+              [currentAttachmentTypes]="currentAttachmentTypes()"
+              (modelIdsChange)="onAttachmentTypeIds($event)"
+            />
           }
         </app-tabs>
       </app-card>
@@ -63,6 +70,11 @@ export class ProductEditPage {
   ui = useProductScreen();
 
   private i18n = inject(TranslateService);
+
+  productCategories = computed(() => this.ui.categoryStore.categoryPage().elements);
+  attachmentTypes = computed(() => this.ui.docTypeStore.attachmentTypePage().elements);
+  currentAttachmentTypes = computed(() => this.ui.docTypeStore.currentAttachmentTypes() ?? []);
+
   tabItems = computed<TabItem[]>(() => {
     this.i18n.lang();
     return [
@@ -80,6 +92,10 @@ export class ProductEditPage {
 
     effect(() => {
       this.ui.syncFromCurrentIfPristine();
+    });
+
+    effect(() => {
+     this.ui.synchAttachmentTypeOnEdit();
     });
   }
 

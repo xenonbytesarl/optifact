@@ -1,6 +1,7 @@
 import {Routes} from '@angular/router';
 import {productFindByIdResolver, productSearchResolver} from './product.resolver';
 import {productCategorySearchResolver} from '../product-categories/product-category.resolver';
+import {attachmentTypeSearchResolver} from '../attachment-type/attachment-type.resolver';
 
 export const productsRoutes: Routes = [
   {
@@ -21,7 +22,8 @@ export const productsRoutes: Routes = [
       {
         path: 'new', loadComponent: () => import('./screens/product-new').then(m => m.ProductNewPage),
         resolve: {
-          productCategorySearch: productCategorySearchResolver
+          productCategorySearch: productCategorySearchResolver,
+          attachmentTypeSearch: attachmentTypeSearchResolver
         }
       },
       {
@@ -29,6 +31,7 @@ export const productsRoutes: Routes = [
         resolve: {
           productFindById: productFindByIdResolver,
           productCategorySearch: productCategorySearchResolver,
+          attachmentTypeSearch: attachmentTypeSearchResolver
         }
       },
       {
@@ -36,6 +39,7 @@ export const productsRoutes: Routes = [
         resolve: {
           productFindById: productFindByIdResolver,
           productCategorySearch: productCategorySearchResolver,
+          attachmentTypeSearch: attachmentTypeSearchResolver
         }
       },
     ]

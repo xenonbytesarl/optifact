@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../shared/ui/toast';
 import {productStore} from '../products.store';
 import {ProductFormValue} from '../components/product-form';
+import {productCategoryStore} from '../../product-categories/product-category.store';
+import {attachmentTypeStore} from '../../attachment-type/attachment-type.store';
 
 function productTypeAmountRateValidator(ctrl: AbstractControl): ValidationErrors | null {
   const type = ctrl.get('type')?.value as string | null | undefined;
@@ -25,6 +27,8 @@ function productTypeAmountRateValidator(ctrl: AbstractControl): ValidationErrors
 
 export function useProductScreen() {
   const store = inject(productStore);
+  const categoryStore = inject(productCategoryStore);
+  const docTypeStore = inject(attachmentTypeStore);
   const fb = inject(FormBuilder);
   const router = inject(Router);
   const toast = inject(ToastService);
@@ -54,6 +58,15 @@ export function useProductScreen() {
   };
   const formValue = signal<ProductFormValue>(initialProductFormValue);
   const loading = computed(() => store.loading());
+
+  function synchAttachmentTypeOnEdit() {
+    if(store.current()) {
+      const attachmentIds = store.current()?.attachmentTypeIds ?? [];
+      if(attachmentIds.length > 0) {
+        docTypeStore.findByIds(attachmentIds);
+      }
+    }
+  }
 
   function syncFromCurrentIfPristine() {
     const current = store.current();
@@ -193,6 +206,8 @@ export function useProductScreen() {
 
   return {
     store,
+    categoryStore,
+    docTypeStore,
     form,
     formValue,
     loading,
@@ -214,5 +229,6 @@ export function useProductScreen() {
     saveEdit,
     goBack,
     syncFromCurrentIfPristine,
+    synchAttachmentTypeOnEdit
   };
 }

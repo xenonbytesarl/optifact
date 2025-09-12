@@ -87,6 +87,45 @@ paths:
             application/json:
               schema:
                 $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /attachment-types/find-by-ids:
+    get:
+      tags:
+        - AttachmentType
+      summary: Find attachment types by IDs
+      description: Retrieves a list of attachment types by their IDs
+      operationId: findAttachmentByIds
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: ids
+          in: query
+          description: List of attachment type IDs to retrieve
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+          style: form
+          explode: true
+      responses:
+        '200':
+          description: Attachment types found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentTypeListApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
   /attachment-types/{attachmentTypeId}:
     get:
       tags:
@@ -281,3 +320,14 @@ components:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/AttachmentTypePageResponseView'
+    AttachmentTypeListApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttachmentTypeResponseView'

@@ -77,4 +77,17 @@ export class AttachmentTypesApi extends GlobalHttpApi {
       return this.createErrorResponse(error);
     }
   }
+
+  async findByIds(ids: string[]) {
+    try {
+      let params = new HttpParams();
+      ids.forEach(id => params = params.append('ids', id));
+      return await firstValueFrom(this.http.get<SuccessApiResponse<AttachmentType[] | ErrorApiResponse>>(`${this.base}/find-by-ids`, { params }));
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
 }
