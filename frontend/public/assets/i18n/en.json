@@ -179,6 +179,43 @@
     "title": "Settings",
     "subtitle": "Application preferences"
   },
+  "sequences": {
+    "title": "Sequences",
+    "subtitle": "Manage numbering sequences",
+    "new": "New sequence",
+    "fields": {
+      "name": "Name",
+      "code": "Code",
+      "step": "Step",
+      "size": "Size",
+      "next": "Next",
+      "prefix": "Prefix",
+      "suffix": "Suffix",
+      "active": "Active",
+      "actions": "Actions"
+    },
+    "empty": "No sequences",
+    "patterns": {
+      "title": "Available patterns",
+      "year": "4-digit year (e.g., 2025)",
+      "y": "2-digit year (e.g., 25)",
+      "month": "Month number 01..12",
+      "weekday": "ISO weekday 1..7 (Mon=1)",
+      "day": "Day of month 01..31",
+      "doy": "Day of year 001..366",
+      "woy": "ISO week of year 01..53",
+      "h24": "Hour 00..23",
+      "min": "Minute 00..59",
+      "sec": "Second 00..59"
+    },
+    "messages": {
+      "deleted": { "success": "Sequence deleted successfully.", "error": "Failed to delete sequence." },
+      "created": { "success": "Sequence created successfully.", "error": "Failed to create sequence." },
+      "update": { "success": "Sequence updated successfully.", "error": "Failed to update sequence." },
+      "find": { "success": "Sequence retrieved successfully.", "error": "Failed to retrieve sequence." },
+      "search": { "success": "Sequences loaded successfully.", "error": "Failed to load sequences." }
+    }
+  },
   "attachmentTypes": {
     "title": "Document types",
     "subtitle": "Manage document types",
@@ -217,6 +254,9 @@
   },
   "common": {
     "deleted": "Deleted successfully.",
+    "yes": "Yes",
+    "no": "No",
+    "error": "An error occurred",
     "actions": {
       "edit": "Edit",
       "delete": "Delete"

@@ -47,4 +47,9 @@ export const routes: Routes = [
     loadComponent: () => import('./features/settings/page').then(m => m.SettingsPage),
     data: { title: 'Paramètres' }
   },
+  {
+    path: 'sequences',
+    loadChildren: () => import('./features/sequences/routes').then(m => m.sequencesRoutes),
+    data: { title: 'Séquences' }
+  },
 ];

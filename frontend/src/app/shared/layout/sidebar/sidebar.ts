@@ -25,7 +25,8 @@ export class SidebarComponent {
     { link: '/payments', icon: 'credit_card', label: 'nav.payments' },
     { icon: 'settings', label: 'nav.settings', children: [
       { link: '/settings', icon: 'settings', label: 'settings.title' },
-      { link: '/attachment-types', icon: 'description', label: 'attachmentTypes.title' }
+      { link: '/attachment-types', icon: 'description', label: 'attachmentTypes.title' },
+      { link: '/sequences', icon: '123', label: 'sequences.title' }
     ] }
   ]);
 }
