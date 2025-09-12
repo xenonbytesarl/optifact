@@ -169,6 +169,38 @@
     "title": "Paramètres",
     "subtitle": "Préférences de l’application"
   },
+  "attachmentTypes": {
+    "title": "Types de documents",
+    "subtitle": "Gérez les types de documents",
+    "new": "Nouveau type de document",
+    "fields": {
+      "name": "Nom",
+      "actions": "Actions"
+    },
+    "empty": "Aucun type de document",
+    "messages": {
+      "deleted": {
+        "success": "Type de document supprimé avec succès.",
+        "error": "Échec de la suppression du type de document."
+      },
+      "created": {
+        "success": "Type de document créé avec succès.",
+        "error": "Échec de la création du type de document."
+      },
+      "update": {
+        "success": "Type de document mis à jour avec succès.",
+        "error": "Échec de la mise à jour du type de document."
+      },
+      "find": {
+        "success": "Type de document récupéré avec succès.",
+        "error": "Échec de la récupération du type de document."
+      },
+      "search": {
+        "success": "Types de documents chargés avec succès.",
+        "error": "Échec du chargement des types de documents."
+      }
+    }
+  },
   "dashboard": {
     "title": "Tableau de bord",
     "refresh": "Actualiser"
@@ -198,7 +230,8 @@
       "address": "Supprimer cette adresse ?",
       "contact": "Supprimer ce contact ?",
       "product": "Supprimer ce produit ?",
-      "productCategory": "Supprimer cette catégorie ?"
+      "productCategory": "Supprimer cette catégorie ?",
+      "attachmentType": "Supprimer ce type de document ?"
     }
   },
   "validation": {
