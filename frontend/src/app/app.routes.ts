@@ -13,6 +13,11 @@ export const routes: Routes = [
     data: { title: 'Acteurs' }
   },
   {
+    path: 'attachment-types',
+    loadChildren: () => import('./features/attachment-type/routes').then(m => m.attachmentTypesRoutes),
+    data: { title: 'Types de documents' }
+  },
+  {
     path: 'products',
     loadChildren: () => import('./features/products/routes').then(m => m.productsRoutes),
     data: { title: 'Produits' }

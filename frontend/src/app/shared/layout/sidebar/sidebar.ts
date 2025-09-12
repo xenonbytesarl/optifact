@@ -23,6 +23,9 @@ export class SidebarComponent {
     ] },
     { link: '/invoices', icon: 'receipt_long', label: 'nav.invoices' },
     { link: '/payments', icon: 'credit_card', label: 'nav.payments' },
-    { link: '/settings', icon: 'settings', label: 'nav.settings' }
+    { icon: 'settings', label: 'nav.settings', children: [
+      { link: '/settings', icon: 'settings', label: 'settings.title' },
+      { link: '/attachment-types', icon: 'description', label: 'attachmentTypes.title' }
+    ] }
   ]);
 }

@@ -168,6 +168,38 @@
     "title": "Settings",
     "subtitle": "Application preferences"
   },
+  "attachmentTypes": {
+    "title": "Document types",
+    "subtitle": "Manage document types",
+    "new": "New document type",
+    "fields": {
+      "name": "Name",
+      "actions": "Actions"
+    },
+    "empty": "No document types",
+    "messages": {
+      "deleted": {
+        "success": "Document type deleted successfully.",
+        "error": "Failed to delete document type."
+      },
+      "created": {
+        "success": "Document type created successfully.",
+        "error": "Failed to create document type."
+      },
+      "update": {
+        "success": "Document type updated successfully.",
+        "error": "Failed to update document type."
+      },
+      "find": {
+        "success": "Document type retrieved successfully.",
+        "error": "Failed to retrieve document type."
+      },
+      "search": {
+        "success": "Document types loaded successfully.",
+        "error": "Failed to load document types."
+      }
+    }
+  },
   "dashboard": {
     "title": "Dashboard",
     "refresh": "Refresh"
@@ -201,7 +233,8 @@
       "address": "Delete this address?",
       "contact": "Delete this contact?",
       "product": "Delete this product?",
-      "productCategory": "Delete this category?"
+      "productCategory": "Delete this category?",
+      "attachmentType": "Delete this document type?"
     }
   },
   "validation": {
