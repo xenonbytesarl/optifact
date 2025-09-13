@@ -17,4 +17,6 @@ public final class ProductMessage {
     public static final String PRODUCT_ID_NOT_FOUND = "product.id.not.found";
     public static final String PRODUCT_PRODUCT_CATEGORY_ID_NOT_FOUND = "product.product.category.id.not.found";
     public static final String PRODUCT_SEQUENCE_ID_NOT_FOUND = "product.sequence.id.not.found";
+    public static final String PRODUCT_SEQUENCE_ID_REQUIRED = "product.sequence.id.required";
+    public static final String PRODUCT_ATTACHMENT_TYPE_IDS_REQUIRED = "product.attachment.type.ids.required";
 }

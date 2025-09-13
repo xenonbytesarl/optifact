@@ -7,4 +7,5 @@ package fr.xenonbyte.optifact.backend.domain.common.attachment.message;
  */
 public final class AttachmentMessage {
     public static final String ATTACHMENT_TYPE_ID_REQUIRED = "attachment.attachment.type.id.required";
+    public static final String ATTACHMENT_ID_NOT_FOUND = "attachment.id.not.found";
 }

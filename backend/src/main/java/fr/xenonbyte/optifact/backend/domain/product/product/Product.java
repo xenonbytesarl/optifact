@@ -226,4 +226,14 @@ public final class Product extends BaseEntity {
     public List<UUID> getAttachementTypeIds() {
         return attachementTypeIds;
     }
+
+    public void checkClaimPrecondition() {
+        if (sequenceId == null) {
+            throw new IllegalArgumentException(ProductMessage.PRODUCT_SEQUENCE_ID_REQUIRED);
+        }
+
+        if (attachementTypeIds == null || attachementTypeIds.isEmpty()) {
+            throw new IllegalArgumentException(ProductMessage.PRODUCT_ATTACHMENT_TYPE_IDS_REQUIRED);
+        }
+    }
 }
