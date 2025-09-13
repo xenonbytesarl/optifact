@@ -1,11 +1,15 @@
 package fr.xenonbyte.optifact.backend.application.product;
 
 
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductCodeConflictException;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductNameConflictException;
+import fr.xenonbyte.optifact.backend.application.product.exception.ProductProductCategoryIdNotFoundException;
+import fr.xenonbyte.optifact.backend.application.product.exception.ProductSequenceIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.product.port.in.UpdateProductUseCase;
 import fr.xenonbyte.optifact.backend.application.product.port.out.ProductRepository;
+import fr.xenonbyte.optifact.backend.application.productcategory.port.out.ProductCategoryRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.product.product.Product;
 
@@ -26,9 +30,13 @@ public final class UpdateProductApplicationService implements UpdateProductUseCa
     private static final Logger LOGGER = Logger.getLogger(UpdateProductApplicationService.class.getName());
 
     private final ProductRepository repository;
+    private final ProductCategoryRepository productCategoryRepository;
+    private final SequenceRepository sequenceRepository;
 
-    public UpdateProductApplicationService(ProductRepository repository) {
+    public UpdateProductApplicationService(ProductRepository repository, ProductCategoryRepository productCategoryRepository, SequenceRepository sequenceRepository) {
         this.repository = repository;
+        this.productCategoryRepository = productCategoryRepository;
+        this.sequenceRepository = sequenceRepository;
     }
 
     @Override
@@ -49,6 +57,14 @@ public final class UpdateProductApplicationService implements UpdateProductUseCa
             throw new ProductCodeConflictException(product.getName());
         }
 
+        if(productCategoryRepository.existById(product.getCategoryId())) {
+            throw new ProductProductCategoryIdNotFoundException(product.getCategoryId());
+        }
+
+        if(product.getSequenceId() != null && sequenceRepository.existById(product.getSequenceId())) {
+            throw new ProductSequenceIdNotFoundException(product.getSequenceId());
+        }
+
         Product existing = optional.get();
         existing = existing.update(
                 product.getCode(),
@@ -59,6 +75,7 @@ public final class UpdateProductApplicationService implements UpdateProductUseCa
                 product.getAmount(),
                 product.getCurrency(),
                 product.getDescription(),
+                product.getSequenceId(),
                 product.getAttachementTypeIds()
         );
 

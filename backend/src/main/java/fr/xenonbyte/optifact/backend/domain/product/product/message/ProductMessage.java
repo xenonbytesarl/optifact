@@ -15,4 +15,6 @@ public final class ProductMessage {
     public static final String PRODUCT_NAME_CONFLICT = "product.name.conflict";
     public static final String PRODUCT_CODE_CONFLICT = "product.code.conflict";
     public static final String PRODUCT_ID_NOT_FOUND = "product.id.not.found";
+    public static final String PRODUCT_PRODUCT_CATEGORY_ID_NOT_FOUND = "product.product.category.id.not.found";
+    public static final String PRODUCT_SEQUENCE_ID_NOT_FOUND = "product.sequence.id.not.found";
 }

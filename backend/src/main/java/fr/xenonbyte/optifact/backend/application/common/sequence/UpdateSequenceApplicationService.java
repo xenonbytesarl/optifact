@@ -4,7 +4,7 @@ import fr.xenonbyte.optifact.backend.application.common.sequence.exception.Seque
 import fr.xenonbyte.optifact.backend.application.common.sequence.exception.SequenceNameConflictException;
 import fr.xenonbyte.optifact.backend.application.common.sequence.exception.SequenceIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.common.sequence.port.primary.UpdateSequencePrimaryPort;
-import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepositorySecondaryPort;
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.sequence.Sequence;
 
@@ -22,9 +22,9 @@ public final class UpdateSequenceApplicationService implements UpdateSequencePri
 
     public static final Logger LOGGER = Logger.getLogger(UpdateSequenceApplicationService.class.getName());
 
-    private final SequenceRepositorySecondaryPort repository;
+    private final SequenceRepository repository;
 
-    public UpdateSequenceApplicationService(SequenceRepositorySecondaryPort repository) {
+    public UpdateSequenceApplicationService(SequenceRepository repository) {
         this.repository = repository;
     }
 

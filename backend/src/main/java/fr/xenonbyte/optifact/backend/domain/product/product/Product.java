@@ -28,6 +28,7 @@ public final class Product extends BaseEntity {
     private final Currency currency; // optional (ISO code like "EUR", "USD")
     private final String description; // optional
     private final Boolean active;
+    private final UUID sequenceId;
     private final List<UUID> attachementTypeIds;
 
     public Product(UUID id,
@@ -40,6 +41,7 @@ public final class Product extends BaseEntity {
                    Currency currency,
                    String description,
                    Boolean active,
+                   UUID sequenceId,
                    List<UUID> attachementTypeIds) {
         this.id = id;
         this.code = code;
@@ -51,6 +53,7 @@ public final class Product extends BaseEntity {
         this.currency = currency;
         this.description = description;
         this.active = active;
+        this.sequenceId = sequenceId;
         this.attachementTypeIds = attachementTypeIds;
     }
 
@@ -62,6 +65,7 @@ public final class Product extends BaseEntity {
                                  BigDecimal amount,
                                  Currency currency,
                                  String description,
+                                 UUID sequenceId,
                                  List<UUID> attachementTypeIds) {
         validateParams(code, name, categoryId, type, rate, amount);
         return new Product(
@@ -75,6 +79,7 @@ public final class Product extends BaseEntity {
                 currency,
                 normalizeDescription(description),
                 true,
+                sequenceId,
                 attachementTypeIds == null? List.of() : attachementTypeIds
         );
     }
@@ -89,6 +94,7 @@ public final class Product extends BaseEntity {
               BigDecimal amount,
               Currency currency,
               String description,
+              UUID sequenceId,
               List<UUID> attachementTypeIds) {
         validateParams(code, name, categoryId, type, rate, amount);
         return new Product(
@@ -102,7 +108,8 @@ public final class Product extends BaseEntity {
                 currency,
                 normalizeDescription(description),
                 true,
-                attachementTypeIds == null? List.of() : attachementTypeIds
+                sequenceId,
+                attachementTypeIds == null? java.util.List.of() : attachementTypeIds
         );
     }
 
@@ -114,15 +121,29 @@ public final class Product extends BaseEntity {
                           BigDecimal amount,
                           Currency currency,
                           String description,
+                          UUID sequenceId,
                           List<UUID> attachementTypeIds) {
         validateParams(code, name, categoryId, type, rate, amount);
-        Product product = new Product(id, code.trim(), name.trim(), categoryId, type, rate, normalizeAmount(amount), currency, normalizeDescription(description), true, attachementTypeIds);
+        Product product = new Product(
+                id, 
+                code.trim(), 
+                name.trim(), 
+                categoryId, 
+                type, 
+                rate, 
+                normalizeAmount(amount), 
+                currency, 
+                normalizeDescription(description), 
+                active,
+                sequenceId,
+                attachementTypeIds
+        );
         product.updateAudit(createdAt);
         return product;
     }
 
     public Product withActive(Boolean active) {
-        Product product = new Product(id, code, name, categoryId, type, rate, amount, currency, description, active, attachementTypeIds);
+        Product product = new Product(id, code, name, categoryId, type, rate, amount, currency, description, active, this.sequenceId, attachementTypeIds);
         product.updateAudit(createdAt);
         return product;
     }
@@ -196,6 +217,10 @@ public final class Product extends BaseEntity {
 
     public Boolean getActive() {
         return active;
+    }
+
+    public UUID getSequenceId() {
+        return sequenceId;
     }
 
     public List<UUID> getAttachementTypeIds() {

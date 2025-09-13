@@ -1,9 +1,14 @@
 package fr.xenonbyte.optifact.backend.application.product;
 
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductCodeConflictException;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductNameConflictException;
+import fr.xenonbyte.optifact.backend.application.product.exception.ProductProductCategoryIdNotFoundException;
+import fr.xenonbyte.optifact.backend.application.product.exception.ProductSequenceIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.product.port.in.CreateProductUseCase;
 import fr.xenonbyte.optifact.backend.application.product.port.out.ProductRepository;
+import fr.xenonbyte.optifact.backend.application.productcategory.exception.ProductCategoryIdNotFoundException;
+import fr.xenonbyte.optifact.backend.application.productcategory.port.out.ProductCategoryRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.product.product.Product;
 
@@ -22,9 +27,16 @@ public final class CreateProductApplicationService implements CreateProductUseCa
     private static final Logger LOGGER = Logger.getLogger(CreateProductApplicationService.class.getName());
     
     private final ProductRepository repository;
+    private final ProductCategoryRepository productCategoryRepository;
+    private final SequenceRepository sequenceRepository;
 
-    public CreateProductApplicationService(ProductRepository repository) {
+    public CreateProductApplicationService(
+            ProductRepository repository,
+            ProductCategoryRepository productCategoryRepository,
+            SequenceRepository sequenceRepository) {
         this.repository = repository;
+        this.productCategoryRepository = productCategoryRepository;
+        this.sequenceRepository = sequenceRepository;
     }
 
     @Override
@@ -37,6 +49,14 @@ public final class CreateProductApplicationService implements CreateProductUseCa
 
         if(Boolean.TRUE.equals(repository.existByCode(product.getCode()))) {
             throw new ProductCodeConflictException(product.getCode());
+        }
+
+        if(productCategoryRepository.existById(product.getCategoryId())) {
+            throw new ProductProductCategoryIdNotFoundException(product.getCategoryId());
+        }
+
+        if(product.getSequenceId() != null && sequenceRepository.existById(product.getSequenceId())) {
+            throw new ProductSequenceIdNotFoundException(product.getSequenceId());
         }
 
         product = repository.save(product);

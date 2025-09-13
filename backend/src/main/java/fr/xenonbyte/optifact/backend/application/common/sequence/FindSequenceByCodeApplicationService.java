@@ -2,7 +2,7 @@ package fr.xenonbyte.optifact.backend.application.common.sequence;
 
 import fr.xenonbyte.optifact.backend.application.common.sequence.exception.SequenceCodeNotFoundException;
 import fr.xenonbyte.optifact.backend.application.common.sequence.port.primary.FindSequenceByCodePrimaryPort;
-import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepositorySecondaryPort;
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.sequence.Sequence;
 
@@ -19,9 +19,9 @@ public final class FindSequenceByCodeApplicationService implements FindSequenceB
 
     public static final Logger LOGGER = Logger.getLogger(FindSequenceByCodeApplicationService.class.getName());
 
-    private final SequenceRepositorySecondaryPort repository;
+    private final SequenceRepository repository;
 
-    public FindSequenceByCodeApplicationService(SequenceRepositorySecondaryPort repository) {
+    public FindSequenceByCodeApplicationService(SequenceRepository repository) {
         this.repository = repository;
     }
 

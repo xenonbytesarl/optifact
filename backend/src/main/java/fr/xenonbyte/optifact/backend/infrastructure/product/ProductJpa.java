@@ -3,6 +3,7 @@ package fr.xenonbyte.optifact.backend.infrastructure.product;
 import fr.xenonbyte.optifact.backend.infrastructure.actor.ActorJpa;
 import fr.xenonbyte.optifact.backend.infrastructure.common.BaseEntityJpa;
 import fr.xenonbyte.optifact.backend.infrastructure.common.attachmenttype.AttachmentTypeJpa;
+import fr.xenonbyte.optifact.backend.infrastructure.common.sequence.SequenceJpa;
 import fr.xenonbyte.optifact.backend.infrastructure.productcategory.ProductCategoryJpa;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -57,6 +58,9 @@ public class ProductJpa extends BaseEntityJpa {
     @ManyToOne
     @JoinColumn(name = "c_category_id", nullable = false)
     private ProductCategoryJpa category;
+    @ManyToOne
+    @JoinColumn(name = "c_sequence_id")
+    private SequenceJpa sequence;
     @ManyToMany
     @JoinTable(
         name = "t_product_attachment_type",

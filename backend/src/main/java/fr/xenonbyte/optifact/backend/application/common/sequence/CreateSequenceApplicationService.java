@@ -3,7 +3,7 @@ package fr.xenonbyte.optifact.backend.application.common.sequence;
 import fr.xenonbyte.optifact.backend.application.common.sequence.exception.SequenceCodeConflictException;
 import fr.xenonbyte.optifact.backend.application.common.sequence.exception.SequenceNameConflictException;
 import fr.xenonbyte.optifact.backend.application.common.sequence.port.primary.CreateSequencePrimaryPort;
-import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepositorySecondaryPort;
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.sequence.Sequence;
 
@@ -20,9 +20,9 @@ public final class CreateSequenceApplicationService implements CreateSequencePri
 
     public static final Logger LOGGER = Logger.getLogger(CreateSequenceApplicationService.class.getName());
 
-    private final SequenceRepositorySecondaryPort repository;
+    private final SequenceRepository repository;
 
-    public CreateSequenceApplicationService(SequenceRepositorySecondaryPort repository) {
+    public CreateSequenceApplicationService(SequenceRepository repository) {
         this.repository = repository;
     }
 
