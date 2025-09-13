@@ -77,7 +77,7 @@ export function useClaimScreen() {
       const created = await store.create(form.value as Partial<Claim>);
       if (created) {
         toast.success(store.message() || 'claims.messages.created.success');
-        router.navigate(['/claims']);
+        router.navigate(['/claims', created.id]);
       } else {
         toast.error(store.error() || 'common.error');
       }
