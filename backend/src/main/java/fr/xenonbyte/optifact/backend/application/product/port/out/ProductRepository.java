@@ -36,4 +36,5 @@ public interface ProductRepository {
 
     void delete(Product product);
 
+    boolean existsById(UUID productId);
 }

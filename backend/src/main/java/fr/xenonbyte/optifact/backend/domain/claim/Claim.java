@@ -201,7 +201,7 @@ public final class Claim extends BaseEntity {
             cancelAt,
             state,
             reference,
-            lines
+            lines != null ? lines : new ArrayList<>()
         );
     }
 
@@ -327,6 +327,27 @@ public final class Claim extends BaseEntity {
                 cancelById,
                 cancelAt,
                 ClaimState.IN_INSTRUCTION,
+                reference,
+                lines
+        );
+    }
+
+    public Claim withReference(String reference) {
+        return new Claim(
+                id,
+                actorId,
+                productId,
+                submitAt,
+                managerId,
+                inInstructionAt,
+                instructorId,
+                validateAt,
+                rejectAt,
+                doneById,
+                doneAt,
+                cancelById,
+                cancelAt,
+                state,
                 reference,
                 lines
         );

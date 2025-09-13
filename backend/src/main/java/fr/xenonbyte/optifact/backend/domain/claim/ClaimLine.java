@@ -4,7 +4,10 @@ import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.entity.BaseEntity;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
+
+import static java.util.UUID.randomUUID;
 
 @Hexagonal(layer = Hexagonal.Layer.DOMAIN, componentType = Hexagonal.ComponentType.ENTITY)
 @Hexagonal.Entity
@@ -47,6 +50,34 @@ public final class ClaimLine extends BaseEntity {
         this.claimId = claimId;
     }
 
+    public static ClaimLine create(
+                                   UUID attachmentId,
+                                   ZonedDateTime createdAt,
+                                   ZonedDateTime validateAt,
+                                   UUID validateById,
+                                   ZonedDateTime rejectedAt,
+                                   UUID rejectedById,
+                                   ZonedDateTime cancelledAt,
+                                   UUID cancelledById,
+                                   ClaimLineStatus status,
+                                   String reason,
+                                   UUID claimId) {
+        return new ClaimLine(
+                randomUUID(),
+                attachmentId,
+                createdAt,
+                validateAt,
+                validateById ,
+                rejectedAt,
+                rejectedById,
+                cancelledAt,
+                cancelledById,
+                status,
+                reason,
+                claimId
+        );
+    }
+
     public static ClaimLine create(UUID id,
                                    UUID attachmentId,
                                    ZonedDateTime createdAt,
@@ -73,6 +104,22 @@ public final class ClaimLine extends BaseEntity {
                 reason,
                 claimId
         );
+    }
+
+    public static List<ClaimLine> create(List<UUID> attachementTypeIds, UUID claimId) {
+        return attachementTypeIds.stream().map(attachementTypeId -> create(
+                attachementTypeId,
+                ZonedDateTime.now(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                ClaimLineStatus.DRAFT,
+                null,
+                claimId
+                )).toList();
     }
 
     public ClaimLine withClaimId(UUID claimId) {

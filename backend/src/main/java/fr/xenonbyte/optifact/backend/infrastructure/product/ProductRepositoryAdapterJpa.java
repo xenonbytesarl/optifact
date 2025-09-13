@@ -143,4 +143,9 @@ public final class ProductRepositoryAdapterJpa implements ProductRepository {
     public void delete(Product product) {
         repositoryJpa.delete(mapperJpa.toJpa(product));
     }
+
+    @Override
+    public boolean existsById(UUID productId) {
+        return repositoryJpa.existsById(productId);
+    }
 }

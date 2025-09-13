@@ -93,6 +93,11 @@ public final class ActorRepositoryAdapterJpa implements ActorRepository {
         );
     }
 
+    @Override
+    public boolean existsById(UUID actorId) {
+        return repositoryJpa.existsById(actorId);
+    }
+
     private Sort parseSort(String field, Direction direction) {
         if (field == null || field.isBlank() || direction == null) {
             // The default sort is by ID ascending
