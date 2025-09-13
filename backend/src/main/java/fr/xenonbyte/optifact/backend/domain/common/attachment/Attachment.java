@@ -16,7 +16,7 @@ public final class Attachment extends BaseEntity {
     private final String filename;
     private final String mimeType;
     private final UUID attachmentTypeId;
-    private final AttachmentType type;
+    private final AttachmentScope scope;
     private final UUID resourceId;
     private final String resourceName;
     private final UUID createdById;
@@ -25,7 +25,7 @@ public final class Attachment extends BaseEntity {
                        String filename,
                        String mimeType,
                        UUID attachmentTypeId,
-                       AttachmentType type,
+                       AttachmentScope scope,
                        UUID resourceId,
                        String resourceName,
                        UUID createdById) {
@@ -33,7 +33,7 @@ public final class Attachment extends BaseEntity {
         this.filename = filename;
         this.mimeType = mimeType;
         this.attachmentTypeId = attachmentTypeId;
-        this.type = type;
+        this.scope = scope;
         this.resourceId = resourceId;
         this.resourceName = resourceName;
         this.createdById = createdById;
@@ -43,7 +43,7 @@ public final class Attachment extends BaseEntity {
                                     String filename,
                                     String mimeType,
                                     UUID attachmentTypeId,
-                                    AttachmentType type,
+                                    AttachmentScope type,
                                     UUID resourceId,
                                     String resourceName,
                                     UUID createdById) {
@@ -53,7 +53,7 @@ public final class Attachment extends BaseEntity {
     public static Attachment create(String filename,
                                     String mimeType,
                                     UUID attachmentTypeId,
-                                    AttachmentType type,
+                                    AttachmentScope type,
                                     UUID resourceId,
                                     String resourceName,
                                     UUID createdBy) {
@@ -71,7 +71,7 @@ public final class Attachment extends BaseEntity {
     public Attachment update(String filename,
                              String mimeType,
                              UUID attachmentTypeId,
-                             AttachmentType type,
+                             AttachmentScope type,
                              UUID resourceId,
                              String resourceName) {
         validateParams(attachmentTypeId);
@@ -84,7 +84,7 @@ public final class Attachment extends BaseEntity {
     public String getFilename() { return filename; }
     public String getMimeType() { return mimeType; }
     public UUID getAttachmentTypeId() { return attachmentTypeId; }
-    public AttachmentType getType() { return type; }
+    public AttachmentScope getScope() { return scope; }
     public UUID getResourceId() { return resourceId; }
     public String getResourceName() { return resourceName; }
     public UUID getCreatedById() { return createdById; }

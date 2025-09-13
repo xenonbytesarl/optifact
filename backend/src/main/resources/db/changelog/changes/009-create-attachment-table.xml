@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="13092025_2018_create_attachment_table" author="brice.mbiandji">
+        <createTable tableName="t_attachment">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Domain fields -->
+            <column name="c_filename" type="varchar(512)"/>
+            <column name="c_mime_type" type="varchar(255)"/>
+            <column name="c_attachment_type_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_resource_id" type="uuid"/>
+            <column name="c_resource_name" type="varchar(255)"/>
+            <column name="c_created_by_id" type="uuid"/>
+        </createTable>
+
+        <!-- Indexes -->
+        <createIndex indexName="idx_t_attachment_filename" tableName="t_attachment">
+            <column name="c_filename"/>
+        </createIndex>
+        <createIndex indexName="idx_t_attachment_attachment_type_id" tableName="t_attachment">
+            <column name="c_attachment_type_id"/>
+        </createIndex>
+        <createIndex indexName="idx_t_attachment_resource_id" tableName="t_attachment">
+            <column name="c_resource_id"/>
+        </createIndex>
+
+        <!-- Foreign key to attachment type -->
+        <addForeignKeyConstraint
+                baseTableName="t_attachment"
+                baseColumnNames="c_attachment_type_id"
+                constraintName="fk_t_attachment_attachment_type"
+                referencedTableName="t_attachment_type"
+                referencedColumnNames="c_id"
+                onDelete="RESTRICT"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

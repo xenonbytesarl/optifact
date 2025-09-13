@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="13092025_2020_create_claim_and_claim_line_tables" author="brice.mbiandji">
+        <!-- t_claim table -->
+        <createTable tableName="t_claim">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Domain fields -->
+            <column name="c_actor_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_product_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_submit_at" type="timestamp with time zone"/>
+            <column name="c_manager_id" type="uuid"/>
+            <column name="c_in_instruction_at" type="timestamp with time zone"/>
+            <column name="c_instructor_id" type="uuid"/>
+            <column name="c_validate_at" type="timestamp with time zone"/>
+            <column name="c_reject_at" type="timestamp with time zone"/>
+            <column name="c_done_by_id" type="uuid"/>
+            <column name="c_done_at" type="timestamp with time zone"/>
+            <column name="c_cancel_by_id" type="uuid"/>
+            <column name="c_cancel_at" type="timestamp with time zone"/>
+            <column name="c_state" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_reference" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <!-- Indexes for claim -->
+        <createIndex indexName="idx_t_claim_reference" tableName="t_claim">
+            <column name="c_reference"/>
+        </createIndex>
+        <createIndex indexName="idx_t_claim_actor_id" tableName="t_claim">
+            <column name="c_actor_id"/>
+        </createIndex>
+        <createIndex indexName="idx_t_claim_product_id" tableName="t_claim">
+            <column name="c_product_id"/>
+        </createIndex>
+
+        <!-- Foreign keys for claim -->
+        <addForeignKeyConstraint
+                baseTableName="t_claim"
+                baseColumnNames="c_actor_id"
+                constraintName="fk_t_claim_actor"
+                referencedTableName="t_actor"
+                referencedColumnNames="c_id"
+                onDelete="RESTRICT"
+                onUpdate="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="t_claim"
+                baseColumnNames="c_product_id"
+                constraintName="fk_t_claim_product"
+                referencedTableName="t_product"
+                referencedColumnNames="c_id"
+                onDelete="RESTRICT"
+                onUpdate="CASCADE"/>
+
+        <!-- t_claim_line table -->
+        <createTable tableName="t_claim_line">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Domain fields -->
+            <column name="c_attachment_id" type="uuid"/>
+            <column name="c_validate_at" type="timestamp with time zone"/>
+            <column name="c_validate_by_id" type="uuid"/>
+            <column name="c_rejected_at" type="timestamp with time zone"/>
+            <column name="c_rejected_by_id" type="uuid"/>
+            <column name="c_cancelled_at" type="timestamp with time zone"/>
+            <column name="c_cancelled_by_id" type="uuid"/>
+            <column name="c_status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_reason" type="text"/>
+            <column name="c_claim_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Indexes for claim line -->
+        <createIndex indexName="idx_t_claim_line_claim_id" tableName="t_claim_line">
+            <column name="c_claim_id"/>
+        </createIndex>
+        <createIndex indexName="idx_t_claim_line_attachment_id" tableName="t_claim_line">
+            <column name="c_attachment_id"/>
+        </createIndex>
+
+        <!-- Foreign keys for claim line -->
+        <addForeignKeyConstraint
+                baseTableName="t_claim_line"
+                baseColumnNames="c_claim_id"
+                constraintName="fk_t_claim_line_claim"
+                referencedTableName="t_claim"
+                referencedColumnNames="c_id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="t_claim_line"
+                baseColumnNames="c_attachment_id"
+                constraintName="fk_t_claim_line_attachment"
+                referencedTableName="t_attachment"
+                referencedColumnNames="c_id"
+                onDelete="SET NULL"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

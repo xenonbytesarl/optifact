@@ -47,7 +47,7 @@ public final class UpdateAttachmentApplicationService implements UpdateAttachmen
                 attachment.getFilename(),
                 attachment.getMimeType(),
                 attachment.getAttachmentTypeId(),
-                attachment.getType(),
+                attachment.getScope(),
                 attachment.getResourceId(),
                 attachment.getResourceName()
         );
