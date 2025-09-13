@@ -25,6 +25,9 @@ public class ClaimLineJpa extends BaseEntityJpa {
     @JoinColumn(name = "c_attachment_id")
     private AttachmentJpa attachment;
 
+    @Column(name = "c_uploaded_at")
+    private ZonedDateTime uploadedAt;
+
     @Column(name = "c_validate_at")
     private ZonedDateTime validateAt;
 

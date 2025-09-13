@@ -219,6 +219,7 @@
     "lines": {
       "empty": "Aucune ligne de réclamation",
       "createdAt": "Créé le",
+      "uploadedAt": "Téléversé le",
       "validatedAt": "Validé le",
       "rejectedAt": "Rejeté le",
       "cancelledAt": "Annulé le",
@@ -228,7 +229,8 @@
         "validated": "Validée",
         "rejected": "Rejetée",
         "cancelled": "Annulée"
-      }
+      },
+      "uploadConfirm": "Transférer"
     },
     "tabs": {
       "audit": "Audit",

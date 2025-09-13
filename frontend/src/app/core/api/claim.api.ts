@@ -27,6 +27,7 @@ export interface ClaimLine {
   attachmentId?: string | null;
   attachmentTypeName?: string | null;
   createdAt?: string | null;
+  uploadedAt?: string | null;
   validateAt?: string | null;
   rejectedAt?: string | null;
   cancelledAt?: string | null;
