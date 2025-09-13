@@ -9,9 +9,9 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
   standalone: true,
   imports: [CommonModule, ButtonComponent, CardComponent, TranslatePipe],
   template: `
-    <div class="sticky top-0 z-30 px-4 pt-2">
+    <div class="sticky top-0 z-30 px-4 pt-1">
       <app-card>
-        <div class="h-14 flex items-center justify-between">
+        <div class="h-12 flex items-center justify-between">
           <div class="font-medium text-sm md:text-base"></div>
           <div class="inline-flex items-center gap-2">
             @if(showNew()) {

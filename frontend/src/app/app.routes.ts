@@ -52,4 +52,9 @@ export const routes: Routes = [
     loadChildren: () => import('./features/sequences/routes').then(m => m.sequencesRoutes),
     data: { title: 'Séquences' }
   },
+  {
+    path: 'claims',
+    loadChildren: () => import('./features/claims/routes').then(m => m.claimsRoutes),
+    data: { title: 'Demandes' }
+  },
 ];

@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
           <ng-content select="[card-actions]" />
         </div>
       }
-      <div class="p-4 md:px-16 md:py-12">
+      <div class="p-4">
         <ng-content />
       </div>
     </div>

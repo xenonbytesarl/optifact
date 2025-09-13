@@ -176,6 +176,39 @@
     "subtitle": "Enregistrer les règlements",
     "new": "Nouveau paiement"
   },
+  "claims": {
+    "title": "Demandes",
+    "subtitle": "Gérer les demandes",
+    "new": "Nouvelle demande",
+    "fields": {
+      "reference": "Référence",
+      "actorName": "Acteur",
+      "productName": "Produit",
+      "state": "Statut",
+      "createdAt": "Créée le",
+      "doneAt": "Terminée le"
+    },
+    "states": {
+      "draft": "Brouillon",
+      "submit": "Soumise",
+      "in_instruction": "En instruction",
+      "reject": "Rejetée",
+      "validated": "Validée",
+      "done": "Terminée",
+      "cancelled": "Annulée"
+    },
+    "messages": {
+      "deleted": { "success": "Demande supprimée avec succès.", "error": "Échec de la suppression de la demande." },
+      "created": { "success": "Demande créée avec succès.", "error": "Échec de la création de la demande." },
+      "update": { "success": "Demande mise à jour avec succès.", "error": "Échec de la mise à jour de la demande." },
+      "find": { "success": "Demande récupérée avec succès.", "error": "Échec de la récupération de la demande." },
+      "search": { "success": "Demandes chargées avec succès.", "error": "Échec du chargement des demandes." }
+    },
+    "tabs": {
+      "audit": "Audit",
+      "lines": "Lignes"
+    }
+  },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Préférences de l’application"
@@ -282,7 +315,8 @@
       "contact": "Supprimer ce contact ?",
       "product": "Supprimer ce produit ?",
       "productCategory": "Supprimer cette catégorie ?",
-      "attachmentType": "Supprimer ce type de document ?"
+      "attachmentType": "Supprimer ce type de document ?",
+      "claim": "Supprimer cette demande ?"
     }
   },
   "validation": {
