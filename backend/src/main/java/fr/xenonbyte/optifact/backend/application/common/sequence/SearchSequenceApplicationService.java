@@ -3,7 +3,7 @@ package fr.xenonbyte.optifact.backend.application.common.sequence;
 import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
 import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.application.common.sequence.port.primary.SearchSequencesPrimaryPort;
-import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepositorySecondaryPort;
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.sequence.Sequence;
 
@@ -20,9 +20,9 @@ public final class SearchSequenceApplicationService implements SearchSequencesPr
 
     public static final Logger LOGGER = Logger.getLogger(SearchSequenceApplicationService.class.getName());
 
-    private final SequenceRepositorySecondaryPort repository;
+    private final SequenceRepository repository;
 
-    public SearchSequenceApplicationService(SequenceRepositorySecondaryPort repository) {
+    public SearchSequenceApplicationService(SequenceRepository repository) {
         this.repository = repository;
     }
 

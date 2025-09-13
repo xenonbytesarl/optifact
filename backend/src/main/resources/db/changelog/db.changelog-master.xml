@@ -12,4 +12,5 @@
     <include file="/db/changelog/changes/005-create-attachment-type-table.xml"/>
     <include file="/db/changelog/changes/006-create-product-attachment-table.xml"/>
     <include file="/db/changelog/changes/007-create-sequence-table.xml"/>
+    <include file="/db/changelog/changes/008-alter-product-add-sequence.xml"/>
 </databaseChangeLog>

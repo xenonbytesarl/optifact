@@ -2,7 +2,7 @@ package fr.xenonbyte.optifact.backend.infrastructure.common.sequence;
 
 import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
 import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
-import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepositorySecondaryPort;
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.sequence.Sequence;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 @Hexagonal(layer = Hexagonal.Layer.ADAPTER, componentType = Hexagonal.ComponentType.SECONDARY_ADAPTER)
 @Hexagonal.SecondaryAdapter(value = Hexagonal.SecondaryAdapter.AdapterType.DATABASE_JPA_POSTGRES)
-public final class SequenceRepositoryAdapterJpa implements SequenceRepositorySecondaryPort {
+public final class SequenceRepositoryAdapterJpa implements SequenceRepository {
 
     private final SequenceRepositoryJpa repositoryJpa;
     private final SequenceMapperJpa mapperJpa;
@@ -107,6 +107,11 @@ public final class SequenceRepositoryAdapterJpa implements SequenceRepositorySec
     @Override
     public void delete(Sequence sequence) {
         repositoryJpa.delete(mapperJpa.toJpa(sequence));
+    }
+
+    @Override
+    public boolean existById(UUID sequenceId) {
+        return repositoryJpa.existsById(sequenceId);
     }
 
     private static Specification<SequenceJpa> addStringFilter(String filter, Specification<SequenceJpa> spec, String field) {

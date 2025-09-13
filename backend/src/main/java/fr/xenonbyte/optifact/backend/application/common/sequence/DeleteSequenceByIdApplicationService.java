@@ -2,8 +2,7 @@ package fr.xenonbyte.optifact.backend.application.common.sequence;
 
 import fr.xenonbyte.optifact.backend.application.common.sequence.exception.SequenceIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.common.sequence.port.primary.DeleteSequenceByIdPrimaryPort;
-import fr.xenonbyte.optifact.backend.application.common.sequence.port.primary.FindSequenceByIdPrimaryPort;
-import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepositorySecondaryPort;
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.sequence.Sequence;
 
@@ -21,9 +20,9 @@ public final class DeleteSequenceByIdApplicationService implements DeleteSequenc
 
     public static final Logger LOGGER = Logger.getLogger(DeleteSequenceByIdApplicationService.class.getName());
 
-    private final SequenceRepositorySecondaryPort repository;
+    private final SequenceRepository repository;
 
-    public DeleteSequenceByIdApplicationService(SequenceRepositorySecondaryPort repository) {
+    public DeleteSequenceByIdApplicationService(SequenceRepository repository) {
         this.repository = repository;
     }
 

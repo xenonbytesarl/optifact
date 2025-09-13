@@ -45,6 +45,7 @@ public interface ProductMapperView {
                 requestView.getAmount(),
                 currency,
                 requestView.getDescription(),
+                requestView.getSequenceId(),
                 requestView.getAttachmentTypeIds()
         );
     }

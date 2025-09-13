@@ -2,7 +2,7 @@ package fr.xenonbyte.optifact.backend.application.common.sequence;
 
 import fr.xenonbyte.optifact.backend.application.common.sequence.exception.SequenceIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.common.sequence.port.primary.FindSequenceByIdPrimaryPort;
-import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepositorySecondaryPort;
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.sequence.Sequence;
 
@@ -20,9 +20,9 @@ public final class FindSequenceByIdApplicationService implements FindSequenceByI
 
     public static final Logger LOGGER = Logger.getLogger(FindSequenceByIdApplicationService.class.getName());
 
-    private final SequenceRepositorySecondaryPort repository;
+    private final SequenceRepository repository;
 
-    public FindSequenceByIdApplicationService(SequenceRepositorySecondaryPort repository) {
+    public FindSequenceByIdApplicationService(SequenceRepository repository) {
         this.repository = repository;
     }
 

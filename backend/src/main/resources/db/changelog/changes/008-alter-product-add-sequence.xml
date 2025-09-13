@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Add optional sequence relation to product table -->
+    <changeSet id="13092025_0216_add_sequence_to_product" author="brice.mbiandji">
+        <addColumn tableName="t_product">
+            <column name="c_sequence_id" type="uuid"/>
+        </addColumn>
+
+        <!-- Create index for faster joins/lookups -->
+        <createIndex indexName="idx_t_product_sequence_id" tableName="t_product">
+            <column name="c_sequence_id"/>
+        </createIndex>
+
+        <!-- Foreign key to t_sequence (nullable, restrict on delete, cascade on update) -->
+        <addForeignKeyConstraint
+                baseTableName="t_product"
+                baseColumnNames="c_sequence_id"
+                constraintName="fk_t_product_sequence"
+                referencedTableName="t_sequence"
+                referencedColumnNames="c_id"
+                onDelete="RESTRICT"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.SECONDARY_PORT)
 @Hexagonal.SecondaryPort
-public interface SequenceRepositorySecondaryPort {
+public interface SequenceRepository {
 
     Sequence save(Sequence sequence);
 
@@ -31,4 +31,7 @@ public interface SequenceRepositorySecondaryPort {
     Pagination<Sequence> search(String nameFilter, String codeFilter, String prefixFilter, String suffixFilter, CommonSearch commonSearch);
 
     void delete(Sequence sequence);
+
+    boolean existById(UUID sequenceId);
+
 }
