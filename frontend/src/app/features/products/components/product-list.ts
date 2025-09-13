@@ -1,6 +1,6 @@
 import {
   ChangeDetectionStrategy,
-  Component,
+  Component, inject,
   input,
   output,
   signal,
@@ -51,6 +51,9 @@ import {BadgeComponent} from '../../../shared/ui/badge';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ProductListComponent {
+
+  readonly i18n = inject(TranslateService);
+
   items = input.required<Product[]>();
   view = output<string>();
   edit = output<string>();
@@ -63,7 +66,7 @@ export class ProductListComponent {
 
   typeTpl = viewChild<TemplateRef<any>>('typeTpl');
 
-  constructor(private i18n: TranslateService) {}
+  constructor() {}
 
   get columns() {
     // Depend on lang() so headers update when the language changes

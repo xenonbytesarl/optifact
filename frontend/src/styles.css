@@ -50,6 +50,27 @@ html.dark app-sidebar aside { background-color: #000 !important; }
 html.dark app-topbar header { border-color: #262626 !important; }
 html.dark app-sidebar aside { border-color: #262626 !important; }
 
+:root {
+  /* Chevron Stepper defaults (light) */
+  --step-bg: 243 244 246;
+  --step-fg: 17 24 39;
+  --step-active-bg: 182 133 43; /* primary #B6852B */
+  --step-active-fg: 255 255 255;
+  --step-completed-bg: 22 101 52; /* green-800 */
+  --step-completed-fg: 255 255 255;
+  --step-border: var(--color-border);
+}
+html.dark {
+  /* Chevron Stepper defaults (dark) */
+  --step-bg: 24 24 27; /* slightly darker neutral for dark */
+  --step-fg: 243 244 246;
+  --step-active-bg: 167 119 36; /* primary dark-adjusted */
+  --step-active-fg: 255 255 255;
+  --step-completed-bg: 22 101 52;
+  --step-completed-fg: 255 255 255;
+  --step-border: var(--color-border);
+}
+
 @layer utilities {
   .text-primary { color: var(--color-primary); }
   .bg-primary { background-color: var(--color-primary); }

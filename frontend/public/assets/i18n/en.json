@@ -175,6 +175,39 @@
     "subtitle": "Record payments",
     "new": "New payment"
   },
+  "claims": {
+    "title": "Claims",
+    "subtitle": "Manage claims",
+    "new": "New claim",
+    "fields": {
+      "reference": "Reference",
+      "actorName": "Actor",
+      "productName": "Product",
+      "state": "Status",
+      "createdAt": "Created at",
+      "doneAt": "Done at"
+    },
+    "states": {
+      "draft": "Draft",
+      "submit": "Submitted",
+      "in_instruction": "In instruction",
+      "reject": "Rejected",
+      "validated": "Validated",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    },
+    "messages": {
+      "deleted": { "success": "Claim deleted successfully.", "error": "Failed to delete claim." },
+      "created": { "success": "Claim created successfully.", "error": "Failed to create claim." },
+      "update": { "success": "Claim updated successfully.", "error": "Failed to update claim." },
+      "find": { "success": "Claim retrieved successfully.", "error": "Failed to retrieve claim." },
+      "search": { "success": "Claims loaded successfully.", "error": "Failed to load claims." }
+    },
+    "tabs": {
+      "audit": "audit",
+      "lines": "Lines"
+    }
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Application preferences"
@@ -285,7 +318,8 @@
       "contact": "Delete this contact?",
       "product": "Delete this product?",
       "productCategory": "Delete this category?",
-      "attachmentType": "Delete this document type?"
+      "attachmentType": "Delete this document type?",
+      "claim": "Delete this claim?"
     }
   },
   "validation": {
