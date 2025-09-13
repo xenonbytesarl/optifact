@@ -4,17 +4,20 @@ import {ActivatedRoute, Router} from '@angular/router';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 import { ProductDocumentTypesTabComponent } from '../components/product-document-types-tab';
+import { AmountCurrencyPipe } from '../../../shared/pipes/amount-currency.pipe';
+import { RatePipe } from '../../../shared/pipes/rate.pipe';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { productStore} from '../products.store';
 import { productCategoryStore } from '../../product-categories/product-category.store';
 import {TranslateService} from '../../../core/i18n/translate.service';
 import {useProductScreen} from './product-screen.util';
 import {attachmentTypeStore} from '../../attachment-type/attachment-type.store';
+import {sequencesStore} from '../../sequences/sequences.store';
 
 @Component({
   selector: 'app-product-view-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, ProductDocumentTypesTabComponent, TabsComponent],
+  imports: [CommonModule, ActionBarComponent, CardComponent, ProductDocumentTypesTabComponent, TabsComponent, AmountCurrencyPipe, RatePipe],
   providers: [],
   template: `
     <app-action-bar [showCancel]="false" [showSave]="false" (newClicked)="goNew()" (editClicked)="goEdit()" />
@@ -36,37 +39,41 @@ import {attachmentTypeStore} from '../../attachment-type/attachment-type.store';
                   <div class="flex items-center gap-2"></div>
                 </div>
 
-                <div class="grid gap-6 md:grid-cols-3">
+                <div class="grid gap-6 md:grid-cols-2">
                   <div class="rounded border border-token p-4 bg-surface/50">
-                    <div class="text-xs text-muted mb-1">Type</div>
+                    <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.category') }}</div>
+                    <div class="text-base">{{ categoryName() || '—' }}</div>
+                  </div>
+                  <div class="rounded border border-token p-4 bg-surface/50">
+                    <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.type') }}</div>
                     <div class="text-base">{{ type() }}</div>
+                  </div>
+                  <div class="rounded border border-token p-4 bg-surface/50">
+                    <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.sequence') }}</div>
+                    <div class="text-base">{{ sequenceName() || '—' }}</div>
                   </div>
                   <div class="rounded border border-token p-4 bg-surface/50">
                     @if (rawType() === 'FLAT_AMOUNT') {
                       <div>
-                        <div class="text-xs text-muted mb-1">Montant (forfait)</div>
-                        <div class="text-base font-medium">{{ amount() }}</div>
+                        <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.amountFlat') }}</div>
+                        <div class="text-base font-medium">{{ amount() | amountCurrency: currency():0:0 }}</div>
                       </div>
                     } @else {
                       <div>
-                        <div class="text-xs text-muted mb-1">Taux (%)</div>
-                        <div class="text-base font-medium">{{ rate() }}</div>
+                        <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.rate') }}</div>
+                        <div class="text-base font-medium">{{ rate() | rate:0 }}</div>
                       </div>
                     }
-                  </div>
-                  <div class="rounded border border-token p-4 bg-surface/50">
-                    <div class="text-xs text-muted mb-1">Catégorie</div>
-                    <div class="text-base">{{ categoryName() || '—' }}</div>
                   </div>
                 </div>
 
                 @if (description()) {
                   <div>
-                    <div class="text-sm text-muted mb-1">Description</div>
+                    <div class="text-sm text-muted mb-1">{{ i18n.t('products.view.description') }}</div>
                     <div class="text-base whitespace-pre-wrap">{{ description() }}</div>
                   </div>
                 } @else {
-                  <div class="text-sm text-muted">Aucune description fournie.</div>
+                  <div class="text-sm text-muted">{{ i18n.t('products.view.noDescription') }}</div>
                 }
               </div>
             </div>
@@ -100,6 +107,7 @@ export class ProductViewPage {
   readonly store = inject(productStore);
   readonly categoryStore = inject(productCategoryStore);
   readonly docTypeStore = inject(attachmentTypeStore);
+  readonly seqStore = inject(sequencesStore);
   readonly route = inject(ActivatedRoute);
   readonly router = inject(Router);
   readonly i18n = inject(TranslateService);
@@ -122,11 +130,18 @@ export class ProductViewPage {
   });
   amount = computed(() => this.store.current()?.amount ?? '');
   rate = computed(() => this.store.current()?.rate ?? '');
+  currency = computed(() => (this.store.current()?.currency as string | undefined) ?? 'EUR');
   description = computed(() => this.store.current()?.description ?? '');
   categoryName = computed(() => {
     const cid = this.store.current()?.categoryId ?? null;
     if (!cid) return '';
     const c = this.categoryStore.categoryPage().elements.find(x => x.id === cid);
+    return c?.name ?? '';
+  });
+  sequenceName = computed(() => {
+    const cid = this.store.current()?.sequenceId ?? null;
+    if (!cid) return '';
+    const c = this.seqStore.sequencePage().elements.find(x => x.id === cid);
     return c?.name ?? '';
   });
   attachmentTypes = computed(() => this.docTypeStore.attachmentTypePage().elements);

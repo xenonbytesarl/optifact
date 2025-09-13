@@ -40,12 +40,14 @@ import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
               [rateRequiredError]="rateHasError()"
               [amountRequiredError]="amountHasError()"
               [productCategories]="productCategories()"
+              [sequences]="sequences()"
               (blurCode)="onCodeBlur()"
               (blurName)="onNameBlur()"
               (blurType)="onTypeBlur()"
               (blurCategory)="onCategoryIdBlur()"
               (blurAmount)="onAmountBlur()"
               (blurRate)="onRateBlur()"
+              (blurSequence)="onSequenceIdBlur()"
               (valueChange)="onValueChange($event)"
             />
           }
@@ -67,6 +69,7 @@ export class ProductNewPage {
 
   private i18n = inject(TranslateService);
   productCategories = computed(() => this.ui.categoryStore.categoryPage().elements);
+  sequences = computed(() => this.ui.sequenceStore.sequencePage().elements);
   attachmentTypes = computed(() => this.ui.docTypeStore.attachmentTypePage().elements);
   tabItems = computed<TabItem[]>(() => {
     this.i18n.lang();
@@ -94,6 +97,7 @@ export class ProductNewPage {
   onCategoryIdBlur() { return this.ui.onCategoryIdBlur(); }
   onRateBlur() { return this.ui.onRateBlur(); }
   onAmountBlur() { return this.ui.onAmountBlur(); }
+  onSequenceIdBlur() { return this.ui.onSequenceIdBlur(); }
 
   save() { return this.ui.saveNew(); }
   goBack() { return this.ui.goBack(); }

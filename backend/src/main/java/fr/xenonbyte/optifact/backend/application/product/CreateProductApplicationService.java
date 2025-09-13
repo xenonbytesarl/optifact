@@ -51,11 +51,11 @@ public final class CreateProductApplicationService implements CreateProductUseCa
             throw new ProductCodeConflictException(product.getCode());
         }
 
-        if(productCategoryRepository.existById(product.getCategoryId())) {
+        if(!productCategoryRepository.existById(product.getCategoryId())) {
             throw new ProductProductCategoryIdNotFoundException(product.getCategoryId());
         }
 
-        if(product.getSequenceId() != null && sequenceRepository.existById(product.getSequenceId())) {
+        if(product.getSequenceId() != null && !sequenceRepository.existById(product.getSequenceId())) {
             throw new ProductSequenceIdNotFoundException(product.getSequenceId());
         }
 

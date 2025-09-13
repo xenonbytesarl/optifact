@@ -92,6 +92,15 @@
     "settings": "Settings"
   },
   "products": {
+    "view": {
+      "category": "Category",
+      "type": "Type",
+      "sequence": "Sequence",
+      "amountFlat": "Amount (flat)",
+      "rate": "Rate",
+      "description": "Description",
+      "noDescription": "No description provided."
+    },
     "title": "Products",
     "subtitle": "Product catalog",
     "tabs": {
@@ -106,7 +115,10 @@
       "amount": "Amount",
       "rate": "Rate (%)",
       "category": "Category",
+      "sequence": "Sequence",
       "selectCategory": "Select a category",
+      "selectSequence": "Select a sequence",
+      "currency": "Currency",
       "description": "Description",
       "actions": "Actions"
     },

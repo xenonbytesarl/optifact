@@ -93,6 +93,15 @@
     "settings": "Paramètres"
   },
   "products": {
+    "view": {
+      "category": "Catégorie",
+      "type": "Type",
+      "sequence": "Sequence",
+      "amountFlat": "Montant (forfait)",
+      "rate": "Taux",
+      "description": "Description",
+      "noDescription": "Aucune description fournie."
+    },
     "title": "Produits",
     "subtitle": "Catalogue des produits",
     "tabs": {
@@ -107,7 +116,10 @@
       "amount": "Montant",
       "rate": "Taux (%)",
       "category": "Catégorie",
+      "sequence": "Sequence",
       "selectCategory": "Sélectionner une catégorie",
+      "selectSequence": "Sélectionner une séquence",
+      "currency": "Devise",
       "description": "Description",
       "actions": "Actions"
     },

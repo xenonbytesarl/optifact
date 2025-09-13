@@ -6,6 +6,7 @@ import {productStore} from '../products.store';
 import {ProductFormValue} from '../components/product-form';
 import {productCategoryStore} from '../../product-categories/product-category.store';
 import {attachmentTypeStore} from '../../attachment-type/attachment-type.store';
+import {sequencesStore} from '../../sequences/sequences.store';
 
 function productTypeAmountRateValidator(ctrl: AbstractControl): ValidationErrors | null {
   const type = ctrl.get('type')?.value as string | null | undefined;
@@ -29,6 +30,7 @@ export function useProductScreen() {
   const store = inject(productStore);
   const categoryStore = inject(productCategoryStore);
   const docTypeStore = inject(attachmentTypeStore);
+  const sequenceStore = inject(sequencesStore);
   const fb = inject(FormBuilder);
   const router = inject(Router);
   const toast = inject(ToastService);
@@ -40,6 +42,7 @@ export function useProductScreen() {
     amount: [0],
     rate: [null],
     categoryId: [null, [Validators.required]],
+    sequenceId: [null],
     description: [''],
     currency: [null],
     attachmentTypeIds: [[]]
@@ -52,8 +55,9 @@ export function useProductScreen() {
     amount: 0,
     rate: null,
     categoryId: null,
+    sequenceId: null,
     description: '',
-    currency: null,
+    currency: 'XAF',
     attachmentTypeIds: []
   };
   const formValue = signal<ProductFormValue>(initialProductFormValue);
@@ -77,11 +81,12 @@ export function useProductScreen() {
       const amount = current.amount ?? 0;
       const rate = current.rate ?? null;
       const categoryId = current.categoryId ?? null;
+      const sequenceId = current.sequenceId ?? null;
       const description = current.description ?? '';
       const currency = (current as any).currency ?? null;
       const attachmentTypeIds = current.attachmentTypeIds ?? [];
-      formValue.set({ code, name, type, amount, rate, categoryId, description, currency, attachmentTypeIds });
-      form.patchValue({ code, name, type, amount, rate, categoryId, description, currency, attachmentTypeIds });
+      formValue.set({ code, name, type, amount, rate, categoryId, sequenceId, description, currency, attachmentTypeIds });
+      form.patchValue({ code, name, type, amount, rate, categoryId, sequenceId, description, currency, attachmentTypeIds });
       form.markAsPristine();
       form.markAsUntouched();
     }
@@ -128,6 +133,7 @@ export function useProductScreen() {
       amount: v.amount,
       rate: v.rate,
       categoryId: v.categoryId,
+      sequenceId: v.sequenceId,
       description: v.description,
       currency: v.currency ?? null,
       attachmentTypeIds: v.attachmentTypeIds ?? []
@@ -148,6 +154,10 @@ export function useProductScreen() {
 
   function onCategoryIdBlur() {
     form.get('categoryId')?.markAsTouched();
+  }
+
+  function onSequenceIdBlur() {
+    form.get('sequenceId')?.markAsTouched();
   }
 
   function onRateBlur() {
@@ -208,6 +218,7 @@ export function useProductScreen() {
     store,
     categoryStore,
     docTypeStore,
+    sequenceStore,
     form,
     formValue,
     loading,
@@ -224,6 +235,7 @@ export function useProductScreen() {
     onCategoryIdBlur,
     onRateBlur,
     onAmountBlur,
+    onSequenceIdBlur,
     resetForm,
     saveNew,
     saveEdit,

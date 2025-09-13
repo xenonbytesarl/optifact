@@ -9,7 +9,6 @@ import {useProductScreen} from './product-screen.util';
 import { ProductDocumentTypesTabComponent } from '../components/product-document-types-tab';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { TranslateService } from '../../../core/i18n/translate.service';
-import {AttachmentType} from '../../../core/api/attachment-types.api';
 
 @Component({
   selector: 'app-product-edit-page',
@@ -42,10 +41,12 @@ import {AttachmentType} from '../../../core/api/attachment-types.api';
               [rateRequiredError]="rateHasError()"
               [amountRequiredError]="amountHasError()"
               [productCategories]="productCategories()"
+              [sequences]="sequences()"
               (blurCode)="onCodeBlur()"
               (blurName)="onNameBlur()"
               (blurType)="onTypeBlur()"
               (blurCategory)="onCategoryIdBlur()"
+              (blurSequence)="onSequenceIdBlur()"
               (blurAmount)="onAmountBlur()"
               (blurRate)="onRateBlur()"
               (valueChange)="onValueChange($event)"
@@ -72,6 +73,7 @@ export class ProductEditPage {
   private i18n = inject(TranslateService);
 
   productCategories = computed(() => this.ui.categoryStore.categoryPage().elements);
+  sequences = computed(() => this.ui.sequenceStore.sequencePage().elements);
   attachmentTypes = computed(() => this.ui.docTypeStore.attachmentTypePage().elements);
   currentAttachmentTypes = computed(() => this.ui.docTypeStore.currentAttachmentTypes() ?? []);
 
@@ -114,6 +116,7 @@ export class ProductEditPage {
   onNameBlur() { return this.ui.onNameBlur(); }
   onTypeBlur() { return this.ui.onTypeBlur(); }
   onCategoryIdBlur() { return this.ui.onCategoryIdBlur(); }
+  onSequenceIdBlur() { return this.ui.onSequenceIdBlur(); }
   onRateBlur() { return this.ui.onRateBlur(); }
   onAmountBlur() { return this.ui.onAmountBlur(); }
 

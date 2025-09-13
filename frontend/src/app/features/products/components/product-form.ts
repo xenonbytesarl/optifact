@@ -17,6 +17,8 @@ import { InputCurrencyComponent } from '../../../shared/ui/input-currency';
 import {CategoryFormValue} from '../../product-categories/components/product-category-form';
 import {TranslateService} from '../../../core/i18n/translate.service';
 import {ProductCategory} from '../../../core/api/product-categories.api';
+import {Sequence} from '../../../core/api/sequences.api';
+import {InputHiddenComponent} from '../../../shared/ui/input-hidden';
 
 export interface ProductFormValue {
   code: string;
@@ -25,6 +27,7 @@ export interface ProductFormValue {
   amount?: number | null;
   rate?: number | null;
   categoryId?: string | null;
+  sequenceId?: string | null;
   description?: string | null;
   currency?: string | null;
   attachmentTypeIds?: string[] | null;
@@ -33,9 +36,12 @@ export interface ProductFormValue {
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, InputTextComponent, InputNumberComponent, InputCurrencyComponent, AutocompleteComponent, FormFieldComponent, SelectComponent],
+  imports: [CommonModule, TranslatePipe, InputTextComponent, InputNumberComponent, InputCurrencyComponent, AutocompleteComponent, FormFieldComponent, SelectComponent, InputHiddenComponent],
   template: `
     <form class="flex flex-col gap-3">
+
+        <app-input-hidden [value]="value().currency || 'XAF'"  />
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <app-form-field [label]="('products.fields.code' | t)" [required]="true" [error]="codeRequiredError() ? ('validation.required' | t) : null">
           <app-input [disabled]="disabled()" [error]="codeRequiredError()" [value]="value().code" (valueChange)="onCode($event)" (blurred)="blurCode.emit()" />
@@ -44,25 +50,28 @@ export interface ProductFormValue {
           <app-input [disabled]="disabled()" [error]="nameRequiredError()" [value]="value().name" (valueChange)="onName($event)" (blurred)="blurName.emit()" />
         </app-form-field>
 
-        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-3">
-          <app-form-field [label]="('products.fields.category' | t)" [required]="true" [error]="categoryIdRequiredError() ? ('validation.required' | t) : null" >
-            <app-autocomplete [disabled]="disabled()"   [placeholder]="('products.fields.selectCategory' | t)" [error]="categoryIdRequiredError()"
-                               [items]="categoryItems()" [value]="value().categoryId ?? null" (valueChange)="onCategoryId($event)" (blurred)="blurCategory.emit()" />
+        <app-form-field [label]="('products.fields.category' | t)" [required]="true" [error]="categoryIdRequiredError() ? ('validation.required' | t) : null" >
+          <app-autocomplete [disabled]="disabled()"   [placeholder]="('products.fields.selectCategory' | t)" [error]="categoryIdRequiredError()"
+                             [items]="categoryItems()" [value]="value().categoryId ?? null" (valueChange)="onCategoryId($event)" (blurred)="blurCategory.emit()" />
+        </app-form-field>
+        <app-form-field [label]="('products.fields.type' | t)" [required]="true" [error]="typeRequiredError() ? ('validation.required' | t) : null">
+          <app-select [disabled]="disabled()"  [options]="typeOptions()" [value]="value().type" (valueChange)="onType($event)" [error]="typeRequiredError()" (blurred)="blurType.emit()" />
+        </app-form-field>
+        <app-form-field [label]="('products.fields.sequence' | t)" >
+          <app-autocomplete [disabled]="disabled()"   [placeholder]="('products.fields.selectSequence' | t)"
+                            [items]="sequenceItems()" [value]="value().sequenceId ?? null" (valueChange)="onSequenceId($event)" (blurred)="blurSequence.emit()" />
+        </app-form-field>
+        @if (value().type === 'FLAT_AMOUNT') {
+          <app-form-field [label]="('products.fields.amount' | t)" [hint]="('products.hints.amount' | t)" [error]="amountRequiredError() ? ('validation.required' | t) : null">
+            <app-input-currency [disabled]="disabled()" [value]="value().amount ?? null" [currency]="value().currency || 'EUR'" [error]="amountRequiredError()" (valueChange)="onAmount($event)" (blurred)="blurAmount.emit()"/>
           </app-form-field>
-          <app-form-field [label]="('products.fields.type' | t)" [required]="true" [error]="typeRequiredError() ? ('validation.required' | t) : null">
-            <app-select [disabled]="disabled()"  [options]="typeOptions()" [value]="value().type" (valueChange)="onType($event)" [error]="typeRequiredError()" (blurred)="blurType.emit()" />
+        }
+        @if (value().type === 'PERCENTAGE') {
+          <app-form-field [label]="('products.fields.rate' | t)" [hint]="('products.hints.rate' | t)" [error]="rateRequiredError() ? ('validation.required' | t) : null">
+            <app-input-number [disabled]="disabled()" [min]="0" [error]="rateRequiredError()" [max]="100" [step]="0.01" [value]="value().rate ?? null" (valueChange)="onRate($event)" (blurred)="blurRate.emit()"/>
           </app-form-field>
-          @if (value().type === 'FLAT_AMOUNT') {
-            <app-form-field [label]="('products.fields.amount' | t)" [hint]="('products.hints.amount' | t)" [error]="amountRequiredError() ? ('validation.required' | t) : null">
-              <app-input-currency [disabled]="disabled()" [value]="value().amount ?? null" [currency]="'XAF'" [error]="amountRequiredError()" (valueChange)="onAmount($event)" (blurred)="blurAmount.emit()"/>
-            </app-form-field>
-          }
-          @if (value().type === 'PERCENTAGE') {
-            <app-form-field [label]="('products.fields.rate' | t)" [hint]="('products.hints.rate' | t)" [error]="rateRequiredError() ? ('validation.required' | t) : null">
-              <app-input-number [disabled]="disabled()" [min]="0" [error]="rateRequiredError()" [max]="100" [step]="0.01" [value]="value().rate ?? null" (valueChange)="onRate($event)" (blurred)="blurRate.emit()"/>
-            </app-form-field>
-          }
-        </div>
+        }
+
       </div>
       <app-form-field [label]="('products.fields.description' | t)">
         <textarea class="w-full  border border-token bg-surface text-fg placeholder-muted px-3 py-2 text-sm outline-none focus:ring-1 ring-primary shadow-sm min-h-24" [value]="value().description ?? ''" (input)="onDescription(($any($event.target)).value)"></textarea>
@@ -85,6 +94,7 @@ export class ProductFormComponent {
   rateRequiredError = input<boolean>(false);
   amountRequiredError = input<boolean>(false);
   productCategories = input<ProductCategory[]>([]);
+  sequences = input<Sequence[]>([]);
   value = model<ProductFormValue>({
     code: '',
     name: '',
@@ -92,6 +102,7 @@ export class ProductFormComponent {
     amount: null,
     rate: null,
     categoryId: null,
+    sequenceId: null,
     description: '',
     currency: null,
     attachmentTypeIds: []
@@ -105,6 +116,7 @@ export class ProductFormComponent {
   blurType = output<void>();
   blurRate = output<void>();
   blurAmount = output<void>();
+  blurSequence = output<void>();
 
   // Build type options from i18n so labels are translated
   typeOptions = computed<SelectOption[]>(() => {
@@ -120,6 +132,15 @@ export class ProductFormComponent {
     this.productCategories().map(c => ({ value: c.id, label: c.name }))
   );
 
+  sequenceItems = computed<AutocompleteItem[]>(() =>
+    this.sequences().map(c => ({ value: c.id, label: c.name }))
+  );
+
+  currencyOptions: SelectOption[] = [
+    { value: 'EUR', label: 'EUR' },
+    { value: 'USD', label: 'USD' },
+    { value: 'XAF', label: 'XAF' }
+  ];
 
   onCode(v: string | null) {
     const code = (v ?? '').toString();
@@ -134,6 +155,11 @@ export class ProductFormComponent {
   onCategoryId(v: string | null) {
     const categoryId = (v ?? '').toString();
     this.value.set({ ...this.value(), categoryId });
+  }
+
+  onSequenceId(v: string | null) {
+    const sequenceId = (v ?? '').toString();
+    this.value.set({ ...this.value(), sequenceId });
   }
 
   onDescription(v: string | null) {
@@ -154,6 +180,11 @@ export class ProductFormComponent {
   onAmount(v: number | null) {
     const amount = (v ?? null);
     this.value.set({ ...this.value(), amount });
+  }
+
+  onCurrency(v: string | null) {
+    const currency = v ? v.toString() : null;
+    this.value.set({ ...this.value(), currency });
   }
 
 }
