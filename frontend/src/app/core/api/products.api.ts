@@ -15,6 +15,7 @@ export interface Product {
   amount?: number | null; // montant (forfait)
   rate?: number | null;   // taux (pourcentage)
   categoryId?: string | null;
+  sequenceId?: string | null;
   description?: string | null;
   currency?: string | null;
   attachmentTypeIds?: string[] | null;
