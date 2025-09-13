@@ -1,0 +1,20 @@
+import { Pipe, PipeTransform } from '@angular/core';
+import { TranslateService } from '../../core/i18n/translate.service';
+
+// Formats only the date part according to active language
+@Pipe({ name: 'appDate', standalone: true, pure: false })
+export class AppDatePipe implements PipeTransform {
+  constructor(private i18n: TranslateService) {}
+
+  transform(value?: string | number | Date | null, options?: Intl.DateTimeFormatOptions): string {
+    if (!value) return '—';
+    const date = value instanceof Date ? value : new Date(value);
+    if (isNaN(date.getTime())) return '—';
+    const locale = this.i18n.lang();
+    const fmt = new Intl.DateTimeFormat(locale, {
+      dateStyle: 'medium',
+      ...(options || {})
+    });
+    return fmt.format(date);
+  }
+}

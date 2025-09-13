@@ -187,7 +187,7 @@ components:
       enum: [DRAFT, SUBMITTED, IN_INSTRUCTION, VALIDATED, REJECTED, DONE, CANCELLED]
     ClaimLineStatusView:
       type: string
-      enum: [DRAFT, VALIDATED, REJECTED, CANCELLED]
+      enum: [DRAFT, UPLOADED, VALIDATED, REJECTED, CANCELLED]
     ClaimApiRequestView:
       type: object
       required:
@@ -238,6 +238,8 @@ components:
         cancelledById:
           type: string
           format: uuid
+        attachmentTypeName:
+          type: string
         status:
           $ref: '#/components/schemas/ClaimLineStatusView'
         reason:

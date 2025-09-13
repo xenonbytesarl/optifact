@@ -106,7 +106,7 @@ export function useClaimScreen() {
 
   function syncFromCurrentIfPristine() {
     const current = store.current();
-    if (current && form.pristine) {
+    if (current && (!form.dirty || !form.touched)) {
       const v: ClaimFormValue = {
         reference: current.reference ?? null,
         state: current.state ?? 'DRAFT',

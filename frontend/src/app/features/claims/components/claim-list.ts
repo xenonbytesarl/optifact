@@ -1,12 +1,15 @@
-import { ChangeDetectionStrategy, Component, input, output, signal, TemplateRef, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal, TemplateRef, viewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { IconComponent } from '../../../shared/ui/icon';
 import { TranslateService } from '../../../core/i18n/translate.service';
 import { TableComponent } from '../../../shared/ui/table';
 import { Claim } from '../../../core/api/claim.api';
+import { parseApiDate } from '../../../core/utils/date.util';
 import { DirectionType } from '../../../core/model/direction.enum';
 import {BadgeComponent, BadgeTone} from '../../../shared/ui/badge';
+import { actorStore } from '../../actors/actors.store';
+import { productStore } from '../../products/products.store';
 
 @Component({
   selector: 'app-claim-list',
@@ -26,7 +29,15 @@ import {BadgeComponent, BadgeTone} from '../../../shared/ui/badge';
       </ng-template>
 
       <ng-template #dateTpl let-row>
-        {{ row.createdAt | date:'short' }}
+        {{ formatDate(row.createdAt) }}
+      </ng-template>
+
+      <ng-template #actorTpl let-row>
+        {{ displayActor(row) }}
+      </ng-template>
+
+      <ng-template #productTpl let-row>
+        {{ displayProduct(row) }}
       </ng-template>
 
       <ng-template #actions let-row>
@@ -45,6 +56,16 @@ import {BadgeComponent, BadgeTone} from '../../../shared/ui/badge';
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ClaimListComponent {
+    formatDate(val: any): string {
+    const d = parseApiDate(val);
+    if (!d) return '';
+    try {
+      const lang = this.i18n.lang?.() || undefined;
+      return new Intl.DateTimeFormat(lang, { dateStyle: 'short', timeStyle: 'short' }).format(d);
+    } catch {
+      return d.toLocaleString();
+    }
+  }
   items = input.required<Claim[]>();
   view = output<string>();
   edit = output<string>();
@@ -56,6 +77,11 @@ export class ClaimListComponent {
 
   stateTpl = viewChild<TemplateRef<any>>('stateTpl');
   dateTpl = viewChild<TemplateRef<any>>('dateTpl');
+  actorTpl = viewChild<TemplateRef<any>>('actorTpl');
+  productTpl = viewChild<TemplateRef<any>>('productTpl');
+
+  actors = inject(actorStore);
+  products = inject(productStore);
 
   constructor(private i18n: TranslateService) {}
 
@@ -64,10 +90,26 @@ export class ClaimListComponent {
     return [
       { key: 'reference', header: this.i18n.t('claims.fields.reference'), sortable: true },
       { key: 'createdAt', header: this.i18n.t('claims.fields.createdAt'), template: this.dateTpl(), sortable: true },
-      { key: 'actorName', header: this.i18n.t('claims.fields.actorName') },
-      { key: 'productName', header: this.i18n.t('claims.fields.productName') },
+      { key: 'actorName', header: this.i18n.t('claims.fields.actorName'), template: this.actorTpl() },
+      { key: 'productName', header: this.i18n.t('claims.fields.productName'), template: this.productTpl() },
       { key: 'state', header: this.i18n.t('claims.fields.state'), template: this.stateTpl(), sortable: true },
     ];
+  }
+
+  displayActor(row: Claim): string {
+    if (row?.actorName) return row.actorName;
+    const id = row?.actorId;
+    if (!id) return '—';
+    const a = this.actors.actorPage().elements.find(x => x.id === id);
+    return a ? (a.reference ? `${a.name} (${a.reference})` : a.name) : id;
+  }
+
+  displayProduct(row: Claim): string {
+    if (row?.productName) return row.productName;
+    const id = row?.productId;
+    if (!id) return '—';
+    const p = this.products.productPage().elements.find(x => x.id === id);
+    return p ? (p.code ? `${p.name} (${p.code})` : p.name) : id;
   }
 
   onSortChange(e: { key: string; direction: DirectionType }) {

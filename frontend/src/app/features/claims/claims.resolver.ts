@@ -15,7 +15,7 @@ export const claimSearchResolver: ResolveFn<boolean> = async () => {
   }
 };
 
-export const claimFindBiIdResolver: ResolveFn<boolean> = async (route, state) => {
+export const claimFindByIdResolver: ResolveFn<boolean> = async (route, state) => {
   const store = inject(claimStore);
   try {
     await store.findById(route.paramMap.get('id') ?? '');

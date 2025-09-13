@@ -9,6 +9,10 @@ import { useClaimScreen } from './claim-screen.util';
 import { ClaimFormComponent } from '../components/claim-form';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { ClaimLinesTabComponent } from '../components/claim-lines-tab';
+import { actorStore } from '../../actors/actors.store';
+import { productStore } from '../../products/products.store';
+import { AutocompleteItem } from '../../../shared/ui/autocomplete';
+import {attachmentTypeStore} from '../../attachment-type/attachment-type.store';
 
 @Component({
   selector: 'app-claim-edit-page',
@@ -28,17 +32,21 @@ import { ClaimLinesTabComponent } from '../components/claim-lines-tab';
         <app-spinner [overlay]="true" />
       }
       <app-card>
+        <div class="mb-4">
+          <app-claim-form
+            [disabled]="loading()"
+            [value]="formValue()"
+            [stateRequiredError]="stateHasError()"
+            [actorItems]="actorItems()"
+            [productItems]="productItems()"
+            (valueChange)="onValueChange($event)"
+          />
+        </div>
         <app-tabs [items]="tabItems()" [(active)]="activeTab">
-          @if (activeTab === 'info') {
-            <app-claim-form
-              [disabled]="loading()"
-              [value]="formValue()"
-              [stateRequiredError]="stateHasError()"
-              (valueChange)="onValueChange($event)"
-            />
-          }
           @if (activeTab === 'lines') {
             <app-claim-lines-tab [lines]="formValue().lines" />
+          }
+          @if (activeTab === 'audit') {
           }
         </app-tabs>
       </app-card>
@@ -50,17 +58,37 @@ export class ClaimEditPage {
   readonly route = inject(ActivatedRoute);
   ui = useClaimScreen();
   private i18n = inject(TranslateService);
+  readonly actors = inject(actorStore);
+  readonly products = inject(productStore);
+  readonly doctTypeStore = inject(attachmentTypeStore);
+
+  // Autocomplete items
+  actorItems = computed<AutocompleteItem[]>(() => this.actors.actorPage().elements.map(a => ({
+    value: a.id,
+    label: a.reference ? `${a.name} (${a.reference})` : a.name
+  })));
+
+  productItems = computed<AutocompleteItem[]>(() => this.products.productPage().elements.map(p => ({
+    value: p.id,
+    label: p.code ? `${p.name} (${p.code})` : p.name
+  })));
 
   tabItems = computed<TabItem[]>(() => {
     this.i18n.lang();
     return [
-      { id: 'info', label: this.i18n.t('claims.tabs.info') },
-      { id: 'lines', label: this.i18n.t('claims.tabs.lines') }
+      { id: 'lines', label: this.i18n.t('claims.tabs.lines') },
+      { id: 'audit', label: this.i18n.t('claims.tabs.audit') }
     ];
   });
-  activeTab: 'info' | 'lines' = 'info';
+  activeTab: 'audit' | 'lines' = 'lines';
 
   constructor() {
+    // Load the claim by id so the form can be initialized (actor/product populated)
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      // Fire and forget; form will sync via effect below when current updates
+      this.ui.store.findById(id);
+    }
     effect(() => {
       this.ui.syncFromCurrentIfPristine();
     });

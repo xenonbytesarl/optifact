@@ -1,6 +1,5 @@
 import {Routes} from '@angular/router';
-import { claimSearchResolver } from './claims.resolver';
-import { claimFindBiIdResolver } from './claims.resolver';
+import { claimSearchResolver, claimFindByIdResolver } from './claims.resolver';
 import {productSearchResolver} from '../products/product.resolver';
 import {actorSearchResolver} from '../actors/actor.resolver';
 
@@ -9,7 +8,9 @@ export const claimsRoutes: Routes = [
     path: '',
     loadComponent: () => import('./screens/claims-list').then(m => m.ClaimsListScreen),
     resolve: {
-      claimsSearch: claimSearchResolver
+      claimsSearch: claimSearchResolver,
+      actorSearch: actorSearchResolver,
+      productSearch: productSearchResolver
     },
     data: { title: 'Demandes' }
   },
@@ -21,6 +22,10 @@ export const claimsRoutes: Routes = [
     }
   },
   {
+    path: ':id', loadComponent: () => import('./screens/claim-view').then(m => m.ClaimViewPage),
+    resolve: { claimFindById: claimFindByIdResolver, productSearch: productSearchResolver, actorSearch: actorSearchResolver }
+  },
+  {
     path: ':id/edit', loadComponent: () => import('./screens/claim-edit').then(m => m.ClaimEditPage),
-    resolve: { claimFindById: claimFindBiIdResolver } },
+    resolve: { claimFindById: claimFindByIdResolver, productSearch: productSearchResolver, actorSearch: actorSearchResolver } },
 ];

@@ -215,6 +215,20 @@
       "find": { "success": "Claim retrieved successfully.", "error": "Failed to retrieve claim." },
       "search": { "success": "Claims loaded successfully.", "error": "Failed to load claims." }
     },
+    "lines": {
+      "empty": "No claim lines",
+      "createdAt": "Created at",
+      "validatedAt": "Validated at",
+      "rejectedAt": "Rejected at",
+      "cancelledAt": "Cancelled at",
+      "status": {
+        "draft": "Draft",
+        "uploaded": "Uploaded",
+        "validated": "Validated",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled"
+      }
+    },
     "tabs": {
       "audit": "audit",
       "lines": "Lines"
