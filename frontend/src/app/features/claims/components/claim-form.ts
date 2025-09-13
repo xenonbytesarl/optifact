@@ -76,7 +76,7 @@ export type ClaimFormModel = {
 export class ClaimFormComponent {
   // Stepper state: display claim statuses
   private i18n = inject(TranslateService);
-  readonly statusOrder: Claim['state'][] = ['DRAFT','SUBMIT','IN_INSTRUCTION','REJECT','VALIDATED','DONE','CANCELLED'];
+  readonly statusOrder: Claim['state'][] = ['DRAFT', 'SUBMITTED', 'IN_INSTRUCTION', 'REJECTED', 'VALIDATED', 'DONE', 'CANCELLED'];
 
   activeStep = computed(() => {
     const state = this.value().state as Claim['state'];

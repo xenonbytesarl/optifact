@@ -39,6 +39,7 @@ public interface ClaimMapperJpa {
                     .cancelledById(l.getCancelledById())
                     .status(ClaimLineStatusJpa.valueOf(l.getStatus().name()))
                     .reason(l.getReason())
+                    .claim(ClaimJpa.builder().id(l.getClaimId()).build())
                     .build();
             list.add(j);
         }

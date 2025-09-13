@@ -106,9 +106,9 @@ public final class ClaimLine extends BaseEntity {
         );
     }
 
-    public static List<ClaimLine> create(List<UUID> attachementTypeIds, UUID claimId) {
-        return attachementTypeIds.stream().map(attachementTypeId -> create(
-                attachementTypeId,
+    public static List<ClaimLine> create(List<UUID> attachementIds, UUID claimId) {
+        return attachementIds.stream().map(attachementId -> create(
+                attachementId,
                 ZonedDateTime.now(),
                 null,
                 null,

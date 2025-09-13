@@ -42,6 +42,8 @@ export function useClaimScreen() {
 
   const formValue = signal<ClaimFormValue>(initialValue);
   const loading = computed(() => store.loading());
+  // Local saving guard to avoid double submissions on fast double-clicks
+  const saving = signal(false);
 
   function stateHasError(): boolean {
     const c = form.get('state');
@@ -68,24 +70,35 @@ export function useClaimScreen() {
   }
 
   async function saveNew() {
-    if (form.invalid) return;
-    const created = await store.create(form.value as Partial<Claim>);
-    if (created) {
-      toast.success(store.message() || 'claims.messages.created.success');
-      router.navigate(['/claims']);
-    } else {
-      toast.error(store.error() || 'common.error');
+    // prevent multiple rapid submissions
+    if (form.invalid || store.loading() || saving()) return;
+    try {
+      saving.set(true);
+      const created = await store.create(form.value as Partial<Claim>);
+      if (created) {
+        toast.success(store.message() || 'claims.messages.created.success');
+        router.navigate(['/claims']);
+      } else {
+        toast.error(store.error() || 'common.error');
+      }
+    } finally {
+      saving.set(false);
     }
   }
 
   async function saveEdit(id: string) {
-    if (!id || form.invalid) return;
-    const updated = await store.update(id, form.value as Partial<Claim>);
-    if (updated) {
-      toast.success(store.message() || 'claims.messages.update.success');
-      router.navigate(['/claims']);
-    } else {
-      toast.error(store.error() || 'common.error');
+    if (!id || form.invalid || store.loading() || saving()) return;
+    try {
+      saving.set(true);
+      const updated = await store.update(id, form.value as Partial<Claim>);
+      if (updated) {
+        toast.success(store.message() || 'claims.messages.update.success');
+        router.navigate(['/claims']);
+      } else {
+        toast.error(store.error() || 'common.error');
+      }
+    } finally {
+      saving.set(false);
     }
   }
 

@@ -4,6 +4,7 @@ import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.attachment.message.AttachmentMessage;
 import fr.xenonbyte.optifact.backend.domain.common.entity.BaseEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -66,6 +67,20 @@ public final class Attachment extends BaseEntity {
         if(attachmentTypeId == null) {
             throw new IllegalArgumentException(AttachmentMessage.ATTACHMENT_TYPE_ID_REQUIRED);
         }
+    }
+
+    public static List<Attachment> create(List<UUID> attachementTypeIds, UUID resourceId) {
+        return attachementTypeIds.stream().map(attachementTypeId -> create(
+                UUID.randomUUID(),
+                null,
+                null,
+                attachementTypeId,
+                AttachmentScope.EXTERNAL,
+                resourceId,
+                null,
+                null //TODO populate this when user management will be implemented
+
+        )).toList();
     }
 
     public Attachment update(String filename,

@@ -5,9 +5,9 @@ import { GlobalHttpApi } from './global-http-repository.service';
 import { ErrorApiResponse, Page, SuccessApiResponse } from '../model/response.model';
 import {Direction} from '../model/direction.enum';
 
-export type ClaimState = 'DRAFT' | 'SUBMIT' | 'IN_INSTRUCTION' | 'REJECT' | 'VALIDATED' | 'DONE' | 'CANCELLED';
+export type ClaimState = 'DRAFT' | 'SUBMITTED' | 'IN_INSTRUCTION' | 'REJECTED' | 'VALIDATED' | 'DONE' | 'CANCELLED';
 export type ClaimLineStatus = 'DRAFT' | 'VALIDATED' | 'REJECTED' | 'CANCELLED';
-export type AttachmentType = 'EXTERNAL' | 'INTERNAL';
+export type AttachmentScope = 'EXTERNAL' | 'INTERNAL';
 
 export interface Attachment {
   id?: string;
@@ -16,7 +16,7 @@ export interface Attachment {
   attachmentTypeId: string;
   createdAt?: string | null;
   createdBy?: string | null;
-  type?: AttachmentType | null;
+  scope?: AttachmentScope | null;
   resourceId?: string | null;
   resourceName?: string | null;
 }
