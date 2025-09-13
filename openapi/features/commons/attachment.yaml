@@ -1,0 +1,321 @@
+openapi: 3.0.3
+info:
+  title: Attachment API
+  description: API for managing attachments
+  version: 1.0.0
+servers:
+  - url: /api/v1/optifact
+    description: Default server
+tags:
+  - name: Attachment
+    description: Operations related to attachments
+paths:
+  /attachments:
+    get:
+      tags:
+        - Attachment
+      summary: Search attachments
+      description: Searches for attachments based on the provided criteria
+      operationId: searchAttachments
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - $ref: '../../parameters/common.yaml#/pageParam'
+        - $ref: '../../parameters/common.yaml#/sizeParam'
+        - $ref: '../../parameters/common.yaml#/sortFieldParam'
+        - $ref: '../../parameters/common.yaml#/sortDirectionParam'
+        - name: filenameFilter
+          in: query
+          description: Optional filename filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+        - name: attachmentTypeName
+          in: query
+          description: Optional attachment type name filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentPageApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    post:
+      tags:
+        - Attachment
+      summary: Create an attachment
+      description: Creates a new attachment metadata record
+      operationId: createAttachment
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachmentApiRequestView'
+      responses:
+        '201':
+          description: Attachment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /attachments/{attachmentId}:
+    get:
+      tags:
+        - Attachment
+      summary: Find an attachment by ID
+      description: Retrieves an attachment by its unique identifier
+      operationId: findAttachmentById
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: attachmentId
+          in: path
+          description: ID of the attachment to retrieve
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Attachment found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Attachment not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    put:
+      tags:
+        - Attachment
+      summary: Update an attachment
+      description: Updates an existing attachment metadata
+      operationId: updateAttachment
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: attachmentId
+          in: path
+          description: ID of the attachment to update
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachmentApiRequestView'
+      responses:
+        '200':
+          description: Attachment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Attachment not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    delete:
+      tags:
+        - Attachment
+      summary: Delete an attachment
+      description: Removes an attachment metadata record
+      operationId: deleteAttachment
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: attachmentId
+          in: path
+          description: ID of the attachment to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Attachment deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Attachment not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+components:
+  schemas:
+    AttachmentScope:
+      type: string
+      enum: [EXTERNAL, INTERNAL]
+    AttachmentApiRequestView:
+      type: object
+      required:
+        - attachmentTypeId
+        - scope
+      properties:
+        filename:
+          type: string
+          description: Original file name
+        mimeType:
+          type: string
+          description: MIME type of the file
+        attachmentTypeId:
+          type: string
+          format: uuid
+          description: Identifier of the attachment type
+        scope:
+          $ref: '#/components/schemas/AttachmentScope'
+        resourceId:
+          type: string
+          format: uuid
+          description: Optional identifier of the linked resource
+        resourceName:
+          type: string
+          description: Optional name of the linked resource type
+    AttachmentResponseView:
+      type: object
+      required:
+        - id
+        - attachmentTypeId
+        - scope
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          description: Creation timestamp (ISO8601)
+        updatedAt:
+          type: string
+          description: Update timestamp (ISO8601)
+        filename:
+          type: string
+        mimeType:
+          type: string
+        attachmentTypeId:
+          type: string
+          format: uuid
+        scope:
+          $ref: '#/components/schemas/AttachmentScope'
+        resourceId:
+          type: string
+          format: uuid
+        resourceName:
+          type: string
+        createdById:
+          type: string
+          format: uuid
+    AttachmentApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/AttachmentResponseView'
+    AttachmentPageResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/PaginationResponseView'
+        - type: object
+          required:
+            - elements
+          properties:
+            elements:
+              type: array
+              description: The list of attachments
+              items:
+                $ref: '#/components/schemas/AttachmentResponseView'
+    AttachmentPageApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/AttachmentPageResponseView'

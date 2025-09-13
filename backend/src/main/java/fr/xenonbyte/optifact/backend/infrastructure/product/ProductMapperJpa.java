@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public interface ProductMapperJpa {
 
     @Mapping(target = "category", expression = "java(fr.xenonbyte.optifact.backend.infrastructure.productcategory.ProductCategoryJpa.builder().id(product.getCategoryId()).build())")
-    @Mapping(target = "sequence", expression = "java(fr.xenonbyte.optifact.backend.infrastructure.common.sequence.SequenceJpa.builder().id(product.getSequenceId()).build())")
+    @Mapping(target = "sequence", expression = "java(product.getSequenceId() == null? null :fr.xenonbyte.optifact.backend.infrastructure.common.sequence.SequenceJpa.builder().id(product.getSequenceId()).build())")
     @Mapping(target = "attachmentTypes", expression = "java(product.getAttachementTypeIds().stream().map(attachmentTypeId -> fr.xenonbyte.optifact.backend.infrastructure.common.attachmenttype.AttachmentTypeJpa.builder().id(attachmentTypeId).build()).collect(java.util.stream.Collectors.toUnmodifiableList()))")
     ProductJpa toJpa(Product product);
     Product toDomain(ProductJpa productJpa);
