@@ -7,6 +7,7 @@ import fr.xenonbyte.optifact.backend.domain.common.attachment.Attachment;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -29,4 +30,6 @@ public interface AttachmentRepository {
     boolean existsByIdsAndFilenameNotNull(List<UUID> attachmentsIds);
 
     List<Attachment> saveAll(List<Attachment> attachments);
+
+    List<Attachment> findByIds(Set<UUID> ids);
 }

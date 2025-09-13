@@ -6,6 +6,7 @@ import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 @Hexagonal.ValueObject
 public enum ClaimLineStatus {
     DRAFT,
+    UPLOADED,
     VALIDATED,
     REJECTED,
     CANCELLED

@@ -1,6 +1,7 @@
 package fr.xenonbyte.optifact.backend.api.claim;
 
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimApiRequestView;
+import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimLineResponseView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimPageResponseView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimResponseView;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.CreateClaimUseCase;
@@ -8,13 +9,25 @@ import fr.xenonbyte.optifact.backend.application.claim.port.in.DeleteClaimByIdUs
 import fr.xenonbyte.optifact.backend.application.claim.port.in.FindClaimByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.SearchClaimsUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.UpdateClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdsUseCase;
+import fr.xenonbyte.optifact.backend.application.common.attachmenttype.port.in.FindAttachmentTypeByIdsUseCase;
 import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
 import fr.xenonbyte.optifact.backend.application.common.payload.Direction;
 import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.domain.claim.Claim;
+import fr.xenonbyte.optifact.backend.domain.claim.ClaimLine;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
+import fr.xenonbyte.optifact.backend.domain.common.attachementtype.AttachmentType;
+import fr.xenonbyte.optifact.backend.domain.common.attachment.Attachment;
+import jakarta.validation.Valid;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Hexagonal(layer = Hexagonal.Layer.ADAPTER, componentType = Hexagonal.ComponentType.PRIMARY_ADAPTER)
 @Hexagonal.PrimaryAdapter
@@ -26,19 +39,23 @@ public class ClaimAdapterView {
     private final DeleteClaimByIdUseCase deleteByIdUseCase;
     private final SearchClaimsUseCase searchUseCase;
     private final ClaimMapperView mapperView;
+    private final FindAttachmentTypeByIdsUseCase findAttachmentTypeByIdsUseCase;
+    private final FindAttachmentByIdsUseCase findAttachmentByIdsUseCase;
 
     public ClaimAdapterView(CreateClaimUseCase createUseCase,
                             UpdateClaimUseCase updateUseCase,
                             FindClaimByIdUseCase findByIdUseCase,
                             DeleteClaimByIdUseCase deleteByIdUseCase,
                             SearchClaimsUseCase searchUseCase,
-                            ClaimMapperView mapperView) {
+                            ClaimMapperView mapperView, FindAttachmentTypeByIdsUseCase findAttachmentTypeByIdsUseCase, FindAttachmentByIdsUseCase findAttachmentByIdsUseCase) {
         this.createUseCase = createUseCase;
         this.updateUseCase = updateUseCase;
         this.findByIdUseCase = findByIdUseCase;
         this.deleteByIdUseCase = deleteByIdUseCase;
         this.searchUseCase = searchUseCase;
         this.mapperView = mapperView;
+        this.findAttachmentTypeByIdsUseCase = findAttachmentTypeByIdsUseCase;
+        this.findAttachmentByIdsUseCase = findAttachmentByIdsUseCase;
     }
 
     public ClaimResponseView createClaim(ClaimApiRequestView view) {
@@ -54,7 +71,56 @@ public class ClaimAdapterView {
     }
 
     public ClaimResponseView findClaimById(UUID id) {
-        return mapperView.toResponseView(findByIdUseCase.findClaimById(id));
+        Claim claim = findByIdUseCase.findClaimById(id);
+
+        // Collect unique attachment IDs from claim lines
+        Set<UUID> attachmentIds = claim.getLines().stream()
+                .map(ClaimLine::getAttachmentId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        // If no attachments referenced, just map the claim and return
+        if (attachmentIds.isEmpty()) {
+            return mapperView.toResponseView(claim);
+        }
+
+        // Load attachments at once and index them by their ID
+        List<Attachment> attachments = findAttachmentByIdsUseCase.findAttachmentByIds(attachmentIds);
+        if (attachments == null || attachments.isEmpty()) {
+            return mapperView.toResponseView(claim);
+        }
+        Map<UUID, Attachment> attachmentById = attachments.stream()
+                .collect(Collectors.toMap(Attachment::getId, a -> a, (a, b) -> a));
+
+        // Load attachment types for the found attachments and index name by type ID
+        Set<UUID> attachmentTypeIds = attachments.stream()
+                .map(Attachment::getAttachmentTypeId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        Map<UUID, String> attachmentTypeNameById = attachmentTypeIds.isEmpty()
+                ? Map.of()
+                : findAttachmentTypeByIdsUseCase.findAttachmentTypeByIds(attachmentTypeIds)
+                        .stream()
+                        .collect(Collectors.toMap(AttachmentType::getId, AttachmentType::getName));
+
+        // Build the response and enrich lines in O(n)
+        ClaimResponseView responseView = mapperView.toResponseView(claim);
+        List<@Valid ClaimLineResponseView> enrichedLines = responseView.getLines().stream().map(line -> {
+            UUID lineAttachmentId = line.getAttachmentId();
+            if (lineAttachmentId != null) {
+                Attachment att = attachmentById.get(lineAttachmentId);
+                if (att != null) {
+                    String typeName = attachmentTypeNameById.get(att.getAttachmentTypeId());
+                    if (typeName != null) {
+                        line.setAttachmentTypeName(typeName);
+                    }
+                }
+            }
+            return line;
+        }).toList();
+        responseView.setLines(enrichedLines);
+        return responseView;
     }
 
     public ClaimPageResponseView searchClaims(String referenceFilter,

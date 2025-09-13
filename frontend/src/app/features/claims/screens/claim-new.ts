@@ -15,7 +15,7 @@ import {AutocompleteItem} from '../../../shared/ui/autocomplete';
 @Component({
   selector: 'app-claim-new-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, ClaimFormComponent, TabsComponent, ClaimLinesTabComponent],
+  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, ClaimFormComponent],
   template: `
     <app-action-bar
       [showNew]="false"
@@ -40,14 +40,6 @@ import {AutocompleteItem} from '../../../shared/ui/autocomplete';
             (valueChange)="onValueChange($event)"
           />
         </div>
-        <app-tabs [items]="tabItems()" [(active)]="activeTab">
-          @if (activeTab === 'lines') {
-            <app-claim-lines-tab [lines]="formValue().lines" />
-          }
-          @if (activeTab === 'audit') {
-
-          }
-        </app-tabs>
       </app-card>
     </div>
   `,

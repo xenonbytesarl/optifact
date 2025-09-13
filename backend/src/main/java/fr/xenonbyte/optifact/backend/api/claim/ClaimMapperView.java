@@ -34,6 +34,7 @@ public interface ClaimMapperView {
         if (status == null) return null;
         return switch (status) {
             case DRAFT -> ClaimLineStatusView.DRAFT;
+            case UPLOADED -> ClaimLineStatusView.UPLOADED;
             case VALIDATED -> ClaimLineStatusView.VALIDATED;
             case REJECTED -> ClaimLineStatusView.REJECTED;
             case CANCELLED -> ClaimLineStatusView.CANCELLED;

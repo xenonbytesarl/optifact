@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Hexagonal(layer = Hexagonal.Layer.ADAPTER, componentType = Hexagonal.ComponentType.SECONDARY_ADAPTER)
@@ -96,5 +97,10 @@ public final class AttachmentRepositoryAdapterJpa implements AttachmentRepositor
         return repositoryJpa.saveAll(attachments.stream().map(mapperJpa::toJpa).toList()).stream()
                 .map(mapperJpa::toDomain)
                 .toList();
+    }
+
+    @Override
+    public List<Attachment> findByIds(Set<UUID> ids) {
+        return repositoryJpa.findAllById(ids).stream().map(mapperJpa::toDomain).toList();
     }
 }
