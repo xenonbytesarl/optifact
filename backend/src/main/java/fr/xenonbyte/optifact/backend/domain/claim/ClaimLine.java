@@ -1,0 +1,174 @@
+package fr.xenonbyte.optifact.backend.domain.claim;
+
+import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
+import fr.xenonbyte.optifact.backend.domain.common.entity.BaseEntity;
+
+import java.time.ZonedDateTime;
+import java.util.UUID;
+
+@Hexagonal(layer = Hexagonal.Layer.DOMAIN, componentType = Hexagonal.ComponentType.ENTITY)
+@Hexagonal.Entity
+public final class ClaimLine extends BaseEntity {
+
+    private final UUID attachmentId;
+    private final ZonedDateTime validateAt;
+    private final UUID validateById;
+    private final ZonedDateTime rejectedAt;
+    private final UUID rejectedById;
+    private final ZonedDateTime cancelledAt;
+    private final UUID cancelledById;
+    private final ClaimLineStatus status;
+    private final String reason;
+    private final UUID claimId;
+
+    private ClaimLine(UUID id,
+                      UUID attachmentId,
+                      ZonedDateTime createdAt,
+                      ZonedDateTime validateAt,
+                      UUID validateById,
+                      ZonedDateTime rejectedAt,
+                      UUID rejectedById,
+                      ZonedDateTime cancelledAt,
+                      UUID cancelledById,
+                      ClaimLineStatus status,
+                      String reason,
+                      UUID claimId) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.attachmentId = attachmentId;
+        this.validateAt = validateAt;
+        this.validateById = validateById;
+        this.rejectedAt = rejectedAt;
+        this.rejectedById = rejectedById;
+        this.cancelledAt = cancelledAt;
+        this.cancelledById = cancelledById;
+        this.status = status;
+        this.reason = reason;
+        this.claimId = claimId;
+    }
+
+    public static ClaimLine create(UUID id,
+                                   UUID attachmentId,
+                                   ZonedDateTime createdAt,
+                                   ZonedDateTime validateAt,
+                                   UUID validateById,
+                                   ZonedDateTime rejectedAt,
+                                   UUID rejectedById,
+                                   ZonedDateTime cancelledAt,
+                                   UUID cancelledById,
+                                   ClaimLineStatus status,
+                                   String reason,
+                                   UUID claimId) {
+        return new ClaimLine(
+                id,
+                attachmentId,
+                createdAt,
+                validateAt,
+                validateById ,
+                rejectedAt,
+                rejectedById,
+                cancelledAt,
+                cancelledById,
+                status,
+                reason,
+                claimId
+        );
+    }
+
+    public ClaimLine withClaimId(UUID claimId) {
+        return new ClaimLine(
+                id,
+                attachmentId,
+                createdAt,
+                validateAt,
+                validateById ,
+                rejectedAt,
+                rejectedById,
+                cancelledAt,
+                cancelledById,
+                status,
+                reason,
+                claimId
+        );
+    }
+
+    public ClaimLine withAttachmentId(UUID attachmentId) {
+        return new ClaimLine(
+                id,
+                attachmentId,
+                createdAt,
+                validateAt,
+                validateById ,
+                rejectedAt,
+                rejectedById,
+                cancelledAt,
+                cancelledById,
+                status,
+                reason,
+                claimId
+        );
+    }
+
+    public ClaimLine withValidate(UUID validateById, ZonedDateTime validateAt) {
+        return new ClaimLine(
+                id,
+                attachmentId,
+                createdAt,
+                validateAt,
+                validateById ,
+                rejectedAt,
+                rejectedById,
+                cancelledAt,
+                cancelledById,
+                status,
+                reason,
+                claimId
+        );
+    }
+
+    public ClaimLine withRejected(UUID rejectedById, ZonedDateTime rejectedAt, String reason) {
+        return new ClaimLine(
+                id,
+                attachmentId,
+                createdAt,
+                validateAt,
+                validateById ,
+                rejectedAt,
+                rejectedById,
+                cancelledAt,
+                cancelledById,
+                status,
+                reason,
+                claimId
+        );
+    }
+
+    public ClaimLine withCancelled(UUID cancelledById, ZonedDateTime cancelledAt) {
+        return new ClaimLine(
+                id,
+                attachmentId,
+                createdAt,
+                validateAt,
+                validateById ,
+                rejectedAt,
+                rejectedById,
+                cancelledAt,
+                cancelledById,
+                status,
+                reason,
+                claimId
+        );
+    }
+
+
+    public UUID getAttachmentId() { return attachmentId; }
+    public ZonedDateTime getValidateAt() { return validateAt; }
+    public ZonedDateTime getRejectedAt() { return rejectedAt; }
+    public ZonedDateTime getCancelledAt() { return cancelledAt; }
+    public ClaimLineStatus getStatus() { return status; }
+    public String getReason() { return reason; }
+    public UUID getClaimId() { return claimId; }
+    public UUID getValidateById() { return validateById; }
+    public UUID getRejectedById() { return rejectedById; }
+    public UUID getCancelledById() { return cancelledById; }
+}
