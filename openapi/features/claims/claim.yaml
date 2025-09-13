@@ -217,9 +217,9 @@ components:
         createdAt:
           type: string
           description: Creation timestamp (ISO8601)
-        updatedAt:
+        uploadedAt:
           type: string
-          description: Update timestamp (ISO8601)
+          description: Creation timestamp (ISO8601)
         attachmentId:
           type: string
           format: uuid

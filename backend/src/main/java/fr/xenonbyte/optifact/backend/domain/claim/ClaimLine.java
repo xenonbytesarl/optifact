@@ -14,6 +14,7 @@ import static java.util.UUID.randomUUID;
 public final class ClaimLine extends BaseEntity {
 
     private final UUID attachmentId;
+    private final ZonedDateTime uploadedAt;
     private final ZonedDateTime validateAt;
     private final UUID validateById;
     private final ZonedDateTime rejectedAt;
@@ -27,6 +28,7 @@ public final class ClaimLine extends BaseEntity {
     private ClaimLine(UUID id,
                       UUID attachmentId,
                       ZonedDateTime createdAt,
+                      ZonedDateTime uploadedAt,
                       ZonedDateTime validateAt,
                       UUID validateById,
                       ZonedDateTime rejectedAt,
@@ -38,6 +40,7 @@ public final class ClaimLine extends BaseEntity {
                       UUID claimId) {
         this.id = id;
         this.createdAt = createdAt;
+        this.uploadedAt = uploadedAt;
         this.attachmentId = attachmentId;
         this.validateAt = validateAt;
         this.validateById = validateById;
@@ -53,6 +56,7 @@ public final class ClaimLine extends BaseEntity {
     public static ClaimLine create(
                                    UUID attachmentId,
                                    ZonedDateTime createdAt,
+                                   ZonedDateTime uploadedAt,
                                    ZonedDateTime validateAt,
                                    UUID validateById,
                                    ZonedDateTime rejectedAt,
@@ -66,6 +70,7 @@ public final class ClaimLine extends BaseEntity {
                 randomUUID(),
                 attachmentId,
                 createdAt,
+                uploadedAt,
                 validateAt,
                 validateById ,
                 rejectedAt,
@@ -81,6 +86,7 @@ public final class ClaimLine extends BaseEntity {
     public static ClaimLine create(UUID id,
                                    UUID attachmentId,
                                    ZonedDateTime createdAt,
+                                   ZonedDateTime uploadedAt,
                                    ZonedDateTime validateAt,
                                    UUID validateById,
                                    ZonedDateTime rejectedAt,
@@ -94,6 +100,7 @@ public final class ClaimLine extends BaseEntity {
                 id,
                 attachmentId,
                 createdAt,
+                uploadedAt,
                 validateAt,
                 validateById ,
                 rejectedAt,
@@ -116,6 +123,7 @@ public final class ClaimLine extends BaseEntity {
                 null,
                 null,
                 null,
+                null,
                 ClaimLineStatus.DRAFT,
                 null,
                 claimId
@@ -127,6 +135,7 @@ public final class ClaimLine extends BaseEntity {
                 id,
                 attachmentId,
                 createdAt,
+                uploadedAt,
                 validateAt,
                 validateById ,
                 rejectedAt,
@@ -139,18 +148,19 @@ public final class ClaimLine extends BaseEntity {
         );
     }
 
-    public ClaimLine withAttachmentId(UUID attachmentId) {
+    public ClaimLine withUploaded(ZonedDateTime uploadedAt) {
         return new ClaimLine(
                 id,
                 attachmentId,
                 createdAt,
+                uploadedAt,
                 validateAt,
                 validateById ,
                 rejectedAt,
                 rejectedById,
                 cancelledAt,
                 cancelledById,
-                status,
+                ClaimLineStatus.UPLOADED,
                 reason,
                 claimId
         );
@@ -161,13 +171,14 @@ public final class ClaimLine extends BaseEntity {
                 id,
                 attachmentId,
                 createdAt,
+                uploadedAt,
                 validateAt,
                 validateById ,
                 rejectedAt,
                 rejectedById,
                 cancelledAt,
                 cancelledById,
-                status,
+                ClaimLineStatus.VALIDATED,
                 reason,
                 claimId
         );
@@ -179,12 +190,13 @@ public final class ClaimLine extends BaseEntity {
                 attachmentId,
                 createdAt,
                 validateAt,
+                uploadedAt,
                 validateById ,
                 rejectedAt,
                 rejectedById,
                 cancelledAt,
                 cancelledById,
-                status,
+                ClaimLineStatus.REJECTED,
                 reason,
                 claimId
         );
@@ -195,13 +207,14 @@ public final class ClaimLine extends BaseEntity {
                 id,
                 attachmentId,
                 createdAt,
+                uploadedAt,
                 validateAt,
                 validateById ,
                 rejectedAt,
                 rejectedById,
                 cancelledAt,
                 cancelledById,
-                status,
+                ClaimLineStatus.CANCELLED,
                 reason,
                 claimId
         );
@@ -210,6 +223,7 @@ public final class ClaimLine extends BaseEntity {
 
     public UUID getAttachmentId() { return attachmentId; }
     public ZonedDateTime getValidateAt() { return validateAt; }
+    public ZonedDateTime getUploadedAt() { return uploadedAt; }
     public ZonedDateTime getRejectedAt() { return rejectedAt; }
     public ZonedDateTime getCancelledAt() { return cancelledAt; }
     public ClaimLineStatus getStatus() { return status; }

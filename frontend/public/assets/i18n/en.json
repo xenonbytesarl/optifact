@@ -218,6 +218,7 @@
     "lines": {
       "empty": "No claim lines",
       "createdAt": "Created at",
+      "uploadedAt": "Upload at",
       "validatedAt": "Validated at",
       "rejectedAt": "Rejected at",
       "cancelledAt": "Cancelled at",
@@ -227,7 +228,8 @@
         "validated": "Validated",
         "rejected": "Rejected",
         "cancelled": "Cancelled"
-      }
+      },
+      "uploadConfirm": "Transfer"
     },
     "tabs": {
       "audit": "audit",
