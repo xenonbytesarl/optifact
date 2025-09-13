@@ -91,10 +91,17 @@ export class ProductDocumentTypesTabComponent {
     effect(() => {
       const ids = this.modelIds();
       const all = this.currentAttachmentTypes().length > 0? this.currentAttachmentTypes():  this.attachmentTypes();
-      console.log(ids, all);
       if (ids && ids.length > 0) {
-        // first map those available in current page
-        const mapped = ids.map(id => all.find(a => a.id === id)).filter(Boolean) as AttachmentType[];
+        // first map those available in current page; if missing, fallback to autocomplete item labels
+        const items = this.attachmentTypeItems();
+        const mapped = ids
+          .map(id => {
+            const hit = all.find(a => a.id === id);
+            if (hit) return hit;
+            const it = items.find(x => x.value === id);
+            return it ? ({ id, name: it.label } as AttachmentType) : null;
+          })
+          .filter(Boolean) as AttachmentType[];
         this.selectedTypes.set(mapped);
       } else if (!ids || ids.length === 0) {
         this.selectedTypes.set([]);
@@ -111,7 +118,13 @@ export class ProductDocumentTypesTabComponent {
   addSelected() {
     const id = this.selectedTypeId();
     if (!id) return;
-    const found = this.attachmentTypes().find(x => x.id === id);
+    let found = this.attachmentTypes().find(x => x.id === id);
+    if (!found) {
+      const item = this.attachmentTypeItems().find(it => it.value === id);
+      if (item) {
+        found = { id, name: item.label } as AttachmentType;
+      }
+    }
     if (!found) return;
     const exists = this.selectedTypes().some(x => x.id === id);
     if (exists) {
