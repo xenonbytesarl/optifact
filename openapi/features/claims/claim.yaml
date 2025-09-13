@@ -184,10 +184,10 @@ components:
   schemas:
     ClaimStateView:
       type: string
-      enum: [CREATED, SUBMITTED, IN_INSTRUCTION, VALIDATED, REJECTED, DONE, CANCELLED]
+      enum: [DRAFT, SUBMITTED, IN_INSTRUCTION, VALIDATED, REJECTED, DONE, CANCELLED]
     ClaimLineStatusView:
       type: string
-      enum: [CREATED, VALIDATED, REJECTED, CANCELLED]
+      enum: [DRAFT, VALIDATED, REJECTED, CANCELLED]
     ClaimApiRequestView:
       type: object
       required:

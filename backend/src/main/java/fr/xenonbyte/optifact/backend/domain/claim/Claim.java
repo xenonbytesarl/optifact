@@ -242,7 +242,7 @@ public final class Claim extends BaseEntity {
                 doneAt,
                 cancelById,
                 cancelAt,
-                ClaimState.REJECT,
+                ClaimState.REJECTED,
                 reference,
                 lines
         );
@@ -263,7 +263,7 @@ public final class Claim extends BaseEntity {
                 doneAt,
                 cancelById,
                 cancelAt,
-                ClaimState.SUBMIT,
+                ClaimState.SUBMITTED,
                 reference,
                 lines
         );

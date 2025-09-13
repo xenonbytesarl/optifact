@@ -20,9 +20,9 @@ public interface ClaimMapperView {
     default ClaimStateView mapState(ClaimState state) {
         if (state == null) return null;
         return switch (state) {
-            case DRAFT -> ClaimStateView.CREATED;
-            case SUBMIT -> ClaimStateView.SUBMITTED;
-            case REJECT -> ClaimStateView.REJECTED;
+            case DRAFT -> ClaimStateView.DRAFT;
+            case SUBMITTED -> ClaimStateView.SUBMITTED;
+            case REJECTED -> ClaimStateView.REJECTED;
             case IN_INSTRUCTION -> ClaimStateView.IN_INSTRUCTION;
             case VALIDATED -> ClaimStateView.VALIDATED;
             case DONE -> ClaimStateView.DONE;
@@ -33,7 +33,7 @@ public interface ClaimMapperView {
     default ClaimLineStatusView mapLineStatus(ClaimLineStatus status) {
         if (status == null) return null;
         return switch (status) {
-            case DRAFT -> ClaimLineStatusView.CREATED;
+            case DRAFT -> ClaimLineStatusView.DRAFT;
             case VALIDATED -> ClaimLineStatusView.VALIDATED;
             case REJECTED -> ClaimLineStatusView.REJECTED;
             case CANCELLED -> ClaimLineStatusView.CANCELLED;

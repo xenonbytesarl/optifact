@@ -90,4 +90,11 @@ public final class AttachmentRepositoryAdapterJpa implements AttachmentRepositor
     public boolean existsByIdsAndFilenameNotNull(List<UUID> attachmentsIds) {
         return attachmentsIds != null && !attachmentsIds.isEmpty() && repositoryJpa.existsByIdInAndFilenameNotNull(attachmentsIds);
     }
+
+    @Override
+    public List<Attachment> saveAll(List<Attachment> attachments) {
+        return repositoryJpa.saveAll(attachments.stream().map(mapperJpa::toJpa).toList()).stream()
+                .map(mapperJpa::toDomain)
+                .toList();
+    }
 }

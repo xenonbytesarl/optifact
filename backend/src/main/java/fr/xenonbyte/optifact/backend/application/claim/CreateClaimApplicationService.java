@@ -5,12 +5,14 @@ import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimActorIdNot
 import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimProductIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.CreateClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.out.ClaimRepository;
+import fr.xenonbyte.optifact.backend.application.common.attachment.port.out.AttachmentRepository;
 import fr.xenonbyte.optifact.backend.application.common.sequence.exception.SequenceIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.application.product.port.out.ProductRepository;
 import fr.xenonbyte.optifact.backend.domain.claim.Claim;
 import fr.xenonbyte.optifact.backend.domain.claim.ClaimLine;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
+import fr.xenonbyte.optifact.backend.domain.common.attachment.Attachment;
 import fr.xenonbyte.optifact.backend.domain.common.sequence.Sequence;
 import fr.xenonbyte.optifact.backend.domain.product.product.Product;
 
@@ -33,16 +35,19 @@ public final class CreateClaimApplicationService implements CreateClaimUseCase {
     private final ProductRepository productRepository;
     private final ActorRepository actorRepository;
     private final SequenceRepository sequenceRepository;
+    private final AttachmentRepository attachmentRepository;
 
     public CreateClaimApplicationService(
             ClaimRepository repository,
             ProductRepository productRepository,
             ActorRepository actorRepository,
-            SequenceRepository sequenceRepository) {
+            SequenceRepository sequenceRepository,
+            AttachmentRepository attachmentRepository) {
         this.repository = repository;
         this.productRepository = productRepository;
         this.actorRepository = actorRepository;
         this.sequenceRepository = sequenceRepository;
+        this.attachmentRepository = attachmentRepository;
     }
 
     @Override
@@ -68,8 +73,12 @@ public final class CreateClaimApplicationService implements CreateClaimUseCase {
         String nextNumber = sequence.nextNumber();
         claim = claim.withReference(nextNumber);
 
-        //5) Generate the lines from attachmentTypeIds
-        List<ClaimLine> claimLines = ClaimLine.create(product.getAttachementTypeIds(), claim.getId());
+        //5) Generate and save attachments
+        List<Attachment> attachments = Attachment.create(product.getAttachementTypeIds(), claim.getId());
+        attachments = attachmentRepository.saveAll(attachments);
+
+        //6) Generate and claim line from attachment
+        List<ClaimLine> claimLines = ClaimLine.create(attachments.stream().map(Attachment::getId).toList(), claim.getId());
         claim = claim.withLines(claimLines);
 
         //6) Save the claim and the sequence

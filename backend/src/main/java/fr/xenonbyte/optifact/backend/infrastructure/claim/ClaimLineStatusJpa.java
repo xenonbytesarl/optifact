@@ -1,7 +1,7 @@
 package fr.xenonbyte.optifact.backend.infrastructure.claim;
 
 public enum ClaimLineStatusJpa {
-    CREATED,
+    DRAFT,
     VALIDATED,
     REJECTED,
     CANCELLED

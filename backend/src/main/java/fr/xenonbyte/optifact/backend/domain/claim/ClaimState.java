@@ -6,9 +6,9 @@ import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 @Hexagonal.ValueObject
 public enum ClaimState {
     DRAFT,
-    SUBMIT,
+    SUBMITTED,
     IN_INSTRUCTION,
-    REJECT,
+    REJECTED,
     VALIDATED,
     DONE,
     CANCELLED

@@ -27,4 +27,6 @@ public interface AttachmentRepository {
     Pagination<Attachment> search(String filenameFilter, String attachmentTypeName, CommonSearch search);
 
     boolean existsByIdsAndFilenameNotNull(List<UUID> attachmentsIds);
+
+    List<Attachment> saveAll(List<Attachment> attachments);
 }

@@ -1,11 +1,11 @@
 package fr.xenonbyte.optifact.backend.infrastructure.claim;
 
 public enum ClaimStateJpa {
-    CREATED,
+    DRAFT,
     SUBMITTED,
     IN_INSTRUCTION,
-    VALIDATED,
     REJECTED,
+    VALIDATED,
     DONE,
     CANCELLED
 }
