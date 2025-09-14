@@ -10,6 +10,8 @@ export type ClaimState = 'DRAFT' | 'SUBMITTED' | 'IN_INSTRUCTION' | 'REJECTED' |
 export type ClaimLineStatus = 'DRAFT' | 'UPLOADED' | 'VALIDATED' | 'REJECTED' | 'CANCELLED';
 export type AttachmentScope = 'EXTERNAL' | 'INTERNAL';
 
+export type ClaimSortColumn = 'reference' | 'createdAt' | 'state';
+
 export interface Attachment {
   id?: string;
   filename?: string | null;
@@ -58,7 +60,13 @@ export interface Claim {
   lines: ClaimLine[];
 }
 
-export type ClaimSortColumn = 'reference' | 'createdAt' | 'state';
+export interface AttachmentTransfert {
+  claimId: string;
+  claimLine: ClaimLine;
+  files: File[];
+}
+
+
 
 @Injectable({ providedIn: 'root' })
 export class ClaimApi extends GlobalHttpApi {
@@ -171,6 +179,24 @@ export class ClaimApi extends GlobalHttpApi {
   async remove(id: string) {
     try {
       return await firstValueFrom(this.http.delete<SuccessApiResponse<void | ErrorApiResponse>>(`${this.base}/${id}`));
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
+  async transfertAttachment(attachmentTransfert: AttachmentTransfert) {
+    try {
+      const formData = new FormData();
+      if(attachmentTransfert.files.length > 0) {
+        formData.append('file', attachmentTransfert.files[0]);
+      }
+      const claimId = attachmentTransfert.claimId;
+      const lineId = attachmentTransfert.claimLine.id;
+      const attachmentId = attachmentTransfert.claimLine.attachmentId;
+      return await firstValueFrom(this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/claim-lines/${lineId}/attachments/${attachmentId}/transfert`, formData));
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.error) {
         return error.error as ErrorApiResponse;

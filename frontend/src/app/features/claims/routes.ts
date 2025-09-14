@@ -27,5 +27,10 @@ export const claimsRoutes: Routes = [
   },
   {
     path: ':id/edit', loadComponent: () => import('./screens/claim-edit').then(m => m.ClaimEditPage),
-    resolve: { claimFindById: claimFindByIdResolver, productSearch: productSearchResolver, actorSearch: actorSearchResolver } },
+    resolve: {
+      claimFindById: claimFindByIdResolver,
+      productSearch: productSearchResolver,
+      actorSearch: actorSearchResolver
+    }
+  },
 ];

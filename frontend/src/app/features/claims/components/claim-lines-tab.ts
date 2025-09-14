@@ -1,17 +1,16 @@
-import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, output, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ClaimLine } from '../../../core/api/claim.api';
+import {AttachmentTransfert, ClaimLine} from '../../../core/api/claim.api';
 import { BadgeComponent, BadgeTone } from '../../../shared/ui/badge';
 import { TranslateService } from '../../../core/i18n/translate.service';
 import { AppDateTimePipe } from '../../../shared/pipes/date-time.pipe';
-import { DialogComponent } from '../../../shared/ui/dialog';
-import { AttachmentDropzoneComponent } from '../../../shared/ui/attachment-dropzone';
 import { ButtonComponent } from '../../../shared/ui/button';
+import { ClaimLineUploadDialogComponent } from './claim-line-upload-dialog';
 
 @Component({
   selector: 'app-claim-lines-tab',
   standalone: true,
-  imports: [CommonModule, BadgeComponent, AppDateTimePipe, DialogComponent, AttachmentDropzoneComponent, ButtonComponent],
+  imports: [CommonModule, BadgeComponent, AppDateTimePipe, ButtonComponent, ClaimLineUploadDialogComponent],
   template: `
     <div class="grid gap-3">
       @if (!lines().length) {
@@ -44,20 +43,13 @@ import { ButtonComponent } from '../../../shared/ui/button';
       }
 
       <!-- Upload Dialog -->
-      <app-dialog [(open)]="uploadDialogOpen" [backdropClosable]="true" [title]="i18n.t('claims.tabs.lines')">
-        <div class="space-y-3">
-          <div class="text-sm font-medium">{{ selectedLine()?.attachmentTypeName }}</div>
-          <app-attachment-dropzone [(files)]="uploadFiles" [accept]="'image/*,.pdf'" [maxTotalSize]="5 * 1024 * 1024" />
-        </div>
-        <div dialog-actions class="flex flex-col sm:flex-row gap-2">
-          <app-button variant="secondary" (clicked)="closeUploadDialog()">
-            <span class="material-symbols-outlined text-base">close</span> {{ i18n.t('actions.cancel') }}
-          </app-button>
-          <app-button (clicked)="confirmUpload()">
-            <span class="material-symbols-outlined text-base">cloud_upload</span> {{ i18n.t('claims.lines.uploadConfirm') || 'Transférer' }}
-          </app-button>
-        </div>
-      </app-dialog>
+      <app-claim-line-upload-dialog
+        [(open)]="uploadDialogOpen"
+        [line]="selectedLine()"
+        [claimId]="claimId()"
+        (confirm)="onDialogConfirm($event)"
+        (cancelled)="closeUploadDialog()"
+      />
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Default
@@ -65,34 +57,26 @@ import { ButtonComponent } from '../../../shared/ui/button';
 export class ClaimLinesTabComponent {
   lines = input<ClaimLine[]>([]);
   readOnly = input<boolean>(false);
+  claimId = input<string>('');
   // Dialog state
   uploadDialogOpen = signal(false);
   selectedLine = signal<ClaimLine | null>(null);
-  uploadFiles = signal<File[]>([]);
+  attachmentTransfert = output<AttachmentTransfert>()
+
 
   constructor(public i18n: TranslateService) {}
 
   openUploadDialog(line: ClaimLine) {
     this.selectedLine.set(line);
-    this.uploadFiles.set([]);
     this.uploadDialogOpen.set(true);
   }
 
   closeUploadDialog() {
     this.uploadDialogOpen.set(false);
-    this.uploadFiles.set([]);
   }
 
-  confirmUpload() {
-    const line = this.selectedLine();
-    const files = this.uploadFiles();
-    console.log('[ClaimLinesTab] Confirm upload', line?.id, files.map(f => f.name));
-    if (!line || !files.length) {
-      this.uploadDialogOpen.set(false);
-      return;
-    }
-    // TODO: integrate with claims API/store to upload files for this line
-    console.log('[ClaimLinesTab] Transfer files for line', line.id, files.map(f => f.name));
+  onDialogConfirm(attachmentTransfert: AttachmentTransfert) {
+    this.attachmentTransfert.emit(attachmentTransfert);
     this.closeUploadDialog();
   }
 
