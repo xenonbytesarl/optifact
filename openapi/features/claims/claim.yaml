@@ -247,6 +247,60 @@ paths:
             application/json:
               schema:
                 $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /claims/{claimId}/attachments/{attachmentId}/download:
+    get:
+      tags:
+        - Claim
+      summary: Download an attachment file
+      description: Downloads the binary content of an attachment related to a claim
+      operationId: downloadClaimAttachment
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: claimId
+          in: path
+          description: ID of the claim
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: attachmentId
+          in: path
+          description: ID of the attachment to download
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Attachment binary stream
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              description: Suggested filename for download
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Claim or attachment not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
 components:
   schemas:
     ClaimStateView:

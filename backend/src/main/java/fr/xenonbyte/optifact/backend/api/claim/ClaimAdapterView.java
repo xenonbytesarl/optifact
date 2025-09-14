@@ -15,6 +15,8 @@ import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindA
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.UploadAttachmentUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachmenttype.port.in.FindAttachmentTypeByIdsUseCase;
 import fr.xenonbyte.optifact.backend.application.common.exception.TechnicalException;
+import fr.xenonbyte.optifact.backend.application.common.file.exception.FileNameBadException;
+import fr.xenonbyte.optifact.backend.application.common.file.exception.FileNameNotFoundException;
 import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
 import fr.xenonbyte.optifact.backend.application.common.payload.Direction;
 import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
@@ -25,16 +27,23 @@ import fr.xenonbyte.optifact.backend.domain.common.attachementtype.AttachmentTyp
 import fr.xenonbyte.optifact.backend.domain.common.attachment.Attachment;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @Hexagonal(layer = Hexagonal.Layer.ADAPTER, componentType = Hexagonal.ComponentType.PRIMARY_ADAPTER)
 @Hexagonal.PrimaryAdapter
@@ -176,8 +185,10 @@ public class ClaimAdapterView {
 
         String filename = file.getOriginalFilename();
 
+        String mimeType = file.getContentType();
+
         try {
-            uploadAttachmentUseCase.uploadFile(attachment, claim.getReference(), filename, rootDirectory, file.getBytes());
+            uploadAttachmentUseCase.uploadFile(attachment, claim.getReference(), mimeType, filename, rootDirectory, file.getBytes());
         } catch (IOException e) {
             throw new TechnicalException(e.getMessage(), e);
         }
@@ -186,5 +197,32 @@ public class ClaimAdapterView {
 
         return mapperView.toResponseView(claim);
 
+    }
+
+    public ResponseEntity<Resource> downloadAttachment(UUID claimId, UUID attachmentId) {
+        // Ensure claim exists (also validates access in a real scenario)
+        Claim claim = findByIdUseCase.findClaimById(claimId);
+        Attachment attachment = findAttachmentByIdUseCase.findAttachmentById(attachmentId);
+
+        String filepath = attachment.getFilename();
+        if (filepath == null || filepath.isBlank()) {
+            throw new FileNameBadException(attachmentId.toString());
+        }
+
+        Path path = Paths.get(filepath);
+        File file = path.toFile();
+        if (!file.exists() || !file.isFile()) {
+            throw new FileNameNotFoundException(filepath);
+        }
+
+        Resource resource = new FileSystemResource(file);
+        String downloadName = path.getFileName().toString();
+        String mime = attachment.getMimeType() == null || attachment.getMimeType().isBlank() ? "application/octet-stream" : attachment.getMimeType();
+
+        return ResponseEntity
+                .status(OK)
+                .header("Content-Disposition", "attachment; filename=\"" + downloadName + "\"")
+                .header("Content-Type", mime)
+                .body(resource);
     }
 }

@@ -45,7 +45,13 @@ import {AttachmentTransfert} from '../../../core/api/claim.api';
         </div>
         <app-tabs [items]="tabItems()" [(active)]="activeTab">
           @if (activeTab === 'lines') {
-            <app-claim-lines-tab [lines]="formValue().lines" [claimId]="claimId()" (attachmentTransfert)="onUploadFile($event)" />
+            <app-claim-lines-tab
+              [lines]="formValue().lines"
+              [claimId]="claimId()"
+              [loading]="loading()"
+              (attachmentTransfert)="onUploadFile($event)"
+              (attachementDownload)="download($event)"
+            />
           }
           @if (activeTab === 'audit') {
           }
@@ -105,8 +111,11 @@ export class ClaimEditPage {
   goBack() { return this.ui.goBack(); }
 
   async onUploadFile(attachmentTransfert: AttachmentTransfert) {
-    // Upload is handled inside the dialog with progress and toasts. After success, refresh claim details.
     const id = this.claimId();
     if (id) await this.ui.store.findById(id);
+  }
+
+  async download(attachmentId: string) {
+    this.ui.store.downloadAttachment(this.claimId(), attachmentId);
   }
 }

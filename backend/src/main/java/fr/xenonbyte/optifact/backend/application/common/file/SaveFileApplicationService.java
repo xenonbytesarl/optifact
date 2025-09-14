@@ -1,6 +1,7 @@
-package fr.xenonbyte.optifact.backend.application.common.file.port.in;
+package fr.xenonbyte.optifact.backend.application.common.file;
 
 import fr.xenonbyte.optifact.backend.application.common.exception.TechnicalException;
+import fr.xenonbyte.optifact.backend.application.common.file.port.SaveFileUsecase;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 
 import java.io.IOException;

@@ -3,7 +3,7 @@ package fr.xenonbyte.optifact.backend.application.common.attachment;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.UploadAttachmentUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.out.AttachmentRepository;
 import fr.xenonbyte.optifact.backend.application.common.attachmenttype.exception.AttachmentTypeIdNotFoundException;
-import fr.xenonbyte.optifact.backend.application.common.file.port.in.SaveFileUsecase;
+import fr.xenonbyte.optifact.backend.application.common.file.port.SaveFileUsecase;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.attachment.Attachment;
 
@@ -30,7 +30,7 @@ public final class UploadAttachmentApplicationService implements UploadAttachmen
     }
 
     @Override
-    public void uploadFile(Attachment attachment, String resourceName, String filename, String rootDirectory, byte[] contents) {
+    public void uploadFile(Attachment attachment, String resourceName, String mimeType, String filename, String rootDirectory, byte[] contents) {
         LOGGER.info(String.format("Uploading file %s to %s", filename, rootDirectory));
 
         Attachment existing = repository.findById(attachment.getId()).orElseThrow(
@@ -41,7 +41,7 @@ public final class UploadAttachmentApplicationService implements UploadAttachmen
 
         existing = existing.update(
                 filenameWithFullPtah,
-                attachment.getMimeType(),
+                mimeType,
                 existing.getAttachmentTypeId(),
                 existing.getScope(),
                 existing.getResourceId(),
