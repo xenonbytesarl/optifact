@@ -7,3 +7,4 @@ DB_USERNAME: optifact
 DB_PASSWORD: optifact2025!
 FRONTEND_HOST: localhost
 FRONTEND_PORT: 4200
+CLAIM_FILE_ROOT_DIR: ${user.home}/optifact/claimFiles

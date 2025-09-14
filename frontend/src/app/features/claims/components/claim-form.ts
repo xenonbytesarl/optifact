@@ -93,9 +93,9 @@ export class ClaimFormComponent {
     const iconFor = (s: string) => {
       switch (s) {
         case 'DRAFT': return 'draft';
-        case 'SUBMIT': return 'send';
+        case 'SUBMITTED': return 'send';
         case 'IN_INSTRUCTION': return 'rule';
-        case 'REJECT': return 'cancel';
+        case 'REJECTED': return 'cancel';
         case 'VALIDATED': return 'task_alt';
         case 'DONE': return 'done_all';
         case 'CANCELLED': return 'block';
@@ -105,9 +105,9 @@ export class ClaimFormComponent {
     const visibility = (s: string) => {
       switch (s) {
         case 'DRAFT': return true;
-        case 'SUBMIT': return true;
+        case 'SUBMITTED': return true;
         case 'IN_INSTRUCTION': return true;
-        case 'REJECT': return false;
+        case 'REJECTED': return false;
         case 'VALIDATED': return true;
         case 'DONE': return true;
         case 'CANCELLED': return false;
@@ -150,9 +150,9 @@ export class ClaimFormComponent {
     this.i18n.lang();
     return [
       { value: 'DRAFT', label: this.i18n.t('claims.states.draft') },
-      { value: 'SUBMIT', label: this.i18n.t('claims.states.submit') },
+      { value: 'SUBMITTED', label: this.i18n.t('claims.states.submit') },
       { value: 'IN_INSTRUCTION', label: this.i18n.t('claims.states.in_instruction') },
-      { value: 'REJECT', label: this.i18n.t('claims.states.reject') },
+      { value: 'REJECTED', label: this.i18n.t('claims.states.reject') },
       { value: 'VALIDATED', label: this.i18n.t('claims.states.validated') },
       { value: 'DONE', label: this.i18n.t('claims.states.done') },
       { value: 'CANCELLED', label: this.i18n.t('claims.states.cancelled') },

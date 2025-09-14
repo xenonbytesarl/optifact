@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="20250914_1305_alter_claim_line_add_uploaded_at" author="junie">
+        <addColumn tableName="t_claim_line">
+            <column name="c_uploaded_at" type="timestamp with time zone"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="t_claim_line" columnName="c_uploaded_at"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

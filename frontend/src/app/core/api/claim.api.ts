@@ -190,7 +190,7 @@ export class ClaimApi extends GlobalHttpApi {
   async transfertAttachment(attachmentTransfert: AttachmentTransfert) {
     try {
       const formData = new FormData();
-      if(attachmentTransfert.files.length > 0) {
+      if (attachmentTransfert.files.length > 0) {
         formData.append('file', attachmentTransfert.files[0]);
       }
       const claimId = attachmentTransfert.claimId;
@@ -203,5 +203,20 @@ export class ClaimApi extends GlobalHttpApi {
       }
       return this.createErrorResponse(error);
     }
+  }
+
+  transfertAttachmentWithProgress(attachmentTransfert: AttachmentTransfert) {
+    const formData = new FormData();
+    if (attachmentTransfert.files.length > 0) {
+      formData.append('file', attachmentTransfert.files[0]);
+    }
+    const claimId = attachmentTransfert.claimId;
+    const lineId = attachmentTransfert.claimLine.id;
+    const attachmentId = attachmentTransfert.claimLine.attachmentId;
+    return this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(
+      `${this.base}/${claimId}/claim-lines/${lineId}/attachments/${attachmentId}/transfert`,
+      formData,
+      { reportProgress: true, observe: 'events' as const }
+    );
   }
 }

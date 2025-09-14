@@ -105,6 +105,8 @@ export class ClaimEditPage {
   goBack() { return this.ui.goBack(); }
 
   async onUploadFile(attachmentTransfert: AttachmentTransfert) {
-    await this.ui.store.transfertAttachment(attachmentTransfert);
+    // Upload is handled inside the dialog with progress and toasts. After success, refresh claim details.
+    const id = this.claimId();
+    if (id) await this.ui.store.findById(id);
   }
 }

@@ -54,13 +54,13 @@ public final class Attachment extends BaseEntity {
     public static Attachment create(String filename,
                                     String mimeType,
                                     UUID attachmentTypeId,
-                                    AttachmentScope type,
+                                    AttachmentScope scope,
                                     UUID resourceId,
                                     String resourceName,
                                     UUID createdBy) {
         validateParams(attachmentTypeId);
         // TODO validate createdBy when security will be implemented
-        return new Attachment(UUID.randomUUID(), filename, mimeType, attachmentTypeId, type, resourceId, resourceName, createdBy);
+        return new Attachment(UUID.randomUUID(), filename, mimeType, attachmentTypeId, scope, resourceId, resourceName, createdBy);
     }
 
     private static void validateParams(UUID attachmentTypeId) {

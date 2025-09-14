@@ -30,6 +30,7 @@ public interface ClaimMapperJpa {
             ClaimLineJpa j = ClaimLineJpa.builder()
                     .id(l.getId())
                     .createdAt(l.getCreatedAt())
+                    .uploadedAt(l.getUploadedAt())
                     .attachment(l.getAttachmentId() == null ? null : fr.xenonbyte.optifact.backend.infrastructure.common.attachment.AttachmentJpa.builder().id(l.getAttachmentId()).build())
                     .updatedAt(l.getUpdatedAt())
                     .validateAt(l.getValidateAt())
@@ -56,7 +57,7 @@ public interface ClaimMapperJpa {
                         l.getId(),
                         l.getAttachment() != null ? l.getAttachment().getId() : null,
                         l.getCreatedAt(),
-                        l.getUpdatedAt(),
+                        l.getUploadedAt(),
                         l.getValidateAt(),
                         l.getValidateById(),
                         l.getRejectedAt(),

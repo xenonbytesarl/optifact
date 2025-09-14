@@ -220,6 +220,11 @@ public final class ClaimLine extends BaseEntity {
         );
     }
 
+    public boolean isUploadStarted() {
+        return status != ClaimLineStatus.DRAFT && status != ClaimLineStatus.CANCELLED;
+    }
+
+
 
     public UUID getAttachmentId() { return attachmentId; }
     public ZonedDateTime getValidateAt() { return validateAt; }
