@@ -163,6 +163,69 @@ export const claimStore = signalStore(
           return false;
         }
       },
+      async validateLine(claimId: string, lineId: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.validateClaimLine(claimId, lineId);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Claim>;
+          patchState(store, {
+            claimPage: {
+              ...store.claimPage(),
+              elements: store.claimPage().elements.map(c => c.id === claimId ? payload.data.content : c)
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'claims.messages.lines.validate.success',
+            loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'claims.messages.lines.validate.error', loading: false });
+          return false;
+        }
+      },
+      async rejectLine(claimId: string, lineId: string, reason: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.rejectClaimLine(claimId, lineId, reason);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Claim>;
+          patchState(store, {
+            claimPage: {
+              ...store.claimPage(),
+              elements: store.claimPage().elements.map(c => c.id === claimId ? payload.data.content : c)
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'claims.messages.lines.reject.success',
+            loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'claims.messages.lines.reject.error', loading: false });
+          return false;
+        }
+      },
+      async submitClaim(id: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.submitClaim(id);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Claim>;
+          patchState(store, {
+            claimPage: {
+              ...store.claimPage(),
+              elements: store.claimPage().elements.map(c => c.id === id ? payload.data.content : c)
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'claims.messages.submit.success',
+            loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'claims.messages.submit.error', loading: false });
+          return false;
+        }
+      },
       async downloadAttachment(claimId: string, attachmentId: string) {
         patchState(store, {loading: true, error: null, message: null});
         const response = await api.downloadAttachment(claimId, attachmentId);
@@ -204,7 +267,7 @@ export const claimStore = signalStore(
         patchState(store, { loading: true, error: null, message: null });
         return api.transfertAttachmentWithProgress(attachmentTransfert).pipe(
           tap((event: any) => {
-            // On final HTTP response, update store state similar to async version
+            // On the final HTTP response, update store state similar to an async version
             if (event?.type === 4) {
               const res: any = event.body;
               if (res?.success) {

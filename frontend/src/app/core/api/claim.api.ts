@@ -47,6 +47,7 @@ export interface Claim {
   productName?: string | null;
   createdAt?: Date | null;
   submitAt?: Date | null;
+  rejectedAt: Date | null;
   managerId?: string | null;
   inInstructionAt?: Date | null;
   instructorId?: string | null;
@@ -56,6 +57,8 @@ export interface Claim {
   doneId?: string | null;
   cancelAt?: Date | null;
   cancelId?: string | null;
+  uploadStarted: boolean | null;
+  uploadEnded: boolean | null;
   state: ClaimState;
   reference?: string | null;
   lines: ClaimLine[];
@@ -240,6 +243,42 @@ export class ClaimApi extends GlobalHttpApi {
       let filename = this.getFilename(response);
 
       return {  blob: response.body as Blob, filename, success: true } as AttachementDownload;
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
+  async validateClaimLine(claimId: string, lineId: string) {
+    try {
+      return await firstValueFrom(
+        this.http.put<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/claim-lines/${lineId}/validate`, {})
+      );
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
+  async rejectClaimLine(claimId: string, lineId: string, reason: string) {
+    try {
+      return await firstValueFrom(
+        this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/claim-lines/${lineId}/reject`, { reason }));
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
+  async submitClaim(claimId: string) {
+    try {
+      return await firstValueFrom(this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/submit`, {}));
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.error) {
         return error.error as ErrorApiResponse;

@@ -15,8 +15,7 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
           <div class="font-medium text-sm md:text-base"></div>
           <div class="inline-flex items-center gap-2">
             @if(showNew()) {
-              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" rounded="none" [disabled]="disableNew()" (click)="newClicked.emit()">
-                <span class="material-symbols-outlined text-sm">add</span>
+              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" rounded="none" tone="primary" icon="add" [disabled]="disableNew()" (click)="newClicked.emit()">
                 <span class="hidden sm:inline">{{ 'actions.new' | t }}</span>
               </app-button>
             }
@@ -33,8 +32,7 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
               </app-button>
             }
             @if(showSave()) {
-              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" rounded="none" [disabled]="disableSave()" (click)="saveClicked.emit()">
-                <span class="material-symbols-outlined text-sm">save</span>
+              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" rounded="none" tone="primary" icon="save" [disabled]="disableSave()" (click)="saveClicked.emit()">
                 <span class="hidden sm:inline">{{ 'actions.save' | t }}</span>
               </app-button>
             }

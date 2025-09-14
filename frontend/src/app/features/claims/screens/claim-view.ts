@@ -61,7 +61,7 @@ import { ChevronStepperComponent, Step as ChevronStep } from '../../../shared/ui
         </div>
         <app-tabs [items]="tabItems()" [(active)]="activeTab">
           @if (activeTab === 'lines') {
-            <app-claim-lines-tab [lines]="formValue().lines" [readOnly]="true" />
+            <app-claim-lines-tab [lines]="formValue().lines" [readOnly]="true" [claimStatus]="formValue().state" />
           }
           @if (activeTab === 'audit') {
           }

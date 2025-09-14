@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
@@ -12,13 +12,14 @@ import { ClaimLinesTabComponent } from '../components/claim-lines-tab';
 import { actorStore } from '../../actors/actors.store';
 import { productStore } from '../../products/products.store';
 import { AutocompleteItem } from '../../../shared/ui/autocomplete';
-import {attachmentTypeStore} from '../../attachment-type/attachment-type.store';
-import {AttachmentTransfert} from '../../../core/api/claim.api';
+import {AttachmentTransfert, ClaimLine} from '../../../core/api/claim.api';
+import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog';
+import { ClaimLineRejectDialogComponent } from '../components/claim-line-reject-dialog';
 
 @Component({
   selector: 'app-claim-edit-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, ClaimFormComponent, TabsComponent, ClaimLinesTabComponent],
+  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, ClaimFormComponent, TabsComponent, ClaimLinesTabComponent, ConfirmDialogComponent, ClaimLineRejectDialogComponent],
   template: `
     <app-action-bar
       [showNew]="false"
@@ -41,6 +42,7 @@ import {AttachmentTransfert} from '../../../core/api/claim.api';
             [actorItems]="actorItems()"
             [productItems]="productItems()"
             (valueChange)="onValueChange($event)"
+            (submit)="onSubmit()"
           />
         </div>
         <app-tabs [items]="tabItems()" [(active)]="activeTab">
@@ -49,22 +51,53 @@ import {AttachmentTransfert} from '../../../core/api/claim.api';
               [lines]="formValue().lines"
               [claimId]="claimId()"
               [loading]="loading()"
+              [claimStatus]="formValue().state"
               (attachmentTransfert)="onUploadFile($event)"
               (attachementDownload)="download($event)"
+              (validateClicked)="openValidateDialog($event)"
+              (rejectClicked)="openRejectDialog($event)"
             />
           }
           @if (activeTab === 'audit') {
           }
         </app-tabs>
       </app-card>
+
+      <!-- Validate confirmation dialog -->
+      <app-confirm-dialog
+        [(open)]="validateDialogOpen"
+        [title]="i18n.t('claims.lines.validate.title')"
+        [message]="i18n.t('claims.lines.validate.message')"
+        [okLabel]="i18n.t('actions.validate')"
+        [cancelLabel]="i18n.t('actions.cancel')"
+        (decided)="onValidateDecided($event)"
+      />
+
+      <!-- Reject reason dialog -->
+      <app-claim-line-reject-dialog
+        [(open)]="rejectDialogOpen"
+        [title]="i18n.t('claims.lines.reject.title')"
+        [message]="i18n.t('claims.lines.reject.message')"
+        [placeholder]="i18n.t('claims.lines.reject.placeholder')"
+        [okLabel]="i18n.t('actions.reject')"
+        [cancelLabel]="i18n.t('actions.cancel')"
+        (confirm)="onRejectConfirm($event)"
+        (cancelled)="onRejectCancelled()"
+      />
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class ClaimEditPage {
+  // Dialog state for line validate/reject
+  validateDialogOpen = signal(false);
+  rejectDialogOpen = signal(false);
+  // Prevent double API calls on fast double-clicks
+  private validating = signal(false);
+  selectedLine: ClaimLine | null = null;
   readonly route = inject(ActivatedRoute);
   ui = useClaimScreen();
-  private i18n = inject(TranslateService);
+  readonly i18n = inject(TranslateService);
   readonly actors = inject(actorStore);
   readonly products = inject(productStore);
 
@@ -96,6 +129,15 @@ export class ClaimEditPage {
     });
   }
 
+  async onSubmit() {
+    const id = this.claimId();
+    if (!id || this.loading()) return;
+    const ok = await this.ui.store.submitClaim(id);
+    if (ok) {
+      await this.ui.store.findById(id);
+    }
+  }
+
   get form() { return this.ui.form; }
   get formValue() { return this.ui.formValue; }
   get loading() { return this.ui.loading; }
@@ -117,5 +159,45 @@ export class ClaimEditPage {
 
   async download(attachmentId: string) {
     this.ui.store.downloadAttachment(this.claimId(), attachmentId);
+  }
+
+  openValidateDialog(line: ClaimLine) {
+    this.selectedLine = line;
+    this.validateDialogOpen.set(true);
+  }
+
+  async onValidateDecided(confirmed: boolean) {
+    if (!confirmed || this.validating()) return;
+    const id = this.claimId();
+    const lineId = this.selectedLine?.id;
+    if (!id || !lineId) return;
+    try {
+      this.validating.set(true);
+      const ok = await this.ui.store.validateLine(id, lineId);
+      if (ok) {
+        await this.ui.store.findById(id);
+      }
+    } finally {
+      this.validating.set(false);
+    }
+  }
+
+  openRejectDialog(line: ClaimLine) {
+    this.selectedLine = line;
+    this.rejectDialogOpen.set(true);
+  }
+
+  async onRejectConfirm(reason: string) {
+    const id = this.claimId();
+    const lineId = this.selectedLine?.id;
+    if (!id || !lineId) return;
+    const ok = await this.ui.store.rejectLine(id, lineId, reason);
+    if (ok) {
+      await this.ui.store.findById(id);
+    }
+  }
+
+  onRejectCancelled() {
+    this.rejectDialogOpen.set(false);
   }
 }

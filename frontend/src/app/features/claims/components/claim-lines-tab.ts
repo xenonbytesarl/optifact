@@ -38,8 +38,12 @@ import { ClaimLineUploadDialogComponent } from './claim-line-upload-dialog';
             }
 
             @if (line.status !== 'DRAFT') {
-              <div class="absolute right-2 bottom-2">
+              <div class="absolute right-2 bottom-2 inline-flex items-center gap-1">
                 <app-button [disabled]="loading()" icon="download" tone="info" size="icon" shadow="none" variant="ghost" (clicked)="download(line)" aria-label="Download"/>
+                @if (line.status === 'UPLOADED' && claimStatus() === 'SUBMITTED') {
+                  <app-button [disabled]="loading()" icon="done" tone="success" size="icon" shadow="none" variant="ghost" (clicked)="validate(line)" aria-label="Validate"/>
+                  <app-button [disabled]="loading()" icon="close" tone="danger" size="icon" shadow="none" variant="ghost" (clicked)="reject(line)" aria-label="Reject"/>
+                }
               </div>
             }
           </div>
@@ -63,12 +67,14 @@ export class ClaimLinesTabComponent {
   readOnly = input<boolean>(false);
   claimId = input<string>('');
   loading = input<boolean>(false);
+  claimStatus = input<string | null>(null);
   // Dialog state
   uploadDialogOpen = signal(false);
   selectedLine = signal<ClaimLine | null>(null);
   attachmentTransfert = output<AttachmentTransfert>();
   attachementDownload = output<string>();
-
+  validateClicked = output<ClaimLine>();
+  rejectClicked = output<ClaimLine>();
 
   constructor(public i18n: TranslateService) {}
 
@@ -125,5 +131,13 @@ export class ClaimLinesTabComponent {
 
   download(line: ClaimLine) {
     this.attachementDownload.emit(line.attachmentId ?? '');
+  }
+
+  validate(line: ClaimLine) {
+    this.validateClicked.emit(line);
+  }
+
+  reject(line: ClaimLine) {
+    this.rejectClicked.emit(line);
   }
 }

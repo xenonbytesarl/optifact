@@ -1,6 +1,13 @@
 {
   "common": {
-    "error": "An unexpected error occurred."
+    "error": "An unexpected error occurred.",
+    "deleted": "Deleted successfully.",
+    "yes": "Yes",
+    "no": "No",
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    }
   },
   "search": {
     "label": "Search",
@@ -14,7 +21,9 @@
     "new": "New",
     "edit": "Edit",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "validate": "Validate",
+    "reject": "Reject"
   },
   "actors": {
     "title": "Actors",
@@ -211,6 +220,9 @@
       "done": "Done",
       "cancelled": "Cancelled"
     },
+    "actions": {
+      "submit": "Submit"
+    },
     "messages": {
       "deleted": { "success": "Claim deleted successfully.", "error": "Failed to delete claim." },
       "created": { "success": "Claim created successfully.", "error": "Failed to create claim." },
@@ -236,7 +248,16 @@
         "rejected": "Rejected",
         "cancelled": "Cancelled"
       },
-      "uploadConfirm": "Transfer"
+      "uploadConfirm": "Transfer",
+      "validate": {
+        "title": "Validate attachment",
+        "message": "Are you sure you want to validate this attachment?"
+      },
+      "reject": {
+        "title": "Reject attachment",
+        "message": "Please provide a reason to reject this attachment.",
+        "placeholder": "Enter the rejection reason here..."
+      }
     },
     "tabs": {
       "audit": "audit",
@@ -319,16 +340,6 @@
   "dashboard": {
     "title": "Dashboard",
     "refresh": "Refresh"
-  },
-  "common": {
-    "deleted": "Deleted successfully.",
-    "yes": "Yes",
-    "no": "No",
-    "error": "An error occurred",
-    "actions": {
-      "edit": "Edit",
-      "delete": "Delete"
-    }
   },
   "paginator": {
     "noItems": "No items",

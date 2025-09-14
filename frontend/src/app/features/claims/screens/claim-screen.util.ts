@@ -12,6 +12,11 @@ export type ClaimFormValue = {
   productId: string | null;
   createdAt: Date | null;
   doneAt: Date | null;
+  submitAt: Date | null;
+  rejectedAt: Date | null;
+  validatedAt: Date | null;
+  uploadStarted: boolean | null;
+  uploadEnded: boolean | null;
   lines: ClaimLine[];
 };
 
@@ -37,6 +42,11 @@ export function useClaimScreen() {
     productId: null,
     createdAt: new Date(),
     doneAt: null,
+    submitAt: null,
+    rejectedAt: null,
+    validatedAt: null,
+    uploadStarted: false,
+    uploadEnded: false,
     lines: []
   };
 
@@ -58,6 +68,11 @@ export function useClaimScreen() {
       actorId: v.actorId,
       productId: v.productId,
       doneAt: v.doneAt,
+      submitAt: v.submitAt,
+      rejectedAt: v.rejectedAt,
+      validatedAt: v.validatedAt,
+      uploadStarted: v.uploadStarted,
+      uploadEnded: v.uploadEnded,
       lines: v.lines ?? []
     });
   }
@@ -114,6 +129,11 @@ export function useClaimScreen() {
         productId: current.productId ?? null,
         createdAt: current.createdAt ?? new Date(),
         doneAt: current.doneAt ?? null,
+        submitAt: current.submitAt ?? null,
+        rejectedAt: current.rejectedAt ?? null,
+        validatedAt: current.validateAt ?? null,
+        uploadStarted: current.uploadStarted ?? null,
+        uploadEnded: current.uploadEnded ?? null,
         lines: current.lines ?? []
       };
       formValue.set(v);
