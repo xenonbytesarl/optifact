@@ -33,17 +33,13 @@ import { ClaimLineUploadDialogComponent } from './claim-line-upload-dialog';
             </div>
             @if (!readOnly() && line.status === 'DRAFT') {
               <div class="absolute right-2 bottom-2">
-                <app-button size="icon" shadow="none" variant="ghost" (clicked)="openUploadDialog(line)" aria-label="Upload">
-                  <span class="material-symbols-outlined text-base">upload</span>
-                </app-button>
+                <app-button size="icon" icon="upload" tone="neutral" shadow="none" variant="ghost" (clicked)="openUploadDialog(line)" aria-label="Upload"/>
               </div>
             }
 
             @if (line.status !== 'DRAFT') {
               <div class="absolute right-2 bottom-2">
-                <app-button [disabled]="loading()" size="icon" shadow="none" variant="ghost" (clicked)="download(line)" aria-label="Download">
-                  <span class="material-symbols-outlined text-base">download</span>
-                </app-button>
+                <app-button [disabled]="loading()" icon="download" tone="info" size="icon" shadow="none" variant="ghost" (clicked)="download(line)" aria-label="Download"/>
               </div>
             }
           </div>
