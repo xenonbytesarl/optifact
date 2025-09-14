@@ -13,6 +13,7 @@ import { actorStore } from '../../actors/actors.store';
 import { productStore } from '../../products/products.store';
 import { AutocompleteItem } from '../../../shared/ui/autocomplete';
 import {attachmentTypeStore} from '../../attachment-type/attachment-type.store';
+import {AttachmentTransfert} from '../../../core/api/claim.api';
 
 @Component({
   selector: 'app-claim-edit-page',
@@ -44,7 +45,7 @@ import {attachmentTypeStore} from '../../attachment-type/attachment-type.store';
         </div>
         <app-tabs [items]="tabItems()" [(active)]="activeTab">
           @if (activeTab === 'lines') {
-            <app-claim-lines-tab [lines]="formValue().lines" />
+            <app-claim-lines-tab [lines]="formValue().lines" [claimId]="claimId()" (attachmentTransfert)="onUploadFile($event)" />
           }
           @if (activeTab === 'audit') {
           }
@@ -60,7 +61,6 @@ export class ClaimEditPage {
   private i18n = inject(TranslateService);
   readonly actors = inject(actorStore);
   readonly products = inject(productStore);
-  readonly doctTypeStore = inject(attachmentTypeStore);
 
   // Autocomplete items
   actorItems = computed<AutocompleteItem[]>(() => this.actors.actorPage().elements.map(a => ({
@@ -73,6 +73,8 @@ export class ClaimEditPage {
     label: p.code ? `${p.name} (${p.code})` : p.name
   })));
 
+  claimId = computed(() => this.route.snapshot.paramMap.get('id') as string);
+
   tabItems = computed<TabItem[]>(() => {
     this.i18n.lang();
     return [
@@ -83,12 +85,6 @@ export class ClaimEditPage {
   activeTab: 'audit' | 'lines' = 'lines';
 
   constructor() {
-    // Load the claim by id so the form can be initialized (actor/product populated)
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      // Fire and forget; form will sync via effect below when current updates
-      this.ui.store.findById(id);
-    }
     effect(() => {
       this.ui.syncFromCurrentIfPristine();
     });
@@ -107,4 +103,8 @@ export class ClaimEditPage {
     return this.ui.saveEdit(id);
   }
   goBack() { return this.ui.goBack(); }
+
+  async onUploadFile(attachmentTransfert: AttachmentTransfert) {
+    await this.ui.store.transfertAttachment(attachmentTransfert);
+  }
 }
