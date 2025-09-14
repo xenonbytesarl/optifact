@@ -9,8 +9,12 @@ import fr.xenonbyte.optifact.backend.application.claim.port.in.DeleteClaimByIdUs
 import fr.xenonbyte.optifact.backend.application.claim.port.in.FindClaimByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.SearchClaimsUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.UpdateClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.UploadClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdsUseCase;
+import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.UploadAttachmentUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachmenttype.port.in.FindAttachmentTypeByIdsUseCase;
+import fr.xenonbyte.optifact.backend.application.common.exception.TechnicalException;
 import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
 import fr.xenonbyte.optifact.backend.application.common.payload.Direction;
 import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
@@ -20,7 +24,10 @@ import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.attachementtype.AttachmentType;
 import fr.xenonbyte.optifact.backend.domain.common.attachment.Attachment;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,13 +48,24 @@ public class ClaimAdapterView {
     private final ClaimMapperView mapperView;
     private final FindAttachmentTypeByIdsUseCase findAttachmentTypeByIdsUseCase;
     private final FindAttachmentByIdsUseCase findAttachmentByIdsUseCase;
+    private final UploadClaimUseCase uploadClaimUseCase;
+    private final UploadAttachmentUseCase uploadAttachmentUseCase;
+    private final FindAttachmentByIdUseCase findAttachmentByIdUseCase;
+
+    @Value("${optifact.file.claim.rootDirectory}")
+    private String rootDirectory;
 
     public ClaimAdapterView(CreateClaimUseCase createUseCase,
                             UpdateClaimUseCase updateUseCase,
                             FindClaimByIdUseCase findByIdUseCase,
                             DeleteClaimByIdUseCase deleteByIdUseCase,
                             SearchClaimsUseCase searchUseCase,
-                            ClaimMapperView mapperView, FindAttachmentTypeByIdsUseCase findAttachmentTypeByIdsUseCase, FindAttachmentByIdsUseCase findAttachmentByIdsUseCase) {
+                            ClaimMapperView mapperView,
+                            FindAttachmentTypeByIdsUseCase findAttachmentTypeByIdsUseCase,
+                            FindAttachmentByIdsUseCase findAttachmentByIdsUseCase,
+                            UploadClaimUseCase uploadClaimUseCase,
+                            UploadAttachmentUseCase uploadAttachmentUseCase,
+                            FindAttachmentByIdUseCase findAttachmentByIdUseCase) {
         this.createUseCase = createUseCase;
         this.updateUseCase = updateUseCase;
         this.findByIdUseCase = findByIdUseCase;
@@ -56,6 +74,9 @@ public class ClaimAdapterView {
         this.mapperView = mapperView;
         this.findAttachmentTypeByIdsUseCase = findAttachmentTypeByIdsUseCase;
         this.findAttachmentByIdsUseCase = findAttachmentByIdsUseCase;
+        this.uploadClaimUseCase = uploadClaimUseCase;
+        this.uploadAttachmentUseCase = uploadAttachmentUseCase;
+        this.findAttachmentByIdUseCase = findAttachmentByIdUseCase;
     }
 
     public ClaimResponseView createClaim(ClaimApiRequestView view) {
@@ -147,5 +168,23 @@ public class ClaimAdapterView {
                 new CommonSearch(safePage, safeSize, safeSort, safeDirection)
         );
         return mapperView.toResponsePageView(pageResult);
+    }
+
+    public ClaimResponseView transfertClaimAttachment(UUID claimId, UUID claimLineId, UUID attachmentId, MultipartFile file) {
+        Claim claim = findByIdUseCase.findClaimById(claimId);
+        Attachment attachment = findAttachmentByIdUseCase.findAttachmentById(attachmentId);
+
+        String filename = file.getOriginalFilename();
+
+        try {
+            uploadAttachmentUseCase.uploadFile(attachment, claim.getReference(), filename, rootDirectory, file.getBytes());
+        } catch (IOException e) {
+            throw new TechnicalException(e.getMessage(), e);
+        }
+
+        claim = uploadClaimUseCase.uploadClaim(claimId, claimLineId);
+
+        return mapperView.toResponseView(claim);
+
     }
 }

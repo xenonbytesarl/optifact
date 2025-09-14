@@ -4,6 +4,7 @@ import {ClaimApi, Claim, ClaimSortColumn, AttachmentTransfert} from '../../core/
 import {ErrorApiResponse, Page, SuccessApiResponse} from '../../core/model/response.model';
 import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../core/constant/constant';
 import {Direction} from '../../core/model/direction.enum';
+import { finalize, tap } from 'rxjs/operators';
 
 export interface ClaimsState {
   claimPage: Page<Claim>;
@@ -161,6 +162,38 @@ export const claimStore = signalStore(
           patchState(store, { error: payload.reason ?? 'claims.messages.attachment.transfert.error', loading: false });
           return false;
         }
+      },
+      transfertAttachmentWithProgress(attachmentTransfert: AttachmentTransfert) {
+        patchState(store, { loading: true, error: null, message: null });
+        return api.transfertAttachmentWithProgress(attachmentTransfert).pipe(
+          tap((event: any) => {
+            // On final HTTP response, update store state similar to async version
+            if (event?.type === 4) {
+              const res: any = event.body;
+              if (res?.success) {
+                const payload = res as SuccessApiResponse<Claim>;
+                patchState(store, {
+                  claimPage: {
+                    ...store.claimPage(),
+                    elements: store.claimPage().elements.map(c => c.id === attachmentTransfert.claimId ? payload.data.content : c)
+                  },
+                  current: payload.data.content,
+                  message: payload.message ?? 'claims.messages.attachment.transfert.success',
+                  loading: false
+                });
+              } else if (res) {
+                const payload = res as ErrorApiResponse;
+                patchState(store, { error: payload.reason ?? 'claims.messages.attachment.transfert.error', loading: false });
+              }
+            }
+          }),
+          finalize(() => {
+            // Ensure loading is reset even if a network error occurs
+            if (store.loading()) {
+              patchState(store, { loading: false });
+            }
+          })
+        );
       }
     };
   })

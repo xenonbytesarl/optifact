@@ -18,7 +18,7 @@ import { ClaimLineUploadDialogComponent } from './claim-line-upload-dialog';
       } @else {
         @for (line of lines(); track line.id) {
           <div class="relative rounded border border-neutral-200 dark:border-neutral-800 p-3">
-            <span class="material-symbols-outlined absolute -right-2 -top-3 text-xs text-neutral-200">verified</span>
+            <span class="material-symbols-outlined absolute -right-2 -top-3 text-xs" [ngClass]="verified(line.status)">verified</span>
             <div class="flex items-center justify-between mb-2">
               <div class="text-sm font-medium">#{{ line.attachmentTypeName ?? '—' }}</div>
               <app-badge [tone]="tone(line.status)">{{ getStatusLabel(line.status) }}</app-badge>
@@ -31,7 +31,7 @@ import { ClaimLineUploadDialogComponent } from './claim-line-upload-dialog';
               <div>{{ i18n.t('claims.lines.rejectedAt') }}: {{ line.rejectedAt | appDateTime }}</div>
               <div>{{ i18n.t('claims.lines.cancelledAt') }}: {{ line.cancelledAt | appDateTime }}</div>
             </div>
-            @if (!readOnly()) {
+            @if (!readOnly() && line.status === 'DRAFT') {
               <div class="absolute right-2 bottom-2">
                 <app-button size="icon" shadow="none" variant="ghost" (clicked)="openUploadDialog(line)" aria-label="Upload">
                   <span class="material-symbols-outlined text-base">upload</span>
@@ -76,13 +76,25 @@ export class ClaimLinesTabComponent {
   }
 
   onDialogConfirm(attachmentTransfert: AttachmentTransfert) {
+    // Do not close here; dialog will close itself on successful upload
     this.attachmentTransfert.emit(attachmentTransfert);
-    this.closeUploadDialog();
+  }
+
+  verified(status?: string | null): string {
+    switch (status) {
+      case 'DRAFT': return 'text-neutral-200';
+      case 'UPLOADED': return 'text-blue-800';
+      case 'VALIDATED': return 'text-green-800';
+      case 'REJECTED': return 'text-red-800';
+      case 'CANCELLED': return 'text-neutral-800';
+      default: return 'text-neutral-200';
+    }
   }
 
   tone(status?: string | null): BadgeTone {
     switch (status) {
       case 'DRAFT': return 'neutral';
+      case 'UPLOADED': return 'info';
       case 'VALIDATED': return 'success';
       case 'REJECTED': return 'danger';
       case 'CANCELLED': return 'neutral';
@@ -90,8 +102,10 @@ export class ClaimLinesTabComponent {
     }
   }
 
+
+
   getStatusLabel(status?: string | null) {
-    // Ensure recompute on language change
+    // Ensure recomputing on language change
     this.i18n.lang();
     switch (status) {
       case 'DRAFT': return this.i18n.t('claims.lines.status.draft');

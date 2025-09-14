@@ -10,6 +10,7 @@ import fr.xenonbyte.optifact.backend.domain.claim.Claim;
 import fr.xenonbyte.optifact.backend.domain.claim.ClaimLineStatus;
 import fr.xenonbyte.optifact.backend.domain.claim.ClaimState;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
 
 import java.util.Collections;
@@ -43,6 +44,8 @@ public interface ClaimMapperView {
 
     Claim toDomain(ClaimApiRequestView requestView);
 
+    @Mapping(target = "uploadStarted", expression = "java(domain.isUploadStarted())")
+    @Mapping(target = "uploadEnded", expression = "java(domain.isUploadEnded())")
     ClaimResponseView toResponseView(Claim domain);
 
     ClaimPageResponseView toResponsePageView(Pagination<Claim> page);

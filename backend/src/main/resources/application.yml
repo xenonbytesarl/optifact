@@ -37,3 +37,6 @@ optifact:
   frontend:
     host: ${FRONTEND_HOST}
     port: ${FRONTEND_PORT}
+  file:
+    claim:
+      rootDirectory: ${CLAIM_FILE_ROOT_DIR}

@@ -180,6 +180,73 @@ paths:
             application/json:
               schema:
                 $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /claims/{claimId}/claim-lines/{claimLineId}/attachments/{attachmentId}/transfert:
+    post:
+      tags:
+        - Claim
+      summary: Transfer an attachment to a claim line
+      description: Transfers a new attachment file for the given claim line, replacing the existing attachment reference if present
+      operationId: transfertClaimAttachment
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: claimId
+          in: path
+          description: ID of the claim
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: claimLineId
+          in: path
+          description: ID of the claim line
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: attachmentId
+          in: path
+          description: ID of the attachment to be transferred
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Attachment transferred successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Claim or line or attachment not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
 components:
   schemas:
     ClaimStateView:
@@ -296,6 +363,10 @@ components:
           $ref: '#/components/schemas/ClaimStateView'
         reference:
           type: string
+        uploadStarted:
+          type: boolean
+        uploadEnded:
+          type: boolean
         lines:
           type: array
           items:

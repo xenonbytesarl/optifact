@@ -121,9 +121,9 @@ export class ClaimListComponent {
   stateTone(state?: string | null): BadgeTone {
     switch (state) {
       case 'DRAFT': return 'neutral';
-      case 'SUBMIT': return 'info';
+      case 'SUBMITTED': return 'info';
       case 'IN_INSTRUCTION': return 'warn';
-      case 'REJECT': return 'danger';
+      case 'REJECTED': return 'danger';
       case 'VALIDATED': return 'success';
       case 'DONE': return 'success';
       case 'CANCELLED': return 'neutral';
@@ -134,9 +134,9 @@ export class ClaimListComponent {
   getStateLabel(state?: string | null) {
     switch (state) {
       case 'DRAFT': return this.i18n.t('claims.states.draft');
-      case 'SUBMIT': return this.i18n.t('claims.states.submit');
+      case 'SUBMITTED': return this.i18n.t('claims.states.submit');
       case 'IN_INSTRUCTION': return this.i18n.t('claims.states.in_instruction');
-      case 'REJECT': return this.i18n.t('claims.states.reject');
+      case 'REJECTED': return this.i18n.t('claims.states.reject');
       case 'VALIDATED': return this.i18n.t('claims.states.validated');
       case 'DONE': return this.i18n.t('claims.states.done');
       case 'CANCELLED': return this.i18n.t('claims.states.cancelled');

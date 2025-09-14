@@ -353,6 +353,14 @@ public final class Claim extends BaseEntity {
         );
     }
 
+    public boolean isUploadStarted() {
+        return lines.stream().anyMatch(ClaimLine::isUploadStarted);
+    }
+
+    public boolean isUploadEnded() {
+        return lines.stream().allMatch(ClaimLine::isUploadStarted);
+    }
+
     public UUID getActorId() {
         return actorId;
     }

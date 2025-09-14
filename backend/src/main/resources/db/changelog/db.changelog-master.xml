@@ -15,4 +15,5 @@
     <include file="/db/changelog/changes/008-alter-product-add-sequence.xml"/>
     <include file="/db/changelog/changes/009-create-attachment-table.xml"/>
     <include file="/db/changelog/changes/010-create-claim-and-claim-line-tables.xml"/>
+    <include file="/db/changelog/changes/011-alter-claim-line-add-uploaded-at.xml"/>
 </databaseChangeLog>
