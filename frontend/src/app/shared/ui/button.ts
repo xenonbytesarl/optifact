@@ -66,7 +66,10 @@ import { CommonModule } from '@angular/common';
           'disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer': true
         }">
       @if (icon()) {
-        <span class="material-symbols-outlined text-[1.125rem] leading-none">{{ icon() }}</span>
+        <span class="material-symbols-outlined text-[1.125rem] leading-none"
+              [ngClass]="{
+                'text-white': (variant() === 'primary' && (tone() === 'primary' || tone() === 'success' || tone() === 'danger')) || variant() === 'success' || variant() === 'danger'
+              }">{{ icon() }}</span>
       }
       <ng-content />
     </button>

@@ -37,7 +37,7 @@ import {AutocompleteItem} from '../../../shared/ui/autocomplete';
             [stateRequiredError]="stateHasError()"
             [actorItems]="actorItems()"
             [productItems]="productItems()"
-            (valueChange)="onValueChange($event)"
+            (valueChange)="onValueChange($event)"w
           />
         </div>
       </app-card>

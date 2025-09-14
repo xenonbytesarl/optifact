@@ -9,6 +9,7 @@ import { InputHiddenComponent } from '../../../shared/ui/input-hidden';
 import { AutocompleteComponent, AutocompleteItem } from '../../../shared/ui/autocomplete';
 import { ChevronStepperComponent, Step as ChevronStep } from '../../../shared/ui/chevron-stepper';
 import { InputDateTimeComponent } from '../../../shared/ui/input-date-time';
+import { ButtonComponent } from '../../../shared/ui/button';
 
 export type ClaimFormModel = {
   reference: string | null;
@@ -17,23 +18,39 @@ export type ClaimFormModel = {
   productId: string | null;
   createdAt: Date | null;
   doneAt: Date | null;
+  submitAt: Date | null;
+  rejectedAt: Date | null;
+  validatedAt: Date | null;
+  uploadStarted: boolean | null;
+  uploadEnded: boolean | null;
   lines?: ClaimLine[];
 };
 
 @Component({
   selector: 'app-claim-form',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, FormFieldComponent, InputHiddenComponent, AutocompleteComponent, ChevronStepperComponent, InputDateTimeComponent],
+  imports: [CommonModule, TranslatePipe, FormFieldComponent, InputHiddenComponent, AutocompleteComponent, ChevronStepperComponent, InputDateTimeComponent, ButtonComponent],
   template: `
     <form class="flex flex-col gap-3">
 
 
-      <app-chevron-stepper
-        [steps]="steps()"
-        [activeIndex]="activeStep()"
-        size="lg"
-        (stepSelected)="onStepSelected($event)"
-      />
+      <div class="grid grid-cols-2 items-center gap-2">
+        <div>
+          @if(value().uploadEnded) {
+            <app-button icon="check_circle" tone="primary" variant="primary" size="md" rounded="none"  [fullWidth]="true" (clicked)="onSubmit()">
+              {{ i18n.t('claims.actions.submit') }}
+            </app-button>
+          }
+        </div>
+        <div>
+          <app-chevron-stepper
+            [steps]="steps()"
+            [activeIndex]="activeStep()"
+            size="lg"
+            (stepSelected)="onStepSelected($event)"
+          />
+        </div>
+      </div>
 
       <app-input-hidden [value]="value().reference" />
       <app-input-hidden [value]="value().state" />
@@ -75,7 +92,7 @@ export type ClaimFormModel = {
 })
 export class ClaimFormComponent {
   // Stepper state: display claim statuses
-  private i18n = inject(TranslateService);
+  readonly i18n = inject(TranslateService);
   readonly statusOrder: Claim['state'][] = ['DRAFT', 'SUBMITTED', 'IN_INSTRUCTION', 'REJECTED', 'VALIDATED', 'DONE', 'CANCELLED'];
 
   activeStep = computed(() => {
@@ -137,6 +154,10 @@ export class ClaimFormComponent {
 
 
   constructor() {}
+
+  onSubmit() {
+    this.submit.emit('submit');
+  }
 
   onStepSelected(i: number) {
     const nextState = this.statusOrder[i] as Claim['state'];

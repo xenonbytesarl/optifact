@@ -1,6 +1,13 @@
 {
   "common": {
-    "error": "Une erreur inattendue s'est produite."
+    "error": "Une erreur inattendue s'est produite.",
+    "deleted": "Supprimé avec succès.",
+    "yes": "Oui",
+    "no": "Non",
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer"
+    }
   },
   "search": {
     "label": "Rechercher",
@@ -15,7 +22,9 @@
     "view": "Voir",
     "edit": "Modifier",
     "cancel": "Annuler",
-    "save": "Sauvegarder"
+    "save": "Sauvegarder",
+    "validate": "Valider",
+    "reject": "Rejeter"
   },
   "actors": {
     "title": "Acteurs",
@@ -212,6 +221,9 @@
       "done": "Terminée",
       "cancelled": "Annulée"
     },
+    "actions": {
+      "submit": "Soumettre"
+    },
     "messages": {
       "deleted": { "success": "Demande supprimée avec succès.", "error": "Échec de la suppression de la demande." },
       "created": { "success": "Demande créée avec succès.", "error": "Échec de la création de la demande." },
@@ -237,7 +249,16 @@
         "rejected": "Rejetée",
         "cancelled": "Annulée"
       },
-      "uploadConfirm": "Transférer"
+      "uploadConfirm": "Transférer",
+      "validate": {
+        "title": "Valider la pièce jointe",
+        "message": "Confirmez-vous la validation de cette pièce jointe ?"
+      },
+      "reject": {
+        "title": "Rejeter la pièce jointe",
+        "message": "Merci de saisir un motif de rejet pour cette pièce jointe.",
+        "placeholder": "Saisissez ici le motif de rejet..."
+      }
     },
     "tabs": {
       "audit": "Audit",
@@ -320,12 +341,6 @@
   "dashboard": {
     "title": "Tableau de bord",
     "refresh": "Actualiser"
-  },
-  "common": {
-    "deleted": "Supprimé avec succès.",
-    "yes": "Oui",
-    "no": "Non",
-    "error": "Une erreur est survenue"
   },
   "paginator": {
     "noItems": "Aucun élément",
