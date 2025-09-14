@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, model, output, signal } from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, input, model, output, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogComponent } from '../../../shared/ui/dialog';
 import { AttachmentDropzoneComponent } from '../../../shared/ui/attachment-dropzone';
@@ -20,7 +20,7 @@ import {AttachmentTransfert, ClaimLine} from '../../../core/api/claim.api';
         <app-button variant="secondary" (clicked)="onCancel()">
           <span class="material-symbols-outlined text-base">close</span> {{ i18n.t('actions.cancel') }}
         </app-button>
-        <app-button (clicked)="onConfirm()">
+        <app-button [disabled]="disableTransfertButton()" (clicked)="onConfirm()">
           <span class="material-symbols-outlined text-base">cloud_upload</span> {{ i18n.t('claims.lines.uploadConfirm') || 'Transférer' }}
         </app-button>
       </div>
@@ -40,6 +40,8 @@ export class ClaimLineUploadDialogComponent {
   maxTotalSize = input<number>(5 * 1024 * 1024);
 
   claimId = input<string>('');
+
+  disableTransfertButton = computed(() => this.files().length <= 0);
 
   // events
   confirm = output<AttachmentTransfert>();
