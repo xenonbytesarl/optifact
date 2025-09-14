@@ -38,6 +38,14 @@ import { ClaimLineUploadDialogComponent } from './claim-line-upload-dialog';
                 </app-button>
               </div>
             }
+
+            @if (line.status !== 'DRAFT') {
+              <div class="absolute right-2 bottom-2">
+                <app-button [disabled]="loading()" size="icon" shadow="none" variant="ghost" (clicked)="download(line)" aria-label="Download">
+                  <span class="material-symbols-outlined text-base">download</span>
+                </app-button>
+              </div>
+            }
           </div>
         }
       }
@@ -58,10 +66,12 @@ export class ClaimLinesTabComponent {
   lines = input<ClaimLine[]>([]);
   readOnly = input<boolean>(false);
   claimId = input<string>('');
+  loading = input<boolean>(false);
   // Dialog state
   uploadDialogOpen = signal(false);
   selectedLine = signal<ClaimLine | null>(null);
-  attachmentTransfert = output<AttachmentTransfert>()
+  attachmentTransfert = output<AttachmentTransfert>();
+  attachementDownload = output<string>();
 
 
   constructor(public i18n: TranslateService) {}
@@ -76,7 +86,7 @@ export class ClaimLinesTabComponent {
   }
 
   onDialogConfirm(attachmentTransfert: AttachmentTransfert) {
-    // Do not close here; dialog will close itself on successful upload
+    // Do not close here; the dialog will close itself on successful upload
     this.attachmentTransfert.emit(attachmentTransfert);
   }
 
@@ -115,5 +125,9 @@ export class ClaimLinesTabComponent {
       case 'CANCELLED': return this.i18n.t('claims.lines.status.cancelled');
       default: return '';
     }
+  }
+
+  download(line: ClaimLine) {
+    this.attachementDownload.emit(line.attachmentId ?? '');
   }
 }

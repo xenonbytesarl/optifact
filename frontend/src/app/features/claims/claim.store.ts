@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
-import {ClaimApi, Claim, ClaimSortColumn, AttachmentTransfert} from '../../core/api/claim.api';
+import {ClaimApi, Claim, ClaimSortColumn, AttachmentTransfert, AttachementDownload} from '../../core/api/claim.api';
 import {ErrorApiResponse, Page, SuccessApiResponse} from '../../core/model/response.model';
 import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../core/constant/constant';
 import {Direction} from '../../core/model/direction.enum';
@@ -160,6 +160,43 @@ export const claimStore = signalStore(
         } else {
           const payload = response as ErrorApiResponse;
           patchState(store, { error: payload.reason ?? 'claims.messages.attachment.transfert.error', loading: false });
+          return false;
+        }
+      },
+      async downloadAttachment(claimId: string, attachmentId: string) {
+        patchState(store, {loading: true, error: null, message: null});
+        const response = await api.downloadAttachment(claimId, attachmentId);
+        if (response.success) {
+          try {
+            const { blob, filename } = response as AttachementDownload;
+            // Fallback filename if missing
+            const safeName = filename && filename.trim().length > 0 ? filename : `attachment-${attachmentId}`;
+            // Create an object URL and trigger a download
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = safeName;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            // Cleanup
+            setTimeout(() => {
+              document.body.removeChild(a);
+              window.URL.revokeObjectURL(url);
+            }, 0);
+
+            patchState(store, {
+              message: 'claims.messages.attachment.download.success',
+              loading: false
+            });
+            return true;
+          } catch (e: any) {
+            patchState(store, { error: e?.message ?? 'claims.messages.attachment.download.error', loading: false });
+            return false;
+          }
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'claims.messages.attachment.download.error', loading: false });
           return false;
         }
       },

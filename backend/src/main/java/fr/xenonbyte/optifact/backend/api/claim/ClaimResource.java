@@ -6,6 +6,7 @@ import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimApiRequestVie
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimApiResponseView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimPageApiResponseView;
 import fr.xenonbyte.optifact.backend.api.common.locale.MessageUtil;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,6 +55,11 @@ public class ClaimResource implements ClaimsApi {
     }
 
     @Override
+    public ResponseEntity<Resource> downloadClaimAttachment(String acceptLanguage, UUID claimId, UUID attachmentId) {
+        return adapterView.downloadAttachment(claimId, attachmentId);
+    }
+
+    @Override
     public ResponseEntity<ClaimApiResponseView> findClaimById(String acceptLanguage, UUID claimId) {
         return ResponseEntity.status(OK).body(
                 new ClaimApiResponseView()
@@ -84,7 +90,7 @@ public class ClaimResource implements ClaimsApi {
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .status(OK.name())
-                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIMS_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIMS_UPLOAD_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(of(CONTENT, adapterView.transfertClaimAttachment(claimId, claimLineId, attachmentId, file)))
         );
     }

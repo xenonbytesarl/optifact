@@ -1,4 +1,7 @@
 {
+  "common": {
+    "error": "An unexpected error occurred."
+  },
   "search": {
     "label": "Search",
     "placeholder": "Search...",
@@ -213,7 +216,11 @@
       "created": { "success": "Claim created successfully.", "error": "Failed to create claim." },
       "update": { "success": "Claim updated successfully.", "error": "Failed to update claim." },
       "find": { "success": "Claim retrieved successfully.", "error": "Failed to retrieve claim." },
-      "search": { "success": "Claims loaded successfully.", "error": "Failed to load claims." }
+      "search": { "success": "Claims loaded successfully.", "error": "Failed to load claims." },
+      "attachment": {
+        "transfert": { "success": "Attachment transferred successfully.", "error": "Failed to transfer attachment." },
+        "download": { "success": "Attachment download started.", "error": "Failed to download attachment." }
+      }
     },
     "lines": {
       "empty": "No claim lines",

@@ -1,4 +1,7 @@
 {
+  "common": {
+    "error": "Une erreur inattendue s'est produite."
+  },
   "search": {
     "label": "Rechercher",
     "placeholder": "Rechercher...",
@@ -214,7 +217,11 @@
       "created": { "success": "Demande créée avec succès.", "error": "Échec de la création de la demande." },
       "update": { "success": "Demande mise à jour avec succès.", "error": "Échec de la mise à jour de la demande." },
       "find": { "success": "Demande récupérée avec succès.", "error": "Échec de la récupération de la demande." },
-      "search": { "success": "Demandes chargées avec succès.", "error": "Échec du chargement des demandes." }
+      "search": { "success": "Demandes chargées avec succès.", "error": "Échec du chargement des demandes." },
+      "attachment": {
+        "transfert": { "success": "Pièce jointe transférée avec succès.", "error": "Échec du transfert de la pièce jointe." },
+        "download": { "success": "Téléchargement de la pièce jointe démarré.", "error": "Échec du téléchargement de la pièce jointe." }
+      }
     },
     "lines": {
       "empty": "Aucune ligne de réclamation",

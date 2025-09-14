@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpErrorResponse, HttpParams } from '@angular/common/http';
+import {HttpErrorResponse, HttpParams, HttpResponse} from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { GlobalHttpApi } from './global-http-repository.service';
 import { ErrorApiResponse, Page, SuccessApiResponse } from '../model/response.model';
 import {Direction} from '../model/direction.enum';
 import { parseApiDate } from '../utils/date.util';
+import {response} from 'express';
 
 export type ClaimState = 'DRAFT' | 'SUBMITTED' | 'IN_INSTRUCTION' | 'REJECTED' | 'VALIDATED' | 'DONE' | 'CANCELLED';
 export type ClaimLineStatus = 'DRAFT' | 'UPLOADED' | 'VALIDATED' | 'REJECTED' | 'CANCELLED';
@@ -64,6 +65,12 @@ export interface AttachmentTransfert {
   claimId: string;
   claimLine: ClaimLine;
   files: File[];
+}
+
+export interface AttachementDownload {
+  success: boolean;
+  blob: Blob;
+  filename: string;
 }
 
 
@@ -218,5 +225,44 @@ export class ClaimApi extends GlobalHttpApi {
       formData,
       { reportProgress: true, observe: 'events' as const }
     );
+  }
+
+  async downloadAttachment(claimId: string, attachmentId: string) {
+    try {
+      // Return the raw HttpResponse<Blob> so callers can extract filename and trigger browser download
+      const response: HttpResponse<Blob> =  await firstValueFrom(
+        this.http.get(`${this.base}/${claimId}/attachments/${attachmentId}/download`, {
+          responseType: 'blob' as const,
+          observe: 'response' as const
+        })
+      );
+
+      let filename = this.getFilename(response);
+
+      return {  blob: response.body as Blob, filename, success: true } as AttachementDownload;
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
+  private getFilename(response: HttpResponse<Blob>) {
+    let filename = '';
+    const disposition = response.headers.get('Content-Disposition') || '';
+    // RFC 5987/6266 filename parsing: support filename* (UTF-8) and quoted filename
+    const matchQuoted = /filename="([^\"]+)"/i.exec(disposition);
+    const matchStar = /filename\*=(?:UTF-8''|)([^;\s]+)/i.exec(disposition);
+    if (matchQuoted && matchQuoted[1]) {
+      filename = matchQuoted[1];
+    } else if (matchStar && matchStar[1]) {
+      try {
+        filename = decodeURIComponent(matchStar[1]);
+      } catch {
+        filename = matchStar[1];
+      }
+    }
+    return filename;
   }
 }
