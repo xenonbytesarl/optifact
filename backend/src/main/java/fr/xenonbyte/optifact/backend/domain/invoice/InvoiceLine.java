@@ -73,6 +73,12 @@ public final class InvoiceLine extends BaseEntity {
         );
     }
 
+    public InvoiceLine update(UUID productId, String name, Integer quantity, BigDecimal unitPrice, BigDecimal amount) {
+        InvoiceLine invoiceLine = new InvoiceLine(this.id, productId, name, quantity, unitPrice, amount, this.invoiceId);
+        invoiceLine.updateAudit(this.createdAt);
+        return invoiceLine;
+    }
+
     public InvoiceLine withInvoiceId(UUID invoiceId) {
         return new InvoiceLine(this.id, this.productId, this.name, this.quantity, this.unitPrice, this.amount, invoiceId);
     }
@@ -122,5 +128,12 @@ public final class InvoiceLine extends BaseEntity {
 
     public UUID getInvoiceId() {
         return invoiceId;
+    }
+
+    public InvoiceLine updateOrCreate() {
+        if( this.id != null) {
+            return update(this.productId, this.name, this.quantity, this.unitPrice, this.amount);
+        }
+        return create(this.productId, this.name, this.quantity, this.unitPrice, this.amount, this.invoiceId);
     }
 }

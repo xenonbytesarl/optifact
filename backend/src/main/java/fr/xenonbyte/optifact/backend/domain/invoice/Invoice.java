@@ -66,7 +66,7 @@ public final class Invoice extends BaseEntity {
         List<InvoiceLine> normalized = attachInvoiceIdToLines(lines, id);
         return new Invoice(
                 id,
-                normalizeReference(reference),
+                reference,
                 createdAt,
                 sendAt,
                 actorId,
@@ -94,7 +94,7 @@ public final class Invoice extends BaseEntity {
         List<InvoiceLine> normalized = attachInvoiceIdToLines(lines, id);
         return new Invoice(
                 id,
-                normalizeReference(reference),
+                reference,
                 createdAt,
                 sendAt,
                 actorId,
@@ -107,8 +107,25 @@ public final class Invoice extends BaseEntity {
         );
     }
 
-    private static String normalizeReference(String reference) {
-        return reference == null ? null : reference.trim();
+
+    public Invoice computeAmount() {
+        BigDecimal amount = this.lines.stream().map(InvoiceLine::getAmount)
+                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+        validateAmount(amount);
+        return withAmount(amount);
+    }
+
+    public void checkDeletable() {
+        if(!state.equals(InvoiceState.DRAFT))
+            throw new IllegalStateException(InvoiceMessage.INVOICE_DELETABLE_WHEN_STATE_DRAFT);
+    }
+
+    public Invoice update(String reference, ZonedDateTime sendAt, UUID actorId, ZonedDateTime issueAt, UUID claimId, BankAccount bankAccount, InvoiceState state, List<InvoiceLine> lines) {
+        validate(actorId, amount, lines);
+        lines = attachInvoiceIdToLines(lines, id);
+        Invoice invoice = new Invoice(id, reference, createdAt, sendAt, actorId, issueAt, amount, claimId, bankAccount, state, lines);
+        invoice.updateAudit(createdAt);
+        return invoice;
     }
 
     private static void validate(UUID actorId, BigDecimal amount, List<InvoiceLine> lines) {
@@ -120,19 +137,8 @@ public final class Invoice extends BaseEntity {
         if (amount != null && amount.signum() < 0) throw new IllegalArgumentException(InvoiceMessage.INVOICE_AMOUNT_INVALID);
     }
 
-    public Invoice computeAmount() {
-        BigDecimal amount = this.lines.stream().map(InvoiceLine::getAmount)
-                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
-        validateAmount(amount);
-        return withAmount(amount);
-    }
-
     private static List<InvoiceLine> attachInvoiceIdToLines(List<InvoiceLine> lines, UUID invoiceId) {
-        List<InvoiceLine> result = new ArrayList<>(lines.size());
-        for (InvoiceLine line : lines) {
-            result.add(line.withInvoiceId(invoiceId));
-        }
-        return result;
+        return lines.stream().map(line -> line.withInvoiceId(invoiceId)).toList();
     }
 
     private Invoice withAmount(BigDecimal amount) {
@@ -174,4 +180,6 @@ public final class Invoice extends BaseEntity {
     public List<InvoiceLine> getLines() {
         return lines;
     }
+
+
 }
