@@ -34,7 +34,7 @@ export const routes: Routes = [
   },
   {
     path: 'invoices',
-    loadComponent: () => import('./features/invoices/page').then(m => m.InvoicesPage),
+    loadChildren: () => import('./features/invoices/routes').then(m => m.invoicesRoutes),
     data: { title: 'Factures' }
   },
   {
