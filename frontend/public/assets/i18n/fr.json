@@ -281,9 +281,12 @@
       "draft": "Brouillon",
       "submit": "Soumise",
       "in_instruction": "En instruction",
-      "reject": "Rejetée",
-      "validated": "Validée",
-      "done": "Terminée",
+      "instruction_reject": "Instruction Rejetée",
+      "instruction_done": "Instruction terminée",
+      "complete_compliant": "Complet et conforme",
+      "agreement_granted": "Agreement accordé",
+      "agreement_refused": "Agreement refusé",
+      "agreement_adjourned": "Agreement ajournée",
       "cancelled": "Annulée"
     },
     "actions": {

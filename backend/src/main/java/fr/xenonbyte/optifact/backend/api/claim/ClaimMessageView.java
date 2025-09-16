@@ -10,7 +10,7 @@ public final class ClaimMessageView {
     public static final String CLAIM_INSTRUCTION_SUCCESSFULLY = "claim.instruction";
     public static final String CLAIM_LINE_REJECTED_SUCCESSFULLY = "claim.line.rejected";
     public static final String CLAIM_LINE_VALIDATED_SUCCESSFULLY = "claim.line.validated";
-    public static final String CLAIM_DONE_INSTRUCTION_SUCCESSFULLY = "claim.instruction.done";
+    public static final String CLAIM_TERMINATE_INSTRUCTION_SUCCESSFULLY = "claim.instruction.terminate";
 
     private ClaimMessageView() {}
 }

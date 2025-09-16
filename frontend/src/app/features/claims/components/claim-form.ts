@@ -17,10 +17,14 @@ export type ClaimFormModel = {
   actorId: string | null;
   productId: string | null;
   createdAt: Date | null;
-  doneAt: Date | null;
   submitAt: Date | null;
-  rejectedAt: Date | null;
-  validatedAt: Date | null;
+  inInstructionAt: Date | null;
+  instructionDoneAt: Date | null;
+  instructionRejectedAt: Date | null;
+  compliantAt: Date | null;
+  agreementGrantedAt?: Date | null;
+  agreementRefusedAt?: Date | null;
+  agreementAdjournedAt?: Date | null;
   uploadStarted: boolean | null;
   uploadEnded: boolean | null;
   lines?: ClaimLine[];
@@ -32,25 +36,24 @@ export type ClaimFormModel = {
   imports: [CommonModule, TranslatePipe, FormFieldComponent, InputHiddenComponent, AutocompleteComponent, ChevronStepperComponent, InputDateTimeComponent, ButtonComponent],
   template: `
     <form class="flex flex-col gap-3">
-
-
-      <div class="grid grid-cols-2 items-center gap-2">
-        <div class="flex gap-2">
+      <div class="grid grid-cols-3 items-center gap-2">
+        <div class="flex col-span-1 gap-2">
           @if (value().uploadEnded && value().state === 'DRAFT') {
-            <app-button icon="check_circle" tone="primary" variant="primary" size="md" rounded="none" [label]="i18n.t('claims.actions.submit')" (clicked)="onSubmit()" />
+            <app-button icon="check_circle" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('claims.actions.submit')" (clicked)="onSubmit()" />
           }
           @if (value().state === 'SUBMITTED') {
-            <app-button icon="policy" tone="primary" variant="primary" size="md" rounded="none" [label]="i18n.t('claims.actions.instruction')" (clicked)="onToInstruction()" />
+            <app-button icon="policy" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('claims.actions.instruction')" (clicked)="onToInstruction()" />
           }
           @if (value().state === 'IN_INSTRUCTION') {
-            <app-button icon="done_all" tone="primary" variant="primary" size="md" rounded="none" [label]="i18n.t('claims.actions.done.instruction')" (clicked)="onDoneInstruction()" />
+            <app-button icon="done_all" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('claims.actions.done.instruction')" (clicked)="onDoneInstruction()" />
           }
         </div>
-        <div>
+        <div class="col-span-2">
           <app-chevron-stepper
             [steps]="steps()"
             [activeIndex]="activeStep()"
-            size="lg"
+            size="md"
+            textScale="xs"
             (stepSelected)="onStepSelected($event)"
           />
         </div>
@@ -87,7 +90,7 @@ export type ClaimFormModel = {
           />
         </app-form-field>
         <app-form-field [label]="('claims.fields.doneAt' | t)">
-          <app-input-date-time [value]="value().doneAt" [disabled]="true" [clearable]="false"/>
+          <app-input-date-time [value]="value().instructionDoneAt" [disabled]="true" [clearable]="false"/>
         </app-form-field>
       </div>
     </form>
@@ -97,7 +100,7 @@ export type ClaimFormModel = {
 export class ClaimFormComponent {
   // Stepper state: display claim statuses
   readonly i18n = inject(TranslateService);
-  readonly statusOrder: Claim['state'][] = ['DRAFT', 'SUBMITTED', 'IN_INSTRUCTION', 'REJECTED', 'VALIDATED', 'DONE', 'CANCELLED'];
+  readonly statusOrder: Claim['state'][] = ['DRAFT', 'SUBMITTED', 'IN_INSTRUCTION','INSTRUCTION_REJECTED', 'INSTRUCTION_DONE', 'COMPLETE_COMPLIANT', 'AGREEMENT_GRANTED', 'AGREEMENT_REFUSED', 'AGREEMENT_ADJOURNED', 'CANCELLED'];
 
   activeStep = computed(() => {
     const state = this.value().state as Claim['state'];
@@ -116,10 +119,13 @@ export class ClaimFormComponent {
         case 'DRAFT': return 'draft';
         case 'SUBMITTED': return 'send';
         case 'IN_INSTRUCTION': return 'rule';
-        case 'REJECTED': return 'cancel';
-        case 'VALIDATED': return 'task_alt';
-        case 'DONE': return 'done_all';
-        case 'CANCELLED': return 'block';
+        case 'INSTRUCTION_REJECTED': return 'done_all';
+        case 'INSTRUCTION_DONE': return 'done_all';
+        case 'COMPLETE_COMPLIANT': return 'task_alt';
+        case 'AGREEMENT_GRANTED': return 'verified';
+        case 'AGREEMENT_REFUSED': return 'block';
+        case 'AGREEMENT_ADJOURNED': return 'schedule';
+        case 'CANCELLED': return 'cancel';
         default: return '';
       }
     };
@@ -128,9 +134,12 @@ export class ClaimFormComponent {
         case 'DRAFT': return true;
         case 'SUBMITTED': return true;
         case 'IN_INSTRUCTION': return true;
-        case 'REJECTED': return false;
-        case 'VALIDATED': return true;
-        case 'DONE': return true;
+        case 'INSTRUCTION_DONE': return true;
+        case 'INSTRUCTION_REJECTED': return false;
+        case 'COMPLETE_COMPLIANT': return true;
+        case 'AGREEMENT_GRANTED': return true;
+        case 'AGREEMENT_REFUSED': return false;
+        case 'AGREEMENT_ADJOURNED': return false;
         case 'CANCELLED': return false;
         default: return false;
       }
@@ -187,9 +196,12 @@ export class ClaimFormComponent {
       { value: 'DRAFT', label: this.i18n.t('claims.states.draft') },
       { value: 'SUBMITTED', label: this.i18n.t('claims.states.submit') },
       { value: 'IN_INSTRUCTION', label: this.i18n.t('claims.states.in_instruction') },
-      { value: 'REJECTED', label: this.i18n.t('claims.states.reject') },
-      { value: 'VALIDATED', label: this.i18n.t('claims.states.validated') },
-      { value: 'DONE', label: this.i18n.t('claims.states.done') },
+      { value: 'INSTRUCTION_REJECTED', label: this.i18n.t('claims.states.instruction_reject') },
+      { value: 'INSTRUCTION_DONE', label: this.i18n.t('claims.states.instruction_done') },
+      { value: 'COMPLETE_COMPLIANT', label: this.i18n.t('claims.states.complete_compliant') },
+      { value: 'AGREEMENT_GRANTED', label: this.i18n.t('claims.states.agreement_granted') },
+      { value: 'AGREEMENT_REFUSED', label: this.i18n.t('claims.states.agreement_refused') },
+      { value: 'AGREEMENT_ADJOURNED', label: this.i18n.t('claims.states.agreement_adjourned') },
       { value: 'CANCELLED', label: this.i18n.t('claims.states.cancelled') },
     ];
   }
@@ -205,7 +217,15 @@ export class ClaimFormComponent {
       actorId: patch.actorId !== undefined ? patch.actorId : base.actorId,
       productId: patch.productId !== undefined ? patch.productId : base.productId,
       createdAt: patch.createdAt !== undefined ? patch.createdAt : base.createdAt,
-      doneAt: patch.doneAt !== undefined ? patch.doneAt : base.doneAt,
+      submitAt: patch.submitAt !== undefined ? patch.submitAt : base.submitAt,
+      inInstructionAt: patch.inInstructionAt !== undefined ? patch.inInstructionAt : base.inInstructionAt,
+      instructionDoneAt: patch.instructionDoneAt !== undefined ? patch.instructionDoneAt : base.instructionDoneAt,
+      compliantAt: patch.compliantAt !== undefined ? patch.compliantAt : base.compliantAt,
+      agreementGrantedAt: patch.agreementGrantedAt !== undefined ? patch.agreementGrantedAt : base.agreementGrantedAt,
+      agreementRefusedAt: patch.agreementRefusedAt !== undefined ? patch.agreementRefusedAt : base.agreementRefusedAt,
+      agreementAdjournedAt: patch.agreementAdjournedAt !== undefined ? patch.agreementAdjournedAt : base.agreementAdjournedAt,
+      uploadStarted: patch.uploadStarted !== undefined ? patch.uploadStarted : base.uploadStarted,
+      uploadEnded: patch.uploadEnded !== undefined ? patch.uploadEnded : base.uploadEnded,
       lines: patch.lines !== undefined ? patch.lines! : (base.lines ?? [])
     } as ClaimFormModel;
   }
@@ -226,8 +246,5 @@ export class ClaimFormComponent {
     const val = this.value();
     this.emit(this.next(val, { productId: v || null }));
   }
-  onDoneAt(v: Date | null) {
-    const val = this.value();
-    this.emit(this.next(val, { doneAt: v || null }));
-  }
+
 }

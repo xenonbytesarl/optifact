@@ -90,7 +90,7 @@ import { ToastService } from '../../../shared/ui/toast';
       />
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimEditPage {
   // Dialog state for line validate/reject
@@ -161,7 +161,7 @@ export class ClaimEditPage {
   async onDoneInstruction() {
     const id = this.claimId();
     if (!id || this.loading()) return;
-    const ok = await this.ui.store.doneInstruction(id);
+    const ok = await this.ui.store.terminateInstruction(id);
     if (ok) {
       this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.instruction.done.success'));
       await this.ui.store.findById(id);

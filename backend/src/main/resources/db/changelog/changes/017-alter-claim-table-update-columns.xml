@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="16092025_2321_alter_claim_table_update_columns" author="junie">
+        <!-- Rename manager column to manager_quote_id to match new model -->
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="t_claim" columnName="c_manager_id"/>
+        </preConditions>
+        <renameColumn tableName="t_claim" oldColumnName="c_manager_id" newColumnName="c_manager_quote_id" columnDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="16092025_2322_add_new_claim_columns" author="junie">
+        <addColumn tableName="t_claim">
+            <column name="c_manager_compliant_by_id" type="uuid"/>
+            <column name="c_compliant_at" type="timestamp with time zone"/>
+            <column name="c_instruction_done_at" type="timestamp with time zone"/>
+            <column name="c_instruction_rejected_at" type="timestamp with time zone"/>
+            <column name="c_agreement_by_id" type="uuid"/>
+            <column name="c_agreement_granted_at" type="timestamp with time zone"/>
+            <column name="c_agreement_refused_at" type="timestamp with time zone"/>
+            <column name="c_agreement_adjourned_at" type="timestamp with time zone"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Drop obsolete columns no longer present in ClaimJpa -->
+    <changeSet id="16092025_2323_drop_c_validate_at" author="junie">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="t_claim" columnName="c_validate_at"/>
+        </preConditions>
+        <dropColumn tableName="t_claim" columnName="c_validate_at"/>
+    </changeSet>
+
+    <changeSet id="16092025_2324_drop_c_reject_at" author="junie">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="t_claim" columnName="c_reject_at"/>
+        </preConditions>
+        <dropColumn tableName="t_claim" columnName="c_reject_at"/>
+    </changeSet>
+
+    <changeSet id="16092025_2325_drop_c_done_by_id" author="junie">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="t_claim" columnName="c_done_by_id"/>
+        </preConditions>
+        <dropColumn tableName="t_claim" columnName="c_done_by_id"/>
+    </changeSet>
+
+    <changeSet id="16092025_2326_drop_c_done_at" author="junie">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="t_claim" columnName="c_done_at"/>
+        </preConditions>
+        <dropColumn tableName="t_claim" columnName="c_done_at"/>
+    </changeSet>
+
+</databaseChangeLog>

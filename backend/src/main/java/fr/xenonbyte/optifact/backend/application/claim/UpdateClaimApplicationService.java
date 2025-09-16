@@ -5,7 +5,6 @@ import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimActorIdNot
 import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimProductIdNotChangeException;
 import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimProductIdNotFoundException;
-import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimReferenceConflictException;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.UpdateClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.out.ClaimRepository;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.out.AttachmentRepository;
@@ -78,13 +77,17 @@ public final class UpdateClaimApplicationService implements UpdateClaimUseCase {
                 claim.getActorId(),
                 claim.getProductId(),
                 claim.getSubmitAt(),
-                claim.getManagerId(),
+                claim.getManagerQuoteId(),
+                claim.getManagerCompliantId(),
+                claim.getCompliantAt(),
                 claim.getInInstructionAt(),
                 claim.getInstructorId(),
-                claim.getValidateAt(),
-                claim.getRejectAt(),
-                claim.getDoneById(),
-                claim.getDoneAt(),
+                claim.getInstructionDoneAt(),
+                claim.getInstructionRejectedAt(),
+                claim.getAgreementById(),
+                claim.getAgreementGrantedAt(),
+                claim.getAgreementRefusedAt(),
+                claim.getAgreementAdjournedAt(),
                 claim.getCancelById(),
                 claim.getCancelAt(),
                 claim.getState(),

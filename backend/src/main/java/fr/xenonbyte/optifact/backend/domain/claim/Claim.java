@@ -18,33 +18,43 @@ public final class Claim extends BaseEntity {
     private final UUID actorId;
     private final UUID productId;
     private final ZonedDateTime submitAt;
-    private final UUID managerId;
+    private final UUID managerQuoteId;
+    private final UUID managerCompliantId;
+    private final ZonedDateTime compliantAt;
     private final ZonedDateTime inInstructionAt;
     private final UUID instructorId;
-    private final ZonedDateTime validateAt;
-    private final ZonedDateTime rejectAt;
-    private final UUID doneById;
-    private final ZonedDateTime doneAt;
+    private final ZonedDateTime instructionDoneAt;
+    private final ZonedDateTime instructionRejectedAt;
+    private final UUID agreementById;
+    private final ZonedDateTime agreementGrantedAt;
+    private final ZonedDateTime agreementRefusedAt;
+    private final ZonedDateTime agreementAdjournedAt;
     private final UUID cancelById;
     private final ZonedDateTime cancelAt;
     private final ClaimState state;
     private final String reference;
     private final List<ClaimLine> lines;
 
-    public Claim(UUID id, UUID actorId, UUID productId, ZonedDateTime submitAt, UUID managerId, ZonedDateTime inInstructionAt,
-                 UUID instructorId, ZonedDateTime validateAt, ZonedDateTime rejectAt, UUID doneById, ZonedDateTime doneAt,
+    public Claim(UUID id, UUID actorId, UUID productId, ZonedDateTime submitAt, UUID managerQuoteId, UUID managerCompliantId, ZonedDateTime compliantAt,
+                 ZonedDateTime inInstructionAt, UUID instructorId, ZonedDateTime instructionDoneAt, ZonedDateTime instructionRejectedAt, UUID agreementById,
+                 ZonedDateTime agreementGrantedAt, ZonedDateTime agreementRefusedAt, ZonedDateTime agreementAdjournedAt,
                  UUID cancelById, ZonedDateTime cancelAt, ClaimState state, String reference, List<ClaimLine> lines) {
+        
         this.id = id;
         this.actorId = actorId;
         this.productId = productId;
         this.submitAt = submitAt;
-        this.managerId = managerId;
+        this.managerQuoteId = managerQuoteId;
         this.inInstructionAt = inInstructionAt;
         this.instructorId = instructorId;
-        this.validateAt = validateAt;
-        this.rejectAt = rejectAt;
-        this.doneById = doneById;
-        this.doneAt = doneAt;
+        this.instructionDoneAt = instructionDoneAt;
+        this.instructionRejectedAt = instructionRejectedAt;
+        this.managerCompliantId = managerCompliantId;
+        this.compliantAt = compliantAt;
+        this.agreementById = agreementById;
+        this.agreementGrantedAt = agreementGrantedAt;
+        this.agreementRefusedAt = agreementRefusedAt;
+        this.agreementAdjournedAt = agreementAdjournedAt;
         this.cancelById = cancelById;
         this.cancelAt = cancelAt;
         this.state = state;
@@ -55,13 +65,17 @@ public final class Claim extends BaseEntity {
     public static Claim create(UUID actorId,
                                UUID productId,
                                ZonedDateTime submitAt,
-                               UUID managerId,
+                               UUID managerQuoteId,
+                               UUID managerCompliantId, 
+                               ZonedDateTime compliantAt,
                                ZonedDateTime inInstructionAt,
                                UUID instructorId,
-                               ZonedDateTime validateAt,
-                               ZonedDateTime rejectAt,
-                               UUID doneById,
-                               ZonedDateTime doneAt,
+                               ZonedDateTime instructionDoneAt,
+                               ZonedDateTime instructionRejectedAt,
+                               UUID agreementById,
+                               ZonedDateTime agreementGrantedAt,
+                               ZonedDateTime agreementRefusedAt,
+                               ZonedDateTime agreementAdjournedAt,
                                UUID cancelById,
                                ZonedDateTime cancelAt,
                                ClaimState state,
@@ -75,19 +89,21 @@ public final class Claim extends BaseEntity {
                 actorId,
                 productId,
                 submitAt,
-                managerId,
+                managerQuoteId, 
+                managerCompliantId, 
+                compliantAt,
                 inInstructionAt,
                 instructorId,
-                validateAt,
-                rejectAt,
-                doneById,
-                doneAt,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
                 cancelById,
                 cancelAt,
                 state,
-                reference,
-                lines
-        );
+                reference, lines);
     }
 
     private static void validateParams(UUID actorId, UUID productId) {
@@ -108,13 +124,17 @@ public final class Claim extends BaseEntity {
                                UUID actorId,
                                UUID productId,
                                ZonedDateTime submitAt,
-                               UUID managerId,
+                               UUID managerQuoteId,
+                               UUID managerCompliantId,
+                               ZonedDateTime compliantAt,
                                ZonedDateTime inInstructionAt,
                                UUID instructorId,
-                               ZonedDateTime validateAt,
-                               ZonedDateTime rejectAt,
-                               UUID doneById,
-                               ZonedDateTime doneAt,
+                               ZonedDateTime instructionDoneAt,
+                               ZonedDateTime instructionRejectedAt,
+                               UUID agreementById,
+                               ZonedDateTime agreementGrantedAt,
+                               ZonedDateTime agreementRefusedAt,
+                               ZonedDateTime agreementAdjournedAt,
                                UUID cancelById,
                                ZonedDateTime cancelAt,
                                ClaimState state,
@@ -127,32 +147,38 @@ public final class Claim extends BaseEntity {
                 actorId,
                 productId,
                 submitAt,
-                managerId,
+                managerQuoteId, 
+                managerCompliantId,
+                compliantAt,
                 inInstructionAt,
                 instructorId,
-                validateAt,
-                rejectAt,
-                doneById,
-                doneAt,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
                 cancelById,
                 cancelAt,
                 state,
-                reference,
-                lines
-        );
+                reference, lines);
     }
 
     public Claim update(
             UUID actorId,
             UUID productId,
             ZonedDateTime submitAt,
-            UUID managerId,
+            UUID managerQuoteId,
+            UUID managerCompliantId,
+            ZonedDateTime compliantAt,
             ZonedDateTime inInstructionAt,
             UUID instructorId,
-            ZonedDateTime validateAt,
-            ZonedDateTime rejectAt,
-            UUID doneById,
-            ZonedDateTime doneAt,
+            ZonedDateTime instructionDoneAt,
+            ZonedDateTime instructionRejectedAt,
+            UUID agreementById,
+            ZonedDateTime agreementGrantedAt,
+            ZonedDateTime agreementRefusedAt,
+            ZonedDateTime agreementAdjournedAt,
             UUID cancelById,
             ZonedDateTime cancelAt,
             ClaimState state,
@@ -166,19 +192,21 @@ public final class Claim extends BaseEntity {
                 actorId,
                 productId,
                 submitAt,
-                managerId,
+                managerQuoteId, 
+                managerCompliantId,
+                compliantAt,
                 inInstructionAt,
                 instructorId,
-                validateAt,
-                rejectAt,
-                doneById,
-                doneAt,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
                 cancelById,
                 cancelAt,
                 state,
-                reference,
-                lines
-        );
+                reference, lines);
         claim.updateAudit(createdAt);
         return claim;
 
@@ -186,66 +214,69 @@ public final class Claim extends BaseEntity {
 
     public Claim withLines(List<ClaimLine> lines) {
         return new Claim(
-            id,
-            actorId,
-            productId,
-            submitAt,
-            managerId,
-            inInstructionAt,
-            instructorId,
-            validateAt,
-            rejectAt,
-            doneById,
-            doneAt,
-            cancelById,
-            cancelAt,
-            state,
-            reference,
-            lines != null ? lines : new ArrayList<>()
-        );
+                id,
+                actorId,
+                productId,
+                submitAt,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
+                inInstructionAt,
+                instructorId,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
+                cancelById,
+                cancelAt,
+                state, reference, lines != null ? lines : new ArrayList<>());
     }
 
 
-    public Claim withValidate(UUID instructorId, ZonedDateTime validateAt) {
+    public Claim withInstructionDone(UUID instructorId, ZonedDateTime instructionDoneAt) {
         return new Claim(
                 id,
                 actorId,
                 productId,
                 submitAt,
-                managerId,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
                 inInstructionAt,
                 instructorId,
-                validateAt,
-                rejectAt,
-                doneById,
-                doneAt,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
                 cancelById,
                 cancelAt,
-                ClaimState.VALIDATED,
-                reference,
-                lines
-        );
+                ClaimState.INSTRUCTION_DONE,
+                reference, lines);
     }
 
-    public Claim withReject(UUID instructorId, ZonedDateTime rejectAt) {
+    public Claim withInstructionRejected(UUID instructorId, ZonedDateTime instructionRejectedAt) {
         return new Claim(
                 id,
                 actorId,
                 productId,
                 submitAt,
-                managerId,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
                 inInstructionAt,
                 instructorId,
-                validateAt,
-                rejectAt,
-                doneById,
-                doneAt,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
                 cancelById,
-                cancelAt,
-                ClaimState.REJECTED,
-                reference,
-                lines
-        );
+                cancelAt, ClaimState.INSTRUCTION_REJECTED, reference, lines);
     }
 
     public Claim withSubmit(ZonedDateTime submitAt) {
@@ -254,19 +285,20 @@ public final class Claim extends BaseEntity {
                 actorId,
                 productId,
                 submitAt,
-                managerId,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
                 inInstructionAt,
                 instructorId,
-                validateAt,
-                rejectAt,
-                doneById,
-                doneAt,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
                 cancelById,
-                cancelAt,
-                ClaimState.SUBMITTED,
-                reference,
-                lines
-        );
+                cancelAt, ClaimState.SUBMITTED,
+                reference, lines);
     }
 
     public Claim withCancel(UUID cancelById, ZonedDateTime cancelAt) {
@@ -275,40 +307,40 @@ public final class Claim extends BaseEntity {
                 actorId,
                 productId,
                 submitAt,
-                managerId,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
                 inInstructionAt,
                 instructorId,
-                validateAt,
-                rejectAt,
-                doneById,
-                doneAt,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
                 cancelById,
-                cancelAt,
-                ClaimState.CANCELLED,
-                reference,
-                lines
-        );
+                cancelAt, ClaimState.CANCELLED, reference, lines);
     }
 
-    public Claim withDone(UUID doneById, ZonedDateTime doneAt) {
+    public Claim withAgreementGranted(UUID agreementById, ZonedDateTime agrementGranted) {
         return new Claim(
                 id,
                 actorId,
                 productId,
                 submitAt,
-                managerId,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
                 inInstructionAt,
                 instructorId,
-                validateAt,
-                rejectAt,
-                doneById,
-                doneAt,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
                 cancelById,
-                cancelAt,
-                ClaimState.DONE,
-                reference,
-                lines
-        );
+                cancelAt, ClaimState.AGREEMENT_GRANTED, reference, lines);
     }
 
     public Claim withInInstruction(UUID managerId, ZonedDateTime inInstructionAt) {
@@ -317,19 +349,19 @@ public final class Claim extends BaseEntity {
                 actorId,
                 productId,
                 submitAt,
-                managerId,
+                managerId,  
+                managerCompliantId,
+                compliantAt,
                 inInstructionAt,
                 instructorId,
-                validateAt,
-                rejectAt,
-                doneById,
-                doneAt,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
                 cancelById,
-                cancelAt,
-                ClaimState.IN_INSTRUCTION,
-                reference,
-                lines
-        );
+                cancelAt, ClaimState.IN_INSTRUCTION, reference, lines);
     }
 
     public Claim withReference(String reference) {
@@ -338,19 +370,19 @@ public final class Claim extends BaseEntity {
                 actorId,
                 productId,
                 submitAt,
-                managerId,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
                 inInstructionAt,
                 instructorId,
-                validateAt,
-                rejectAt,
-                doneById,
-                doneAt,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
                 cancelById,
-                cancelAt,
-                state,
-                reference,
-                lines
-        );
+                cancelAt, state, reference, lines);
     }
 
     public boolean isUploadStarted() {
@@ -373,8 +405,8 @@ public final class Claim extends BaseEntity {
         return submitAt;
     }
 
-    public UUID getManagerId() {
-        return managerId;
+    public UUID getManagerQuoteId() {
+        return managerQuoteId;
     }
 
     public ZonedDateTime getInInstructionAt() {
@@ -385,20 +417,20 @@ public final class Claim extends BaseEntity {
         return instructorId;
     }
 
-    public ZonedDateTime getValidateAt() {
-        return validateAt;
+    public ZonedDateTime getInstructionDoneAt() {
+        return instructionDoneAt;
     }
 
-    public ZonedDateTime getRejectAt() {
-        return rejectAt;
+    public ZonedDateTime getInstructionRejectedAt() {
+        return instructionRejectedAt;
     }
 
-    public UUID getDoneById() {
-        return doneById;
+    public UUID getAgreementById() {
+        return agreementById;
     }
 
-    public ZonedDateTime getDoneAt() {
-        return doneAt;
+    public ZonedDateTime getAgreementGrantedAt() {
+        return agreementGrantedAt;
     }
 
     public UUID getCancelById() {
@@ -419,5 +451,21 @@ public final class Claim extends BaseEntity {
 
     public List<ClaimLine> getLines() {
         return lines;
+    }
+
+    public ZonedDateTime getAgreementRefusedAt() {
+        return agreementRefusedAt;
+    }
+
+    public ZonedDateTime getAgreementAdjournedAt() {
+        return agreementAdjournedAt;
+    }
+
+    public UUID getManagerCompliantId() {
+        return managerCompliantId;
+    }
+
+    public ZonedDateTime getCompliantAt() {
+        return compliantAt;
     }
 }

@@ -247,9 +247,9 @@ export const claimStore = signalStore(
           return false;
         }
       },
-      async doneInstruction(id: string) {
+      async terminateInstruction(id: string) {
         patchState(store, { loading: true, error: null, message: null });
-        const response = await api.doneInstruction(id);
+        const response = await api.terminateInstruction(id);
         if (response.success) {
           const payload = response as SuccessApiResponse<Claim>;
           patchState(store, {

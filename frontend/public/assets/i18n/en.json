@@ -281,9 +281,12 @@
       "draft": "Draft",
       "submit": "Submitted",
       "in_instruction": "In instruction",
-      "reject": "Rejected",
-      "validated": "Validated",
-      "done": "Done",
+      "instruction_reject": "Instruction rejected",
+      "instruction_done": "Instruction done",
+      "complete_compliant": "Complete & Compliant",
+      "agreement_granted": "Agreement granted",
+      "agreement_refused": "Agreement refused",
+      "agreement_adjourned": "Agreement adjourned",
       "cancelled": "Cancelled"
     },
     "actions": {

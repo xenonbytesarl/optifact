@@ -21,4 +21,5 @@
     <include file="/db/changelog/changes/014-insert-invoice-sequence.xml"/>
     <include file="/db/changelog/changes/015-alter-invoice-line-quantity-to-numeric.xml"/>
     <include file="/db/changelog/changes/016-rename-invoice-issue-at-to-due-at.xml"/>
+    <include file="/db/changelog/changes/017-alter-claim-table-update-columns.xml"/>
 </databaseChangeLog>

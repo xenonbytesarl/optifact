@@ -15,16 +15,16 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
           <div class="font-medium text-sm md:text-base"></div>
           <div class="inline-flex items-center gap-2">
             @if(showNew()) {
-              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" rounded="none" tone="primary" icon="add" [label]="'actions.new' | t" [disabled]="disableNew()" (click)="newClicked.emit()" />
+              <app-button size="sm" variant="primary" shadow="md" hoverShadow="base" rounded="md" tone="primary" icon="add" [label]="'actions.new' | t" [disabled]="disableNew()" (click)="newClicked.emit()" />
             }
             @if(showEdit()) {
-              <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" rounded="none" icon="edit" [label]="'actions.edit' | t" [disabled]="disableEdit()" (click)="editClicked.emit()" />
+              <app-button size="sm" variant="ghost" shadow="md" hoverShadow="base" rounded="md" icon="edit" [label]="'actions.edit' | t" [disabled]="disableEdit()" (click)="editClicked.emit()" />
             }
             @if(showCancel()) {
-              <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" rounded="none" icon="close" [label]="'actions.cancel' | t" [disabled]="disableCancel()" (click)="cancelClicked.emit()" />
+              <app-button size="sm" variant="ghost" shadow="md" hoverShadow="base" rounded="md" icon="close" [label]="'actions.cancel' | t" [disabled]="disableCancel()" (click)="cancelClicked.emit()" />
             }
             @if(showSave()) {
-              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" rounded="none" tone="primary" icon="save" [label]="'actions.save' | t" [disabled]="disableSave()" (click)="saveClicked.emit()" />
+              <app-button size="sm" variant="primary" shadow="md" hoverShadow="base" rounded="md" tone="primary" icon="save" [label]="'actions.save' | t" [disabled]="disableSave()" (click)="saveClicked.emit()" />
             }
           </div>
         </div>
