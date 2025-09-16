@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '../../../shared/ui/button';
-import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { CardComponent } from '../../../shared/ui/card';
 import { PaginatorComponent } from '../../../shared/ui/paginator';
@@ -18,16 +17,13 @@ import { SequenceListComponent } from '../components/sequence-list';
 @Component({
   selector: 'app-sequences-list-page',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, IconComponent, TranslatePipe, CardComponent, PaginatorComponent, SequenceListComponent],
+  imports: [CommonModule, ButtonComponent, TranslatePipe, CardComponent, PaginatorComponent, SequenceListComponent],
   template: `
     <div class="p-4">
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'sequences.title' | t }}</h2>
-          <app-button (click)="goNew()">
-            <app-icon name="add" class="mr-1"></app-icon>
-            {{ 'sequences.new' | t }}
-          </app-button>
+          <app-button icon="add" [label]="'sequences.new' | t" (click)="goNew()" />
         </div>
 
         <app-sequence-list

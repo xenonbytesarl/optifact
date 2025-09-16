@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
             (click)="onClick($event)"
             [disabled]="disabled()"
             class="gap-2 inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 ring-primary "
+            [attr.aria-label]="label() || null"
             [ngClass]="{
           'w-full': fullWidth(),
           'px-2.5 py-1.5 text-xs': size() === 'xs',
@@ -71,7 +72,7 @@ import { CommonModule } from '@angular/common';
                 'text-white': (variant() === 'primary' && (tone() === 'primary' || tone() === 'success' || tone() === 'danger')) || variant() === 'success' || variant() === 'danger'
               }">{{ icon() }}</span>
       }
-      <ng-content />
+      @if (label() !== null) { {{ label() }} } @else { <ng-content /> }
     </button>
   `
 })
@@ -96,6 +97,8 @@ export class ButtonComponent {
   // Shadow controls: base (default 'sm') and hover (default 'base' = 'shadow')
   shadow = input<'none' | 'sm' | 'base' | 'md' | 'lg' | 'xl' | 'inner'>('sm');
   hoverShadow = input<'none' | 'sm' | 'base' | 'md' | 'lg' | 'xl' | 'inner'>('base');
+  // New: label text to render inside the button (optional). If null, projected content is used.
+  label = input<string | null>(null);
   // Preferred custom output
   clicked = output<Event>();
   // Backward-compatible alias to support (click) on <app-button>

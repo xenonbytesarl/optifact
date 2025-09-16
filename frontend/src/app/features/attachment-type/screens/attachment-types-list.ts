@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, computed, inject, OnInit} from '@ang
 import { CommonModule } from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import { ButtonComponent } from '../../../shared/ui/button';
-import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { attachmentTypeStore } from '../attachment-type.store';
 import { AttachmentTypeListComponent } from '../components/attachment-type-list';
@@ -22,7 +21,6 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../../core/constant/con
   imports: [
     CommonModule,
     ButtonComponent,
-    IconComponent,
     TranslatePipe,
     AttachmentTypeListComponent,
     CardComponent,
@@ -37,10 +35,7 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../../core/constant/con
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'attachmentTypes.title' | t }}</h2>
-            <app-button (click)="goNew()">
-              <app-icon name="add" class="mr-1"></app-icon>
-              {{ 'attachmentTypes.new' | t }}
-            </app-button>
+            <app-button icon="add" [label]="'attachmentTypes.new' | t" (click)="goNew()" />
         </div>
       </app-card>
 

@@ -13,4 +13,7 @@ public final class ClaimMessage {
     public static final String CLAIM_ACTOR_ID_NOT_FOUND = "claim.actor.id.not.found";
     public static final String CLAIM_PRODUCT_ID_NOT_FOUND = "claim.product.id.not.found";
     public static final String CLAIM_PRODUCT_ID_NOT_CHANGE = "claim.product.id.not.change";
+    public static final String CLAIM_LINE_ID_NOT_FOUND = "claim.line.id.not.found";
+    public static final String CLAIM_LINE_REASON_REQUIRED = "claim.line.reason.required";
+    public static final String CLAIM_HAS_NON_INSTRUCTED = "claim.has.non.instructed";
 }

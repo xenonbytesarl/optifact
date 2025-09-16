@@ -19,11 +19,13 @@
   },
   "actions": {
     "new": "New",
+    "view": "View",
     "edit": "Edit",
     "cancel": "Cancel",
     "save": "Save",
     "validate": "Validate",
-    "reject": "Reject"
+    "reject": "Reject",
+    "confirm": "Confirm"
   },
   "actors": {
     "title": "Actors",
@@ -221,9 +223,15 @@
       "cancelled": "Cancelled"
     },
     "actions": {
-      "submit": "Submit"
+      "submit": "Submit",
+      "instruction": "Put to instruction",
+      "doneInstruction": "Finish instruction",
+      "done": {
+        "instruction": "Finish instruction"
+      }
     },
     "messages": {
+      "instruction": { "success": "Claim put to instruction successfully.", "error": "Failed to put claim to instruction." },
       "deleted": { "success": "Claim deleted successfully.", "error": "Failed to delete claim." },
       "created": { "success": "Claim created successfully.", "error": "Failed to create claim." },
       "update": { "success": "Claim updated successfully.", "error": "Failed to update claim." },
@@ -232,6 +240,10 @@
       "attachment": {
         "transfert": { "success": "Attachment transferred successfully.", "error": "Failed to transfer attachment." },
         "download": { "success": "Attachment download started.", "error": "Failed to download attachment." }
+      },
+      "lines": {
+        "validate": { "success": "Attachment validated successfully.", "error": "Failed to validate attachment." },
+        "reject": { "success": "Attachment rejected successfully.", "error": "Failed to reject attachment." }
       }
     },
     "lines": {
@@ -373,5 +385,21 @@
   },
   "email": {
     "invalid": "Invalid email address."
+  },
+  "claim": {
+    "submit": "Claim submitted successfully",
+    "instruction": "Claim moved to instruction successfully",
+    "instruction": {
+      "done": "Claim instruction terminated successfully"
+    },
+    "line": {
+      "validated": "Claim line validated successfully",
+      "rejected": "Claim line rejected successfully"
+    },
+    "has": {
+      "non": {
+        "instructed": "Claim has non-instructed lines and cannot be terminated"
+      }
+    }
   }
 }

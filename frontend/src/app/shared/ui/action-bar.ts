@@ -15,26 +15,16 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
           <div class="font-medium text-sm md:text-base"></div>
           <div class="inline-flex items-center gap-2">
             @if(showNew()) {
-              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" rounded="none" tone="primary" icon="add" [disabled]="disableNew()" (click)="newClicked.emit()">
-                <span class="hidden sm:inline">{{ 'actions.new' | t }}</span>
-              </app-button>
+              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" rounded="none" tone="primary" icon="add" [label]="'actions.new' | t" [disabled]="disableNew()" (click)="newClicked.emit()" />
             }
             @if(showEdit()) {
-              <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" rounded="none" [disabled]="disableEdit()" (click)="editClicked.emit()">
-                <span class="material-symbols-outlined text-sm">edit</span>
-                <span class="hidden sm:inline">{{ 'actions.edit' | t }}</span>
-              </app-button>
+              <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" rounded="none" icon="edit" [label]="'actions.edit' | t" [disabled]="disableEdit()" (click)="editClicked.emit()" />
             }
             @if(showCancel()) {
-              <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" rounded="none" [disabled]="disableCancel()" (click)="cancelClicked.emit()">
-                <span class="material-symbols-outlined text-sm">close</span>
-                <span class="hidden sm:inline">{{ 'actions.cancel' | t }}</span>
-              </app-button>
+              <app-button size="md" variant="ghost" shadow="md" hoverShadow="base" rounded="none" icon="close" [label]="'actions.cancel' | t" [disabled]="disableCancel()" (click)="cancelClicked.emit()" />
             }
             @if(showSave()) {
-              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" rounded="none" tone="primary" icon="save" [disabled]="disableSave()" (click)="saveClicked.emit()">
-                <span class="hidden sm:inline">{{ 'actions.save' | t }}</span>
-              </app-button>
+              <app-button size="md" variant="primary" shadow="md" hoverShadow="base" rounded="none" tone="primary" icon="save" [label]="'actions.save' | t" [disabled]="disableSave()" (click)="saveClicked.emit()" />
             }
           </div>
         </div>

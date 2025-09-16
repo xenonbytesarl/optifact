@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonComponent } from '../../../shared/ui/button';
-import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { CardComponent } from '../../../shared/ui/card';
 import { PaginatorComponent } from '../../../shared/ui/paginator';
@@ -18,17 +17,14 @@ import { ClaimSortColumn } from '../../../core/api/claim.api';
 @Component({
   selector: 'app-claims-list-screen',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, IconComponent, TranslatePipe, CardComponent, PaginatorComponent, ClaimListComponent],
+  imports: [CommonModule, ButtonComponent, TranslatePipe, CardComponent, PaginatorComponent, ClaimListComponent],
   providers: [],
   template: `
     <div class="p-4">
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'claims.title' | t }}</h2>
-          <app-button (click)="goNew()">
-            <app-icon name="add" class="mr-1"></app-icon>
-            {{ 'claims.new' | t }}
-          </app-button>
+          <app-button icon="add" [label]="'claims.new' | t" (click)="goNew()" />
         </div>
 
         <app-claim-list

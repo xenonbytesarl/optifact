@@ -287,6 +287,28 @@ export class ClaimApi extends GlobalHttpApi {
     }
   }
 
+  async toInstruction(claimId: string) {
+    try {
+      return await firstValueFrom(this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/instruction`, {}));
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
+  async doneInstruction(claimId: string) {
+    try {
+      return await firstValueFrom(this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/done-instruction`, {}));
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
   private getFilename(response: HttpResponse<Blob>) {
     let filename = '';
     const disposition = response.headers.get('Content-Disposition') || '';
