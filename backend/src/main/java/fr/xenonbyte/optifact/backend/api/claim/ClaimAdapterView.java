@@ -4,12 +4,18 @@ import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimApiRequestVie
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimLineResponseView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimPageResponseView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimResponseView;
+import fr.xenonbyte.optifact.backend.api.claim.generated.view.RejectClaimLineRequest;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.CreateClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.DeleteClaimByIdUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.DoneInstructionClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.FindClaimByIdUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.InstructClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.RejectClaimLineUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.SearchClaimsUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.SubmitClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.UpdateClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.UploadClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.ValidateClaimLineUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdsUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.UploadAttachmentUseCase;
@@ -60,6 +66,11 @@ public class ClaimAdapterView {
     private final UploadClaimUseCase uploadClaimUseCase;
     private final UploadAttachmentUseCase uploadAttachmentUseCase;
     private final FindAttachmentByIdUseCase findAttachmentByIdUseCase;
+    private final SubmitClaimUseCase submitClaimUseCase;
+    private final InstructClaimUseCase instructClaimUseCase;
+    private final ValidateClaimLineUseCase validateClaimLineUseCase;
+    private final RejectClaimLineUseCase rejectClaimLineUseCase;
+    private final DoneInstructionClaimUseCase doneInstructionClaimUseCase;
 
     @Value("${optifact.file.claim.rootDirectory}")
     private String rootDirectory;
@@ -74,7 +85,12 @@ public class ClaimAdapterView {
                             FindAttachmentByIdsUseCase findAttachmentByIdsUseCase,
                             UploadClaimUseCase uploadClaimUseCase,
                             UploadAttachmentUseCase uploadAttachmentUseCase,
-                            FindAttachmentByIdUseCase findAttachmentByIdUseCase) {
+                            FindAttachmentByIdUseCase findAttachmentByIdUseCase,
+                            SubmitClaimUseCase submitClaimUseCase,
+                            InstructClaimUseCase instructClaimUseCase,
+                            ValidateClaimLineUseCase validateClaimLineUseCase,
+                            RejectClaimLineUseCase rejectClaimLineUseCase,
+                            DoneInstructionClaimUseCase doneInstructionClaimUseCase) {
         this.createUseCase = createUseCase;
         this.updateUseCase = updateUseCase;
         this.findByIdUseCase = findByIdUseCase;
@@ -86,6 +102,11 @@ public class ClaimAdapterView {
         this.uploadClaimUseCase = uploadClaimUseCase;
         this.uploadAttachmentUseCase = uploadAttachmentUseCase;
         this.findAttachmentByIdUseCase = findAttachmentByIdUseCase;
+        this.submitClaimUseCase = submitClaimUseCase;
+        this.instructClaimUseCase = instructClaimUseCase;
+        this.validateClaimLineUseCase = validateClaimLineUseCase;
+        this.rejectClaimLineUseCase = rejectClaimLineUseCase;
+        this.doneInstructionClaimUseCase = doneInstructionClaimUseCase;
     }
 
     public ClaimResponseView createClaim(ClaimApiRequestView view) {
@@ -224,5 +245,25 @@ public class ClaimAdapterView {
                 .header("Content-Disposition", "attachment; filename=\"" + downloadName + "\"")
                 .header("Content-Type", mime)
                 .body(resource);
+    }
+
+    public ClaimResponseView rejectClaimLine(UUID claimId, UUID claimLineId, RejectClaimLineRequest request) {
+        return mapperView.toResponseView(rejectClaimLineUseCase.rejectClaimLine(claimId, claimLineId, request.getReason()));
+    }
+
+    public ClaimResponseView validateClaimLine(UUID claimId, UUID claimLineId) {
+        return mapperView.toResponseView(validateClaimLineUseCase.validateClaimLine(claimId, claimLineId));
+    }
+
+    public ClaimResponseView submitClaim(UUID claimId) {
+        return mapperView.toResponseView(submitClaimUseCase.submitClaim(claimId));
+    }
+
+    public ClaimResponseView instruction(UUID claimId) {
+        return mapperView.toResponseView(instructClaimUseCase.instructClaim(claimId));
+    }
+
+    public ClaimResponseView doneInstruction(UUID claimId) {
+        return mapperView.toResponseView(doneInstructionClaimUseCase.doneInstructClaim(claimId));
     }
 }

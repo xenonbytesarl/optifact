@@ -20,7 +20,7 @@ import { TranslatePipe } from '../../../core/i18n/translate.pipe';
       @if (tab==='addresses') {
         <div>
           @if (!readonly()) {
-            <div class="mb-2"><app-button (clicked)="addAddress.emit()"><span class="material-symbols-outlined text-base">add</span><span class="ml-1">{{ 'actors.addresses.actions.add' | t }}</span></app-button></div>
+            <div class="mb-2"><app-button icon="add" [label]="'actors.addresses.actions.add' | t" (clicked)="addAddress.emit()" /></div>
           }
           <app-table [rows]="addressesPaged()" [columns]="addressColumns()">
             <ng-template #actions let-row>
@@ -41,7 +41,7 @@ import { TranslatePipe } from '../../../core/i18n/translate.pipe';
       @if (tab==='contacts') {
         <div>
           @if (!readonly()) {
-            <div class="mb-2"><app-button (clicked)="addContact.emit()"><span class="material-symbols-outlined text-base">person_add</span><span class="ml-1">{{ 'actors.contacts.actions.add' | t }}</span></app-button></div>
+            <div class="mb-2"><app-button icon="person_add" [label]="'actors.contacts.actions.add' | t" (clicked)="addContact.emit()" /></div>
           }
           <app-table [rows]="contactsPaged()" [columns]="contactColumns()">
             <ng-template #actions let-row>

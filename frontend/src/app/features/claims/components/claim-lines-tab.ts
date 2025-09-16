@@ -40,7 +40,7 @@ import { ClaimLineUploadDialogComponent } from './claim-line-upload-dialog';
             @if (line.status !== 'DRAFT') {
               <div class="absolute right-2 bottom-2 inline-flex items-center gap-1">
                 <app-button [disabled]="loading()" icon="download" tone="info" size="icon" shadow="none" variant="ghost" (clicked)="download(line)" aria-label="Download"/>
-                @if (line.status === 'UPLOADED' && claimStatus() === 'SUBMITTED') {
+                @if (line.status === 'UPLOADED' && claimStatus() === 'IN_INSTRUCTION') {
                   <app-button [disabled]="loading()" icon="done" tone="success" size="icon" shadow="none" variant="ghost" (clicked)="validate(line)" aria-label="Validate"/>
                   <app-button [disabled]="loading()" icon="close" tone="danger" size="icon" shadow="none" variant="ghost" (clicked)="reject(line)" aria-label="Reject"/>
                 }
@@ -108,7 +108,7 @@ export class ClaimLinesTabComponent {
       case 'DRAFT': return 'neutral';
       case 'UPLOADED': return 'info';
       case 'VALIDATED': return 'success';
-      case 'REJECTED': return 'danger';
+      case 'REJECTED': return 'warn';
       case 'CANCELLED': return 'neutral';
       default: return 'neutral';
     }

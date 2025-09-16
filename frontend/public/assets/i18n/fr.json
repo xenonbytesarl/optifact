@@ -24,7 +24,8 @@
     "cancel": "Annuler",
     "save": "Sauvegarder",
     "validate": "Valider",
-    "reject": "Rejeter"
+    "reject": "Rejeter",
+    "confirm": "Confirmer"
   },
   "actors": {
     "title": "Acteurs",
@@ -222,9 +223,15 @@
       "cancelled": "Annulée"
     },
     "actions": {
-      "submit": "Soumettre"
+      "submit": "Soumettre",
+      "instruction": "Mettre en instruction",
+      "doneInstruction": "Terminer l'instruction",
+      "done": {
+        "instruction": "Terminer l'instruction"
+      }
     },
     "messages": {
+      "instruction": { "success": "Demande mise en instruction avec succès.", "error": "Échec de la mise en instruction de la demande." },
       "deleted": { "success": "Demande supprimée avec succès.", "error": "Échec de la suppression de la demande." },
       "created": { "success": "Demande créée avec succès.", "error": "Échec de la création de la demande." },
       "update": { "success": "Demande mise à jour avec succès.", "error": "Échec de la mise à jour de la demande." },
@@ -233,6 +240,10 @@
       "attachment": {
         "transfert": { "success": "Pièce jointe transférée avec succès.", "error": "Échec du transfert de la pièce jointe." },
         "download": { "success": "Téléchargement de la pièce jointe démarré.", "error": "Échec du téléchargement de la pièce jointe." }
+      },
+      "lines": {
+        "validate": { "success": "Pièce jointe validée avec succès.", "error": "Échec de la validation de la pièce jointe." },
+        "reject": { "success": "Pièce jointe rejetée avec succès.", "error": "Échec du rejet de la pièce jointe." }
       }
     },
     "lines": {
@@ -374,5 +385,21 @@
   },
   "email": {
     "invalid": "Email invalide"
+  },
+  "claim": {
+    "submit": "Demande soumise avec succès",
+    "instruction": "Demande passée en instruction avec succès",
+    "instruction": {
+      "done": "Instruction de la demande terminée avec succès"
+    },
+    "line": {
+      "validated": "Ligne de demande validée avec succès",
+      "rejected": "Ligne de demande rejetée avec succès"
+    },
+    "has": {
+      "non": {
+        "instructed": "La demande contient des lignes non instruites et ne peut pas être terminée"
+      }
+    }
   }
 }

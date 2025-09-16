@@ -5,6 +5,7 @@ import fr.xenonbyte.optifact.backend.api.claim.generated.view.ApiSuccessResponse
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimApiRequestView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimApiResponseView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimPageApiResponseView;
+import fr.xenonbyte.optifact.backend.api.claim.generated.view.RejectClaimLineRequest;
 import fr.xenonbyte.optifact.backend.api.common.locale.MessageUtil;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class ClaimResource implements ClaimsApi {
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .status(CREATED.name())
-                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_CREATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .message(ClaimMessageView.CLAIM_CREATED_SUCCESSFULLY)
                         .data(of(CONTENT, adapterView.createClaim(claimApiRequestView)))
         );
     }
@@ -50,7 +51,19 @@ public class ClaimResource implements ClaimsApi {
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .status(OK.name())
-                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_DELETED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .message(ClaimMessageView.CLAIM_DELETED_SUCCESSFULLY)
+        );
+    }
+
+    @Override
+    public ResponseEntity<ClaimApiResponseView> doneInstruction(String acceptLanguage, UUID claimId) {
+        return ResponseEntity.status(OK).body(
+                new ClaimApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_DONE_INSTRUCTION_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.doneInstruction(claimId)))
         );
     }
 
@@ -72,6 +85,18 @@ public class ClaimResource implements ClaimsApi {
     }
 
     @Override
+    public ResponseEntity<ClaimApiResponseView> rejectClaimLine(String acceptLanguage, UUID claimId, UUID claimLineId, RejectClaimLineRequest rejectClaimLineRequest) {
+        return ResponseEntity.status(OK).body(
+                new ClaimApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_LINE_REJECTED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.rejectClaimLine(claimId, claimLineId, rejectClaimLineRequest)))
+        );
+    }
+
+    @Override
     public ResponseEntity<ClaimPageApiResponseView> searchClaims(String acceptLanguage, Integer page, Integer size, String sortField, String sortDirection, String referenceFilter, String actorName, String productName) {
         return ResponseEntity.status(OK).body(
                 new ClaimPageApiResponseView()
@@ -84,6 +109,30 @@ public class ClaimResource implements ClaimsApi {
     }
 
     @Override
+    public ResponseEntity<ClaimApiResponseView> submitClaim(String acceptLanguage, UUID claimId) {
+        return ResponseEntity.status(OK).body(
+                new ClaimApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_LINE_SUBMIT_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.submitClaim(claimId)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<ClaimApiResponseView> toInstruction(String acceptLanguage, UUID claimId) {
+        return ResponseEntity.status(OK).body(
+                new ClaimApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_INSTRUCTION_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.instruction(claimId)))
+        );
+    }
+
+    @Override
     public ResponseEntity<ClaimApiResponseView> transfertClaimAttachment(String acceptLanguage, UUID claimId, UUID claimLineId, UUID attachmentId, MultipartFile file) {
         return ResponseEntity.status(OK).body(
                 new ClaimApiResponseView()
@@ -92,6 +141,18 @@ public class ClaimResource implements ClaimsApi {
                         .status(OK.name())
                         .message(MessageUtil.getMessage(ClaimMessageView.CLAIMS_UPLOAD_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(of(CONTENT, adapterView.transfertClaimAttachment(claimId, claimLineId, attachmentId, file)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<ClaimApiResponseView> validateClaimLine(String acceptLanguage, UUID claimId, UUID claimLineId) {
+        return ResponseEntity.status(OK).body(
+                new ClaimApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_LINE_VALIDATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.validateClaimLine(claimId, claimLineId)))
         );
     }
 }

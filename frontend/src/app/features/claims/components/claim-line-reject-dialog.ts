@@ -26,8 +26,8 @@ import { TranslateService } from '../../../core/i18n/translate.service';
         ></textarea>
       </div>
       <div dialog-actions>
-        <app-button variant="secondary" (clicked)="onCancel()">{{ cancelText() }}</app-button>
-        <app-button class="ml-2" variant="danger" [disabled]="invalid()" (clicked)="onConfirm()">{{ okText() }}</app-button>
+        <app-button variant="secondary" [label]="cancelText()" (clicked)="onCancel()" />
+        <app-button class="ml-2" variant="danger" [disabled]="invalid()" [label]="okText()" (clicked)="onConfirm()" />
       </div>
     </app-dialog>
   `,

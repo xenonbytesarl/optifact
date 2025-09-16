@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { CommonModule } from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import { ButtonComponent } from '../../../shared/ui/button';
-import { IconComponent } from '../../../shared/ui/icon';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { productStore } from '../products.store';
 import { ProductListComponent } from '../components/product-list';
@@ -18,17 +17,14 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from '../../../core/constant/con
 @Component({
   selector: 'app-products-list-page',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, IconComponent, TranslatePipe, ProductListComponent, CardComponent, PaginatorComponent],
+  imports: [CommonModule, ButtonComponent, TranslatePipe, ProductListComponent, CardComponent, PaginatorComponent],
   providers: [],
   template: `
     <div class="p-4">
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'products.title' | t }}</h2>
-          <app-button (click)="goNew()">
-            <app-icon name="add" class="mr-1"></app-icon>
-            {{ 'products.new' | t }}
-          </app-button>
+          <app-button icon="add" [label]="'products.new' | t" (click)="goNew()" />
         </div>
 
         <app-product-list

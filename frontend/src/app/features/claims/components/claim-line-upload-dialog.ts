@@ -17,7 +17,7 @@ import { claimStore } from '../claim.store';
     <app-dialog [(open)]="open" [backdropClosable]="!uploading()" [title]="i18n.t('claims.tabs.lines')">
       <div class="space-y-3">
         <div class="text-sm font-medium">{{ line()?.attachmentTypeName }}</div>
-        <app-attachment-dropzone [(files)]="files" [accept]="accept()" [maxTotalSize]="maxTotalSize()" />
+        <app-attachment-dropzone [(files)]="files" [multiple]="true" [accept]="accept()" [maxTotalSize]="maxTotalSize()" />
         @if (uploading()) {
           <div class="mt-2 flex items-center gap-2 text-sm text-muted">
             <app-spinner [overlay]="true" />
@@ -25,12 +25,8 @@ import { claimStore } from '../claim.store';
         }
       </div>
       <div dialog-actions class="flex flex-col sm:flex-row gap-2">
-        <app-button variant="secondary" (clicked)="onCancel()" [disabled]="uploading()">
-          <span class="material-symbols-outlined text-base">close</span> {{ i18n.t('actions.cancel') }}
-        </app-button>
-        <app-button [disabled]="disableTransfertButton() || uploading()" (clicked)="onConfirm()">
-          <span class="material-symbols-outlined text-base">cloud_upload</span> {{ i18n.t('claims.lines.uploadConfirm') || 'Transférer' }}
-        </app-button>
+        <app-button variant="secondary" icon="close" [label]="i18n.t('actions.cancel')" (clicked)="onCancel()" [disabled]="uploading()" />
+        <app-button icon="cloud_upload" [label]="i18n.t('claims.lines.uploadConfirm') || 'Transférer'" [disabled]="disableTransfertButton() || uploading()" (clicked)="onConfirm()" />
       </div>
     </app-dialog>
   `,
@@ -45,7 +41,7 @@ export class ClaimLineUploadDialogComponent {
   files = signal<File[]>([]);
   // configuration
   accept = input<string>('image/*,.pdf');
-  maxTotalSize = input<number>(5 * 1024 * 1024);
+  maxTotalSize = input<number>(30 * 1024 * 1024);
 
   claimId = input<string>('');
 

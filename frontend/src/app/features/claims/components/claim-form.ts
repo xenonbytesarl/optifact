@@ -35,11 +35,15 @@ export type ClaimFormModel = {
 
 
       <div class="grid grid-cols-2 items-center gap-2">
-        <div>
-          @if(value().uploadEnded) {
-            <app-button icon="check_circle" tone="primary" variant="primary" size="md" rounded="none"  [fullWidth]="true" (clicked)="onSubmit()">
-              {{ i18n.t('claims.actions.submit') }}
-            </app-button>
+        <div class="flex gap-2">
+          @if (value().uploadEnded && value().state === 'DRAFT') {
+            <app-button icon="check_circle" tone="primary" variant="primary" size="md" rounded="none" [label]="i18n.t('claims.actions.submit')" (clicked)="onSubmit()" />
+          }
+          @if (value().state === 'SUBMITTED') {
+            <app-button icon="policy" tone="primary" variant="primary" size="md" rounded="none" [label]="i18n.t('claims.actions.instruction')" (clicked)="onToInstruction()" />
+          }
+          @if (value().state === 'IN_INSTRUCTION') {
+            <app-button icon="done_all" tone="primary" variant="primary" size="md" rounded="none" [label]="i18n.t('claims.actions.done.instruction')" (clicked)="onDoneInstruction()" />
           }
         </div>
         <div>
@@ -149,6 +153,8 @@ export class ClaimFormComponent {
 
   valueChange = output<ClaimFormModel>();
   submit = output<string>();
+  toInstruction = output<string>();
+  doneInstruction = output<string>();
 
   stateRequiredError = input<boolean>(false);
 
@@ -157,6 +163,14 @@ export class ClaimFormComponent {
 
   onSubmit() {
     this.submit.emit('submit');
+  }
+
+  onToInstruction() {
+    this.toInstruction.emit('instruction');
+  }
+
+  onDoneInstruction() {
+    this.doneInstruction.emit('doneInstruction');
   }
 
   onStepSelected(i: number) {

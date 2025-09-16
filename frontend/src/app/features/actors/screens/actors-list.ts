@@ -9,7 +9,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import { PaginatorComponent } from '../../../shared/ui/paginator';
 import { ConfirmDialogService } from '../../../shared/ui/confirm-dialog';
 import { TranslateService } from '../../../core/i18n/translate.service';
-import {IconComponent} from '../../../shared/ui/icon';
 import {ToastService} from '../../../shared/ui/toast';
 import {ProductSortColumn} from '../../../core/api/products.api';
 import {Direction, DirectionType} from '../../../core/model/direction.enum';
@@ -19,17 +18,14 @@ import {ActorSortColumn} from '../../../core/api/actor/models';
 @Component({
   selector: 'app-actors-list-page',
   standalone: true,
-  imports: [CommonModule, CardComponent, ButtonComponent, PaginatorComponent, ActorListComponent, TranslatePipe, IconComponent],
+  imports: [CommonModule, CardComponent, ButtonComponent, PaginatorComponent, ActorListComponent, TranslatePipe],
   providers: [],
   template: `
     <div class="p-4">
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'actors.title' | t }}</h2>
-          <app-button (click)="goNew()">
-            <app-icon name="add" class="mr-1"></app-icon>
-            {{ 'actors.new' | t }}
-          </app-button>
+          <app-button icon="add" [label]="'actors.new' | t" (click)="goNew()" />
         </div>
         <app-actor-list
           [items]="store.actorPage().elements"

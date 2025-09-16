@@ -12,9 +12,10 @@ import { ClaimLinesTabComponent } from '../components/claim-lines-tab';
 import { actorStore } from '../../actors/actors.store';
 import { productStore } from '../../products/products.store';
 import { AutocompleteItem } from '../../../shared/ui/autocomplete';
-import {AttachmentTransfert, ClaimLine} from '../../../core/api/claim.api';
+import { AttachmentTransfert, ClaimLine } from '../../../core/api/claim.api';
 import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog';
 import { ClaimLineRejectDialogComponent } from '../components/claim-line-reject-dialog';
+import { ToastService } from '../../../shared/ui/toast';
 
 @Component({
   selector: 'app-claim-edit-page',
@@ -43,6 +44,8 @@ import { ClaimLineRejectDialogComponent } from '../components/claim-line-reject-
             [productItems]="productItems()"
             (valueChange)="onValueChange($event)"
             (submit)="onSubmit()"
+            (toInstruction)="onToInstruction()"
+            (doneInstruction)="onDoneInstruction()"
           />
         </div>
         <app-tabs [items]="tabItems()" [(active)]="activeTab">
@@ -56,6 +59,7 @@ import { ClaimLineRejectDialogComponent } from '../components/claim-line-reject-
               (attachementDownload)="download($event)"
               (validateClicked)="openValidateDialog($event)"
               (rejectClicked)="openRejectDialog($event)"
+
             />
           }
           @if (activeTab === 'audit') {
@@ -100,6 +104,7 @@ export class ClaimEditPage {
   readonly i18n = inject(TranslateService);
   readonly actors = inject(actorStore);
   readonly products = inject(productStore);
+  readonly toast = inject(ToastService);
 
   // Autocomplete items
   actorItems = computed<AutocompleteItem[]>(() => this.actors.actorPage().elements.map(a => ({
@@ -134,7 +139,34 @@ export class ClaimEditPage {
     if (!id || this.loading()) return;
     const ok = await this.ui.store.submitClaim(id);
     if (ok) {
+      this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.submit.success'));
       await this.ui.store.findById(id);
+    } else {
+      this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.submit.error'));
+    }
+  }
+
+  async onToInstruction() {
+    const id = this.claimId();
+    if (!id || this.loading()) return;
+    const ok = await this.ui.store.toInstruction(id);
+    if (ok) {
+      this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.instruction.success'));
+      await this.ui.store.findById(id);
+    } else {
+      this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.instruction.error'));
+    }
+  }
+
+  async onDoneInstruction() {
+    const id = this.claimId();
+    if (!id || this.loading()) return;
+    const ok = await this.ui.store.doneInstruction(id);
+    if (ok) {
+      this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.instruction.done.success'));
+      await this.ui.store.findById(id);
+    } else {
+      this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.instruction.done.error'));
     }
   }
 

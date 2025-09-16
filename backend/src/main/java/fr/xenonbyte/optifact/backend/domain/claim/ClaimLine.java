@@ -1,5 +1,6 @@
 package fr.xenonbyte.optifact.backend.domain.claim;
 
+import fr.xenonbyte.optifact.backend.domain.claim.message.ClaimMessage;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.entity.BaseEntity;
 
@@ -130,6 +131,15 @@ public final class ClaimLine extends BaseEntity {
                 )).toList();
     }
 
+    public static List<ClaimLine> replace(List<ClaimLine> lines, ClaimLine newClaimLine) {
+        return lines.stream().map(line -> {
+            if(line.getId().equals(newClaimLine.getId())) {
+                return newClaimLine;
+            }
+            return line;
+        }).toList();
+    }
+
     public ClaimLine withClaimId(UUID claimId) {
         return new ClaimLine(
                 id,
@@ -185,6 +195,9 @@ public final class ClaimLine extends BaseEntity {
     }
 
     public ClaimLine withRejected(UUID rejectedById, ZonedDateTime rejectedAt, String reason) {
+        if(reason == null || reason.isBlank()) {
+            throw new IllegalArgumentException(ClaimMessage.CLAIM_LINE_REASON_REQUIRED);
+        }
         return new ClaimLine(
                 id,
                 attachmentId,
@@ -224,7 +237,9 @@ public final class ClaimLine extends BaseEntity {
         return status != ClaimLineStatus.DRAFT && status != ClaimLineStatus.CANCELLED;
     }
 
-
+    public boolean isRejected() {
+        return status == ClaimLineStatus.REJECTED;
+    }
 
     public UUID getAttachmentId() { return attachmentId; }
     public ZonedDateTime getValidateAt() { return validateAt; }
@@ -237,4 +252,8 @@ public final class ClaimLine extends BaseEntity {
     public UUID getValidateById() { return validateById; }
     public UUID getRejectedById() { return rejectedById; }
     public UUID getCancelledById() { return cancelledById; }
+
+    public boolean notInstructed() {
+        return status == ClaimLineStatus.DRAFT || status == ClaimLineStatus.UPLOADED;
+    }
 }

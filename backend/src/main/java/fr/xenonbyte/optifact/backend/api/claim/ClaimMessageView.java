@@ -6,6 +6,11 @@ public final class ClaimMessageView {
     public static final String CLAIM_FOUND_SUCCESSFULLY = "claim.found";
     public static final String CLAIMS_FOUND_SUCCESSFULLY = "claims.found";
     public static final String CLAIMS_UPLOAD_SUCCESSFULLY = "claim.upload";
+    public static final String CLAIM_LINE_SUBMIT_SUCCESSFULLY = "claim.submit";
+    public static final String CLAIM_INSTRUCTION_SUCCESSFULLY = "claim.instruction";
+    public static final String CLAIM_LINE_REJECTED_SUCCESSFULLY = "claim.line.rejected";
+    public static final String CLAIM_LINE_VALIDATED_SUCCESSFULLY = "claim.line.validated";
+    public static final String CLAIM_DONE_INSTRUCTION_SUCCESSFULLY = "claim.instruction.done";
 
     private ClaimMessageView() {}
 }

@@ -14,8 +14,8 @@ import { TranslateService } from '../../core/i18n/translate.service';
         {{ messageText() }}
       </div>
       <div dialog-actions>
-        <app-button variant="secondary" (click)="onCancel()">{{ cancelText() }}</app-button>
-        <app-button class="ml-2" variant="danger" (click)="onConfirm()">{{ okText() }}</app-button>
+        <app-button variant="secondary" [label]="cancelText()" (click)="onCancel()" />
+        <app-button class="ml-2" variant="danger" [label]="okText()" (click)="onConfirm()" />
       </div>
     </app-dialog>
   `,

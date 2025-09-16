@@ -226,6 +226,48 @@ export const claimStore = signalStore(
           return false;
         }
       },
+      async toInstruction(id: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.toInstruction(id);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Claim>;
+          patchState(store, {
+            claimPage: {
+              ...store.claimPage(),
+              elements: store.claimPage().elements.map(c => c.id === id ? payload.data.content : c)
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'claims.messages.instruction.success',
+            loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'claims.messages.instruction.error', loading: false });
+          return false;
+        }
+      },
+      async doneInstruction(id: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.doneInstruction(id);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Claim>;
+          patchState(store, {
+            claimPage: {
+              ...store.claimPage(),
+              elements: store.claimPage().elements.map(c => c.id === id ? payload.data.content : c)
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'claims.messages.instruction.done.success',
+            loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'claims.messages.instruction.done.error', loading: false });
+          return false;
+        }
+      },
       async downloadAttachment(claimId: string, attachmentId: string) {
         patchState(store, {loading: true, error: null, message: null});
         const response = await api.downloadAttachment(claimId, attachmentId);
