@@ -282,16 +282,22 @@ components:
         name:
           type: string
         quantity:
-          type: integer
-          format: int32
-          minimum: 1
+          type: number
+          format: double
+          minimum: 0
         unitPrice:
           type: string
           format: decimal
+        unitPriceCurrency:
+          type: string
+          description: Optional unit price currency (ISO 4217)
         amount:
           type: string
           format: decimal
           description: Precomputed amount (optional); server may recompute
+        amountCurrency:
+          type: string
+          description: Optional unit price currency (ISO 4217)
     UpdateInvoiceLineRequestView:
       allOf:
         - $ref: '#/components/schemas/InvoiceLineRequestView'
@@ -309,18 +315,24 @@ components:
         reference:
           type: string
           description: Optional invoice reference (unique); can be generated server-side
+        createdAt:
+          type: string
+          format: date-time
         sendAt:
           type: string
           format: date-time
         actorId:
           type: string
           format: uuid
-        issueAt:
+        dueAt:
           type: string
           format: date-time
         amount:
           type: string
           format: decimal
+        amountCurrency:
+          type: string
+          description: Optional unit price currency (ISO 4217)
         claimId:
           type: string
           format: uuid
@@ -348,12 +360,15 @@ components:
         actorId:
           type: string
           format: uuid
-        issueAt:
+        dueAt:
           type: string
           format: date-time
         amount:
           type: string
           format: decimal
+        amountCurrency:
+          type: string
+          description: Optional unit price currency (ISO 4217)
         claimId:
           type: string
           format: uuid
@@ -402,11 +417,14 @@ components:
         actorId:
           type: string
           format: uuid
-        issueAt:
+        dueAt:
           type: string
         amount:
           type: string
           format: decimal
+        amountCurrency:
+          type: string
+          description: Optional unit price currency (ISO 4217)
         claimId:
           type: string
           format: uuid

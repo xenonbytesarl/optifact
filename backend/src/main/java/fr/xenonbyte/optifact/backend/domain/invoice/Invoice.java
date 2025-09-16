@@ -7,7 +7,7 @@ import fr.xenonbyte.optifact.backend.domain.invoice.message.InvoiceMessage;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,8 +22,9 @@ public final class Invoice extends BaseEntity {
     private final String reference;
     private final ZonedDateTime sendAt;
     private final UUID actorId;
-    private final ZonedDateTime issueAt;
+    private final ZonedDateTime dueAt;
     private final BigDecimal amount;
+    private final Currency amountCurrency;
     private final UUID claimId;
     private final BankAccount bankAccount;
     private final InvoiceState state;
@@ -34,8 +35,9 @@ public final class Invoice extends BaseEntity {
                     ZonedDateTime createdAt,
                     ZonedDateTime sendAt,
                     UUID actorId,
-                    ZonedDateTime issueAt,
+                    ZonedDateTime dueAt,
                     BigDecimal amount,
+                    Currency amountCurrency,
                     UUID claimId,
                     BankAccount bankAccount,
                     InvoiceState state,
@@ -45,8 +47,9 @@ public final class Invoice extends BaseEntity {
         this.createdAt = createdAt;
         this.sendAt = sendAt;
         this.actorId = actorId;
-        this.issueAt = issueAt;
+        this.dueAt = dueAt;
         this.amount = amount;
+        this.amountCurrency = amountCurrency;
         this.claimId = claimId;
         this.bankAccount = bankAccount;
         this.state = state;
@@ -57,8 +60,9 @@ public final class Invoice extends BaseEntity {
                                  ZonedDateTime createdAt,
                                  ZonedDateTime sendAt,
                                  UUID actorId,
-                                 ZonedDateTime issueAt,
+                                 ZonedDateTime dueAt,
                                  BigDecimal amount,
+                                 Currency amountCurrency,
                                  UUID claimId,
                                  BankAccount bankAccount,
                                  InvoiceState state,
@@ -72,8 +76,9 @@ public final class Invoice extends BaseEntity {
                 createdAt,
                 sendAt,
                 actorId,
-                issueAt,
+                dueAt,
                 amount,
+                amountCurrency,
                 claimId,
                 bankAccount,
                 state == null ? InvoiceState.DRAFT : state,
@@ -86,8 +91,9 @@ public final class Invoice extends BaseEntity {
                                  ZonedDateTime createdAt,
                                  ZonedDateTime sendAt,
                                  UUID actorId,
-                                 ZonedDateTime issueAt,
+                                 ZonedDateTime dueAt,
                                  BigDecimal amount,
+                                 Currency amountCurrency,
                                  UUID claimId,
                                  BankAccount bankAccount,
                                  InvoiceState state,
@@ -100,8 +106,9 @@ public final class Invoice extends BaseEntity {
                 createdAt,
                 sendAt,
                 actorId,
-                issueAt,
+                dueAt,
                 amount,
+                amountCurrency,
                 claimId,
                 bankAccount,
                 state == null ? InvoiceState.DRAFT : state,
@@ -122,10 +129,10 @@ public final class Invoice extends BaseEntity {
             throw new IllegalStateException(InvoiceMessage.INVOICE_DELETABLE_WHEN_STATE_DRAFT);
     }
 
-    public Invoice update(String reference, ZonedDateTime sendAt, UUID actorId, ZonedDateTime issueAt, UUID claimId, BankAccount bankAccount, InvoiceState state, List<InvoiceLine> lines) {
+    public Invoice update(String reference, ZonedDateTime sendAt, UUID actorId, ZonedDateTime dueAt, Currency amountCurrency, UUID claimId, BankAccount bankAccount, InvoiceState state, List<InvoiceLine> lines) {
         validate(actorId, amount, lines);
         lines = attachInvoiceIdToLines(lines, id);
-        Invoice invoice = new Invoice(id, reference, createdAt, sendAt, actorId, issueAt, amount, claimId, bankAccount, state, lines);
+        Invoice invoice = new Invoice(id, reference, createdAt, sendAt, actorId, dueAt, amount, amountCurrency, claimId, bankAccount, state, lines);
         invoice.updateAudit(createdAt);
         return invoice;
     }
@@ -144,11 +151,11 @@ public final class Invoice extends BaseEntity {
     }
 
     private Invoice withAmount(BigDecimal amount) {
-        return new Invoice(id, reference, createdAt, sendAt, actorId, issueAt, amount, claimId, bankAccount, state, lines);
+        return new Invoice(id, reference, createdAt, sendAt, actorId, dueAt, amount, amountCurrency, claimId, bankAccount, state, lines);
     }
 
     public Invoice withReference(String reference) {
-        return new Invoice(id, reference, createdAt, sendAt, actorId, issueAt, amount, claimId, bankAccount, state, lines);
+        return new Invoice(id, reference, createdAt, sendAt, actorId, dueAt, amount, amountCurrency, claimId, bankAccount, state, lines);
     }
 
     public String getReference() {
@@ -163,12 +170,16 @@ public final class Invoice extends BaseEntity {
         return actorId;
     }
 
-    public ZonedDateTime getIssueAt() {
-        return issueAt;
+    public ZonedDateTime getDueAt() {
+        return dueAt;
     }
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public Currency getAmountCurrency() {
+        return amountCurrency;
     }
 
     public UUID getClaimId() {

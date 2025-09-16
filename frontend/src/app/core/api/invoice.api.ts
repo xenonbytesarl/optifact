@@ -19,13 +19,13 @@ export interface BankAccount {
 
 export interface InvoiceLine {
   id?: string;
-  createdAt?: string | null;
-  updatedAt?: string | null;
   productId: string;
   name: string;
   quantity: number;
   unitPrice: string; // decimal as string
+  unitPriceCurrency?: string | null;
   amount?: string | null; // decimal as string
+  amountCurrency?: string | null;
 }
 
 export interface Invoice {
@@ -36,6 +36,7 @@ export interface Invoice {
   actorId: string;
   issueAt?: Date | null;
   amount?: string | null; // decimal as string
+  amountCurrency?: string | null;
   claimId?: string | null;
   bankAccount?: BankAccount | null;
   state: InvoiceState;

@@ -200,13 +200,56 @@
       "createdAt": "Created at",
       "actor": "Actor",
       "claim": "Claim",
-      "state": "Status"
+      "state": "Status",
+      "issueAt": "Due at",
+      "sendAt": "Sent at",
+      "total": "Total"
     },
     "states": {
       "draft": "Draft",
       "validate": "Validated",
       "paid": "Paid",
       "cancel": "Cancelled"
+    },
+    "tabs": {
+      "lines": "Lines"
+    },
+    "validation": {
+      "actorRequired": "Actor is required.",
+      "linesRequired": "At least one invoice line is required."
+    },
+    "lines": {
+      "actions": { "add": "Add line" },
+      "headers": {
+        "name": "Name",
+        "product": "Product",
+        "qty": "Qty",
+        "unitPrice": "Unit price",
+        "amount": "Amount",
+        "actions": "Actions"
+      },
+      "fields": {
+        "product": "Product",
+        "qty": "Qty",
+        "unitPrice": "Unit price",
+        "amount": "Amount",
+        "name": "Name"
+      },
+      "dialog": {
+        "title": "Add/Edit line",
+        "action": {
+          "cancel": "Close",
+          "addNew": "Save and add another",
+          "addClose": "Save and close"
+        }
+      },
+      "empty": "No lines",
+      "validation": {
+        "productRequired": "Product is required.",
+        "nameRequired": "Name is required.",
+        "qtyMin": "Quantity must be greater than 0.",
+        "unitPriceMin": "Unit price must be greater than 0."
+      }
     },
     "messages": {
       "deleted": { "success": "Invoice deleted successfully.", "error": "Failed to delete invoice." },

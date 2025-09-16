@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Seed a sequence for Invoices: name = "Invoice sequence", code = "INVOICE" -->
+    <changeSet id="16092025_2016_seed_invoice_sequence" author="brice.mbiandji">
+        <preConditions onFail="MARK_RAN">
+            <!-- If already present, skip -->
+            <not>
+                <tableExists tableName="t_sequence"/>
+            </not>
+        </preConditions>
+
+        <!-- Ensure table exists; if the preCondition fails, changeSet will be marked ran -->
+        <sql>SELECT 1</sql>
+    </changeSet>
+
+    <changeSet id="16092025_2017_insert_invoice_sequence" author="brice.mbiandji">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="t_sequence"/>
+            <and>
+                <sqlCheck expectedResult="0">SELECT COUNT(1) FROM t_sequence WHERE lower(c_code) = 'invoice'</sqlCheck>
+                <sqlCheck expectedResult="0">SELECT COUNT(1) FROM t_sequence WHERE lower(c_name) = 'invoice sequence'</sqlCheck>
+            </and>
+        </preConditions>
+
+        <insert tableName="t_sequence">
+            <column name="c_id" value="00000000-0000-0000-0000-000000000101"/>
+            <column name="c_created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="c_updated_at"/>
+            <column name="c_deleted" valueBoolean="false"/>
+            <column name="c_name" value="Invoice sequence"/>
+            <column name="c_code" value="INVOICE"/>
+            <column name="c_step" valueNumeric="1"/>
+            <column name="c_size" valueNumeric="6"/>
+            <column name="c_next" valueNumeric="1"/>
+            <column name="c_prefix" value="INV-%(y)s%(month)s-"/>
+            <column name="c_suffix"/>
+            <column name="c_active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -200,13 +200,56 @@
       "createdAt": "Créée le",
       "actor": "Acteur",
       "claim": "Demande",
-      "state": "Statut"
+      "state": "Statut",
+      "issueAt": "A payer avant le",
+      "sendAt": "Envoyée le",
+      "total": "Total"
     },
     "states": {
       "draft": "Brouillon",
       "validate": "Validée",
       "paid": "Payée",
       "cancel": "Annulée"
+    },
+    "tabs": {
+      "lines": "Lignes"
+    },
+    "validation": {
+      "actorRequired": "L'acteur est obligatoire.",
+      "linesRequired": "Au moins une ligne de facture est requise."
+    },
+    "lines": {
+      "actions": { "add": "Ajouter une ligne" },
+      "headers": {
+        "name": "Nom",
+        "product": "Produit",
+        "qty": "Qté",
+        "unitPrice": "Prix unitaire",
+        "amount": "Montant",
+        "actions": "Actions"
+      },
+      "fields": {
+        "product": "Produit",
+        "qty": "Qté",
+        "unitPrice": "Prix unitaire",
+        "amount": "Montant",
+        "name": "Libellé"
+      },
+      "dialog": {
+        "title": "Ajouter/Modifier une ligne",
+        "action": {
+          "cancel": "Fermer",
+          "addNew": "Enregistrer et ajouter",
+          "addClose": "Enregistrer et fermer"
+        }
+      },
+      "empty": "Aucune ligne",
+      "validation": {
+        "productRequired": "Le produit est obligatoire.",
+        "nameRequired": "Le libellé est obligatoire.",
+        "qtyMin": "La quantité doit être supérieure à 0.",
+        "unitPriceMin": "Le prix unitaire doit être supérieur à 0."
+      }
     },
     "messages": {
       "deleted": { "success": "Facture supprimée avec succès.", "error": "Échec de la suppression de la facture." },

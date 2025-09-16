@@ -12,6 +12,7 @@ import org.mapstruct.ObjectFactory;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Currency;
 import java.util.List;
 
 @Mapper
@@ -26,6 +27,8 @@ public interface InvoiceMapperJpa {
     @Mapping(target = "bankCounter", expression = "java(invoice.getBankAccount() == null ? null : invoice.getBankAccount().getBankCounter())")
     @Mapping(target = "bankAccountNumber", expression = "java(invoice.getBankAccount() == null ? null : invoice.getBankAccount().getBankAccountNumber())")
     @Mapping(target = "bankAccountKey", expression = "java(invoice.getBankAccount() == null ? null : invoice.getBankAccount().getBankAccountKey())")
+    @Mapping(target = "amount", expression = "java(invoice.getAmount())")
+    @Mapping(target = "amountCurrency", expression = "java(invoice.getAmountCurrency().getCurrencyCode())")
     @Mapping(target = "lines", expression = "java(toJpaLines(invoice.getLines()))")
     InvoiceJpa toJpa(Invoice invoice);
 
@@ -44,7 +47,9 @@ public interface InvoiceMapperJpa {
                     .name(l.getName())
                     .quantity(l.getQuantity())
                     .unitPrice(l.getUnitPrice())
+                    .unitPriceCurrency(l.getUnitPriceCurrency().getCurrencyCode())
                     .amount(l.getAmount())
+                    .amountCurrency(l.getAmountCurrency().getCurrencyCode())
                     .invoice(InvoiceJpa.builder().id(l.getInvoiceId()).build())
                     .build();
             list.add(j);
@@ -63,7 +68,9 @@ public interface InvoiceMapperJpa {
                         line.getName(),
                         line.getQuantity(),
                         line.getUnitPrice(),
+                        Currency.getInstance(line.getUnitPriceCurrency()),
                         line.getAmount(),
+                        Currency.getInstance(line.getAmountCurrency()),
                         jpa.getId()
                 );
                 lines.add(invoiceLine);
@@ -87,8 +94,9 @@ public interface InvoiceMapperJpa {
                 jpa.getCreatedAt(),
                 jpa.getSendAt(),
                 jpa.getActor().getId(),
-                jpa.getIssueAt(),
+                jpa.getDueAt(),
                 amount,
+                Currency.getInstance(jpa.getAmountCurrency()),
                 jpa.getClaim() != null ? jpa.getClaim().getId() : null,
                 bankAccount,
                 InvoiceState.valueOf(jpa.getState().name()),

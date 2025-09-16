@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="016-rename-invoice-issue-at-to-due-at" author="junie">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="t_invoice"/>
+            <columnExists tableName="t_invoice" columnName="c_issue_at"/>
+            <not>
+                <columnExists tableName="t_invoice" columnName="c_due_at"/>
+            </not>
+        </preConditions>
+
+        <renameColumn tableName="t_invoice"
+                      oldColumnName="c_issue_at"
+                      newColumnName="c_due_at"
+                      columnDataType="timestamp"/>
+
+        <rollback>
+            <renameColumn tableName="t_invoice"
+                          oldColumnName="c_due_at"
+                          newColumnName="c_issue_at"
+                          columnDataType="timestamp"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
