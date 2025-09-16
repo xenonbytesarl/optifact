@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {firstValueFrom} from 'rxjs';
-import {GlobalHttpApi} from './global-http-repository.service';
+import {GlobalApi} from './global.api';
 import {ErrorApiResponse, Page, SuccessApiResponse} from '../model/response.model';
 import {Direction} from '../model/direction.enum';
 
@@ -13,7 +13,7 @@ export interface AttachmentType {
 export type AttachmentTypeSortColumn = 'name';
 
 @Injectable({providedIn: 'root'})
-export class AttachmentTypesApi extends GlobalHttpApi {
+export class AttachmentTypesApi extends GlobalApi {
   private base = this.apiUrl + '/attachment-types';
 
   async search(nameFilter: string, page: number, size: number, direction: Direction, sort: AttachmentTypeSortColumn) {
