@@ -24,9 +24,9 @@ public final class SearchInvoicesApplicationService implements SearchInvoicesUse
     }
 
     @Override
-    public Pagination<Invoice> searchInvoices(String referenceFilter, String actorName, InvoiceState state, CommonSearch search) {
-        LOGGER.info("Searching invoices with referenceFilter: '" + referenceFilter + "', actorName: '" + actorName + "', state: '" + state + "'" );
-        Pagination<Invoice> page = repository.search(referenceFilter, actorName, state, search);
+    public Pagination<Invoice> searchInvoices(String referenceFilter, String actorName, String claimName, String stateFilter, CommonSearch search) {
+        LOGGER.info("Searching invoices with referenceFilter: '" + referenceFilter + "', actorName: '" + actorName + "', claimName: '" + claimName + "', stateFilter: '" + stateFilter + "'" );
+        Pagination<Invoice> page = repository.search(referenceFilter, actorName, claimName, stateFilter, search);
         LOGGER.info("Found " + page.elements().size() + " invoices (total: " + page.totalElements() + ")");
         return page;
     }

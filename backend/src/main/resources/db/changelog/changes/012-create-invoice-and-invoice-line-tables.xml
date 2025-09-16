@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="16092025_1336_create_invoice_and_invoice_line_tables" author="brice.mbiandji">
+        <!-- t_invoice table -->
+        <createTable tableName="t_invoice">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Domain fields -->
+            <column name="c_actor_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_claim_id" type="uuid"/>
+            <column name="c_reference" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="c_send_at" type="timestamp with time zone"/>
+            <column name="c_issue_at" type="timestamp with time zone"/>
+            <column name="c_amount" type="numeric(19,2)"/>
+            <column name="c_state" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Bank account snapshot fields -->
+            <column name="c_bank_account_owner" type="varchar(255)"/>
+            <column name="c_bank_name" type="varchar(255)"/>
+            <column name="c_bank_code" type="varchar(50)"/>
+            <column name="c_bank_counter" type="varchar(50)"/>
+            <column name="c_bank_account_number" type="varchar(100)"/>
+            <column name="c_bank_account_key" type="varchar(50)"/>
+        </createTable>
+
+        <!-- Indexes for invoice -->
+        <createIndex indexName="idx_t_invoice_reference" tableName="t_invoice">
+            <column name="c_reference"/>
+        </createIndex>
+        <createIndex indexName="idx_t_invoice_actor_id" tableName="t_invoice">
+            <column name="c_actor_id"/>
+        </createIndex>
+        <createIndex indexName="idx_t_invoice_claim_id" tableName="t_invoice">
+            <column name="c_claim_id"/>
+        </createIndex>
+
+        <!-- Foreign keys for invoice -->
+        <addForeignKeyConstraint
+                baseTableName="t_invoice"
+                baseColumnNames="c_actor_id"
+                constraintName="fk_t_invoice_actor"
+                referencedTableName="t_actor"
+                referencedColumnNames="c_id"
+                onDelete="RESTRICT"
+                onUpdate="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="t_invoice"
+                baseColumnNames="c_claim_id"
+                constraintName="fk_t_invoice_claim"
+                referencedTableName="t_claim"
+                referencedColumnNames="c_id"
+                onDelete="SET NULL"
+                onUpdate="CASCADE"/>
+
+        <!-- t_invoice_line table -->
+        <createTable tableName="t_invoice_line">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Domain fields -->
+            <column name="c_product_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_quantity" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_unit_price" type="numeric(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_amount" type="numeric(19,2)"/>
+            <column name="c_invoice_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Indexes for invoice line -->
+        <createIndex indexName="idx_t_invoice_line_invoice_id" tableName="t_invoice_line">
+            <column name="c_invoice_id"/>
+        </createIndex>
+        <createIndex indexName="idx_t_invoice_line_product_id" tableName="t_invoice_line">
+            <column name="c_product_id"/>
+        </createIndex>
+
+        <!-- Foreign keys for invoice line -->
+        <addForeignKeyConstraint
+                baseTableName="t_invoice_line"
+                baseColumnNames="c_invoice_id"
+                constraintName="fk_t_invoice_line_invoice"
+                referencedTableName="t_invoice"
+                referencedColumnNames="c_id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="t_invoice_line"
+                baseColumnNames="c_product_id"
+                constraintName="fk_t_invoice_line_product"
+                referencedTableName="t_product"
+                referencedColumnNames="c_id"
+                onDelete="RESTRICT"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

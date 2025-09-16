@@ -4,13 +4,19 @@ import fr.xenonbyte.optifact.backend.application.actor.exception.ActorIdNotFound
 import fr.xenonbyte.optifact.backend.application.actor.port.out.ActorRepository;
 import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.claim.port.out.ClaimRepository;
+import fr.xenonbyte.optifact.backend.application.common.sequence.exception.SequenceCodeNotFoundException;
+import fr.xenonbyte.optifact.backend.application.common.sequence.exception.SequenceIdNotFoundException;
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
 import fr.xenonbyte.optifact.backend.application.invoice.port.in.CreateInvoiceUseCase;
 import fr.xenonbyte.optifact.backend.application.invoice.port.out.InvoiceRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
+import fr.xenonbyte.optifact.backend.domain.common.sequence.Sequence;
 import fr.xenonbyte.optifact.backend.domain.invoice.Invoice;
 
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import static fr.xenonbyte.optifact.backend.domain.invoice.Invoice.DEFAULT_INVOICE_CODE;
 
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.APPLICATION_SERVICE)
 @Hexagonal.ApplicationService
@@ -21,11 +27,17 @@ public final class CreateInvoiceApplicationService implements CreateInvoiceUseCa
     private final InvoiceRepository repository;
     private final ActorRepository actorRepository;
     private final ClaimRepository claimRepository;
+    private final SequenceRepository sequenceRepository;
 
-    public CreateInvoiceApplicationService(InvoiceRepository repository, ActorRepository actorRepository, ClaimRepository claimRepository) {
+    public CreateInvoiceApplicationService(
+            InvoiceRepository repository,
+            ActorRepository actorRepository,
+            ClaimRepository claimRepository,
+            SequenceRepository sequenceRepository) {
         this.repository = repository;
         this.actorRepository = actorRepository;
         this.claimRepository = claimRepository;
+        this.sequenceRepository = sequenceRepository;
     }
 
     @Override
@@ -41,10 +53,19 @@ public final class CreateInvoiceApplicationService implements CreateInvoiceUseCa
             throw new ClaimIdNotFoundException(claimId);
         }
 
-        invoice = invoice.computeAmount();
+        Sequence sequence = sequenceRepository.findByCode(DEFAULT_INVOICE_CODE)
+                .orElseThrow(() -> new SequenceCodeNotFoundException(DEFAULT_INVOICE_CODE));
+        String nextNumber = sequence.nextNumber();
+
+        invoice = invoice.computeAmount()
+                .withReference(nextNumber);
 
         invoice = repository.save(invoice);
         LOGGER.info("Invoice created successfully with id: '" + invoice.getId() + "'");
+
+        sequence = sequence.incrementNext();
+        sequenceRepository.save(sequence);
+        LOGGER.info("Sequence updated successfully with id: '" + sequence.getId() + "'");
         return invoice;
     }
 }

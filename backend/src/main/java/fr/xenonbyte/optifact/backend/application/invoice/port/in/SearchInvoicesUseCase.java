@@ -14,5 +14,5 @@ import java.util.UUID;
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
 public interface SearchInvoicesUseCase {
-    Pagination<Invoice> searchInvoices(String referenceFilter, String actorName, InvoiceState state, CommonSearch search);
+    Pagination<Invoice> searchInvoices(String referenceFilter, String actorName, String claimName, String stateFilter, CommonSearch search);
 }
