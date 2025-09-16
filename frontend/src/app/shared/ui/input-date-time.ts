@@ -123,14 +123,14 @@ function pad2(n: number) { return String(n).padStart(2, '0'); }
   host: { class: 'block' }
 })
 export class InputDateTimeComponent {
-  value = model<string | Date | null>(null);
+  value = model<Date | null>(null);
   disabled = input<boolean>(false);
   readonly = input<boolean>(false);
   error = input<boolean>(false);
   placeholder = input<string>('');
   required = input<boolean>(false);
-  min = input<string | Date | null>(null);
-  max = input<string | Date | null>(null);
+  min = input<Date | null>(null);
+  max = input<Date | null>(null);
   dateFilter = input<((d: Date) => boolean) | null>(null);
   disabledDates = input<(string | Date)[]>([]);
   disableWeekends = input<boolean>(false);

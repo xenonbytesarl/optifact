@@ -37,8 +37,11 @@ public class InvoiceJpa extends BaseEntityJpa {
     @Column(name = "c_send_at")
     private ZonedDateTime sendAt;
 
-    @Column(name = "c_issue_at")
-    private ZonedDateTime issueAt;
+    @Column(name = "c_due_at")
+    private ZonedDateTime dueAt;
+
+    @Column(name = "c_amount_currency", nullable = false)
+    private String amountCurrency;
 
     @Column(name = "c_amount")
     private BigDecimal amount;

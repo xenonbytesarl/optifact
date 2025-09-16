@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Add currency columns to invoice and invoice line tables -->
+    <changeSet id="16092025_2015_alter_invoice_add_currencies" author="brice.mbiandji">
+        <!-- t_invoice: add c_amount_currency (ISO 4217) -->
+        <addColumn tableName="t_invoice">
+            <column name="c_amount_currency" type="varchar(3)"/>
+        </addColumn>
+
+        <!-- t_invoice_line: add c_unit_price_currency and c_amount_currency (ISO 4217) -->
+        <addColumn tableName="t_invoice_line">
+            <column name="c_unit_price_currency" type="varchar(3)"/>
+        </addColumn>
+        <addColumn tableName="t_invoice_line">
+            <column name="c_amount_currency" type="varchar(3)"/>
+        </addColumn>
+
+        <!-- Optional: back-fill with a sensible default to prevent nulls on existing rows -->
+        <update tableName="t_invoice">
+            <column name="c_amount_currency" value="EUR"/>
+            <where>c_amount_currency IS NULL</where>
+        </update>
+        <update tableName="t_invoice_line">
+            <column name="c_unit_price_currency" value="EUR"/>
+            <where>c_unit_price_currency IS NULL</where>
+        </update>
+        <update tableName="t_invoice_line">
+            <column name="c_amount_currency" value="EUR"/>
+            <where>c_amount_currency IS NULL</where>
+        </update>
+
+        <!-- If you want to enforce NOT NULL after back-fill, uncomment below
+        <addNotNullConstraint tableName="t_invoice" columnName="c_amount_currency" columnDataType="varchar(3)"/>
+        <addNotNullConstraint tableName="t_invoice_line" columnName="c_unit_price_currency" columnDataType="varchar(3)"/>
+        <addNotNullConstraint tableName="t_invoice_line" columnName="c_amount_currency" columnDataType="varchar(3)"/>
+        -->
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Change quantity type on t_invoice_line from integer to numeric to allow decimal quantities -->
+    <changeSet id="16092025_2032_alter_invoice_line_quantity_type" author="brice.mbiandji">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="t_invoice_line"/>
+            <columnExists tableName="t_invoice_line" columnName="c_quantity"/>
+        </preConditions>
+
+        <!-- Use modifyDataType to be database-agnostic. Choose numeric(19,3) to allow up to 3 decimals. -->
+        <modifyDataType tableName="t_invoice_line" columnName="c_quantity" newDataType="double precision"/>
+    </changeSet>
+
+</databaseChangeLog>

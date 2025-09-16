@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { invoiceSearchResolver } from './invoices.resolver';
+import { invoiceFindByIdResolver, invoiceSearchResolver } from './invoices.resolver';
 import { actorSearchResolver } from '../actors/actor.resolver';
+import { productSearchResolver } from '../products/product.resolver';
 
 export const invoicesRoutes: Routes = [
   {
@@ -9,5 +10,27 @@ export const invoicesRoutes: Routes = [
     resolve: { invoicesSearch: invoiceSearchResolver, actorSearch: actorSearchResolver },
     data: { title: 'Factures' }
   },
-  // Future routes for view/edit can be added here
+  {
+    path: 'new',
+    loadComponent: () => import('./screens/invoice-new').then(m => m.InvoiceNewPage),
+    resolve: { actorSearch: actorSearchResolver, productSearch: productSearchResolver }
+  },
+  {
+    path: ':id',
+    loadComponent: () => import('./screens/invoice-view').then(m => m.InvoiceViewPage),
+    resolve: {
+      invoiceFindById: invoiceFindByIdResolver,
+      actorSearch: actorSearchResolver,
+      productSearch: productSearchResolver
+    }
+  },
+  {
+    path: ':id/edit',
+    loadComponent: () => import('./screens/invoice-edit').then(m => m.InvoiceEditPage),
+    resolve: {
+      invoiceFindById: invoiceFindByIdResolver,
+      actorSearch: actorSearchResolver,
+      productSearch: productSearchResolver
+    }
+  },
 ];

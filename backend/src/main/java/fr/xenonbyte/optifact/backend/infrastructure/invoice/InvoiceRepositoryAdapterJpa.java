@@ -89,7 +89,7 @@ public final class InvoiceRepositoryAdapterJpa implements InvoiceRepository {
         }
         Sort.Direction sortDir = "DESC".equalsIgnoreCase(direction.name()) ? Sort.Direction.DESC : Sort.Direction.ASC;
         String fieldName = switch (field) {
-            case "reference", "createdAt", "updatedAt", "sendAt", "issueAt", "amount", "state" -> field;
+            case "reference", "createdAt", "updatedAt", "sendAt", "dueAt", "amount", "state" -> field;
             default -> "id";
         };
         return Sort.by(sortDir, fieldName);

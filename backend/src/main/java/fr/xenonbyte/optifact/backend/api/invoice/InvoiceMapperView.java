@@ -12,6 +12,7 @@ import org.mapstruct.ObjectFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Currency;
 import java.util.List;
 
 @Mapper
@@ -57,7 +58,9 @@ public interface InvoiceMapperView {
             v.setName(l.getName());
             v.setQuantity(l.getQuantity());
             v.setUnitPrice(l.getUnitPrice());
+            v.setUnitPriceCurrency(l.getUnitPriceCurrency().getCurrencyCode());
             v.setAmount(l.getAmount());
+            v.setAmountCurrency(l.getAmountCurrency().getCurrencyCode());
             list.add(v);
         }
         return list;
@@ -84,24 +87,29 @@ public interface InvoiceMapperView {
                         l.getName(),
                         l.getQuantity(),
                         l.getUnitPrice(),
+                        Currency.getInstance(l.getUnitPriceCurrency()),
                         l.getAmount(),
+                        Currency.getInstance(l.getAmountCurrency()),
                         null
                 );
+                dl.computeAmount();
                 lines.add(dl);
             }
         }
-        return Invoice.create(
+        Invoice invoice = Invoice.create(
                 view.getReference(),
-                null,
+                view.getCreatedAt() == null ? null : view.getCreatedAt().toZonedDateTime(),
                 view.getSendAt() == null ? null : view.getSendAt().toZonedDateTime(),
                 view.getActorId(),
-                view.getIssueAt() == null ? null : view.getIssueAt().toZonedDateTime(),
+                view.getDueAt() == null ? null : view.getDueAt().toZonedDateTime(),
                 null,
+                Currency.getInstance(view.getAmountCurrency()),
                 view.getClaimId(),
                 bank,
                 view.getState() == null ? null : InvoiceState.valueOf(view.getState().name()),
                 lines
         );
+        return invoice.computeAmount();
     }
 
     @ObjectFactory
@@ -121,8 +129,9 @@ public interface InvoiceMapperView {
         if (view.getLines() != null) {
             for (UpdateInvoiceLineRequestView l : view.getLines()) {
                 InvoiceLine dl = (l.getId() == null)
-                        ? InvoiceLine.create(l.getProductId(), l.getName(), l.getQuantity(), l.getUnitPrice(), l.getAmount(), null)
-                        : InvoiceLine.create(l.getId(), l.getProductId(), l.getName(), l.getQuantity(), l.getUnitPrice(), l.getAmount(), null);
+                        ? InvoiceLine.create(l.getProductId(), l.getName(), l.getQuantity(), l.getUnitPrice(), Currency.getInstance(l.getUnitPriceCurrency()), l.getAmount(), Currency.getInstance(l.getAmountCurrency()), null)
+                        : InvoiceLine.create(l.getId(), l.getProductId(), l.getName(), l.getQuantity(), l.getUnitPrice(), Currency.getInstance(l.getUnitPriceCurrency()), l.getAmount(), Currency.getInstance(l.getAmountCurrency()), null);
+                dl.computeAmount();
                 lines.add(dl);
             }
         }
@@ -131,8 +140,9 @@ public interface InvoiceMapperView {
                 null,
                 view.getSendAt() == null ? null : view.getSendAt().toZonedDateTime(),
                 view.getActorId(),
-                view.getIssueAt() == null ? null : view.getIssueAt().toZonedDateTime(),
+                view.getDueAt() == null ? null : view.getDueAt().toZonedDateTime(),
                 null,
+                Currency.getInstance(view.getAmountCurrency()),
                 view.getClaimId(),
                 bank,
                 view.getState() == null ? null : InvoiceState.valueOf(view.getState().name()),

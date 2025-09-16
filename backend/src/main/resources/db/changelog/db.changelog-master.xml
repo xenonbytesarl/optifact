@@ -17,4 +17,8 @@
     <include file="/db/changelog/changes/010-create-claim-and-claim-line-tables.xml"/>
     <include file="/db/changelog/changes/011-alter-claim-line-add-uploaded-at.xml"/>
     <include file="/db/changelog/changes/012-create-invoice-and-invoice-line-tables.xml"/>
+    <include file="/db/changelog/changes/013-alter-invoice-and-invoice-line-add-currencies.xml"/>
+    <include file="/db/changelog/changes/014-insert-invoice-sequence.xml"/>
+    <include file="/db/changelog/changes/015-alter-invoice-line-quantity-to-numeric.xml"/>
+    <include file="/db/changelog/changes/016-rename-invoice-issue-at-to-due-at.xml"/>
 </databaseChangeLog>
