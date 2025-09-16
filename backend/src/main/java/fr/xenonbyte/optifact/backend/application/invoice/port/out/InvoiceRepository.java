@@ -19,5 +19,5 @@ public interface InvoiceRepository {
 
     void delete(Invoice invoice);
 
-    Pagination<Invoice> search(String referenceFilter, String actorName, InvoiceState state, CommonSearch search);
+    Pagination<Invoice> search(String referenceFilter, String actorName, String claimName, String stateFilter, CommonSearch search);
 }

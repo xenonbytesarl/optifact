@@ -17,6 +17,8 @@ import static java.util.UUID.randomUUID;
 @Hexagonal.Entity
 public final class Invoice extends BaseEntity {
 
+    public static final String DEFAULT_INVOICE_CODE = "INVOICE";
+
     private final String reference;
     private final ZonedDateTime sendAt;
     private final UUID actorId;
@@ -145,6 +147,10 @@ public final class Invoice extends BaseEntity {
         return new Invoice(id, reference, createdAt, sendAt, actorId, issueAt, amount, claimId, bankAccount, state, lines);
     }
 
+    public Invoice withReference(String reference) {
+        return new Invoice(id, reference, createdAt, sendAt, actorId, issueAt, amount, claimId, bankAccount, state, lines);
+    }
+
     public String getReference() {
         return reference;
     }
@@ -180,6 +186,5 @@ public final class Invoice extends BaseEntity {
     public List<InvoiceLine> getLines() {
         return lines;
     }
-
 
 }
