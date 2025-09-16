@@ -5,9 +5,8 @@ import { GlobalApi } from './global.api';
 import { ErrorApiResponse, Page, SuccessApiResponse } from '../model/response.model';
 import {Direction} from '../model/direction.enum';
 import { parseApiDate } from '../utils/date.util';
-import {response} from 'express';
 
-export type ClaimState = 'DRAFT' | 'SUBMITTED' | 'IN_INSTRUCTION' | 'REJECTED' | 'VALIDATED' | 'DONE' | 'CANCELLED';
+export type ClaimState = 'DRAFT' | 'SUBMITTED' | 'IN_INSTRUCTION' | 'INSTRUCTION_REJECTED' | 'INSTRUCTION_DONE' | 'COMPLETE_COMPLIANT' | 'AGREEMENT_REFUSED' | 'AGREEMENT_GRANTED' | 'AGREEMENT_ADJOURNED' | 'CANCELLED';
 export type ClaimLineStatus = 'DRAFT' | 'UPLOADED' | 'VALIDATED' | 'REJECTED' | 'CANCELLED';
 export type AttachmentScope = 'EXTERNAL' | 'INTERNAL';
 
@@ -42,26 +41,30 @@ export interface ClaimLine {
 export interface Claim {
   id?: string;
   actorId?: string | null;
-  actorName?: string | null;
   productId?: string | null;
-  productName?: string | null;
   createdAt?: Date | null;
   submitAt?: Date | null;
-  rejectedAt: Date | null;
-  managerId?: string | null;
+  managerQuoteId?: string | null;
+  managerCompliantId?: string | null;
+  compliantAt?: Date | null;
   inInstructionAt?: Date | null;
   instructorId?: string | null;
-  validateAt?: Date | null;
-  validatorId?: string | null;
-  doneAt?: Date | null;
-  doneId?: string | null;
+  instructionDoneAt?: Date | null;
+  instructionRejectedAt?: Date | null;
+  agreementById?: string | null;
+  agreementGrantedAt?: Date | null;
+  agreementRefusedAt?: Date | null;
+  agreementAdjournedAt?: Date | null;
+  cancelById?: string | null;
   cancelAt?: Date | null;
-  cancelId?: string | null;
   uploadStarted: boolean | null;
   uploadEnded: boolean | null;
   state: ClaimState;
   reference?: string | null;
   lines: ClaimLine[];
+  // Optional display fields if backend provides them
+  actorName?: string | null;
+  productName?: string | null;
 }
 
 export interface AttachmentTransfert {
@@ -87,10 +90,15 @@ export class ClaimApi extends GlobalApi {
     return {
       ...c,
       createdAt: parseApiDate(c.createdAt),
+      updatedAt: parseApiDate(c.updatedAt),
       submitAt: parseApiDate(c.submitAt),
+      compliantAt: parseApiDate(c.compliantAt),
       inInstructionAt: parseApiDate(c.inInstructionAt),
-      validateAt: parseApiDate(c.validateAt),
-      doneAt: parseApiDate(c.doneAt),
+      instructionDoneAt: parseApiDate(c.instructionDoneAt),
+      instructionRejectedAt: parseApiDate(c.instructionRejectedAt),
+      agreementGrantedAt: parseApiDate(c.agreementGrantedAt),
+      agreementRefusedAt: parseApiDate(c.agreementRefusedAt),
+      agreementAdjournedAt: parseApiDate(c.agreementAdjournedAt),
       cancelAt: parseApiDate(c.cancelAt),
     } as Claim;
   }
@@ -298,9 +306,9 @@ export class ClaimApi extends GlobalApi {
     }
   }
 
-  async doneInstruction(claimId: string) {
+  async terminateInstruction(claimId: string) {
     try {
-      return await firstValueFrom(this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/done-instruction`, {}));
+      return await firstValueFrom(this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/terminate-instruction`, {}));
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.error) {
         return error.error as ErrorApiResponse;

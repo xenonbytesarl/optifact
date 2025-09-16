@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, InputSignal, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, computed, input, output } from '@angular/core';
 
 export interface Step {
   id: string;
@@ -41,8 +41,8 @@ export interface Step {
                 [style.color]="colorFor(s.index, s.step)"
                 [attr.tabindex]="tabIndexFor(s.index, s.step)">
                 @if (showIndex()) { <span class="opacity-70">{{ i + 1 }}</span> }
-                <span class="font-medium" [class.truncate]="truncate()" [attr.title]="s.step.label">{{ s.step.label }}</span>
-                @if (s.step.subtitle) { <span class="text-xs opacity-70 hidden md:inline" [class.truncate]="truncate()" [attr.title]="s.step.subtitle">{{ s.step.subtitle }}</span> }
+                <span class="font-medium" [class.truncate]="truncate()" [attr.title]="s.step.label" [style.fontSize]="fontSize()">{{ s.step.label }}</span>
+                @if (s.step.subtitle) { <span class="opacity-70 hidden md:inline" [class.truncate]="truncate()" [attr.title]="s.step.subtitle" [style.fontSize]="subtitleFontSize()">{{ s.step.subtitle }}</span> }
               </button>
             </li>
           }
@@ -70,6 +70,8 @@ export class ChevronStepperComponent {
   fit = input<'auto'|'equal'>('equal');
   showIndex = input(false);
   truncate = input(true);
+  // Controls the text size inside chevrons (label/subtitle)
+  textScale = input<'xs'|'sm'|'md'|'lg'>('md');
 
   // Output
   stepSelected = output<number>();
@@ -88,6 +90,24 @@ export class ChevronStepperComponent {
       case 'sm': return '2rem'; // h-8
       case 'lg': return '3rem'; // h-12
       default: return '2.5rem'; // h-10
+    }
+  });
+
+  // Font sizes for label and optional subtitle
+  fontSize = computed(() => {
+    switch (this.textScale()) {
+      case 'xs': return '0.75rem';    // text-xs
+      case 'sm': return '0.875rem';   // text-sm
+      case 'lg': return '1.125rem';   // text-lg
+      default: return '1rem';         // text-base
+    }
+  });
+  subtitleFontSize = computed(() => {
+    switch (this.textScale()) {
+      case 'xs': return '0.6875rem';  // slightly smaller than xs
+      case 'sm': return '0.75rem';
+      case 'lg': return '1rem';
+      default: return '0.875rem';
     }
   });
 

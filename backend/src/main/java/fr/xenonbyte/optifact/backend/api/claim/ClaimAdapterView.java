@@ -7,7 +7,7 @@ import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimResponseView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.RejectClaimLineRequest;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.CreateClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.DeleteClaimByIdUseCase;
-import fr.xenonbyte.optifact.backend.application.claim.port.in.DoneInstructionClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.TerminateInstructionClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.FindClaimByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.InstructClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.RejectClaimLineUseCase;
@@ -70,7 +70,7 @@ public class ClaimAdapterView {
     private final InstructClaimUseCase instructClaimUseCase;
     private final ValidateClaimLineUseCase validateClaimLineUseCase;
     private final RejectClaimLineUseCase rejectClaimLineUseCase;
-    private final DoneInstructionClaimUseCase doneInstructionClaimUseCase;
+    private final TerminateInstructionClaimUseCase terminateInstructionClaimUseCase;
 
     @Value("${optifact.file.claim.rootDirectory}")
     private String rootDirectory;
@@ -90,7 +90,7 @@ public class ClaimAdapterView {
                             InstructClaimUseCase instructClaimUseCase,
                             ValidateClaimLineUseCase validateClaimLineUseCase,
                             RejectClaimLineUseCase rejectClaimLineUseCase,
-                            DoneInstructionClaimUseCase doneInstructionClaimUseCase) {
+                            TerminateInstructionClaimUseCase terminateInstructionClaimUseCase) {
         this.createUseCase = createUseCase;
         this.updateUseCase = updateUseCase;
         this.findByIdUseCase = findByIdUseCase;
@@ -106,7 +106,7 @@ public class ClaimAdapterView {
         this.instructClaimUseCase = instructClaimUseCase;
         this.validateClaimLineUseCase = validateClaimLineUseCase;
         this.rejectClaimLineUseCase = rejectClaimLineUseCase;
-        this.doneInstructionClaimUseCase = doneInstructionClaimUseCase;
+        this.terminateInstructionClaimUseCase = terminateInstructionClaimUseCase;
     }
 
     public ClaimResponseView createClaim(ClaimApiRequestView view) {
@@ -263,7 +263,7 @@ public class ClaimAdapterView {
         return mapperView.toResponseView(instructClaimUseCase.instructClaim(claimId));
     }
 
-    public ClaimResponseView doneInstruction(UUID claimId) {
-        return mapperView.toResponseView(doneInstructionClaimUseCase.doneInstructClaim(claimId));
+    public ClaimResponseView terminateInstruction(UUID claimId) {
+        return mapperView.toResponseView(terminateInstructionClaimUseCase.terminateInstructClaim(claimId));
     }
 }

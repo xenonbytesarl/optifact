@@ -2,7 +2,7 @@ package fr.xenonbyte.optifact.backend.application.claim;
 
 import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimHasNonInstructedBadException;
 import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimIdNotFoundException;
-import fr.xenonbyte.optifact.backend.application.claim.port.in.DoneInstructionClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.TerminateInstructionClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.out.ClaimRepository;
 import fr.xenonbyte.optifact.backend.domain.claim.Claim;
 import fr.xenonbyte.optifact.backend.domain.claim.ClaimLine;
@@ -19,18 +19,18 @@ import java.util.logging.Logger;
  */
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.APPLICATION_SERVICE)
 @Hexagonal.ApplicationService
-public final class DoneInstructClaimApplicationService implements DoneInstructionClaimUseCase {
+public final class TerminateInstructClaimApplicationService implements TerminateInstructionClaimUseCase {
 
-    private static final Logger LOGGER = Logger.getLogger(DoneInstructClaimApplicationService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TerminateInstructClaimApplicationService.class.getName());
 
     private final ClaimRepository repository;
 
-    public DoneInstructClaimApplicationService(ClaimRepository repository) {
+    public TerminateInstructClaimApplicationService(ClaimRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public Claim doneInstructClaim(UUID claimId) {
+    public Claim terminateInstructClaim(UUID claimId) {
         LOGGER.info("Claim terminate instructing claim with id: '" + claimId + "'");
 
         Claim claim = repository.findById(claimId).orElseThrow(
@@ -47,10 +47,10 @@ public final class DoneInstructClaimApplicationService implements DoneInstructio
 
         if(hasRejectedLines) {
             //TODO managerId will set while user management implementation will be completed
-            claim = claim.withReject(null, ZonedDateTime.now());
+            claim = claim.withInstructionRejected(null, ZonedDateTime.now());
         } else {
             //TODO managerId will set while user management implementation will be completed
-            claim = claim.withValidate(null, ZonedDateTime.now());
+            claim = claim.withInstructionDone(null, ZonedDateTime.now());
         }
 
         claim = repository.save(claim);

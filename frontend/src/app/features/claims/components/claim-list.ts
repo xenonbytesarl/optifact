@@ -123,9 +123,12 @@ export class ClaimListComponent {
       case 'DRAFT': return 'neutral';
       case 'SUBMITTED': return 'info';
       case 'IN_INSTRUCTION': return 'warn';
-      case 'REJECTED': return 'danger';
-      case 'VALIDATED': return 'success';
-      case 'DONE': return 'success';
+      case 'INSTRUCTION_REJECTED': return 'danger';
+      case 'INSTRUCTION_DONE': return 'success';
+      case 'COMPLETE_COMPLIANT': return 'warn';
+      case 'AGREEMENT_GRANTED': return 'success';
+      case 'AGREEMENT_REFUSED': return 'danger';
+      case 'AGREEMENT_ADJOURNED': return 'neutral';
       case 'CANCELLED': return 'neutral';
       default: return 'neutral';
     }
@@ -136,9 +139,12 @@ export class ClaimListComponent {
       case 'DRAFT': return this.i18n.t('claims.states.draft');
       case 'SUBMITTED': return this.i18n.t('claims.states.submit');
       case 'IN_INSTRUCTION': return this.i18n.t('claims.states.in_instruction');
-      case 'REJECTED': return this.i18n.t('claims.states.reject');
-      case 'VALIDATED': return this.i18n.t('claims.states.validated');
-      case 'DONE': return this.i18n.t('claims.states.done');
+      case 'INSTRUCTION_REJECTED': return this.i18n.t('claims.states.instruction_reject');
+      case 'INSTRUCTION_DONE': return this.i18n.t('claims.states.instruction_done');
+      case 'COMPLETE_COMPLIANT': return this.i18n.t('claims.states.complete_compliant');
+      case 'AGREEMENT_GRANTED': return this.i18n.t('claims.states.agreement_granted');
+      case 'AGREEMENT_REFUSED': return this.i18n.t('claims.states.agreement_refused');
+      case 'AGREEMENT_ADJOURNED': return this.i18n.t('claims.states.agreement_adjourned');
       case 'CANCELLED': return this.i18n.t('claims.states.cancelled');
       default: return '';
     }

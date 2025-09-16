@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.UUID;
@@ -56,14 +55,14 @@ public class ClaimResource implements ClaimsApi {
     }
 
     @Override
-    public ResponseEntity<ClaimApiResponseView> doneInstruction(String acceptLanguage, UUID claimId) {
+    public ResponseEntity<ClaimApiResponseView> terminateInstruction(String acceptLanguage, UUID claimId) {
         return ResponseEntity.status(OK).body(
                 new ClaimApiResponseView()
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .status(OK.name())
-                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_DONE_INSTRUCTION_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(of(CONTENT, adapterView.doneInstruction(claimId)))
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_TERMINATE_INSTRUCTION_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.terminateInstruction(claimId)))
         );
     }
 

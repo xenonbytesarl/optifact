@@ -395,13 +395,13 @@ paths:
             application/json:
               schema:
                 $ref: '../../common/schemas.yaml#/ApiErrorResponse'
-  /claims/{claimId}/done-instruction:
+  /claims/{claimId}/terminate-instruction:
     post:
       tags:
         - Claim
-      summary: Mark instruction done
-      description: Marks the claim instruction as done and moves it to next state
-      operationId: doneInstruction
+      summary: Mark instruction rejected or validated
+      description: Marks the claim instruction as rejected or validated and moves it to next state
+      operationId: terminateInstruction
       parameters:
         - $ref: '../../parameters/common.yaml#/accept-language'
         - name: claimId
@@ -566,7 +566,7 @@ components:
   schemas:
     ClaimStateView:
       type: string
-      enum: [DRAFT, SUBMITTED, IN_INSTRUCTION, VALIDATED, REJECTED, DONE, CANCELLED]
+      enum: [DRAFT, SUBMITTED, IN_INSTRUCTION, INSTRUCTION_REJECTED, INSTRUCTION_DONE, COMPLETE_COMPLIANT, AGREEMENT_REFUSED, AGREEMENT_GRANTED, AGREEMENT_ADJOURNED, CANCELLED]
     ClaimLineStatusView:
       type: string
       enum: [DRAFT, UPLOADED, VALIDATED, REJECTED, CANCELLED]
@@ -652,22 +652,31 @@ components:
           format: uuid
         submitAt:
           type: string
-        managerId:
+        managerQuoteId:
           type: string
           format: uuid
+        managerCompliantId:
+          type: string
+          format: uuid
+        compliantAt:
+          type: string
         inInstructionAt:
           type: string
         instructorId:
           type: string
           format: uuid
-        validateAt:
+        instructionDoneAt:
           type: string
-        rejectAt:
+        instructionRejectedAt:
           type: string
-        doneById:
+        agreementById:
           type: string
           format: uuid
-        doneAt:
+        agreementGrantedAt:
+          type: string
+        agreementRefusedAt:
+          type: string
+        agreementAdjournedAt:
           type: string
         cancelById:
           type: string

@@ -23,10 +23,13 @@ public interface ClaimMapperView {
         return switch (state) {
             case DRAFT -> ClaimStateView.DRAFT;
             case SUBMITTED -> ClaimStateView.SUBMITTED;
-            case REJECTED -> ClaimStateView.REJECTED;
             case IN_INSTRUCTION -> ClaimStateView.IN_INSTRUCTION;
-            case VALIDATED -> ClaimStateView.VALIDATED;
-            case DONE -> ClaimStateView.DONE;
+            case INSTRUCTION_REJECTED -> ClaimStateView.INSTRUCTION_REJECTED;
+            case INSTRUCTION_DONE -> ClaimStateView.INSTRUCTION_DONE;
+            case COMPLETE_COMPLIANT -> ClaimStateView.COMPLETE_COMPLIANT;
+            case AGREEMENT_REFUSED -> ClaimStateView.AGREEMENT_REFUSED;
+            case AGREEMENT_GRANTED -> ClaimStateView.AGREEMENT_GRANTED;
+            case AGREEMENT_ADJOURNED -> ClaimStateView.AGREEMENT_ADJOURNED;
             case CANCELLED -> ClaimStateView.CANCELLED;
         };
     }
@@ -55,6 +58,10 @@ public interface ClaimMapperView {
         return Claim.create(
                 view.getActorId(),
                 view.getProductId(),
+                null,
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,

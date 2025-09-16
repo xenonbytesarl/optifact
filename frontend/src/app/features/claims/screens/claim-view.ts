@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, effect, inject, output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
@@ -14,11 +14,14 @@ import { actorStore } from '../../actors/actors.store';
 import { productStore } from '../../products/products.store';
 import { AutocompleteItem } from '../../../shared/ui/autocomplete';
 import { ChevronStepperComponent, Step as ChevronStep } from '../../../shared/ui/chevron-stepper';
+import {Claim, ClaimState} from '../../../core/api/claim.api';
+import {ButtonComponent} from '../../../shared/ui/button';
+import {ClaimFormModel} from '../components/claim-form';
 
 @Component({
   selector: 'app-claim-view-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, TabsComponent, ClaimLinesTabComponent, AppDateTimePipe, ChevronStepperComponent],
+  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, TabsComponent, ClaimLinesTabComponent, AppDateTimePipe, ChevronStepperComponent, ButtonComponent],
   template: `
     <app-action-bar
       [showSave]="false"
@@ -36,7 +39,8 @@ import { ChevronStepperComponent, Step as ChevronStep } from '../../../shared/ui
           <app-chevron-stepper
             [steps]="steps()"
             [activeIndex]="activeStep()"
-            size="lg"
+            size="md"
+            textScale="sm"
             (stepSelected)="$event"
           />
           <div class="text-2xl font-bold mt-3 mb-3">{{ formValue().reference || '' }}</div>
@@ -55,7 +59,7 @@ import { ChevronStepperComponent, Step as ChevronStep } from '../../../shared/ui
             </div>
             <div>
               <div class="text-xs text-muted">{{ i18n.t('claims.fields.doneAt') }}</div>
-              <div class="text-sm font-medium">{{ formValue().doneAt | appDateTime }}</div>
+              <div class="text-sm font-medium">{{ formValue().instructionDoneAt | appDateTime }}</div>
             </div>
           </div>
         </div>
@@ -69,7 +73,7 @@ import { ChevronStepperComponent, Step as ChevronStep } from '../../../shared/ui
       </app-card>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimViewPage {
   readonly route = inject(ActivatedRoute);
@@ -90,9 +94,14 @@ export class ClaimViewPage {
     label: p.code ? `${p.name} (${p.code})` : p.name
   })));
 
+  valueChange = output<ClaimFormModel>();
+  submit = output<string>();
+  toInstruction = output<string>();
+  doneInstruction = output<string>();
+
   // Stepper state for read-only view
-  readonly statusOrder: Array<'DRAFT' | 'SUBMITTED' | 'IN_INSTRUCTION' | 'REJECTED' | 'VALIDATED' | 'DONE' | 'CANCELLED'> = [
-    'DRAFT', 'SUBMITTED', 'IN_INSTRUCTION', 'REJECTED', 'VALIDATED', 'DONE', 'CANCELLED'
+  readonly statusOrder: Array<ClaimState> = [
+    'DRAFT', 'SUBMITTED', 'IN_INSTRUCTION', 'INSTRUCTION_REJECTED', 'INSTRUCTION_DONE', 'COMPLETE_COMPLIANT', 'AGREEMENT_GRANTED', 'AGREEMENT_REFUSED', 'AGREEMENT_ADJOURNED', 'CANCELLED'
   ];
 
   activeStep = computed(() => {
@@ -110,22 +119,29 @@ export class ClaimViewPage {
         case 'DRAFT': return this.i18n.t('claims.states.draft');
         case 'SUBMITTED': return this.i18n.t('claims.states.submit');
         case 'IN_INSTRUCTION': return this.i18n.t('claims.states.in_instruction');
-        case 'REJECTED': return this.i18n.t('claims.states.reject');
-        case 'VALIDATED': return this.i18n.t('claims.states.validated');
-        case 'DONE': return this.i18n.t('claims.states.done');
+        case 'INSTRUCTION_REJECTED': return this.i18n.t('claims.states.instruction_reject');
+        case 'INSTRUCTION_DONE': return this.i18n.t('claims.states.instruction_done');
+        case 'COMPLETE_COMPLIANT': return this.i18n.t('claims.states.complete_compliant');
+        case 'AGREEMENT_GRANTED': return this.i18n.t('claims.states.agreement_granted');
+        case 'AGREEMENT_REFUSED': return this.i18n.t('claims.states.agreement_refused');
+        case 'AGREEMENT_ADJOURNED': return this.i18n.t('claims.states.agreement_adjourned');
         case 'CANCELLED': return this.i18n.t('claims.states.cancelled');
         default: return s;
       }
     };
+
     const iconFor = (s: string) => {
       switch (s) {
         case 'DRAFT': return 'draft';
         case 'SUBMITTED': return 'send';
         case 'IN_INSTRUCTION': return 'rule';
-        case 'REJECTED': return 'cancel';
-        case 'VALIDATED': return 'task_alt';
-        case 'DONE': return 'done_all';
-        case 'CANCELLED': return 'block';
+        case 'INSTRUCTION_REJECTED': return 'done_all';
+        case 'INSTRUCTION_DONE': return 'done_all';
+        case 'COMPLETE_COMPLIANT': return 'task_alt';
+        case 'AGREEMENT_GRANTED': return 'verified';
+        case 'AGREEMENT_REFUSED': return 'block';
+        case 'AGREEMENT_ADJOURNED': return 'schedule';
+        case 'CANCELLED': return 'cancel';
         default: return '';
       }
     };
@@ -134,9 +150,12 @@ export class ClaimViewPage {
         case 'DRAFT': return true;
         case 'SUBMITTED': return true;
         case 'IN_INSTRUCTION': return true;
-        case 'REJECTED': return false;
-        case 'VALIDATED': return true;
-        case 'DONE': return true;
+        case 'INSTRUCTION_DONE': return true;
+        case 'INSTRUCTION_REJECTED': return false;
+        case 'COMPLETE_COMPLIANT': return true;
+        case 'AGREEMENT_GRANTED': return true;
+        case 'AGREEMENT_REFUSED': return false;
+        case 'AGREEMENT_ADJOURNED': return false;
         case 'CANCELLED': return false;
         default: return false;
       }

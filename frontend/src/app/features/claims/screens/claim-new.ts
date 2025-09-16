@@ -37,13 +37,13 @@ import {AutocompleteItem} from '../../../shared/ui/autocomplete';
             [stateRequiredError]="stateHasError()"
             [actorItems]="actorItems()"
             [productItems]="productItems()"
-            (valueChange)="onValueChange($event)"w
+            (valueChange)="onValueChange($event)"
           />
         </div>
       </app-card>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimNewPage {
   ui = useClaimScreen();

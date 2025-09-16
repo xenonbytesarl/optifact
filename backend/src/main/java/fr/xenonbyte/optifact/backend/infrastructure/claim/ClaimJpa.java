@@ -11,7 +11,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,8 +34,8 @@ public class ClaimJpa extends BaseEntityJpa {
     @Column(name = "c_submit_at")
     private ZonedDateTime submitAt;
 
-    @Column(name = "c_manager_id")
-    private UUID managerId;
+    @Column(name = "c_manager_quote_id")
+    private UUID managerQuoteId;
 
     @Column(name = "c_in_instruction_at")
     private ZonedDateTime inInstructionAt;
@@ -44,17 +43,29 @@ public class ClaimJpa extends BaseEntityJpa {
     @Column(name = "c_instructor_id")
     private UUID instructorId;
 
-    @Column(name = "c_validate_at")
-    private ZonedDateTime validateAt;
+    @Column(name = "c_instruction_done_at")
+    private ZonedDateTime instructionDoneAt;
 
-    @Column(name = "c_reject_at")
-    private ZonedDateTime rejectAt;
+    @Column(name = "c_instruction_rejected_at")
+    private ZonedDateTime instructionRejectedAt;
 
-    @Column(name = "c_done_by_id")
-    private UUID doneById;
+    @Column(name = "c_agreement_by_id")
+    private UUID agreementById;
 
-    @Column(name = "c_done_at")
-    private ZonedDateTime doneAt;
+    @Column(name = "c_manager_compliant_by_id")
+    private UUID managerCompliantById;
+
+    @Column(name = "c_compliant_at")
+    private ZonedDateTime compliantAt;
+
+    @Column(name = "c_agreement_granted_at")
+    private ZonedDateTime agreementGrantedAt;
+
+    @Column(name = "c_agreement_refused_at")
+    private ZonedDateTime agreementRefusedAt;
+
+    @Column(name = "c_agreement_adjourned_at")
+    private ZonedDateTime agreementAdjournedAt;
 
     @Column(name = "c_cancel_by_id")
     private UUID cancelById;

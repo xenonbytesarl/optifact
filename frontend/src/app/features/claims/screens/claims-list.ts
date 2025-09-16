@@ -24,7 +24,7 @@ import { ClaimSortColumn } from '../../../core/api/claim.api';
       <app-card>
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold">{{ 'claims.title' | t }}</h2>
-          <app-button icon="add" [label]="'claims.new' | t" (click)="goNew()" />
+          <app-button size="sm" icon="add" [label]="'claims.new' | t" (click)="goNew()" />
         </div>
 
         <app-claim-list

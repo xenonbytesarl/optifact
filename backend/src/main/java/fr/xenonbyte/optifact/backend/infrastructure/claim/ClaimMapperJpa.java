@@ -4,6 +4,7 @@ import fr.xenonbyte.optifact.backend.domain.claim.Claim;
 import fr.xenonbyte.optifact.backend.domain.claim.ClaimLine;
 import fr.xenonbyte.optifact.backend.domain.claim.ClaimLineStatus;
 import fr.xenonbyte.optifact.backend.domain.claim.ClaimState;
+import fr.xenonbyte.optifact.backend.infrastructure.common.attachment.AttachmentJpa;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
@@ -31,7 +32,7 @@ public interface ClaimMapperJpa {
                     .id(l.getId())
                     .createdAt(l.getCreatedAt())
                     .uploadedAt(l.getUploadedAt())
-                    .attachment(l.getAttachmentId() == null ? null : fr.xenonbyte.optifact.backend.infrastructure.common.attachment.AttachmentJpa.builder().id(l.getAttachmentId()).build())
+                    .attachment(l.getAttachmentId() == null ? null : AttachmentJpa.builder().id(l.getAttachmentId()).build())
                     .updatedAt(l.getUpdatedAt())
                     .validateAt(l.getValidateAt())
                     .validateById(l.getValidateById())
@@ -76,13 +77,17 @@ public interface ClaimMapperJpa {
                 jpa.getActor().getId(),
                 jpa.getProduct().getId(),
                 jpa.getSubmitAt(),
-                jpa.getManagerId(),
+                jpa.getManagerQuoteId(),
+                jpa.getManagerCompliantById(),
+                jpa.getCompliantAt(),
                 jpa.getInInstructionAt(),
                 jpa.getInstructorId(),
-                jpa.getValidateAt(),
-                jpa.getRejectAt(),
-                jpa.getDoneById(),
-                jpa.getDoneAt(),
+                jpa.getInstructionDoneAt(),
+                jpa.getInstructionRejectedAt(),
+                jpa.getAgreementById(),
+                jpa.getAgreementGrantedAt(),
+                jpa.getAgreementRefusedAt(),
+                jpa.getAgreementAdjournedAt(),
                 jpa.getCancelById(),
                 jpa.getCancelAt(),
                 ClaimState.valueOf(jpa.getState().name()),

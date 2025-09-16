@@ -12,6 +12,6 @@ import java.util.UUID;
  */
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
-public interface DoneInstructionClaimUseCase {
-    Claim doneInstructClaim(UUID claimId);
+public interface TerminateInstructionClaimUseCase {
+    Claim terminateInstructClaim(UUID claimId);
 }
