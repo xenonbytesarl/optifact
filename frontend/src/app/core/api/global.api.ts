@@ -8,7 +8,7 @@ import {environment} from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class GlobalHttpApi {
+export class GlobalApi {
   protected readonly http = inject(HttpClient);
   protected readonly i18n = inject(TranslateService);
   protected readonly apiUrl = environment.apiUrl ?? '';

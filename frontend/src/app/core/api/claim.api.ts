@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpErrorResponse, HttpParams, HttpResponse} from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { GlobalHttpApi } from './global-http-repository.service';
+import { GlobalApi } from './global.api';
 import { ErrorApiResponse, Page, SuccessApiResponse } from '../model/response.model';
 import {Direction} from '../model/direction.enum';
 import { parseApiDate } from '../utils/date.util';
@@ -79,7 +79,7 @@ export interface AttachementDownload {
 
 
 @Injectable({ providedIn: 'root' })
-export class ClaimApi extends GlobalHttpApi {
+export class ClaimApi extends GlobalApi {
   private base = this.apiUrl + '/claims';
 
   private mapClaim(c: any): Claim {

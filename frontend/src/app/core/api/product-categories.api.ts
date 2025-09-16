@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {firstValueFrom} from 'rxjs';
-import {GlobalHttpApi} from './global-http-repository.service';
+import {GlobalApi} from './global.api';
 import {ErrorApiResponse, Page, SuccessApiResponse} from '../model/response.model';
 import {Direction} from '../model/direction.enum';
 
@@ -13,7 +13,7 @@ export interface ProductCategory {
 export type ProductCategorySortColumn = 'name';
 
 @Injectable({providedIn: 'root'})
-export class ProductCategoriesApi extends GlobalHttpApi {
+export class ProductCategoriesApi extends GlobalApi {
   private base = this.apiUrl + '/product-categories';
 
   async search(nameFilter: string, page: number, size: number, direction: Direction, sort: ProductCategorySortColumn) {

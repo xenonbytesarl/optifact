@@ -4,10 +4,10 @@ import { firstValueFrom } from 'rxjs';
 import {Actor, ActorSortColumn} from './models';
 import {Direction} from '../../model/direction.enum';
 import {ErrorApiResponse, Page, SuccessApiResponse} from '../../model/response.model';
-import {GlobalHttpApi} from '../global-http-repository.service';
+import {GlobalApi} from '../global.api';
 
 @Injectable({ providedIn: 'root' })
-export class ActorsApi extends GlobalHttpApi {
+export class ActorsApi extends GlobalApi {
   private base = this.apiUrl + '/actors';
 
   async search(nameFilter: string, referenceFilter: string, page: number, size: number, direction: Direction, sort: ActorSortColumn) {
