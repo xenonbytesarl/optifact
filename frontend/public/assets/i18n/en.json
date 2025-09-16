@@ -194,7 +194,28 @@
   "invoices": {
     "title": "Invoices",
     "subtitle": "Track your invoices",
-    "new": "New invoice"
+    "new": "New invoice",
+    "fields": {
+      "reference": "Reference",
+      "createdAt": "Created at",
+      "actor": "Actor",
+      "claim": "Claim",
+      "state": "Status"
+    },
+    "states": {
+      "draft": "Draft",
+      "validate": "Validated",
+      "paid": "Paid",
+      "cancel": "Cancelled"
+    },
+    "messages": {
+      "deleted": { "success": "Invoice deleted successfully.", "error": "Failed to delete invoice." },
+      "created": { "success": "Invoice created successfully.", "error": "Failed to create invoice." },
+      "update": { "success": "Invoice updated successfully.", "error": "Failed to update invoice." },
+      "find": { "success": "Invoice retrieved successfully.", "error": "Failed to retrieve invoice." },
+      "search": { "success": "Invoices loaded successfully.", "error": "Failed to load invoices." },
+      "remove": { "success": "Invoice deleted successfully.", "error": "Failed to delete invoice." }
+    }
   },
   "payments": {
     "title": "Payments",
@@ -377,7 +398,8 @@
       "product": "Delete this product?",
       "productCategory": "Delete this category?",
       "attachmentType": "Delete this document type?",
-      "claim": "Delete this claim?"
+      "claim": "Delete this claim?",
+      "invoice": "Delete this invoice?"
     }
   },
   "validation": {
