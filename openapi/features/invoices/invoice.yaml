@@ -1,0 +1,450 @@
+openapi: 3.0.3
+info:
+  title: Invoice API
+  description: API for managing invoices and their lines
+  version: 1.0.0
+servers:
+  - url: /api/v1/optifact
+    description: Default server
+tags:
+  - name: Invoice
+    description: Operations related to invoices
+paths:
+  /invoices:
+    get:
+      tags:
+        - Invoice
+      summary: Search invoices
+      description: Searches for invoices based on the provided criteria
+      operationId: searchInvoices
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - $ref: '../../parameters/common.yaml#/pageParam'
+        - $ref: '../../parameters/common.yaml#/sizeParam'
+        - $ref: '../../parameters/common.yaml#/sortFieldParam'
+        - $ref: '../../parameters/common.yaml#/sortDirectionParam'
+        - name: referenceFilter
+          in: query
+          description: Optional invoice reference filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+        - name: actorName
+          in: query
+          description: Optional actor name filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+        - name: claimName
+          in: query
+          description: Optional claim reference filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+        - name: stateFilter
+          in: query
+          description: Optional invoice state to filter by
+          required: false
+          schema:
+            $ref: '#/components/schemas/InvoiceStateView'
+      responses:
+        '200':
+          description: Search completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoicePageApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    post:
+      tags:
+        - Invoice
+      summary: Create an invoice
+      description: Creates a new invoice
+      operationId: createInvoice
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceApiRequestView'
+      responses:
+        '201':
+          description: Invoice created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /invoices/{invoiceId}:
+    get:
+      tags:
+        - Invoice
+      summary: Find an invoice by ID
+      description: Retrieves an invoice by its unique identifier
+      operationId: findInvoiceById
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: invoiceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Invoice found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    put:
+      tags:
+        - Invoice
+      summary: Update an invoice
+      description: Updates an existing invoice
+      operationId: updateInvoice
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: invoiceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInvoiceApiRequestView'
+      responses:
+        '200':
+          description: Invoice updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    delete:
+      tags:
+        - Invoice
+      summary: Delete an invoice
+      description: Deletes an invoice by ID
+      operationId: deleteInvoice
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: invoiceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Invoice deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Invalid state transition
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+components:
+  schemas:
+    InvoiceStateView:
+      type: string
+      enum: [DRAFT, VALIDATE, PAID, CANCEL]
+    BankAccountView:
+      type: object
+      required:
+        - bankAccountOwner
+        - bankName
+        - bankCode
+        - bankCounter
+        - bankAccountNumber
+        - bankAccountKey
+      properties:
+        bankAccountOwner:
+          type: string
+        bankName:
+          type: string
+        bankCode:
+          type: string
+        bankCounter:
+          type: string
+        bankAccountNumber:
+          type: string
+        bankAccountKey:
+          type: string
+    InvoiceLineRequestView:
+      type: object
+      required:
+        - productId
+        - name
+        - quantity
+        - unitPrice
+      properties:
+        productId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+          minimum: 1
+        unitPrice:
+          type: string
+          format: decimal
+        amount:
+          type: string
+          format: decimal
+          description: Precomputed amount (optional); server may recompute
+    UpdateInvoiceLineRequestView:
+      allOf:
+        - $ref: '#/components/schemas/InvoiceLineRequestView'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+    InvoiceApiRequestView:
+      type: object
+      required:
+        - actorId
+        - lines
+      properties:
+        reference:
+          type: string
+          description: Optional invoice reference (unique); can be generated server-side
+        sendAt:
+          type: string
+          format: date-time
+        actorId:
+          type: string
+          format: uuid
+        issueAt:
+          type: string
+          format: date-time
+        amount:
+          type: string
+          format: decimal
+        claimId:
+          type: string
+          format: uuid
+        bankAccount:
+          $ref: '#/components/schemas/BankAccountView'
+        state:
+          $ref: '#/components/schemas/InvoiceStateView'
+        lines:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/InvoiceLineRequestView'
+    UpdateInvoiceApiRequestView:
+      type: object
+      required:
+        - actorId
+        - lines
+      properties:
+        reference:
+          type: string
+          description: Optional invoice reference (unique); can be generated server-side
+        sendAt:
+          type: string
+          format: date-time
+        actorId:
+          type: string
+          format: uuid
+        issueAt:
+          type: string
+          format: date-time
+        amount:
+          type: string
+          format: decimal
+        claimId:
+          type: string
+          format: uuid
+        bankAccount:
+          $ref: '#/components/schemas/BankAccountView'
+        state:
+          $ref: '#/components/schemas/InvoiceStateView'
+        lines:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/UpdateInvoiceLineRequestView'
+    InvoiceLineResponseView:
+      allOf:
+        - $ref: '#/components/schemas/InvoiceLineRequestView'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              format: uuid
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+    InvoiceResponseView:
+      type: object
+      required:
+        - id
+        - actorId
+        - state
+        - reference
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+        reference:
+          type: string
+        sendAt:
+          type: string
+        actorId:
+          type: string
+          format: uuid
+        issueAt:
+          type: string
+        amount:
+          type: string
+          format: decimal
+        claimId:
+          type: string
+          format: uuid
+        bankAccount:
+          $ref: '#/components/schemas/BankAccountView'
+        state:
+          $ref: '#/components/schemas/InvoiceStateView'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceLineResponseView'
+    InvoiceApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/InvoiceResponseView'
+    InvoicePageResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/PaginationResponseView'
+        - type: object
+          required:
+            - elements
+          properties:
+            elements:
+              type: array
+              description: The list of invoices
+              items:
+                $ref: '#/components/schemas/InvoiceResponseView'
+    InvoicePageApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/InvoicePageResponseView'

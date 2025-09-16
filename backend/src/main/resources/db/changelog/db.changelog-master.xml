@@ -16,4 +16,5 @@
     <include file="/db/changelog/changes/009-create-attachment-table.xml"/>
     <include file="/db/changelog/changes/010-create-claim-and-claim-line-tables.xml"/>
     <include file="/db/changelog/changes/011-alter-claim-line-add-uploaded-at.xml"/>
+    <include file="/db/changelog/changes/012-create-invoice-and-invoice-line-tables.xml"/>
 </databaseChangeLog>
