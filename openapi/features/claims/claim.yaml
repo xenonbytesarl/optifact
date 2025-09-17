@@ -874,6 +874,34 @@ components:
         reference:
           type: string
           description: Optional claim reference (unique); can be generated server-side
+    InvoiceStateView:
+      type: string
+      enum: [ DRAFT, VALIDATE, PAID, CANCEL ]
+    InvoiceResponseView:
+      type: object
+      required:
+        - id
+        - reference
+        - amount
+        - currency
+        - createAt
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        reference:
+          type: string
+        amount:
+          type: string
+          format: decimal
+        createAt:
+          type: string
+          format: date-time
+        currency:
+          type: string
+        status:
+          $ref: '#/components/schemas/InvoiceStateView'
     ClaimLineResponseView:
       type: object
       required:
@@ -982,6 +1010,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ClaimLineResponseView'
+        invoices:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceResponseView'
     ClaimApiResponseView:
       allOf:
         - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'

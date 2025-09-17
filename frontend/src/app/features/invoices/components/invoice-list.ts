@@ -56,9 +56,6 @@ import {AmountCurrencyPipe} from '../../../shared/pipes/amount-currency.pipe';
       </ng-template>
 
       <ng-template #actions let-row>
-        <app-button size="sm" shadow="none" variant="ghost" (clicked)="view.emit(row.id)">
-          <app-icon name="visibility" class="mr-1"></app-icon>
-        </app-button>
         <app-button size="sm" shadow="none" variant="ghost" (clicked)="edit.emit(row.id)">
           <app-icon name="edit" class="mr-1"></app-icon>
         </app-button>
