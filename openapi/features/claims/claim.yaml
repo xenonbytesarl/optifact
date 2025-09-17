@@ -442,6 +442,241 @@ paths:
             application/json:
               schema:
                 $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /claims/{claimId}/back-to-draft:
+    post:
+      tags:
+        - Claim
+      summary: Move claim back to draft
+      description: Moves the claim back to DRAFT state from INSTRUCTION_REJECTED or other allowed states
+      operationId: backToDraft
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: claimId
+          in: path
+          required: true
+          description: ID of the claim
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Claim moved back to draft successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Invalid state transition
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /claims/{claimId}/complete-compliant:
+    post:
+      tags:
+        - Claim
+      summary: Mark claim complete and compliant
+      description: Marks the claim as complete and compliant
+      operationId: completeCompliant
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: claimId
+          in: path
+          required: true
+          description: ID of the claim
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Claim marked complete and compliant successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Invalid state transition
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /claims/{claimId}/agreement-granted:
+    post:
+      tags:
+        - Claim
+      summary: Grant agreement for claim
+      description: Marks the claim as agreement granted
+      operationId: agreementGranted
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: claimId
+          in: path
+          required: true
+          description: ID of the claim
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Agreement granted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Invalid state transition
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /claims/{claimId}/agreement-refused:
+    post:
+      tags:
+        - Claim
+      summary: Refuse agreement for claim
+      description: Marks the claim as agreement refused
+      operationId: agreementRefused
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: claimId
+          in: path
+          required: true
+          description: ID of the claim
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Agreement refused successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Invalid state transition
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /claims/{claimId}/agreement-adjourned:
+    post:
+      tags:
+        - Claim
+      summary: Adjourn agreement for claim
+      description: Marks the claim as agreement adjourned
+      operationId: agreementAdjourned
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: claimId
+          in: path
+          required: true
+          description: ID of the claim
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Agreement adjourned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Invalid state transition
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
   /claims/{claimId}/claim-lines/{claimLineId}/validate:
     put:
       tags:

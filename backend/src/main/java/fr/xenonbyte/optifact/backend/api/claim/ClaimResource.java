@@ -31,6 +31,66 @@ public class ClaimResource implements ClaimsApi {
     }
 
     @Override
+    public ResponseEntity<ClaimApiResponseView> agreementAdjourned(String acceptLanguage, UUID claimId) {
+        return ResponseEntity.status(OK).body(
+                new ClaimApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_AGREEMENT_ADJOURNED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.agreementAdjourned(claimId)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<ClaimApiResponseView> agreementGranted(String acceptLanguage, UUID claimId) {
+        return ResponseEntity.status(OK).body(
+                new ClaimApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_AGREEMENT_GRANTED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.agreementGranted(claimId)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<ClaimApiResponseView> agreementRefused(String acceptLanguage, UUID claimId) {
+        return ResponseEntity.status(OK).body(
+                new ClaimApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_AGREEMENT_REFUSED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.agreementRefused(claimId)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<ClaimApiResponseView> backToDraft(String acceptLanguage, UUID claimId) {
+        return ResponseEntity.status(OK).body(
+                new ClaimApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_BACK_TO_DRAFT_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.backToDraft(claimId)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<ClaimApiResponseView> completeCompliant(String acceptLanguage, UUID claimId) {
+        return ResponseEntity.status(OK).body(
+                new ClaimApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_COMPLETE_COMPLIANT_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.completeCompliant(claimId)))
+        );
+    }
+
+    @Override
     public ResponseEntity<ClaimApiResponseView> createClaim(String acceptLanguage, ClaimApiRequestView claimApiRequestView) {
         return ResponseEntity.status(CREATED).body(
                 new ClaimApiResponseView()

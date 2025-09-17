@@ -16,6 +16,11 @@ import fr.xenonbyte.optifact.backend.application.claim.port.in.SubmitClaimUseCas
 import fr.xenonbyte.optifact.backend.application.claim.port.in.UpdateClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.UploadClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.ValidateClaimLineUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.BackClaimToDraftUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.CompleteCompliantClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.GrantClaimAgreementClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.RefuseClaimAgreementClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.AdjournClaimAgreementClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdsUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.UploadAttachmentUseCase;
@@ -71,6 +76,11 @@ public class ClaimAdapterView {
     private final ValidateClaimLineUseCase validateClaimLineUseCase;
     private final RejectClaimLineUseCase rejectClaimLineUseCase;
     private final TerminateInstructionClaimUseCase terminateInstructionClaimUseCase;
+    private final BackClaimToDraftUseCase backClaimToDraftUseCase;
+    private final CompleteCompliantClaimUseCase completeCompliantClaimUseCase;
+    private final GrantClaimAgreementClaimUseCase grantClaimAgreementClaimUseCase;
+    private final RefuseClaimAgreementClaimUseCase refuseClaimAgreementClaimUseCase;
+    private final AdjournClaimAgreementClaimUseCase adjournClaimAgreementClaimUseCase;
 
     @Value("${optifact.file.claim.rootDirectory}")
     private String rootDirectory;
@@ -90,7 +100,12 @@ public class ClaimAdapterView {
                             InstructClaimUseCase instructClaimUseCase,
                             ValidateClaimLineUseCase validateClaimLineUseCase,
                             RejectClaimLineUseCase rejectClaimLineUseCase,
-                            TerminateInstructionClaimUseCase terminateInstructionClaimUseCase) {
+                            TerminateInstructionClaimUseCase terminateInstructionClaimUseCase,
+                            BackClaimToDraftUseCase backClaimToDraftUseCase,
+                            CompleteCompliantClaimUseCase completeCompliantClaimUseCase,
+                            GrantClaimAgreementClaimUseCase grantClaimAgreementClaimUseCase,
+                            RefuseClaimAgreementClaimUseCase refuseClaimAgreementClaimUseCase,
+                            AdjournClaimAgreementClaimUseCase adjournClaimAgreementClaimUseCase) {
         this.createUseCase = createUseCase;
         this.updateUseCase = updateUseCase;
         this.findByIdUseCase = findByIdUseCase;
@@ -107,6 +122,11 @@ public class ClaimAdapterView {
         this.validateClaimLineUseCase = validateClaimLineUseCase;
         this.rejectClaimLineUseCase = rejectClaimLineUseCase;
         this.terminateInstructionClaimUseCase = terminateInstructionClaimUseCase;
+        this.backClaimToDraftUseCase = backClaimToDraftUseCase;
+        this.completeCompliantClaimUseCase = completeCompliantClaimUseCase;
+        this.grantClaimAgreementClaimUseCase = grantClaimAgreementClaimUseCase;
+        this.refuseClaimAgreementClaimUseCase = refuseClaimAgreementClaimUseCase;
+        this.adjournClaimAgreementClaimUseCase = adjournClaimAgreementClaimUseCase;
     }
 
     public ClaimResponseView createClaim(ClaimApiRequestView view) {
@@ -265,5 +285,25 @@ public class ClaimAdapterView {
 
     public ClaimResponseView terminateInstruction(UUID claimId) {
         return mapperView.toResponseView(terminateInstructionClaimUseCase.terminateInstructClaim(claimId));
+    }
+
+    public ClaimResponseView backToDraft(UUID claimId) {
+        return mapperView.toResponseView(backClaimToDraftUseCase.backClaimToDraft(claimId));
+    }
+
+    public ClaimResponseView completeCompliant(UUID claimId) {
+        return mapperView.toResponseView(completeCompliantClaimUseCase.completeCompliantClaim(claimId));
+    }
+
+    public ClaimResponseView agreementGranted(UUID claimId) {
+        return mapperView.toResponseView(grantClaimAgreementClaimUseCase.grantClaimAgreement(claimId));
+    }
+
+    public ClaimResponseView agreementRefused(UUID claimId) {
+        return mapperView.toResponseView(refuseClaimAgreementClaimUseCase.refuseClaimAgreement(claimId));
+    }
+
+    public ClaimResponseView agreementAdjourned(UUID claimId) {
+        return mapperView.toResponseView(adjournClaimAgreementClaimUseCase.adjournClaimAgreement(claimId));
     }
 }

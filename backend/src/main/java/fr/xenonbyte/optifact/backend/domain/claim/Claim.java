@@ -280,6 +280,28 @@ public final class Claim extends BaseEntity {
     }
 
     public Claim withSubmit(ZonedDateTime submitAt) {
+        if(inInstructionAt != null) {
+            return new Claim(
+                    id,
+                    actorId,
+                    productId,
+                    submitAt,
+                    managerQuoteId,
+                    managerCompliantId,
+                    compliantAt,
+                    inInstructionAt,
+                    instructorId,
+                    instructionDoneAt,
+                    instructionRejectedAt,
+                    agreementById,
+                    agreementGrantedAt,
+                    agreementRefusedAt,
+                    agreementAdjournedAt,
+                    cancelById,
+                    cancelAt,
+                    ClaimState.IN_INSTRUCTION,
+                    reference, lines);
+        }
         return new Claim(
                 id,
                 actorId,
@@ -322,7 +344,7 @@ public final class Claim extends BaseEntity {
                 cancelAt, ClaimState.CANCELLED, reference, lines);
     }
 
-    public Claim withAgreementGranted(UUID agreementById, ZonedDateTime agrementGranted) {
+    public Claim withAgreementGranted(ZonedDateTime agreementGrantedAt, UUID agreementById) {
         return new Claim(
                 id,
                 actorId,
@@ -341,6 +363,48 @@ public final class Claim extends BaseEntity {
                 agreementAdjournedAt,
                 cancelById,
                 cancelAt, ClaimState.AGREEMENT_GRANTED, reference, lines);
+    }
+
+    public Claim withAgreementRefused(ZonedDateTime agreementRefusedAt, UUID agreementById) {
+        return new Claim(
+                id,
+                actorId,
+                productId,
+                submitAt,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
+                inInstructionAt,
+                instructorId,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
+                cancelById,
+                cancelAt, ClaimState.AGREEMENT_REFUSED, reference, lines);
+    }
+
+    public Claim withAgreementAdjourn(ZonedDateTime agreementAdjournedAt, UUID agreementById) {
+        return new Claim(
+                id,
+                actorId,
+                productId,
+                submitAt,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
+                inInstructionAt,
+                instructorId,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
+                cancelById,
+                cancelAt, ClaimState.AGREEMENT_ADJOURNED, reference, lines);
     }
 
     public Claim withInInstruction(UUID managerId, ZonedDateTime inInstructionAt) {
@@ -383,6 +447,68 @@ public final class Claim extends BaseEntity {
                 agreementAdjournedAt,
                 cancelById,
                 cancelAt, state, reference, lines);
+    }
+
+    public Claim withDraft() {
+        List<ClaimLine> transformedLines = lines.stream()
+                .map(line -> {
+                    if (line.isRejected()) {
+                        return line.withDraft();
+                    }
+                    return line;
+                })
+                .toList();
+        return new Claim(
+                id,
+                actorId,
+                productId,
+                submitAt,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
+                inInstructionAt,
+                instructorId,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
+                cancelById,
+                cancelAt, ClaimState.DRAFT, reference, transformedLines);
+    }
+
+    public Claim withCompleteCompliance(ZonedDateTime compliantAt, UUID managerCompliantId) {
+        return new Claim(
+                id,
+                actorId,
+                productId,
+                submitAt,
+                managerQuoteId,
+                managerCompliantId,
+                compliantAt,
+                inInstructionAt,
+                instructorId,
+                instructionDoneAt,
+                instructionRejectedAt,
+                agreementById,
+                agreementGrantedAt,
+                agreementRefusedAt,
+                agreementAdjournedAt,
+                cancelById,
+                cancelAt, ClaimState.COMPLETE_COMPLIANT, reference, lines);
+    }
+
+    public boolean isInstructionRejected() {
+        return state == ClaimState.INSTRUCTION_REJECTED;
+    }
+
+    public boolean isInstructionDone() {
+        return state == ClaimState.INSTRUCTION_DONE;
+    }
+
+    public boolean isCompleteCompliant() {
+        return state == ClaimState.COMPLETE_COMPLIANT;
     }
 
     public boolean isUploadStarted() {

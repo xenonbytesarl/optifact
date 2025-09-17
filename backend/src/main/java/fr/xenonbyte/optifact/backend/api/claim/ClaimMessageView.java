@@ -11,6 +11,11 @@ public final class ClaimMessageView {
     public static final String CLAIM_LINE_REJECTED_SUCCESSFULLY = "claim.line.rejected";
     public static final String CLAIM_LINE_VALIDATED_SUCCESSFULLY = "claim.line.validated";
     public static final String CLAIM_TERMINATE_INSTRUCTION_SUCCESSFULLY = "claim.instruction.terminate";
+    public static final String CLAIM_BACK_TO_DRAFT_SUCCESSFULLY = "claim.back.to.draft";
+    public static final String CLAIM_COMPLETE_COMPLIANT_SUCCESSFULLY = "claim.complete.compliant";
+    public static final String CLAIM_AGREEMENT_GRANTED_SUCCESSFULLY = "claim.agreement.granted";
+    public static final String CLAIM_AGREEMENT_REFUSED_SUCCESSFULLY = "claim.agreement.refused";
+    public static final String CLAIM_AGREEMENT_ADJOURNED_SUCCESSFULLY = "claim.agreement.adjourned";
 
     private ClaimMessageView() {}
 }

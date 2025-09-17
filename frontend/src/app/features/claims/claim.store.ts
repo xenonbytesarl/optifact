@@ -268,6 +268,111 @@ export const claimStore = signalStore(
           return false;
         }
       },
+      async backToDraft(id: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.backToDraft(id);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Claim>;
+          patchState(store, {
+            claimPage: {
+              ...store.claimPage(),
+              elements: store.claimPage().elements.map(c => c.id === id ? payload.data.content : c)
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'claims.messages.backToDraft.success',
+            loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'claims.messages.backToDraft.error', loading: false });
+          return false;
+        }
+      },
+      async completeCompliant(id: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.completeCompliant(id);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Claim>;
+          patchState(store, {
+            claimPage: {
+              ...store.claimPage(),
+              elements: store.claimPage().elements.map(c => c.id === id ? payload.data.content : c)
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'claims.messages.completeCompliant.success',
+            loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'claims.messages.completeCompliant.error', loading: false });
+          return false;
+        }
+      },
+      async agreementGranted(id: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.agreementGranted(id);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Claim>;
+          patchState(store, {
+            claimPage: {
+              ...store.claimPage(),
+              elements: store.claimPage().elements.map(c => c.id === id ? payload.data.content : c)
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'claims.messages.agreementGranted.success',
+            loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'claims.messages.agreementGranted.error', loading: false });
+          return false;
+        }
+      },
+      async agreementRefused(id: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.agreementRefused(id);
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Claim>;
+          patchState(store, {
+            claimPage: {
+              ...store.claimPage(),
+              elements: store.claimPage().elements.map(c => c.id === id ? payload.data.content : c)
+            },
+            current: payload.data.content,
+            message: payload.message ?? 'claims.messages.agreementRefused.success',
+            loading: false
+          });
+          return true;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'claims.messages.agreementRefused.error', loading: false });
+          return false;
+        }
+      },
+      async agreementAdjourned(id: string) {
+      patchState(store, { loading: true, error: null, message: null });
+      const response = await api.agreementAdjourned(id);
+      if (response.success) {
+        const payload = response as SuccessApiResponse<Claim>;
+        patchState(store, {
+          claimPage: {
+            ...store.claimPage(),
+            elements: store.claimPage().elements.map(c => c.id === id ? payload.data.content : c)
+          },
+          current: payload.data.content,
+          message: payload.message ?? 'claims.messages.agreementAdjourned.success',
+          loading: false
+        });
+        return true;
+      } else {
+        const payload = response as ErrorApiResponse;
+        patchState(store, { error: payload.reason ?? 'claims.messages.agreementAdjourned.error', loading: false });
+        return false;
+      }
+    },
       async downloadAttachment(claimId: string, attachmentId: string) {
         patchState(store, {loading: true, error: null, message: null});
         const response = await api.downloadAttachment(claimId, attachmentId);

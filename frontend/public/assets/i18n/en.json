@@ -270,6 +270,8 @@
     "subtitle": "Manage claims",
     "new": "New claim",
     "fields": {
+      "referencePrefix": "Claim N°",
+      "referencePrefixNew": "New Claim",
       "reference": "Reference",
       "actorName": "Actor",
       "productName": "Product",
@@ -293,12 +295,27 @@
       "submit": "Submit",
       "instruction": "Put to instruction",
       "doneInstruction": "Finish instruction",
+      "backDraft": "Back to draft",
+      "completeCompliant": "Mark complete & compliant",
+      "agreementGranted": "Grant agreement",
+      "agreementRefused": "Refuse agreement",
+      "agreementAdjourned": "Adjourn agreement",
       "done": {
         "instruction": "Finish instruction"
       }
     },
     "messages": {
-      "instruction": { "success": "Claim put to instruction successfully.", "error": "Failed to put claim to instruction." },
+      "submit": { "success": "Claim submitted successfully.", "error": "Failed to submit claim." },
+      "instruction": {
+        "success": "Claim put to instruction successfully.",
+        "error": "Failed to put claim to instruction.",
+        "done": { "success": "Claim instruction completed successfully.", "error": "Failed to complete claim instruction." }
+      },
+      "backToDraft": { "success": "Claim moved back to draft.", "error": "Failed to move claim back to draft." },
+      "completeCompliant": { "success": "Claim marked complete and compliant.", "error": "Failed to mark claim complete and compliant." },
+      "agreementGranted": { "success": "Agreement granted successfully.", "error": "Failed to grant agreement." },
+      "agreementRefused": { "success": "Agreement refused successfully.", "error": "Failed to refuse agreement." },
+      "agreementAdjourned": { "success": "Agreement adjourned successfully.", "error": "Failed to adjourn agreement." },
       "deleted": { "success": "Claim deleted successfully.", "error": "Failed to delete claim." },
       "created": { "success": "Claim created successfully.", "error": "Failed to create claim." },
       "update": { "success": "Claim updated successfully.", "error": "Failed to update claim." },
@@ -320,6 +337,7 @@
       "validatedAt": "Validated at",
       "rejectedAt": "Rejected at",
       "cancelledAt": "Cancelled at",
+      "reason": "Reason",
       "status": {
         "draft": "Draft",
         "uploaded": "Uploaded",

@@ -270,6 +270,8 @@
     "subtitle": "Gérer les demandes",
     "new": "Nouvelle demande",
     "fields": {
+      "referencePrefix": "Demande N°",
+      "referencePrefixNew": "Nouvelle Demande",
       "reference": "Référence",
       "actorName": "Acteur",
       "productName": "Produit",
@@ -293,12 +295,27 @@
       "submit": "Soumettre",
       "instruction": "Mettre en instruction",
       "doneInstruction": "Terminer l'instruction",
+      "backDraft": "Revenir au brouillon",
+      "completeCompliant": "Marquer complet et conforme",
+      "agreementGranted": "Accorder",
+      "agreementRefused": "Refuser",
+      "agreementAdjourned": "Ajourner",
       "done": {
         "instruction": "Terminer l'instruction"
       }
     },
     "messages": {
-      "instruction": { "success": "Demande mise en instruction avec succès.", "error": "Échec de la mise en instruction de la demande." },
+      "submit": { "success": "Demande soumise avec succès.", "error": "Échec de la soumission de la demande." },
+      "instruction": {
+        "success": "Demande mise en instruction avec succès.",
+        "error": "Échec de la mise en instruction de la demande.",
+        "done": { "success": "Instruction terminée avec succès.", "error": "Échec de la terminaison de l'instruction." }
+      },
+      "backToDraft": { "success": "Demande revenue au brouillon.", "error": "Échec du retour de la demande au brouillon." },
+      "completeCompliant": { "success": "Demande marquée comme complète et conforme.", "error": "Échec du marquage de la demande comme complète et conforme." },
+      "agreementGranted": { "success": "Agrément accordé avec succès.", "error": "Échec de l'accord de l'agrément." },
+      "agreementRefused": { "success": "Agrément refusé avec succès.", "error": "Échec du refus de l'agrément." },
+      "agreementAdjourned": { "success": "Agrément ajourné avec succès.", "error": "Échec de l'ajournement de l'agrément." },
       "deleted": { "success": "Demande supprimée avec succès.", "error": "Échec de la suppression de la demande." },
       "created": { "success": "Demande créée avec succès.", "error": "Échec de la création de la demande." },
       "update": { "success": "Demande mise à jour avec succès.", "error": "Échec de la mise à jour de la demande." },
@@ -320,6 +337,7 @@
       "validatedAt": "Validé le",
       "rejectedAt": "Rejeté le",
       "cancelledAt": "Annulé le",
+      "reason": "Motif",
       "status": {
         "draft": "Brouillon",
         "uploaded": "Téléchargé",
