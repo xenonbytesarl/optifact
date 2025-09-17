@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: optifact-db
+    environment:
+      POSTGRES_DB: optifact_db
+      POSTGRES_USER: optifact
+      POSTGRES_PASSWORD: optifact2025!
+    ports:
+      - "5433:5432"
+    volumes:
+      - './postgres-data:/var/lib/postgresql/data'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-net
+
+  backend:
+    image: xenonbytesarl/optifact-backend:${IMAGE_TAG}
+    container_name: optifact-backend
+    environment:
+      # Spring profile and ports
+      PROFILE: ${PROFILE}
+      BACKEND_PORT: ${BACKEND_PORT}
+      # Database connection (used by Spring config)
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      # Frontend info (if used by backend)
+      FRONTEND_HOST: frontend
+      FRONTEND_PORT: 4000
+      # File storage directory inside container
+      CLAIM_FILE_ROOT_DIR: ${CLAIM_FILE_ROOT_DIR}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    volumes:
+      - './optifact/claim-files:/data/claims'
+    networks:
+      - app-net
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile.frontend
+    container_name: optifact-frontend
+    environment:
+      PORT: 4000
+    depends_on:
+      - backend
+    ports:
+      - "8081:4000"  # SSR server exposed at http://localhost:8081
+    networks:
+      - app-net
+
+volumes:
+  postgres-data:
+  claim-files:
+
+networks:
+  app-net:
+    driver: bridge
