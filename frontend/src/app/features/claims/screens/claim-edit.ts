@@ -9,6 +9,7 @@ import { useClaimScreen } from './claim-screen.util';
 import { ClaimFormComponent } from '../components/claim-form';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { ClaimLinesTabComponent } from '../components/claim-lines-tab';
+import { ClaimAuditTabComponent } from '../components/claim-audit-tab';
 import { actorStore } from '../../actors/actors.store';
 import { productStore } from '../../products/products.store';
 import { AutocompleteItem } from '../../../shared/ui/autocomplete';
@@ -20,7 +21,7 @@ import { ToastService } from '../../../shared/ui/toast';
 @Component({
   selector: 'app-claim-edit-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, ClaimFormComponent, TabsComponent, ClaimLinesTabComponent, ConfirmDialogComponent, ClaimLineRejectDialogComponent],
+  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, ClaimFormComponent, TabsComponent, ClaimLinesTabComponent, ClaimAuditTabComponent, ConfirmDialogComponent, ClaimLineRejectDialogComponent],
   template: `
     <app-action-bar
       [showNew]="false"
@@ -68,6 +69,7 @@ import { ToastService } from '../../../shared/ui/toast';
             />
           }
           @if (activeTab === 'audit') {
+            <app-claim-audit-tab [value]="formValue()" />
           }
         </app-tabs>
       </app-card>

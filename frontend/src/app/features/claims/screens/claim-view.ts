@@ -7,6 +7,7 @@ import { TranslateService } from '../../../core/i18n/translate.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { useClaimScreen } from './claim-screen.util';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
+import { ClaimAuditTabComponent } from '../components/claim-audit-tab';
 import { AppDateTimePipe } from '../../../shared/pipes/date-time.pipe';
 import { ClaimLinesTabComponent } from '../components/claim-lines-tab';
 import { actorStore } from '../../actors/actors.store';
@@ -19,7 +20,7 @@ import {ClaimFormModel} from '../components/claim-form';
 @Component({
   selector: 'app-claim-view-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, TabsComponent, ClaimLinesTabComponent, AppDateTimePipe, ChevronStepperComponent],
+  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, TabsComponent, ClaimLinesTabComponent, ClaimAuditTabComponent, AppDateTimePipe, ChevronStepperComponent],
   template: `
     <app-action-bar
       [showSave]="false"
@@ -66,6 +67,7 @@ import {ClaimFormModel} from '../components/claim-form';
             <app-claim-lines-tab [lines]="formValue().lines" [readOnly]="true" [claimStatus]="formValue().state" />
           }
           @if (activeTab === 'audit') {
+            <app-claim-audit-tab [value]="formValue()" />
           }
         </app-tabs>
       </app-card>
