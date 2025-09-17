@@ -19,4 +19,5 @@ public final class ClaimMessage {
     public static final String CLAIM_STATE_NOT_INSTRUCTION_REJECTED = "claim.state.not.instruction.rejected";
     public static final String CLAIM_STATE_NOT_INSTRUCTION_DONE = "claim.state.not.instruction.done";
     public static final String CLAIM_STATE_NOT_COMPLETE_COMPLIANT = "claim.state.not.complete.compliant";
+    public static final String INVOICE_CLAIM_ID_NOT_FOUND = "";
 }

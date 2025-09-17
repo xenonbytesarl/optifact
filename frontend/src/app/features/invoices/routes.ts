@@ -7,7 +7,7 @@ export const invoicesRoutes: Routes = [
   {
     path: '',
     loadComponent: () => import('./screens/invoices-list').then(m => m.InvoicesListScreen),
-    resolve: { invoicesSearch: invoiceSearchResolver, actorSearch: actorSearchResolver },
+    resolve: { invoicesSearch: invoiceSearchResolver },
     data: { title: 'Factures' }
   },
   {

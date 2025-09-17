@@ -61,6 +61,9 @@ public class ProductJpa extends BaseEntityJpa {
     @ManyToOne
     @JoinColumn(name = "c_sequence_id")
     private SequenceJpa sequence;
+    @ManyToOne
+    @JoinColumn(name = "c_extra_product_id")
+    private ProductJpa extraProduct;
     @ManyToMany
     @JoinTable(
         name = "t_product_attachment_type",

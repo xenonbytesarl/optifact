@@ -7,6 +7,7 @@ import fr.xenonbyte.optifact.backend.application.invoice.port.out.InvoiceReposit
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.invoice.Invoice;
 import fr.xenonbyte.optifact.backend.domain.invoice.InvoiceState;
+import fr.xenonbyte.optifact.backend.infrastructure.claim.ClaimJpa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -81,6 +82,12 @@ public final class InvoiceRepositoryAdapterJpa implements InvoiceRepository {
                 !page.hasNext(),
                 !page.hasPrevious()
         );
+    }
+
+    @Override
+    public boolean existsByClaimId(UUID claimId) {
+        ClaimJpa claimJpa = ClaimJpa.builder().id(claimId).build();
+        return repositoryJpa.existsByClaim(claimJpa);
     }
 
     private Sort parseSort(String field, Direction direction) {

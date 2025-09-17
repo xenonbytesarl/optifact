@@ -121,7 +121,7 @@ public final class InvoiceLine extends BaseEntity {
     }
 
     public InvoiceLine withAmount(BigDecimal amount, Currency amountCurrency) {
-        return new InvoiceLine(this.id, this.productId, this.name, this.quantity, this.unitPrice, this.unitPriceCurrency, this.amount, amountCurrency, this.invoiceId);
+        return new InvoiceLine(this.id, this.productId, this.name, this.quantity, this.unitPrice, this.unitPriceCurrency, amount, amountCurrency, this.invoiceId);
     }
 
     public UUID getProductId() {

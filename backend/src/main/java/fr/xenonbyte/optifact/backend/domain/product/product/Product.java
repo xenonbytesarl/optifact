@@ -29,6 +29,7 @@ public final class Product extends BaseEntity {
     private final String description; // optional
     private final Boolean active;
     private final UUID sequenceId;
+    private final UUID extraProductId;
     private final List<UUID> attachementTypeIds;
 
     public Product(UUID id,
@@ -42,7 +43,9 @@ public final class Product extends BaseEntity {
                    String description,
                    Boolean active,
                    UUID sequenceId,
+                   UUID extraProductId,
                    List<UUID> attachementTypeIds) {
+        this.extraProductId = extraProductId;
         this.id = id;
         this.code = code;
         this.name = name;
@@ -66,6 +69,7 @@ public final class Product extends BaseEntity {
                                  Currency currency,
                                  String description,
                                  UUID sequenceId,
+                                 UUID extraProductId,
                                  List<UUID> attachementTypeIds) {
         validateParams(code, name, categoryId, type, rate, amount);
         return new Product(
@@ -80,8 +84,8 @@ public final class Product extends BaseEntity {
                 normalizeDescription(description),
                 true,
                 sequenceId,
-                attachementTypeIds == null? List.of() : attachementTypeIds
-        );
+                extraProductId,
+                attachementTypeIds == null? List.of() : attachementTypeIds);
     }
 
     public static Product create(
@@ -95,6 +99,7 @@ public final class Product extends BaseEntity {
               Currency currency,
               String description,
               UUID sequenceId,
+              UUID extraProductId,
               List<UUID> attachementTypeIds) {
         validateParams(code, name, categoryId, type, rate, amount);
         return new Product(
@@ -109,8 +114,8 @@ public final class Product extends BaseEntity {
                 normalizeDescription(description),
                 true,
                 sequenceId,
-                attachementTypeIds == null? java.util.List.of() : attachementTypeIds
-        );
+                extraProductId,
+                attachementTypeIds == null? List.of() : attachementTypeIds);
     }
 
     public Product update(String code,
@@ -122,6 +127,7 @@ public final class Product extends BaseEntity {
                           Currency currency,
                           String description,
                           UUID sequenceId,
+                          UUID extraProductId,
                           List<UUID> attachementTypeIds) {
         validateParams(code, name, categoryId, type, rate, amount);
         Product product = new Product(
@@ -136,16 +142,16 @@ public final class Product extends BaseEntity {
                 normalizeDescription(description), 
                 active,
                 sequenceId,
-                attachementTypeIds
-        );
+                extraProductId,
+                attachementTypeIds);
         product.updateAudit(createdAt);
         return product;
     }
 
-    public Product withActive(Boolean active) {
-        Product product = new Product(id, code, name, categoryId, type, rate, amount, currency, description, active, this.sequenceId, attachementTypeIds);
-        product.updateAudit(createdAt);
-        return product;
+    public void checkExtraProductId() {
+        if(extraProductId == null) {
+            throw new IllegalArgumentException(ProductMessage.PRODUCT_EXTRA_PRODUCT_REQUIRED);
+        }
     }
 
     private static void validateParams(String code,
@@ -225,6 +231,10 @@ public final class Product extends BaseEntity {
 
     public List<UUID> getAttachementTypeIds() {
         return attachementTypeIds;
+    }
+
+    public UUID getExtraProductId() {
+        return extraProductId;
     }
 
     public void checkClaimPrecondition() {

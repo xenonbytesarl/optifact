@@ -65,6 +65,10 @@ import {sequencesStore} from '../../sequences/sequences.store';
                       </div>
                     }
                   </div>
+                  <div class="rounded border border-token p-4 bg-surface/50">
+                    <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.extraProductName') }}</div>
+                    <div class="text-base">{{ extraProductName() || '—' }}</div>
+                  </div>
                 </div>
 
                 @if (description()) {
@@ -108,6 +112,7 @@ export class ProductViewPage {
   readonly categoryStore = inject(productCategoryStore);
   readonly docTypeStore = inject(attachmentTypeStore);
   readonly seqStore = inject(sequencesStore);
+  readonly prodStore = inject(productStore);
   readonly route = inject(ActivatedRoute);
   readonly router = inject(Router);
   readonly i18n = inject(TranslateService);
@@ -142,6 +147,12 @@ export class ProductViewPage {
     const cid = this.store.current()?.sequenceId ?? null;
     if (!cid) return '';
     const c = this.seqStore.sequencePage().elements.find(x => x.id === cid);
+    return c?.name ?? '';
+  });
+  extraProductName = computed(() => {
+    const cid = this.store.current()?.extraProductId ?? null;
+    if (!cid) return '';
+    const c = this.prodStore.productPage().elements.find(x => x.id === cid);
     return c?.name ?? '';
   });
   attachmentTypes = computed(() => this.docTypeStore.attachmentTypePage().elements);

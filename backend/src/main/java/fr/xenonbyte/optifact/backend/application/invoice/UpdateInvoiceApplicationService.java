@@ -42,7 +42,7 @@ public final class UpdateInvoiceApplicationService implements UpdateInvoiceUseCa
         }
 
         UUID claimId = invoice.getClaimId();
-        if(claimId != null && claimRepository.existsById(claimId)) {
+        if(claimId != null && !claimRepository.existsById(claimId)) {
             throw new ClaimIdNotFoundException(claimId);
         }
 

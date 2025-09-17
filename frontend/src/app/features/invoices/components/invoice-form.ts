@@ -11,6 +11,7 @@ import { InputDateTimeComponent } from '../../../shared/ui/input-date-time';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { InvoiceTabComponent } from './invoice-tab';
 import {InputTextComponent} from '../../../shared/ui/input';
+import {claimStore} from '../../claims/claim.store';
 
 export type InvoiceFormModel = {
   reference: string | null;
@@ -60,7 +61,7 @@ export type InvoiceFormModel = {
         </app-form-field>
         @if (showClaimField()) {
           <app-form-field [label]="('invoices.fields.claim' | t)">
-            <app-input [disabled]="true"  [value]="value().claimId" />
+            <app-input [disabled]="true"  [value]="reference()" />
           </app-form-field>
         }
       </div>
@@ -88,6 +89,7 @@ export type InvoiceFormModel = {
 })
 export class InvoiceFormComponent {
   readonly i18n = inject(TranslateService);
+  readonly cStore = inject(claimStore);
 
   disabled = input<boolean>(false);
   // Disable Add line button independently of overall form disabled state
@@ -99,6 +101,8 @@ export class InvoiceFormComponent {
   // Edit-only claims reference display
   showClaimField = input<boolean>(false);
   claimReference = input<string | null>(null);
+  reference = computed(() => this.value().claimId === this.cStore.current()?.id? this.cStore.current()?.reference as string: '');
+
 
   // Validation helpers
   actorError = computed<boolean>(() => !this.value()?.actorId);

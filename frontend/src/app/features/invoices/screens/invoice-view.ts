@@ -112,7 +112,7 @@ export class InvoiceViewPage {
 
   // Resolve claim reference from claimStore by claimId
   claimReference = computed<string | null>(() => {
-    return this.cStore.current()?.reference || null;
+    return this.formValue().claimId === this.cStore.current()?.id? this.cStore.current()?.reference as string: ''
   });
 
   actorName = computed<string | null>(() => {

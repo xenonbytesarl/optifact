@@ -76,6 +76,7 @@ public final class UpdateProductApplicationService implements UpdateProductUseCa
                 product.getCurrency(),
                 product.getDescription(),
                 product.getSequenceId(),
+                product.getExtraProductId(),
                 product.getAttachementTypeIds()
         );
 

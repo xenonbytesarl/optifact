@@ -15,6 +15,8 @@ public final class InvoiceMessage {
     public static final String INVOICE_LINES_REQUIRED = "invoice.lines.required";
     public static final String INVOICE_ID_NOT_FOUND = "invoice.id.not.found";
     public static final String INVOICE_DELETABLE_WHEN_STATE_DRAFT = "invoice.is.deletable.when.state.draft";
+    public static final String INVOICE_CLAIM_ID_NOT_FOUND = "invoice.claim.id.not.found";
+    public static final String INVOICE_STATE_NOT_DRAFT = "invoice.state.not.draft";
 
     // InvoiceLine (domain validation)
     public static final String INVOICE_LINE_PRODUCT_ID_REQUIRED = "invoice.line.product.id.required";

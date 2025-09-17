@@ -42,6 +42,7 @@ import { TranslateService } from '../../../core/i18n/translate.service';
               [amountRequiredError]="amountHasError()"
               [productCategories]="productCategories()"
               [sequences]="sequences()"
+              [extraProducts]="extraProducts()"
               (blurCode)="onCodeBlur()"
               (blurName)="onNameBlur()"
               (blurType)="onTypeBlur()"
@@ -49,6 +50,7 @@ import { TranslateService } from '../../../core/i18n/translate.service';
               (blurSequence)="onSequenceIdBlur()"
               (blurAmount)="onAmountBlur()"
               (blurRate)="onRateBlur()"
+              (blurExtraProduct)="onExtraProductBlur()"
               (valueChange)="onValueChange($event)"
             />
           }
@@ -75,6 +77,7 @@ export class ProductEditPage {
   productCategories = computed(() => this.ui.categoryStore.categoryPage().elements);
   sequences = computed(() => this.ui.sequenceStore.sequencePage().elements);
   attachmentTypes = computed(() => this.ui.docTypeStore.attachmentTypePage().elements);
+  extraProducts = computed(() => this.ui.store.productPage().elements);
   currentAttachmentTypes = computed(() => this.ui.docTypeStore.currentAttachmentTypes() ?? []);
 
   tabItems = computed<TabItem[]>(() => {
@@ -117,6 +120,7 @@ export class ProductEditPage {
   onTypeBlur() { return this.ui.onTypeBlur(); }
   onCategoryIdBlur() { return this.ui.onCategoryIdBlur(); }
   onSequenceIdBlur() { return this.ui.onSequenceIdBlur(); }
+  onExtraProductBlur() {return this.ui.onExtraProductIdBlur();}
   onRateBlur() { return this.ui.onRateBlur(); }
   onAmountBlur() { return this.ui.onAmountBlur(); }
 

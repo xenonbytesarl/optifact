@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -96,6 +97,11 @@ public final class ActorRepositoryAdapterJpa implements ActorRepository {
     @Override
     public boolean existsById(UUID actorId) {
         return repositoryJpa.existsById(actorId);
+    }
+
+    @Override
+    public List<Actor> findByIds(Set<UUID> actorIds) {
+        return repositoryJpa.findAllById(actorIds).stream().map(mapperJpa::toDomain).toList();
     }
 
     private Sort parseSort(String field, Direction direction) {

@@ -5,7 +5,9 @@ import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.domain.actor.Actor;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -34,4 +36,6 @@ public interface ActorRepository {
     Pagination<Actor> search(String referenceFilter, String nameFilter, CommonSearch search);
 
     boolean existsById(UUID actorId);
+
+    List<Actor> findByIds(Set<UUID> actorIds);
 }
