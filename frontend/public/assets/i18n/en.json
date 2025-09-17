@@ -25,7 +25,10 @@
     "save": "Save",
     "validate": "Validate",
     "reject": "Reject",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "open": "Open",
+    "send": "Send",
+    "pay": "Pay"
   },
   "actors": {
     "title": "Actors",
@@ -201,8 +204,10 @@
       "actor": "Actor",
       "claim": "Claim",
       "state": "Status",
+      "status": "Status",
       "issueAt": "Due at",
       "sendAt": "Sent at",
+      "amount": "Amount",
       "total": "Total"
     },
     "states": {
@@ -214,6 +219,7 @@
     "tabs": {
       "lines": "Lines"
     },
+    "empty": "No invoices",
     "validation": {
       "actorRequired": "Actor is required.",
       "linesRequired": "At least one invoice line is required."
@@ -366,7 +372,8 @@
     },
     "tabs": {
       "audit": "audit",
-      "lines": "Lines"
+      "lines": "Lines",
+      "invoices": "Invoices"
     }
   },
   "settings": {

@@ -25,7 +25,10 @@
     "save": "Sauvegarder",
     "validate": "Valider",
     "reject": "Rejeter",
-    "confirm": "Confirmer"
+    "confirm": "Confirmer",
+    "open": "Ouvrir",
+    "send": "Envoyer",
+    "pay": "Payer"
   },
   "actors": {
     "title": "Acteurs",
@@ -201,8 +204,10 @@
       "actor": "Acteur",
       "claim": "Demande",
       "state": "Statut",
+      "status": "Statut",
       "issueAt": "A payer avant le",
       "sendAt": "Envoyée le",
+      "amount": "Montant",
       "total": "Total"
     },
     "states": {
@@ -214,6 +219,7 @@
     "tabs": {
       "lines": "Lignes"
     },
+    "empty": "Aucune facture",
     "validation": {
       "actorRequired": "L'acteur est obligatoire.",
       "linesRequired": "Au moins une ligne de facture est requise."
@@ -366,7 +372,8 @@
     },
     "tabs": {
       "audit": "Audit",
-      "lines": "Lignes"
+      "lines": "Lignes",
+      "invoices": "Factures"
     }
   },
   "settings": {

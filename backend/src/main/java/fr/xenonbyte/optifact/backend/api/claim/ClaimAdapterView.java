@@ -4,6 +4,8 @@ import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimApiRequestVie
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimLineResponseView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimPageResponseView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.ClaimResponseView;
+import fr.xenonbyte.optifact.backend.api.claim.generated.view.InvoiceResponseView;
+import fr.xenonbyte.optifact.backend.api.claim.generated.view.InvoiceStateView;
 import fr.xenonbyte.optifact.backend.api.claim.generated.view.RejectClaimLineRequest;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.CreateClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.DeleteClaimByIdUseCase;
@@ -31,11 +33,13 @@ import fr.xenonbyte.optifact.backend.application.common.file.exception.FileNameN
 import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
 import fr.xenonbyte.optifact.backend.application.common.payload.Direction;
 import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
+import fr.xenonbyte.optifact.backend.application.invoice.port.in.FindInvoiceByClaimIdUseCase;
 import fr.xenonbyte.optifact.backend.domain.claim.Claim;
 import fr.xenonbyte.optifact.backend.domain.claim.ClaimLine;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.attachementtype.AttachmentType;
 import fr.xenonbyte.optifact.backend.domain.common.attachment.Attachment;
+import fr.xenonbyte.optifact.backend.domain.invoice.Invoice;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -81,6 +85,7 @@ public class ClaimAdapterView {
     private final GrantClaimAgreementClaimUseCase grantClaimAgreementClaimUseCase;
     private final RefuseClaimAgreementClaimUseCase refuseClaimAgreementClaimUseCase;
     private final AdjournClaimAgreementClaimUseCase adjournClaimAgreementClaimUseCase;
+    private final FindInvoiceByClaimIdUseCase findInvoiceByClaimIdUseCase;
 
     @Value("${optifact.file.claim.rootDirectory}")
     private String rootDirectory;
@@ -105,7 +110,8 @@ public class ClaimAdapterView {
                             CompleteCompliantClaimUseCase completeCompliantClaimUseCase,
                             GrantClaimAgreementClaimUseCase grantClaimAgreementClaimUseCase,
                             RefuseClaimAgreementClaimUseCase refuseClaimAgreementClaimUseCase,
-                            AdjournClaimAgreementClaimUseCase adjournClaimAgreementClaimUseCase) {
+                            AdjournClaimAgreementClaimUseCase adjournClaimAgreementClaimUseCase,
+                            FindInvoiceByClaimIdUseCase findInvoiceByClaimIdUseCase) {
         this.createUseCase = createUseCase;
         this.updateUseCase = updateUseCase;
         this.findByIdUseCase = findByIdUseCase;
@@ -127,6 +133,7 @@ public class ClaimAdapterView {
         this.grantClaimAgreementClaimUseCase = grantClaimAgreementClaimUseCase;
         this.refuseClaimAgreementClaimUseCase = refuseClaimAgreementClaimUseCase;
         this.adjournClaimAgreementClaimUseCase = adjournClaimAgreementClaimUseCase;
+        this.findInvoiceByClaimIdUseCase = findInvoiceByClaimIdUseCase;
     }
 
     public ClaimResponseView createClaim(ClaimApiRequestView view) {
@@ -150,47 +157,66 @@ public class ClaimAdapterView {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
+        List<Invoice> invoices = findInvoiceByClaimIdUseCase.findInvoiceByClaimId(id);
+
         // If no attachments referenced, just map the claim and return
-        if (attachmentIds.isEmpty()) {
+        if (attachmentIds.isEmpty() && invoices.isEmpty()) {
             return mapperView.toResponseView(claim);
         }
 
         // Load attachments at once and index them by their ID
         List<Attachment> attachments = findAttachmentByIdsUseCase.findAttachmentByIds(attachmentIds);
-        if (attachments == null || attachments.isEmpty()) {
+
+        if (attachments.isEmpty() && invoices.isEmpty()) {
             return mapperView.toResponseView(claim);
         }
-        Map<UUID, Attachment> attachmentById = attachments.stream()
-                .collect(Collectors.toMap(Attachment::getId, a -> a, (a, b) -> a));
-
-        // Load attachment types for the found attachments and index name by type ID
-        Set<UUID> attachmentTypeIds = attachments.stream()
-                .map(Attachment::getAttachmentTypeId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        Map<UUID, String> attachmentTypeNameById = attachmentTypeIds.isEmpty()
-                ? Map.of()
-                : findAttachmentTypeByIdsUseCase.findAttachmentTypeByIds(attachmentTypeIds)
-                        .stream()
-                        .collect(Collectors.toMap(AttachmentType::getId, AttachmentType::getName));
-
         // Build the response and enrich lines in O(n)
         ClaimResponseView responseView = mapperView.toResponseView(claim);
-        List<@Valid ClaimLineResponseView> enrichedLines = responseView.getLines().stream().map(line -> {
-            UUID lineAttachmentId = line.getAttachmentId();
-            if (lineAttachmentId != null) {
-                Attachment att = attachmentById.get(lineAttachmentId);
-                if (att != null) {
-                    String typeName = attachmentTypeNameById.get(att.getAttachmentTypeId());
-                    if (typeName != null) {
-                        line.setAttachmentTypeName(typeName);
+        if(!attachments.isEmpty()) {
+            Map<UUID, Attachment> attachmentById = attachments.stream()
+                    .collect(Collectors.toMap(Attachment::getId, a -> a, (a, b) -> a));
+
+            // Load attachment types for the found attachments and index name by type ID
+            Set<UUID> attachmentTypeIds = attachments.stream()
+                    .map(Attachment::getAttachmentTypeId)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+
+            Map<UUID, String> attachmentTypeNameById = attachmentTypeIds.isEmpty()
+                    ? Map.of()
+                    : findAttachmentTypeByIdsUseCase.findAttachmentTypeByIds(attachmentTypeIds)
+                    .stream()
+                    .collect(Collectors.toMap(AttachmentType::getId, AttachmentType::getName));
+
+            List<@Valid ClaimLineResponseView> enrichedLines = responseView.getLines().stream().map(line -> {
+                UUID lineAttachmentId = line.getAttachmentId();
+                if (lineAttachmentId != null) {
+                    Attachment att = attachmentById.get(lineAttachmentId);
+                    if (att != null) {
+                        String typeName = attachmentTypeNameById.get(att.getAttachmentTypeId());
+                        if (typeName != null) {
+                            line.setAttachmentTypeName(typeName);
+                        }
                     }
                 }
-            }
-            return line;
-        }).toList();
-        responseView.setLines(enrichedLines);
+                return line;
+            }).toList();
+            responseView.setLines(enrichedLines);
+        }
+
+        if(!invoices.isEmpty()) {
+            List<InvoiceResponseView> invoiceResponseViews = invoices.stream()
+                    .map(invoice -> new InvoiceResponseView()
+                            .id(invoice.getId())
+                            .reference(invoice.getReference())
+                            .amount(invoice.getAmount())
+                            .status(InvoiceStateView.valueOf(invoice.getState().name()))
+                            .createAt(invoice.getCreatedAt().toOffsetDateTime())
+                            .currency(invoice.getAmountCurrency().getCurrencyCode())
+                    )
+                    .toList();
+            responseView.setInvoices(invoiceResponseViews);
+        }
         return responseView;
     }
 

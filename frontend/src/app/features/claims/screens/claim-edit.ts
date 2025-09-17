@@ -4,12 +4,13 @@ import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { CardComponent } from '../../../shared/ui/card';
 import { SpinnerComponent } from '../../../shared/ui/spinner';
 import { TranslateService } from '../../../core/i18n/translate.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { useClaimScreen } from './claim-screen.util';
 import { ClaimFormComponent } from '../components/claim-form';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { ClaimLinesTabComponent } from '../components/claim-lines-tab';
 import { ClaimAuditTabComponent } from '../components/claim-audit-tab';
+import { ClaimInvoicesTabComponent } from '../components/claim-invoices-tab';
 import { actorStore } from '../../actors/actors.store';
 import { productStore } from '../../products/products.store';
 import { AutocompleteItem } from '../../../shared/ui/autocomplete';
@@ -21,7 +22,7 @@ import { ToastService } from '../../../shared/ui/toast';
 @Component({
   selector: 'app-claim-edit-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, ClaimFormComponent, TabsComponent, ClaimLinesTabComponent, ClaimAuditTabComponent, ConfirmDialogComponent, ClaimLineRejectDialogComponent],
+  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, ClaimFormComponent, TabsComponent, ClaimLinesTabComponent, ClaimAuditTabComponent, ClaimInvoicesTabComponent, ConfirmDialogComponent, ClaimLineRejectDialogComponent],
   template: `
     <app-action-bar
       [showNew]="false"
@@ -68,6 +69,12 @@ import { ToastService } from '../../../shared/ui/toast';
 
             />
           }
+          @if (activeTab === 'invoices') {
+            <app-claim-invoices-tab
+              [invoices]="formValue().invoices"
+              (openInvoice)="onOpenInvoice($event)"
+            />
+          }
           @if (activeTab === 'audit') {
             <app-claim-audit-tab [value]="formValue()" />
           }
@@ -107,6 +114,7 @@ export class ClaimEditPage {
   private validating = signal(false);
   selectedLine: ClaimLine | null = null;
   readonly route = inject(ActivatedRoute);
+  readonly router = inject(Router);
   ui = useClaimScreen();
   readonly i18n = inject(TranslateService);
   readonly actors = inject(actorStore);
@@ -130,10 +138,11 @@ export class ClaimEditPage {
     this.i18n.lang();
     return [
       { id: 'lines', label: this.i18n.t('claims.tabs.lines') },
+      { id: 'invoices', label: this.i18n.t('claims.tabs.invoices') },
       { id: 'audit', label: this.i18n.t('claims.tabs.audit') }
     ];
   });
-  activeTab: 'audit' | 'lines' = 'lines';
+  activeTab: 'audit' | 'lines' | 'invoices' = 'lines';
 
   constructor() {
     effect(() => {
@@ -298,5 +307,10 @@ export class ClaimEditPage {
 
   onRejectCancelled() {
     this.rejectDialogOpen.set(false);
+  }
+
+  onOpenInvoice(invoiceId: string) {
+    if (!invoiceId) return;
+    this.router.navigate(['/invoices', invoiceId, 'edit']);
   }
 }

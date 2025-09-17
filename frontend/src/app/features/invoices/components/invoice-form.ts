@@ -7,11 +7,12 @@ import { FormFieldComponent } from '../../../shared/ui/form-field';
 import { InputHiddenComponent } from '../../../shared/ui/input-hidden';
 import { AutocompleteComponent, AutocompleteItem } from '../../../shared/ui/autocomplete';
 import { InputDateTimeComponent } from '../../../shared/ui/input-date-time';
-//
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { InvoiceTabComponent } from './invoice-tab';
-import {InputTextComponent} from '../../../shared/ui/input';
-import {claimStore} from '../../claims/claim.store';
+import { InputTextComponent } from '../../../shared/ui/input';
+import { claimStore } from '../../claims/claim.store';
+import { ChevronStepperComponent, Step as ChevronStep } from '../../../shared/ui/chevron-stepper';
+import { ButtonComponent } from '../../../shared/ui/button';
 
 export type InvoiceFormModel = {
   reference: string | null;
@@ -29,9 +30,35 @@ export type InvoiceFormModel = {
 @Component({
   selector: 'app-invoice-form',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, FormFieldComponent, InputHiddenComponent, AutocompleteComponent, InputDateTimeComponent, TabsComponent, InvoiceTabComponent, InputTextComponent],
+  imports: [CommonModule, TranslatePipe, FormFieldComponent, InputHiddenComponent, AutocompleteComponent, InputDateTimeComponent, TabsComponent, InvoiceTabComponent, InputTextComponent, ChevronStepperComponent, ButtonComponent],
   template: `
     <form class="flex flex-col gap-3">
+      <!-- Top bar: actions left, stepper right -->
+      <div class="grid grid-cols-3 items-center gap-2">
+        <div class="flex col-span-1 gap-2">
+          @if (value().state === 'DRAFT') {
+            <app-button icon="check_circle" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('actions.validate')" (clicked)="onValidate()" />
+            <app-button icon="cancel" tone="primary" variant="ghost" size="sm" rounded="md" [label]="i18n.t('actions.cancel')" (clicked)="onCancel()" />
+          }
+          @if (value().state === 'VALIDATE') {
+            <app-button icon="send" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('actions.send')" (clicked)="onSend()" />
+            <app-button icon="payments" tone="primary" variant="success" size="sm" rounded="md" [label]="i18n.t('actions.pay')" (clicked)="onPay()" />
+            <app-button icon="cancel" tone="primary" variant="danger" size="sm" rounded="md" [label]="i18n.t('actions.cancel')" (clicked)="onCancel()" />
+          }
+          @if (value().state === 'PAID') {
+            <app-button icon="cancel" tone="primary" variant="danger" size="sm" rounded="md" [label]="i18n.t('actions.cancel')" (clicked)="onCancel()" />
+          }
+        </div>
+        <div class="col-span-2">
+          <app-chevron-stepper
+            [steps]="steps()"
+            [activeIndex]="activeStep()"
+            size="md"
+            textScale="xs"
+          />
+        </div>
+      </div>
+
       <app-input-hidden [value]="value().reference" />
       <app-input-hidden [value]="value().state" />
       <app-input-hidden [value]="value().amountCurrency" />
@@ -103,6 +130,25 @@ export class InvoiceFormComponent {
   claimReference = input<string | null>(null);
   reference = computed(() => this.value().claimId === this.cStore.current()?.id? this.cStore.current()?.reference as string: '');
 
+  // Stepper steps & active index
+  steps = computed<ChevronStep[]>(() => {
+    this.i18n.lang();
+    return [
+      { id: 'draft', label: this.i18n.t('invoices.states.draft'), completed: this.value().state !== 'DRAFT' },
+      { id: 'validate', label: this.i18n.t('invoices.states.validate'), completed: this.value().state === 'PAID' },
+      { id: 'paid', label: this.i18n.t('invoices.states.paid'), completed: this.value().state === 'PAID' },
+      { id: 'cancel', label: this.i18n.t('invoices.states.cancel'), completed: this.value().state === 'CANCEL' }
+    ];
+  });
+  activeStep = computed(() => {
+    switch (this.value().state) {
+      case 'DRAFT': return 0;
+      case 'VALIDATE': return 1;
+      case 'PAID': return 2;
+      case 'CANCEL': return 3;
+      default: return 0;
+    }
+  });
 
   // Validation helpers
   actorError = computed<boolean>(() => !this.value()?.actorId);
@@ -128,6 +174,17 @@ export class InvoiceFormComponent {
   valueChange = output<InvoiceFormModel>();
   requestAddLine = output<void>();
   requestEditLine = output<InvoiceLine>();
+
+  // Action outputs
+  validateClicked = output<void>();
+  sendClicked = output<void>();
+  payClicked = output<void>();
+  cancelClicked = output<void>();
+
+  onValidate() { this.validateClicked.emit(); }
+  onSend() { this.sendClicked.emit(); }
+  onPay() { this.payClicked.emit(); }
+  onCancel() { this.cancelClicked.emit(); }
 
   onRemoveLine(line: InvoiceLine) {
     const idx = (this.value().lines || []).findIndex(l => (l.id && line.id && l.id === line.id) || (!l.id && !line.id && l.name === line.name));

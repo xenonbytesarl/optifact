@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../shared/ui/toast';
 import { claimStore } from '../claim.store';
-import { Claim, ClaimLine } from '../../../core/api/claim.api';
+import {Claim, ClaimLine, InvoiceView} from '../../../core/api/claim.api';
 
 export type ClaimFormValue = {
   reference: string | null;
@@ -22,6 +22,7 @@ export type ClaimFormValue = {
   uploadStarted: boolean | null;
   uploadEnded: boolean | null;
   lines: ClaimLine[];
+  invoices: InvoiceView[];
 };
 
 export function useClaimScreen() {
@@ -46,7 +47,8 @@ export function useClaimScreen() {
     uploadStarted: [false as boolean | null],
     uploadEnded: [false as boolean | null],
     createdAt: [new Date() as Date],
-    lines: [[] as ClaimLine[]]
+    lines: [[] as ClaimLine[]],
+    invoices: [[] as InvoiceView[]]
   });
 
   const initialValue: ClaimFormValue = {
@@ -65,7 +67,8 @@ export function useClaimScreen() {
     agreementAdjournedAt: null,
     uploadStarted: false,
     uploadEnded: false,
-    lines: []
+    lines: [],
+    invoices: []
   };
 
   const formValue = signal<ClaimFormValue>(initialValue);
@@ -96,7 +99,8 @@ export function useClaimScreen() {
       submitAt: v.submitAt,
       uploadStarted: v.uploadStarted,
       uploadEnded: v.uploadEnded,
-      lines: v.lines ?? []
+      lines: v.lines ?? [],
+      invoices: v.invoices ?? []
     });
   }
 
@@ -161,7 +165,8 @@ export function useClaimScreen() {
         agreementAdjournedAt: current.agreementAdjournedAt ?? null,
         uploadStarted: current.uploadStarted ?? null,
         uploadEnded: current.uploadEnded ?? null,
-        lines: current.lines ?? []
+        lines: current.lines ?? [],
+        invoices: current.invoices ?? []
       };
       formValue.set(v);
       form.patchValue(v);

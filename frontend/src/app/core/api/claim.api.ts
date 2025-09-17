@@ -5,6 +5,7 @@ import { GlobalApi } from './global.api';
 import { ErrorApiResponse, Page, SuccessApiResponse } from '../model/response.model';
 import {Direction} from '../model/direction.enum';
 import { parseApiDate } from '../utils/date.util';
+import {InvoiceState} from './invoice.api';
 
 export type ClaimState = 'DRAFT' | 'SUBMITTED' | 'IN_INSTRUCTION' | 'INSTRUCTION_REJECTED' | 'INSTRUCTION_DONE' | 'COMPLETE_COMPLIANT' | 'AGREEMENT_REFUSED' | 'AGREEMENT_GRANTED' | 'AGREEMENT_ADJOURNED' | 'CANCELLED';
 export type ClaimLineStatus = 'DRAFT' | 'UPLOADED' | 'VALIDATED' | 'REJECTED' | 'CANCELLED';
@@ -12,6 +13,15 @@ export type AttachmentScope = 'EXTERNAL' | 'INTERNAL';
 
 export type ClaimSortColumn = 'reference' | 'createdAt' | 'state';
 
+
+export interface InvoiceView {
+  id: string | null;
+  reference: string | null;
+  amount: number | null;
+  createAt: Date | null;
+  status: InvoiceState | null;
+  currency: string | null;
+}
 export interface Attachment {
   id?: string;
   filename?: string | null;
@@ -62,7 +72,8 @@ export interface Claim {
   state: ClaimState;
   reference?: string | null;
   lines: ClaimLine[];
-  // Optional display fields if backend provides them
+  invoices: InvoiceView[];
+  // Optional display fields if the backend provides them
   actorName?: string | null;
   productName?: string | null;
 }

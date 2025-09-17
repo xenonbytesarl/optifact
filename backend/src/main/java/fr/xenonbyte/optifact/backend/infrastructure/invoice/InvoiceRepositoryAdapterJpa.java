@@ -90,6 +90,13 @@ public final class InvoiceRepositoryAdapterJpa implements InvoiceRepository {
         return repositoryJpa.existsByClaim(claimJpa);
     }
 
+    @Override
+    public List<Invoice> findByClaimId(UUID claimId) {
+        return repositoryJpa.findByClaim(ClaimJpa.builder().id(claimId).build()).stream()
+                .map(mapperJpa::toDomain)
+                .toList();
+    }
+
     private Sort parseSort(String field, Direction direction) {
         if (field == null || field.isBlank() || direction == null) {
             return Sort.by(Sort.Direction.ASC, "id");
