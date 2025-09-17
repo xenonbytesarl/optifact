@@ -11,7 +11,7 @@ import { InputTextComponent } from '../../../shared/ui/input';
 import { InputNumberComponent } from '../../../shared/ui/input-number';
 import {SelectComponent, SelectOption} from '../../../shared/ui/select';
 import { FormFieldComponent } from '../../../shared/ui/form-field';
-import { ProductType } from '../../../core/api/products.api';
+import {Product, ProductType} from '../../../core/api/products.api';
 import {AutocompleteComponent, AutocompleteItem} from '../../../shared/ui/autocomplete';
 import { InputCurrencyComponent } from '../../../shared/ui/input-currency';
 import {CategoryFormValue} from '../../product-categories/components/product-category-form';
@@ -28,6 +28,7 @@ export interface ProductFormValue {
   rate?: number | null;
   categoryId?: string | null;
   sequenceId?: string | null;
+  extraProductId?: string | null;
   description?: string | null;
   currency?: string | null;
   attachmentTypeIds?: string[] | null;
@@ -71,7 +72,10 @@ export interface ProductFormValue {
             <app-input-number [disabled]="disabled()" [min]="0" [error]="rateRequiredError()" [max]="100" [step]="0.01" [value]="value().rate ?? null" (valueChange)="onRate($event)" (blurred)="blurRate.emit()"/>
           </app-form-field>
         }
-
+        <app-form-field [label]="('products.fields.extraProduct' | t)" >
+          <app-autocomplete [disabled]="disabled()"   [placeholder]="('products.fields.extraProduct' | t)"
+                            [items]="extraProductItems()" [value]="value().extraProductId ?? null" (valueChange)="onExtraProductId($event)" (blurred)="blurExtraProduct.emit()" />
+        </app-form-field>
       </div>
       <app-form-field [label]="('products.fields.description' | t)">
         <textarea class="w-full  border border-token bg-surface text-fg placeholder-muted px-3 py-2 text-sm outline-none focus:ring-1 ring-primary shadow-sm min-h-24" [value]="value().description ?? ''" (input)="onDescription(($any($event.target)).value)"></textarea>
@@ -95,6 +99,7 @@ export class ProductFormComponent {
   amountRequiredError = input<boolean>(false);
   productCategories = input<ProductCategory[]>([]);
   sequences = input<Sequence[]>([]);
+  extraProducts = input<Product[]>([]);
   value = model<ProductFormValue>({
     code: '',
     name: '',
@@ -103,6 +108,7 @@ export class ProductFormComponent {
     rate: null,
     categoryId: null,
     sequenceId: null,
+    extraProductId: null,
     description: '',
     currency: null,
     attachmentTypeIds: []
@@ -117,6 +123,7 @@ export class ProductFormComponent {
   blurRate = output<void>();
   blurAmount = output<void>();
   blurSequence = output<void>();
+  blurExtraProduct = output<void>();
 
   // Build type options from i18n so labels are translated
   typeOptions = computed<SelectOption[]>(() => {
@@ -132,16 +139,13 @@ export class ProductFormComponent {
     this.productCategories().map(c => ({ value: c.id, label: c.name }))
   );
 
+  extraProductItems = computed<AutocompleteItem[]>(() =>
+    this.extraProducts().map(c => ({ value: c.id, label: c.name }))
+  );
+
   sequenceItems = computed<AutocompleteItem[]>(() =>
     this.sequences().map(c => ({ value: c.id, label: c.name }))
   );
-
-  currencyOptions: SelectOption[] = [
-    { value: 'EUR', label: 'EUR' },
-    { value: 'USD', label: 'USD' },
-    { value: 'XAF', label: 'XAF' }
-  ];
-
   onCode(v: string | null) {
     const code = (v ?? '').toString();
     this.value.set({ ...this.value(), code });
@@ -160,6 +164,11 @@ export class ProductFormComponent {
   onSequenceId(v: string | null) {
     const sequenceId = (v ?? '').toString();
     this.value.set({ ...this.value(), sequenceId });
+  }
+
+  onExtraProductId(v: string | null) {
+    const extraProductId = (v ?? '').toString();
+    this.value.set({ ...this.value(), extraProductId });
   }
 
   onDescription(v: string | null) {
@@ -181,10 +190,4 @@ export class ProductFormComponent {
     const amount = (v ?? null);
     this.value.set({ ...this.value(), amount });
   }
-
-  onCurrency(v: string | null) {
-    const currency = v ? v.toString() : null;
-    this.value.set({ ...this.value(), currency });
-  }
-
 }

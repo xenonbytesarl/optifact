@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Hexagonal(layer = Hexagonal.Layer.ADAPTER, componentType = Hexagonal.ComponentType.SECONDARY_ADAPTER)
@@ -95,6 +96,11 @@ public final class ClaimRepositoryAdapterJpa implements ClaimRepository {
     @Override
     public boolean existsById(UUID claimId) {
         return repositoryJpa.existsById(claimId);
+    }
+
+    @Override
+    public List<Claim> findByIds(Set<UUID> claimIds) {
+        return repositoryJpa.findAllById(claimIds).stream().map(mapperJpa::toDomain).toList();
     }
 
     private Sort parseSort(String field, Direction direction) {

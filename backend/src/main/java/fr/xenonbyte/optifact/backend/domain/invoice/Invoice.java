@@ -118,8 +118,11 @@ public final class Invoice extends BaseEntity {
 
 
     public Invoice computeAmount() {
-        BigDecimal amount = this.lines.stream().map(InvoiceLine::getAmount)
-                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+        BigDecimal amount = this.lines.stream()
+                .map(InvoiceLine::computeAmount)
+                .map(InvoiceLine::getAmount)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
         validateAmount(amount);
         return withAmount(amount);
     }
@@ -156,6 +159,14 @@ public final class Invoice extends BaseEntity {
 
     public Invoice withReference(String reference) {
         return new Invoice(id, reference, createdAt, sendAt, actorId, dueAt, amount, amountCurrency, claimId, bankAccount, state, lines);
+    }
+
+    public Invoice withValidate(ZonedDateTime validateAt) {
+        return new Invoice(id, reference, createdAt, sendAt, actorId, dueAt, amount, amountCurrency, claimId, bankAccount, state.VALIDATE, lines);
+    }
+
+    public boolean isDraft() {
+        return state == InvoiceState.DRAFT;
     }
 
     public String getReference() {

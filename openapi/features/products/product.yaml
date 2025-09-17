@@ -293,6 +293,10 @@ components:
           type: string
           format: uuid
           description: Optional sequence ID used to generate product numbers
+        extraProductId:
+          type: string
+          format: uuid
+          description: Optional extra product ID used to generate product numbers
     ProductResponseView:
       type: object
       required:
@@ -358,6 +362,10 @@ components:
           type: string
           format: uuid
           description: Optional sequence ID used to generate product numbers
+        extraProductId:
+          type: string
+          format: uuid
+          description: Optional extra product ID used to generate product numbers
     ProductApiResponseView:
       allOf:
         - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'

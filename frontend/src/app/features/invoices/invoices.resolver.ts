@@ -23,9 +23,9 @@ export const invoiceFindByIdResolver: ResolveFn<boolean> = async (route) => {
   try {
     const invoice = await store.findById(route.paramMap.get('id') ?? '');
     if(invoice && invoice.claimId) {
-      cStore.findById(invoice.claimId);
+      await cStore.findById(invoice.claimId);
     }
-    astore.findById(invoice?.actorId ?? '');
+    await astore.findById(invoice?.actorId ?? '');
     return true;
   } catch {
     return false;

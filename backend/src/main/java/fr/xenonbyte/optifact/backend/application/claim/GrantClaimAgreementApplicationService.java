@@ -4,10 +4,23 @@ import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimIdNotFound
 import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimStateNotCompleteCompliantBadException;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.GrantClaimAgreementClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.out.ClaimRepository;
+import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
+import fr.xenonbyte.optifact.backend.application.invoice.port.in.CreateInvoiceUseCase;
+import fr.xenonbyte.optifact.backend.application.invoice.port.in.ValidateInvoiceUseCase;
+import fr.xenonbyte.optifact.backend.application.invoice.port.out.InvoiceRepository;
+import fr.xenonbyte.optifact.backend.application.product.exception.ProductIdNotFoundException;
+import fr.xenonbyte.optifact.backend.application.product.port.out.ProductRepository;
 import fr.xenonbyte.optifact.backend.domain.claim.Claim;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
+import fr.xenonbyte.optifact.backend.domain.invoice.Invoice;
+import fr.xenonbyte.optifact.backend.domain.invoice.InvoiceLine;
+import fr.xenonbyte.optifact.backend.domain.invoice.InvoiceState;
+import fr.xenonbyte.optifact.backend.domain.product.product.Product;
+import fr.xenonbyte.optifact.backend.domain.product.product.ProductType;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -23,9 +36,25 @@ public final class GrantClaimAgreementApplicationService implements GrantClaimAg
     private static final Logger LOGGER = Logger.getLogger(GrantClaimAgreementApplicationService.class.getName());
 
     private final ClaimRepository repository;
+    private final ProductRepository productRepository;
+    private final InvoiceRepository invoiceRepository;
+    private final CreateInvoiceUseCase createInvoiceUseCase;
+    private final ValidateInvoiceUseCase validateInvoiceUseCase;
+    private final SequenceRepository sequenceRepository;
 
-    public GrantClaimAgreementApplicationService(ClaimRepository repository) {
+    public GrantClaimAgreementApplicationService(
+            ClaimRepository repository,
+            ProductRepository productRepository,
+            InvoiceRepository invoiceRepository,
+            CreateInvoiceUseCase createInvoiceUseCase,
+            ValidateInvoiceUseCase validateInvoiceUseCase,
+            SequenceRepository sequenceRepository) {
         this.repository = repository;
+        this.productRepository = productRepository;
+        this.invoiceRepository = invoiceRepository;
+        this.createInvoiceUseCase = createInvoiceUseCase;
+        this.validateInvoiceUseCase = validateInvoiceUseCase;
+        this.sequenceRepository = sequenceRepository;
     }
 
     @Override
@@ -40,6 +69,8 @@ public final class GrantClaimAgreementApplicationService implements GrantClaimAg
             throw new ClaimStateNotCompleteCompliantBadException();
         }
 
+        generateInvoice(claimId, claim);
+
         //TODO the agreementById will be set when user management will be completed
         claim = claim.withAgreementGranted(ZonedDateTime.now(), null);
 
@@ -47,5 +78,40 @@ public final class GrantClaimAgreementApplicationService implements GrantClaimAg
 
         LOGGER.info("Grant claim agreement successfully with id: '" + claim.getId() + "'");
         return claim;
+    }
+
+    private void generateInvoice(UUID claimId, Claim claim) {
+        // We check if the product id is correct and if the extra product id is correct
+        UUID productId = claim.getProductId();
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ProductIdNotFoundException(productId)
+        );
+
+        InvoiceLine invoiceLine = InvoiceLine.create(
+                product.getId(),
+                product.getName(),
+                product.getType().equals(ProductType.PERCENTAGE)? product.getRate()/100.0: 1.0 ,
+                product.getType().equals(ProductType.PERCENTAGE)? BigDecimal.ZERO: product.getAmount(),
+                product.getCurrency(),
+                null,
+                product.getCurrency(),
+                null
+        );
+
+        Invoice invoice = Invoice.create(
+                null,
+                ZonedDateTime.now(),
+                null,
+                claim.getActorId(),
+                ZonedDateTime.now().plusDays(30L),
+                null,
+                product.getCurrency(),
+                claimId,
+                null, //TODO will populate when company information will complete
+                InvoiceState.DRAFT,
+                List.of(invoiceLine)
+        );
+
+        createInvoiceUseCase.createInvoice(invoice);
     }
 }

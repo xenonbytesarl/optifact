@@ -20,4 +20,6 @@ public interface InvoiceRepository {
     void delete(Invoice invoice);
 
     Pagination<Invoice> search(String referenceFilter, String actorName, String claimName, String stateFilter, CommonSearch search);
+
+    boolean existsByClaimId(UUID claimId);
 }

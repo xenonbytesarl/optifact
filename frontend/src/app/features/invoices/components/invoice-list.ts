@@ -44,11 +44,11 @@ import {AmountCurrencyPipe} from '../../../shared/pipes/amount-currency.pipe';
       </ng-template>
 
       <ng-template #actorTpl let-row>
-        {{ displayActor(row) }}
+        {{ row.actorName }}
       </ng-template>
 
       <ng-template #claimTpl let-row>
-        {{ row?.claimId || '—' }}
+        {{ row.claimReference || '—' }}
       </ng-template>
 
       <ng-template #amountTpl let-row>
@@ -86,8 +86,6 @@ export class InvoiceListComponent {
   claimTpl = viewChild<TemplateRef<any>>('claimTpl');
   amountTpl = viewChild<TemplateRef<any>>('amountTpl');
 
-  actors = inject(actorStore);
-
   constructor(private i18n: TranslateService) {}
 
   formatDate(val: any): string {
@@ -113,12 +111,6 @@ export class InvoiceListComponent {
     ];
   }
 
-  displayActor(row: Invoice): string {
-    const id = row?.actorId;
-    if (!id) return '—';
-    const a = this.actors.actorPage().elements.find(x => x.id === id);
-    return a ? (a.reference ? `${a.name} (${a.reference})` : a.name) : id;
-  }
 
   currency(row: Invoice): string {
     return row.amountCurrency || 'XAF';

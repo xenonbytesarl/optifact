@@ -43,6 +43,7 @@ export function useProductScreen() {
     rate: [null],
     categoryId: [null, [Validators.required]],
     sequenceId: [null],
+    extraProductId: [null],
     description: [''],
     currency: [null],
     attachmentTypeIds: [[]]
@@ -56,6 +57,7 @@ export function useProductScreen() {
     rate: null,
     categoryId: null,
     sequenceId: null,
+    extraProductId: null,
     description: '',
     currency: 'XAF',
     attachmentTypeIds: []
@@ -82,11 +84,12 @@ export function useProductScreen() {
       const rate = current.rate ?? null;
       const categoryId = current.categoryId ?? null;
       const sequenceId = current.sequenceId ?? null;
+      const extraProductId = current.extraProductId ?? null;
       const description = current.description ?? '';
       const currency = (current as any).currency ?? null;
       const attachmentTypeIds = current.attachmentTypeIds ?? [];
-      formValue.set({ code, name, type, amount, rate, categoryId, sequenceId, description, currency, attachmentTypeIds });
-      form.patchValue({ code, name, type, amount, rate, categoryId, sequenceId, description, currency, attachmentTypeIds });
+      formValue.set({ code, name, type, amount, rate, categoryId, sequenceId, extraProductId, description, currency, attachmentTypeIds });
+      form.patchValue({ code, name, type, amount, rate, categoryId, sequenceId, extraProductId, description, currency, attachmentTypeIds });
       form.markAsPristine();
       form.markAsUntouched();
     }
@@ -134,6 +137,7 @@ export function useProductScreen() {
       rate: v.rate,
       categoryId: v.categoryId,
       sequenceId: v.sequenceId,
+      extraProductId: v.extraProductId,
       description: v.description,
       currency: v.currency ?? null,
       attachmentTypeIds: v.attachmentTypeIds ?? []
@@ -154,6 +158,10 @@ export function useProductScreen() {
 
   function onCategoryIdBlur() {
     form.get('categoryId')?.markAsTouched();
+  }
+
+  function onExtraProductIdBlur() {
+    form.get('extraProductId')?.markAsTouched();
   }
 
   function onSequenceIdBlur() {
@@ -236,6 +244,7 @@ export function useProductScreen() {
     onRateBlur,
     onAmountBlur,
     onSequenceIdBlur,
+    onExtraProductIdBlur,
     resetForm,
     saveNew,
     saveEdit,

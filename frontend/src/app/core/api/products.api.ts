@@ -18,6 +18,7 @@ export interface Product {
   sequenceId?: string | null;
   description?: string | null;
   currency?: string | null;
+  extraProductId: string | null;
   attachmentTypeIds?: string[] | null;
 }
 

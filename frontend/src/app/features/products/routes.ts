@@ -25,7 +25,8 @@ export const productsRoutes: Routes = [
         resolve: {
           productCategorySearch: productCategorySearchResolver,
           attachmentTypeSearch: attachmentTypeSearchResolver,
-          sequenceSearch: sequenceSearchResolver
+          sequenceSearch: sequenceSearchResolver,
+          productsSearch: productSearchResolver
         }
       },
       {
@@ -34,7 +35,8 @@ export const productsRoutes: Routes = [
           productFindById: productFindByIdResolver,
           productCategorySearch: productCategorySearchResolver,
           attachmentTypeSearch: attachmentTypeSearchResolver,
-          sequenceSearch: sequenceSearchResolver
+          sequenceSearch: sequenceSearchResolver,
+          productsSearch: productSearchResolver
         }
       },
       {
@@ -43,7 +45,8 @@ export const productsRoutes: Routes = [
           productFindById: productFindByIdResolver,
           productCategorySearch: productCategorySearchResolver,
           attachmentTypeSearch: attachmentTypeSearchResolver,
-          sequenceSearch: sequenceSearchResolver
+          sequenceSearch: sequenceSearchResolver,
+          productsSearch: productSearchResolver
         }
       },
     ]

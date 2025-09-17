@@ -5,7 +5,9 @@ import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.domain.claim.Claim;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -30,4 +32,7 @@ public interface ClaimRepository {
     Pagination<Claim> search(String referenceFilter, String actorName, String productName, CommonSearch search);
 
     boolean existsById(UUID claimId);
+
+    List<Claim> findByIds(Set<UUID> claimIds);
+
 }

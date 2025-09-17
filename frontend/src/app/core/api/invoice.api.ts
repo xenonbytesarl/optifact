@@ -39,6 +39,8 @@ export interface Invoice {
   amountCurrency?: string | null;
   claimId?: string | null;
   bankAccount?: BankAccount | null;
+  claimReference?: string | null;
+  actorName?: string | null;
   state: InvoiceState;
   lines: InvoiceLine[];
 }

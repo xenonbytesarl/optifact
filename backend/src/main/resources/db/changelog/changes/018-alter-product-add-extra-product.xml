@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Add optional extra product self-reference to product table -->
+    <changeSet id="17092025_1309_add_extra_product_to_product" author="brice.mbiandji">
+        <addColumn tableName="t_product">
+            <column name="c_extra_product_id" type="uuid"/>
+        </addColumn>
+
+        <!-- Create index for faster joins/lookups -->
+        <createIndex indexName="idx_t_product_extra_product_id" tableName="t_product">
+            <column name="c_extra_product_id"/>
+        </createIndex>
+
+        <!-- Foreign key to t_product (self reference, nullable) -->
+        <addForeignKeyConstraint
+                baseTableName="t_product"
+                baseColumnNames="c_extra_product_id"
+                constraintName="fk_t_product_extra_product"
+                referencedTableName="t_product"
+                referencedColumnNames="c_id"
+                onDelete="RESTRICT"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

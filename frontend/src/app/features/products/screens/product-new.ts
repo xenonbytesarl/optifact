@@ -41,6 +41,7 @@ import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
               [amountRequiredError]="amountHasError()"
               [productCategories]="productCategories()"
               [sequences]="sequences()"
+              [extraProducts]="extraProducts()"
               (blurCode)="onCodeBlur()"
               (blurName)="onNameBlur()"
               (blurType)="onTypeBlur()"
@@ -48,6 +49,7 @@ import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
               (blurAmount)="onAmountBlur()"
               (blurRate)="onRateBlur()"
               (blurSequence)="onSequenceIdBlur()"
+              (blurExtraProduct)="onExtraProductBlur()"
               (valueChange)="onValueChange($event)"
             />
           }
@@ -70,6 +72,7 @@ export class ProductNewPage {
   private i18n = inject(TranslateService);
   productCategories = computed(() => this.ui.categoryStore.categoryPage().elements);
   sequences = computed(() => this.ui.sequenceStore.sequencePage().elements);
+  extraProducts = computed(() => this.ui.store.productPage().elements);
   attachmentTypes = computed(() => this.ui.docTypeStore.attachmentTypePage().elements);
   tabItems = computed<TabItem[]>(() => {
     this.i18n.lang();
@@ -98,6 +101,7 @@ export class ProductNewPage {
   onRateBlur() { return this.ui.onRateBlur(); }
   onAmountBlur() { return this.ui.onAmountBlur(); }
   onSequenceIdBlur() { return this.ui.onSequenceIdBlur(); }
+  onExtraProductBlur() {return this.ui.onExtraProductIdBlur();}
 
   save() { return this.ui.saveNew(); }
   goBack() { return this.ui.goBack(); }

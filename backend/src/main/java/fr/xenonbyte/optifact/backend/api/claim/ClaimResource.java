@@ -204,6 +204,11 @@ public class ClaimResource implements ClaimsApi {
     }
 
     @Override
+    public ResponseEntity<ClaimApiResponseView> updateClaim(String acceptLanguage, UUID claimId, ClaimApiRequestView claimApiRequestView) {
+        return null;
+    }
+
+    @Override
     public ResponseEntity<ClaimApiResponseView> validateClaimLine(String acceptLanguage, UUID claimId, UUID claimLineId) {
         return ResponseEntity.status(OK).body(
                 new ClaimApiResponseView()
