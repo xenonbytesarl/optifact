@@ -189,7 +189,7 @@ public final class ClaimLine extends BaseEntity {
                 cancelledAt,
                 cancelledById,
                 ClaimLineStatus.VALIDATED,
-                reason,
+                null,
                 claimId
         );
     }
@@ -239,6 +239,24 @@ public final class ClaimLine extends BaseEntity {
 
     public boolean isRejected() {
         return status == ClaimLineStatus.REJECTED;
+    }
+
+    public ClaimLine withDraft() {
+        return new ClaimLine(
+                id,
+                attachmentId,
+                createdAt,
+                uploadedAt,
+                validateAt,
+                validateById ,
+                rejectedAt,
+                rejectedById,
+                cancelledAt,
+                cancelledById,
+                ClaimLineStatus.DRAFT,
+                reason,
+                claimId
+        );
     }
 
     public UUID getAttachmentId() { return attachmentId; }

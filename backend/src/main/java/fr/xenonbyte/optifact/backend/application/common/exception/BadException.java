@@ -16,6 +16,9 @@ public abstract class BadException extends RuntimeException {
         this.args = args;
     }
 
+    protected BadException() {
+    }
+
     public Object[] getArgs() {
         return args;
     }

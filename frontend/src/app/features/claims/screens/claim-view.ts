@@ -6,7 +6,6 @@ import { SpinnerComponent } from '../../../shared/ui/spinner';
 import { TranslateService } from '../../../core/i18n/translate.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { useClaimScreen } from './claim-screen.util';
-// Note: ClaimFormComponent intentionally not used in view mode; values are displayed read-only.
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { AppDateTimePipe } from '../../../shared/pipes/date-time.pipe';
 import { ClaimLinesTabComponent } from '../components/claim-lines-tab';
@@ -14,14 +13,13 @@ import { actorStore } from '../../actors/actors.store';
 import { productStore } from '../../products/products.store';
 import { AutocompleteItem } from '../../../shared/ui/autocomplete';
 import { ChevronStepperComponent, Step as ChevronStep } from '../../../shared/ui/chevron-stepper';
-import {Claim, ClaimState} from '../../../core/api/claim.api';
-import {ButtonComponent} from '../../../shared/ui/button';
+import {ClaimState} from '../../../core/api/claim.api';
 import {ClaimFormModel} from '../components/claim-form';
 
 @Component({
   selector: 'app-claim-view-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, TabsComponent, ClaimLinesTabComponent, AppDateTimePipe, ChevronStepperComponent, ButtonComponent],
+  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, TabsComponent, ClaimLinesTabComponent, AppDateTimePipe, ChevronStepperComponent],
   template: `
     <app-action-bar
       [showSave]="false"
@@ -35,7 +33,7 @@ import {ClaimFormModel} from '../components/claim-form';
         <app-spinner [overlay]="true" />
       }
       <app-card>
-        <div class="mb-4">
+        <div class="mb-6">
           <app-chevron-stepper
             [steps]="steps()"
             [activeIndex]="activeStep()"
@@ -43,7 +41,7 @@ import {ClaimFormModel} from '../components/claim-form';
             textScale="sm"
             (stepSelected)="$event"
           />
-          <div class="text-2xl font-bold mt-3 mb-3">{{ formValue().reference || '' }}</div>
+          <div class="text-2xl font-bold mt-3 mb-3">{{ i18n.t('claims.fields.referencePrefix') }} {{ formValue().reference || '' }}</div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <div class="text-xs text-muted">{{ i18n.t('claims.fields.actorName') }}</div>

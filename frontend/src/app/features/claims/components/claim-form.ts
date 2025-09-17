@@ -42,10 +42,21 @@ export type ClaimFormModel = {
             <app-button icon="check_circle" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('claims.actions.submit')" (clicked)="onSubmit()" />
           }
           @if (value().state === 'SUBMITTED') {
-            <app-button icon="policy" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('claims.actions.instruction')" (clicked)="onToInstruction()" />
+            <app-button icon="handyman" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('claims.actions.instruction')" (clicked)="onToInstruction()" />
           }
           @if (value().state === 'IN_INSTRUCTION') {
             <app-button icon="done_all" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('claims.actions.done.instruction')" (clicked)="onDoneInstruction()" />
+          }
+          @if (value().state === 'INSTRUCTION_REJECTED') {
+            <app-button icon="stylus_note" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('claims.actions.backDraft')" (clicked)="onBackToDraft()" />
+          }
+          @if (value().state === 'INSTRUCTION_DONE') {
+            <app-button icon="all_match" tone="primary" variant="primary" size="sm" rounded="md" [label]="i18n.t('claims.actions.completeCompliant')" (clicked)="onCompleteCompliant()" />
+          }
+          @if (value().state === 'COMPLETE_COMPLIANT') {
+            <app-button icon="verified_user" tone="primary" variant="success" size="sm" rounded="md" [label]="i18n.t('claims.actions.agreementGranted')" (clicked)="onAgreementGranted()" />
+            <app-button icon="gpp_bad" tone="primary" variant="danger" size="sm" rounded="md" [label]="i18n.t('claims.actions.agreementRefused')" (clicked)="onAgreementRefused()" />
+            <app-button icon="remove_moderator" tone="primary" variant="secondary" size="sm" rounded="md" [label]="i18n.t('claims.actions.agreementAdjourned')" (clicked)="onAgreementAdjourned()" />
           }
         </div>
         <div class="col-span-2">
@@ -63,7 +74,7 @@ export type ClaimFormModel = {
       <app-input-hidden [value]="value().state" />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
        <div class="text-2xl font-bold">
-         {{ value().reference }}
+         {{ value().reference === 'New'? i18n.t('claims.fields.referencePrefixNew'): i18n.t('claims.fields.referencePrefix') }}  {{ value().reference === 'New'? '': value().reference }}
        </div>
       </div>
 
@@ -164,6 +175,11 @@ export class ClaimFormComponent {
   submit = output<string>();
   toInstruction = output<string>();
   doneInstruction = output<string>();
+  backToDraft = output<string>();
+  completeCompliant = output<string>();
+  agreementGranted = output<string>();
+  agreementRefused = output<string>();
+  agreementAdjourned = output<string>();
 
   stateRequiredError = input<boolean>(false);
 
@@ -180,6 +196,26 @@ export class ClaimFormComponent {
 
   onDoneInstruction() {
     this.doneInstruction.emit('doneInstruction');
+  }
+
+  onBackToDraft() {
+    this.backToDraft.emit('backToDraft');
+  }
+
+  onCompleteCompliant() {
+    this.completeCompliant.emit('completeCompliant');
+  }
+
+  onAgreementGranted() {
+    this.agreementGranted.emit('agreementGranted');
+  }
+
+  onAgreementRefused() {
+    this.agreementRefused.emit('agreementRefused');
+  }
+
+  onAgreementAdjourned() {
+    this.agreementAdjourned.emit('agreementAdjourned');
   }
 
   onStepSelected(i: number) {
@@ -230,14 +266,6 @@ export class ClaimFormComponent {
     } as ClaimFormModel;
   }
 
-  onReference(v: string | null) {
-    const val = this.value();
-    this.emit(this.next(val, { reference: v ?? '' }));
-  }
-  onState(v: string | null) {
-    const val = this.value();
-    this.emit(this.next(val, { state: v as any }));
-  }
   onActorId(v: string | null) {
     const val = this.value();
     this.emit(this.next(val, { actorId: v || null }));

@@ -46,6 +46,11 @@ import { ToastService } from '../../../shared/ui/toast';
             (submit)="onSubmit()"
             (toInstruction)="onToInstruction()"
             (doneInstruction)="onDoneInstruction()"
+            (backToDraft)="onBackToDraft()"
+            (completeCompliant)="onCompleteCompliant()"
+            (agreementGranted)="onAgreementGranted()"
+            (agreementRefused)="onAgreementRefused()"
+            (agreementAdjourned)="onAgreementAdjourned()"
           />
         </div>
         <app-tabs [items]="tabItems()" [(active)]="activeTab">
@@ -167,6 +172,66 @@ export class ClaimEditPage {
       await this.ui.store.findById(id);
     } else {
       this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.instruction.done.error'));
+    }
+  }
+
+  async onBackToDraft() {
+    const id = this.claimId();
+    if (!id || this.loading()) return;
+    const ok = await this.ui.store.backToDraft(id);
+    if (ok) {
+      this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.backToDraft.success'));
+      await this.ui.store.findById(id);
+    } else {
+      this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.backToDraft.error'));
+    }
+  }
+
+  async onCompleteCompliant() {
+    const id = this.claimId();
+    if (!id || this.loading()) return;
+    const ok = await this.ui.store.completeCompliant(id);
+    if (ok) {
+      this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.completeCompliant.success'));
+      await this.ui.store.findById(id);
+    } else {
+      this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.completeCompliant.error'));
+    }
+  }
+
+  async onAgreementGranted() {
+    const id = this.claimId();
+    if (!id || this.loading()) return;
+    const ok = await this.ui.store.agreementGranted(id);
+    if (ok) {
+      this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.agreementGranted.success'));
+      await this.ui.store.findById(id);
+    } else {
+      this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.agreementGranted.error'));
+    }
+  }
+
+  async onAgreementRefused() {
+    const id = this.claimId();
+    if (!id || this.loading()) return;
+    const ok = await this.ui.store.agreementRefused(id);
+    if (ok) {
+      this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.agreementRefused.success'));
+      await this.ui.store.findById(id);
+    } else {
+      this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.agreementRefused.error'));
+    }
+  }
+
+  async onAgreementAdjourned() {
+    const id = this.claimId();
+    if (!id || this.loading()) return;
+    const ok = await this.ui.store.agreementAdjourned(id);
+    if (ok) {
+      this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.agreementAdjourned.success'));
+      await this.ui.store.findById(id);
+    } else {
+      this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.agreementAdjourned.error'));
     }
   }
 

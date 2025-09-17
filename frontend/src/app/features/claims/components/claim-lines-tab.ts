@@ -23,7 +23,9 @@ import { ClaimLineUploadDialogComponent } from './claim-line-upload-dialog';
               <div class="text-sm font-medium">#{{ line.attachmentTypeName ?? '—' }}</div>
               <app-badge [tone]="tone(line.status)">{{ getStatusLabel(line.status) }}</app-badge>
             </div>
-            <div class="text-xs text-muted">{{ line.reason || '' }}</div>
+            @if (line.reason) {
+              <div class="text-xs font-bold text-muted"><span class="font-medium">{{ i18n.t('claims.lines.reason') }}:</span><span class="text-red-600"> {{ line.reason }}</span></div>
+            }
             <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-muted">
               <div>{{ i18n.t('claims.lines.createdAt') }}: {{ line.createdAt | appDateTime }}</div>
               <div>{{ i18n.t('claims.lines.uploadedAt') }}: {{ line.uploadedAt | appDateTime }}</div>

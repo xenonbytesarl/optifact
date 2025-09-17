@@ -16,4 +16,7 @@ public final class ClaimMessage {
     public static final String CLAIM_LINE_ID_NOT_FOUND = "claim.line.id.not.found";
     public static final String CLAIM_LINE_REASON_REQUIRED = "claim.line.reason.required";
     public static final String CLAIM_HAS_NON_INSTRUCTED = "claim.has.non.instructed";
+    public static final String CLAIM_STATE_NOT_INSTRUCTION_REJECTED = "claim.state.not.instruction.rejected";
+    public static final String CLAIM_STATE_NOT_INSTRUCTION_DONE = "claim.state.not.instruction.done";
+    public static final String CLAIM_STATE_NOT_COMPLETE_COMPLIANT = "claim.state.not.complete.compliant";
 }
