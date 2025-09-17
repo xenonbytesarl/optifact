@@ -277,7 +277,15 @@
       "productName": "Produit",
       "state": "Statut",
       "createdAt": "Créée le",
-      "doneAt": "Terminée le"
+      "submitAt": "Soumise le",
+      "inInstructionAt": "En instruction le",
+      "instructionRejectedAt": "Instruction rejetée le",
+      "compliantAt": "Conforme le",
+      "doneAt": "Instruction terminée le",
+      "agreementGrantedAt": "Agrément accordé le",
+      "agreementRefusedAt": "Agrément refusé le",
+      "agreementAdjournedAt": "Agrément ajourné le",
+      "cancelAt": "Annulée le"
     },
     "states": {
       "draft": "Brouillon",

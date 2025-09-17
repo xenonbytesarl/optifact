@@ -277,7 +277,15 @@
       "productName": "Product",
       "state": "Status",
       "createdAt": "Created at",
-      "doneAt": "Done at"
+      "submitAt": "Submitted at",
+      "inInstructionAt": "In instruction at",
+      "instructionRejectedAt": "Instruction rejected at",
+      "compliantAt": "Compliant at",
+      "doneAt": "Instruction done at",
+      "agreementGrantedAt": "Agreement granted at",
+      "agreementRefusedAt": "Agreement refused at",
+      "agreementAdjournedAt": "Agreement adjourned at",
+      "cancelAt": "Cancelled at"
     },
     "states": {
       "draft": "Draft",
