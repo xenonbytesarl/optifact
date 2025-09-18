@@ -53,7 +53,7 @@ services:
     environment:
       FRONTEND_PORT: ${FRONTEND_PORT:-6067}
     ports:
-      - "${FRONTEND_PORT:-6067}:${FRONTEND_PORT:-6067}"
+      - "${FRONTEND_PORT:-6067}:80"
     # Nginx serves static assets and handles SPA fallback; API proxied to backend.
 
 volumes:
