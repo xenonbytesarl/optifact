@@ -26,3 +26,10 @@ export const serverRoutes: ServerRoute[] = [
   // Fallback: prerender all other routes
   { path: '**', renderMode: RenderMode.Prerender }
 ];
+
+// Optional: define prerender parameter generation hook.
+// Returning an empty array means no parameterized routes are prerendered by default.
+// You can later fetch IDs from an API and return [{ id: '...' }] objects per route.
+export function getPrerenderParams() {
+  return [] as Array<Record<string, string>>;
+}
