@@ -41,7 +41,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-optifact}
       SERVER_PORT: ${BACKEND_PORT:-6066}
     ports:
-      - "${BACKEND_PORT:-8080}:8080"
+      - "${BACKEND_PORT:-8080}:${BACKEND_PORT:-8080}"
     volumes:
       - claim_files:${CLAIM_FILE_ROOT_DIR:-/data/claimFiles}
 

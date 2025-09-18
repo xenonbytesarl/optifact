@@ -16,10 +16,10 @@ RUN npx ng build
 FROM nginx:1.27-alpine AS web
 
 # Copy custom nginx configuration
-COPY frontend/nginx.conf /etc/nginx/nginx.conf
+COPY frontend/default.conf /etc/nginx/conf.d/default.conf
 
 # Copy browser build artifacts for static serving
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;"]
