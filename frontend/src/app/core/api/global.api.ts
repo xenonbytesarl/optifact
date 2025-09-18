@@ -21,6 +21,7 @@ export class GlobalApi {
 
   protected createErrorResponse(error: any): ErrorApiResponse {
     const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+    const path = typeof window !== 'undefined' && window?.location ? window.location.pathname : '';
     return {
       success: false,
       code: 500,
@@ -28,7 +29,7 @@ export class GlobalApi {
       timestamp: new Date().toISOString(),
       correlationId: '',
       reason: message,
-      path: window.location.pathname
+      path
     };
   }
 }
