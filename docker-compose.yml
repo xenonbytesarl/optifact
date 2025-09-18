@@ -8,8 +8,9 @@ services:
       POSTGRES_DB: ${DB_NAME:-optifact}
       POSTGRES_USER: ${DB_USERNAME:-optifact}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-optifact}
+      PGPORT: ${DB_PORT:-5466}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-5432}:${DB_PORT:-5432}"
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
@@ -18,44 +19,37 @@ services:
       timeout: 5s
       retries: 5
 
-  backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
+  optifact-backend:
     image: optifact/backend:latest
     container_name: optifact-backend
     depends_on:
-      db:
+      optifact-db:
         condition: service_healthy
     environment:
       PROFILE: ${PROFILE:-prod}
       BACKEND_PORT: ${BACKEND_PORT:-8080}
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: ${DB_NAME:-optifact}
+      DB_HOST: ${DB_HOST:-optifact-db}
+      DB_PORT: ${DB_PORT:-5466}
+      DB_NAME: ${DB_NAME:-optifactdb}
       DB_USERNAME: ${DB_USERNAME:-optifact}
       DB_PASSWORD: ${DB_PASSWORD:-optifact}
-      FRONTEND_HOST: frontend
-      FRONTEND_PORT: 80
+      FRONTEND_HOST: optifact-frontend
+      FRONTEND_PORT: ${FRONTEND_PORT:-6067}
       CLAIM_FILE_ROOT_DIR: ${CLAIM_FILE_ROOT_DIR:-/data/claimFiles}
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME:-optifact}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME:-optifactdb}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-optifact}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-optifact}
-      SERVER_PORT: ${BACKEND_PORT:-8080}
+      SERVER_PORT: ${BACKEND_PORT:-6066}
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     volumes:
       - claim_files:${CLAIM_FILE_ROOT_DIR:-/data/claimFiles}
 
-  frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
-      target: web
+  optifact-frontend:
     image: optifact/frontend:latest
     container_name: optifact-frontend
     depends_on:
-      - backend
+      - optifact-backend
     ports:
       - "${FRONTEND_PORT:-80}:80"
     # Nginx serves static assets and handles SPA fallback; API proxied to backend.
