@@ -171,7 +171,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>file://${project.basedir}/../openapi/features/products/product-category.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../openapi/features/products/product-category.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>fr.xenonbyte.optifact.backend.api.productcategory.generated</apiPackage>
@@ -199,7 +199,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>file://${project.basedir}/../openapi/features/products/product.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../openapi/features/products/product.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>fr.xenonbyte.optifact.backend.api.product.generated</apiPackage>
@@ -227,7 +227,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>file://${project.basedir}/../openapi/features/actors/actor.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../openapi/features/actors/actor.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>fr.xenonbyte.optifact.backend.api.actor.generated</apiPackage>
@@ -255,7 +255,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>file://${project.basedir}/../openapi/features/commons/attachment-type.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../openapi/features/commons/attachment-type.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>fr.xenonbyte.optifact.backend.api.common.attachmenttype.generated</apiPackage>
@@ -283,7 +283,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>file://${project.basedir}/../openapi/features/commons/attachment.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../openapi/features/commons/attachment.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>fr.xenonbyte.optifact.backend.api.common.attachment.generated</apiPackage>
@@ -311,7 +311,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>file://${project.basedir}/../openapi/features/commons/sequence.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../openapi/features/commons/sequence.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>fr.xenonbyte.optifact.backend.api.common.sequence.generated</apiPackage>
@@ -339,7 +339,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>file://${project.basedir}/../openapi/features/claims/claim.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../openapi/features/claims/claim.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>fr.xenonbyte.optifact.backend.api.claim.generated</apiPackage>
@@ -367,7 +367,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>file://${project.basedir}/../openapi/features/invoices/invoice.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../openapi/features/invoices/invoice.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>fr.xenonbyte.optifact.backend.api.invoice.generated</apiPackage>
