@@ -46,14 +46,14 @@ jobs:
           push: ${{ fromJSON(github.event.inputs.push_images) }}
           load: ${{ !fromJSON(github.event.inputs.push_images) }}
           tags: |
-            ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/backend:latest
+            ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ secrets.DOCKER_USERNAME}}/${{ github.repository }}-backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Save backend image artifact (if not pushed)
         if: ${{ !fromJSON(github.event.inputs.push_images) }}
         run: |
-          docker save ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/backend:latest -o backend-image.tar
+          docker save ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ secrets.DOCKER_USERNAME}}/${{ github.repository }}-backend:latest -o backend-image.tar
       
       - name: Upload backend image artifact
         if: ${{ !fromJSON(github.event.inputs.push_images) }}
@@ -90,14 +90,14 @@ jobs:
           push: ${{ fromJSON(github.event.inputs.push_images) }}
           load: ${{ !fromJSON(github.event.inputs.push_images) }}
           tags: |
-            ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/frontend:latest
+            ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ secrets.DOCKER_USERNAME || 'ghcr.io' }}/${{ github.repository }}-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Save frontend web image artifact (if not pushed)
         if: ${{ !fromJSON(github.event.inputs.push_images) }}
         run: |
-          docker save ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/frontend:latest -o frontend-image.tar
+          docker save ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ secrets.DOCKER_USERNAME || 'ghcr.io' }}/${{ github.repository }}-frontend:latest -o frontend-image.tar
 
       - name: Upload frontend web image artifact
         if: ${{ !fromJSON(github.event.inputs.push_images) }}
