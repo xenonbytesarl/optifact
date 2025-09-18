@@ -181,6 +181,7 @@ jobs:
         env:
           REMOTE_APP_DIR: ${{ secrets.REMOTE_APP_DIR }}
           DB_NAME: ${{ secrets.DB_NAME }}
+          DB_HOST: ${{ secrets.DB_HOST }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_PORT: ${{ secrets.DB_PORT || 5432 }}
@@ -196,7 +197,7 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script_stop: true
           command_timeout: 10m
-          envs: REMOTE_APP_DIR,DB_NAME,DB_USERNAME,DB_PASSWORD,DB_PORT,PROFILE,BACKEND_PORT,CLAIM_FILE_ROOT_DIR,FRONTEND_PORT
+          envs: REMOTE_APP_DIR,DB_HOST,DB_NAME,DB_USERNAME,DB_PASSWORD,DB_PORT,PROFILE,BACKEND_PORT,CLAIM_FILE_ROOT_DIR,FRONTEND_PORT
           script: |
             set -euo pipefail
             mkdir -p "$REMOTE_APP_DIR"
@@ -209,6 +210,7 @@ jobs:
             if [ -d transfer/scripts ]; then rm -rf scripts && mv transfer/scripts ./scripts && chmod +x scripts/*.sh; fi
             export REMOTE_APP_DIR="$REMOTE_APP_DIR"
             export DB_NAME="$DB_NAME"
+            export DB_HOST="$DB_HOST"
             export DB_USERNAME="$DB_USERNAME"
             export DB_PASSWORD="$DB_PASSWORD"
             export DB_PORT="$DB_PORT"
