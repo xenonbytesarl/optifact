@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  db:
+  optifact-db:
     image: postgres:16-alpine
     container_name: optifact-db
     environment:
