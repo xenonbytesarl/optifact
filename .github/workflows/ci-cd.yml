@@ -22,6 +22,7 @@ jobs:
   build_backend:
     if: ${{ github.event.inputs.action != 'deploy_only' && (github.event.inputs.scope == 'all' || github.event.inputs.scope == 'backend') }}
     runs-on: ubuntu-latest
+    environment: Integration
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -64,6 +65,7 @@ jobs:
   build_frontend:
     if: ${{ github.event.inputs.action != 'deploy_only' && (github.event.inputs.scope == 'all' || github.event.inputs.scope == 'frontend') }}
     runs-on: ubuntu-latest
+    environment: Integration
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -108,6 +110,7 @@ jobs:
     if: ${{ github.event.inputs.action != 'build_only' }}
     needs: [build_backend, build_frontend]
     runs-on: ubuntu-latest
+    environment: Integration
     steps:
       - name: Checkout
         uses: actions/checkout@v4
