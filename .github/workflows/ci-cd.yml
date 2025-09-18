@@ -188,6 +188,7 @@ jobs:
           PROFILE: ${{ secrets.BACKEND_PROFILE || 'prod' }}
           BACKEND_PORT: ${{ secrets.BACKEND_PORT || 8080 }}
           CLAIM_FILE_ROOT_DIR: ${{ secrets.CLAIM_FILE_ROOT_DIR || '/data/claimFiles' }}
+          FRONTEND_HOST: ${{ secrets.FRONTEND_HOST}}
           FRONTEND_PORT: ${{ secrets.FRONTEND_PORT || 80 }}
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -197,7 +198,7 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script_stop: true
           command_timeout: 10m
-          envs: REMOTE_APP_DIR,DB_HOST,DB_NAME,DB_USERNAME,DB_PASSWORD,DB_PORT,PROFILE,BACKEND_PORT,CLAIM_FILE_ROOT_DIR,FRONTEND_PORT
+          envs: REMOTE_APP_DIR,DB_HOST,DB_NAME,DB_USERNAME,DB_PASSWORD,DB_PORT,PROFILE,BACKEND_PORT,CLAIM_FILE_ROOT_DIR,FRONTEND_HOST,FRONTEND_PORT
           script: |
             set -euo pipefail
             mkdir -p "$REMOTE_APP_DIR"
@@ -217,5 +218,6 @@ jobs:
             export PROFILE="$PROFILE"
             export BACKEND_PORT="$BACKEND_PORT"
             export CLAIM_FILE_ROOT_DIR="$CLAIM_FILE_ROOT_DIR"
+            export FRONTEND_HOST="$FRONTEND_HOST"
             export FRONTEND_PORT="$FRONTEND_PORT"
             bash scripts/deploy.sh
