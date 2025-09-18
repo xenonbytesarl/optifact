@@ -1,0 +1,212 @@
+name: CI/CD Optifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Action to perform"
+        type: choice
+        options: [build_and_deploy, build_only, deploy_only]
+        default: build_and_deploy
+      scope:
+        description: "What to target"
+        type: choice
+        options: [all, backend, frontend]
+        default: all
+      push_images:
+        description: "Push images to registry (requires DOCKER_REGISTRY, DOCKER_USERNAME, DOCKER_PASSWORD)"
+        type: boolean
+        default: false
+
+jobs:
+  build_backend:
+    if: ${{ github.event.inputs.action != 'deploy_only' && (github.event.inputs.scope == 'all' || github.event.inputs.scope == 'backend') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker registry
+        if: ${{ fromJSON(github.event.inputs.push_images) }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: ${{ fromJSON(github.event.inputs.push_images) }}
+          tags: |
+            ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Save backend image artifact (if not pushed)
+        if: ${{ !fromJSON(github.event.inputs.push_images) }}
+        run: |
+          docker save ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/backend:latest -o backend-image.tar
+      
+      - name: Upload backend image artifact
+        if: ${{ !fromJSON(github.event.inputs.push_images) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-image
+          path: backend-image.tar
+
+  build_frontend:
+    if: ${{ github.event.inputs.action != 'deploy_only' && (github.event.inputs.scope == 'all' || github.event.inputs.scope == 'frontend') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker registry
+        if: ${{ fromJSON(github.event.inputs.push_images) }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build frontend web image (Nginx)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          target: web
+          push: ${{ fromJSON(github.event.inputs.push_images) }}
+          tags: |
+            ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build frontend SSR image (Node)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          target: ssr
+          push: ${{ fromJSON(github.event.inputs.push_images) }}
+          tags: |
+            ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/frontend-ssr:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Save frontend web image artifact (if not pushed)
+        if: ${{ !fromJSON(github.event.inputs.push_images) }}
+        run: |
+          docker save ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/frontend:latest -o frontend-image.tar
+
+      - name: Upload frontend web image artifact
+        if: ${{ !fromJSON(github.event.inputs.push_images) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-image
+          path: frontend-image.tar
+
+      - name: Save frontend SSR image artifact (if not pushed)
+        if: ${{ !fromJSON(github.event.inputs.push_images) }}
+        run: |
+          docker save ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/frontend-ssr:latest -o frontend-ssr-image.tar
+
+      - name: Upload frontend SSR image artifact
+        if: ${{ !fromJSON(github.event.inputs.push_images) }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-ssr-image
+          path: frontend-ssr-image.tar
+
+  deploy:
+    if: ${{ github.event.inputs.action != 'build_only' }}
+    needs: [build_backend, build_frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download backend image artifact
+        if: ${{ !fromJSON(github.event.inputs.push_images) && (github.event.inputs.scope == 'all' || github.event.inputs.scope == 'backend') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-image
+          path: transfer
+
+      - name: Download frontend image artifact
+        if: ${{ !fromJSON(github.event.inputs.push_images) && (github.event.inputs.scope == 'all' || github.event.inputs.scope == 'frontend') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-image
+          path: transfer
+
+      - name: Download frontend SSR image artifact
+        if: ${{ !fromJSON(github.event.inputs.push_images) && (github.event.inputs.scope == 'all' || github.event.inputs.scope == 'frontend') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-ssr-image
+          path: transfer
+
+      - name: Prepare transfer package
+        run: |
+          mkdir -p transfer
+          cp docker-compose.yml transfer/
+          cp -r scripts transfer/
+
+      - name: Copy files to remote server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          source: "transfer/*"
+          target: ${{ secrets.REMOTE_APP_DIR }}
+
+      - name: Deploy on remote via SSH
+        uses: appleboy/ssh-action@v1.1.0
+        env:
+          REMOTE_APP_DIR: ${{ secrets.REMOTE_APP_DIR }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_PORT: ${{ secrets.DB_PORT || 5432 }}
+          PROFILE: ${{ secrets.BACKEND_PROFILE || 'prod' }}
+          BACKEND_PORT: ${{ secrets.BACKEND_PORT || 8080 }}
+          CLAIM_FILE_ROOT_DIR: ${{ secrets.CLAIM_FILE_ROOT_DIR || '/data/claimFiles' }}
+          FRONTEND_PORT: ${{ secrets.FRONTEND_PORT || 80 }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            mkdir -p "$REMOTE_APP_DIR"
+            cd "$REMOTE_APP_DIR"
+            # Move images to root dir if present
+            if [ -f transfer/backend-image.tar ]; then mv transfer/backend-image.tar ./backend-image.tar; fi
+            if [ -f transfer/frontend-image.tar ]; then mv transfer/frontend-image.tar ./frontend-image.tar; fi
+            if [ -f transfer/frontend-ssr-image.tar ]; then mv transfer/frontend-ssr-image.tar ./frontend-ssr-image.tar; fi
+            # Move compose and scripts
+            if [ -f transfer/docker-compose.yml ]; then mv transfer/docker-compose.yml ./docker-compose.yml; fi
+            if [ -d transfer/scripts ]; then rm -rf scripts && mv transfer/scripts ./scripts && chmod +x scripts/*.sh; fi
+            export REMOTE_APP_DIR="$REMOTE_APP_DIR"
+            export DB_NAME="$DB_NAME"
+            export DB_USERNAME="$DB_USERNAME"
+            export DB_PASSWORD="$DB_PASSWORD"
+            export DB_PORT="$DB_PORT"
+            export PROFILE="$PROFILE"
+            export BACKEND_PORT="$BACKEND_PORT"
+            export CLAIM_FILE_ROOT_DIR="$CLAIM_FILE_ROOT_DIR"
+            export FRONTEND_PORT="$FRONTEND_PORT"
+            bash scripts/deploy.sh
