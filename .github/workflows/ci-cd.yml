@@ -196,6 +196,7 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script_stop: true
           command_timeout: 10m
+          envs: REMOTE_APP_DIR,DB_NAME,DB_USERNAME,DB_PASSWORD,DB_PORT,PROFILE,BACKEND_PORT,CLAIM_FILE_ROOT_DIR,FRONTEND_PORT
           script: |
             set -euo pipefail
             mkdir -p "$REMOTE_APP_DIR"
