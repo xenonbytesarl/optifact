@@ -29,9 +29,6 @@ fi
 if [ -f frontend-image.tar ]; then
   docker load -i frontend-image.tar || true
 fi
-if [ -f frontend-ssr-image.tar ]; then
-  docker load -i frontend-ssr-image.tar || true
-fi
 
 # Start/Update the stack
 DOCKER_COMPOSE="docker compose"

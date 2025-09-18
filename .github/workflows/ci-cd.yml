@@ -92,19 +92,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build frontend SSR image (Node)
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: frontend/Dockerfile
-          target: ssr
-          push: ${{ fromJSON(github.event.inputs.push_images) }}
-          load: ${{ !fromJSON(github.event.inputs.push_images) }}
-          tags: |
-            ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/frontend-ssr:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
       - name: Save frontend web image artifact (if not pushed)
         if: ${{ !fromJSON(github.event.inputs.push_images) }}
         run: |
@@ -116,18 +103,6 @@ jobs:
         with:
           name: frontend-image
           path: frontend-image.tar
-
-      - name: Save frontend SSR image artifact (if not pushed)
-        if: ${{ !fromJSON(github.event.inputs.push_images) }}
-        run: |
-          docker save ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/frontend-ssr:latest -o frontend-ssr-image.tar
-
-      - name: Upload frontend SSR image artifact
-        if: ${{ !fromJSON(github.event.inputs.push_images) }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-ssr-image
-          path: frontend-ssr-image.tar
 
   deploy:
     if: ${{ github.event.inputs.action != 'build_only' }}
@@ -151,12 +126,6 @@ jobs:
           name: frontend-image
           path: transfer
 
-      - name: Download frontend SSR image artifact
-        if: ${{ !fromJSON(github.event.inputs.push_images) && (github.event.inputs.scope == 'all' || github.event.inputs.scope == 'frontend') }}
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-ssr-image
-          path: transfer
 
       - name: Prepare transfer package
         run: |
@@ -199,7 +168,6 @@ jobs:
             # Move images to root dir if present
             if [ -f transfer/backend-image.tar ]; then mv transfer/backend-image.tar ./backend-image.tar; fi
             if [ -f transfer/frontend-image.tar ]; then mv transfer/frontend-image.tar ./frontend-image.tar; fi
-            if [ -f transfer/frontend-ssr-image.tar ]; then mv transfer/frontend-ssr-image.tar ./frontend-ssr-image.tar; fi
             # Move compose and scripts
             if [ -f transfer/docker-compose.yml ]; then mv transfer/docker-compose.yml ./docker-compose.yml; fi
             if [ -d transfer/scripts ]; then rm -rf scripts && mv transfer/scripts ./scripts && chmod +x scripts/*.sh; fi
