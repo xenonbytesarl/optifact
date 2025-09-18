@@ -43,6 +43,7 @@ jobs:
           context: .
           file: backend/Dockerfile
           push: ${{ fromJSON(github.event.inputs.push_images) }}
+          load: ${{ !fromJSON(github.event.inputs.push_images) }}
           tags: |
             ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/backend:latest
           cache-from: type=gha
@@ -85,6 +86,7 @@ jobs:
           file: frontend/Dockerfile
           target: web
           push: ${{ fromJSON(github.event.inputs.push_images) }}
+          load: ${{ !fromJSON(github.event.inputs.push_images) }}
           tags: |
             ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/frontend:latest
           cache-from: type=gha
@@ -97,6 +99,7 @@ jobs:
           file: frontend/Dockerfile
           target: ssr
           push: ${{ fromJSON(github.event.inputs.push_images) }}
+          load: ${{ !fromJSON(github.event.inputs.push_images) }}
           tags: |
             ${{ secrets.DOCKER_REGISTRY || 'ghcr.io' }}/${{ github.repository }}/frontend-ssr:latest
           cache-from: type=gha
