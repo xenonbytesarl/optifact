@@ -136,15 +136,43 @@ jobs:
           cp docker-compose.yml transfer/
           cp -r scripts transfer/
 
+      - name: Validate SSH auth inputs
+        run: |
+          HAS_KEY="${{ secrets.SSH_KEY != '' }}"
+          HAS_PWD="${{ secrets.SSH_PASSWORD != '' }}"
+          if [ "$HAS_KEY" != "true" ] && [ "$HAS_PWD" != "true" ]; then
+            echo "Error: neither SSH_KEY nor SSH_PASSWORD is provided in secrets for environment 'Integration'." >&2
+            exit 1
+          fi
+
+      - name: Setup SSH key (if provided)
+        id: setup_ssh
+        run: |
+          if [ -n "${{ secrets.SSH_KEY }}" ]; then
+            mkdir -p ~/.ssh
+            printf '%s\n' "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+            chmod 600 ~/.ssh/deploy_key
+            echo "key_path=$HOME/.ssh/deploy_key" >> "$GITHUB_OUTPUT"
+          else
+            echo "key_path=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${{ secrets.SSH_PORT || 22 }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+
       - name: Copy files to remote server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          key_path: ${{ steps.setup_ssh.outputs.key_path }}
+          password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT || 22 }}
           source: "transfer/*"
           target: ${{ secrets.REMOTE_APP_DIR }}
+          debug: true
 
       - name: Deploy on remote via SSH
         uses: appleboy/ssh-action@v1.1.0
@@ -161,9 +189,11 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          key_path: ${{ steps.setup_ssh.outputs.key_path }}
+          password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script_stop: true
+          command_timeout: 10m
           script: |
             set -euo pipefail
             mkdir -p "$REMOTE_APP_DIR"
