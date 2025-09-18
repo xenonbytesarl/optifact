@@ -20,7 +20,7 @@ services:
       retries: 5
 
   optifact-backend:
-    image: optifact/backend:latest
+    image: xenonbytesarl/optifact-backend:latest
     container_name: optifact-backend
     depends_on:
       optifact-db:
@@ -46,7 +46,7 @@ services:
       - claim_files:${CLAIM_FILE_ROOT_DIR:-/data/claimFiles}
 
   optifact-frontend:
-    image: optifact/frontend:latest
+    image: xenonbytesarl/optifact-frontend:latest
     container_name: optifact-frontend
     depends_on:
       - optifact-backend
