@@ -9,8 +9,11 @@ WORKDIR /app
 COPY backend/pom.xml ./pom.xml
 RUN mvn -B -q -e -DskipTests dependency:go-offline
 
-# Copy sources and build
+# Copy sources
 COPY backend/. ./
+# Copy OpenAPI specs so the generator can access ${project.basedir}/../openapi/** paths
+COPY openapi /openapi
+# Build
 RUN mvn -B -q -DskipTests package
 
 # ---------- Runtime stage ----------
