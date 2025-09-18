@@ -1,4 +1,4 @@
-# Frontend Dockerfile - Angular 20 with SSR (client + server) and Nginx
+# Frontend Dockerfile - Angular 20 (SPA only) served by Nginx
 
 # ---------- Build stage ----------
 FROM node:20-alpine AS build
@@ -8,24 +8,9 @@ WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci --no-audit --no-fund
 
-# Copy sources and build (browser + server bundles)
+# Copy sources and build (browser bundle only)
 COPY frontend/. ./
-# Build browser and server bundles for SSR
-RUN npx ng build && npx ng run frontend:server
-
-# ---------- SSR runtime (Node) ----------
-FROM node:20-alpine AS ssr
-WORKDIR /app
-ENV NODE_ENV=production
-ENV PORT=4000
-
-# Copy server and browser artifacts
-COPY --from=build /app/dist/frontend/server ./dist/server
-COPY --from=build /app/dist/frontend/browser ./dist/browser
-
-# Expose SSR port and run server
-EXPOSE 4000
-CMD ["node", "dist/server/server.mjs"]
+RUN npx ng build
 
 # ---------- Web runtime (Nginx) ----------
 FROM nginx:1.27-alpine AS web
