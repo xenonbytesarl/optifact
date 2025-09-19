@@ -16,16 +16,14 @@ export class SidebarComponent {
 
   readonly navItems = signal<SidebarNavItem[]>([
     { link: '/dashboard', icon: 'dashboard', label: 'nav.dashboard' },
-    { link: '/actors', icon: 'group', label: 'nav.actors' },
-    { icon: 'inventory_2', label: 'nav.products', children: [
-      { link: '/product-categories', icon: 'category', label: 'productCategories.title' },
-      { link: '/products', icon: 'inventory', label: 'products.title' }
-    ] },
     { link: '/claims', icon: 'assignment', label: 'claims.title' },
     { link: '/invoices', icon: 'receipt_long', label: 'nav.invoices' },
     { link: '/payments', icon: 'credit_card', label: 'nav.payments' },
+    { link: '/actors', icon: 'group', label: 'nav.actors' },
+    { link: '/products', icon: 'inventory', label: 'products.title' },
     { icon: 'settings', label: 'nav.settings', children: [
       { link: '/settings', icon: 'settings', label: 'settings.title' },
+      { link: '/product-categories', icon: 'category', label: 'productCategories.title' },
       { link: '/attachment-types', icon: 'description', label: 'attachmentTypes.title' },
       { link: '/sequences', icon: '123', label: 'sequences.title' }
     ] }

@@ -26,7 +26,7 @@ import { TopbarLanguageToggleComponent } from './topbar-language-toggle/topbar-l
 })
 export class TopbarComponent {
   isDarkMode = input(false);
-  appName = input('Optifact');
+  appName = input('COSUMAF');
   logoSrc = input('/assets/images/logo-black.png');
 
   toggleSidebar = output<void>();

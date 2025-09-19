@@ -102,7 +102,7 @@
   "nav": {
     "dashboard": "Tableau de bord",
     "actors": "Acteurs",
-    "products": "Produits",
+    "products": "Service Facturés",
     "quotes": "Devis",
     "invoices": "Factures",
     "payments": "Paiements",
@@ -118,13 +118,13 @@
       "description": "Description",
       "noDescription": "Aucune description fournie."
     },
-    "title": "Produits",
-    "subtitle": "Catalogue des produits",
+    "title": "Services Facturés",
+    "subtitle": "Catalogue de service",
     "tabs": {
       "info": "Informations générales",
       "docTypes": "Types de document"
     },
-    "new": "Nouveau produit",
+    "new": "Nouveau Service",
     "fields": {
       "code": "Code",
       "name": "Nom",
@@ -137,7 +137,8 @@
       "selectSequence": "Sélectionner une séquence",
       "currency": "Devise",
       "description": "Description",
-      "actions": "Actions"
+      "actions": "Actions",
+      "extraProduct": "Service"
     },
     "types": {
       "forfait": "Forfait",
@@ -157,7 +158,7 @@
     "empty": "Aucun produit"
   },
   "productCategories": {
-    "title": "Catégories de produit",
+    "title": "Catégories de Service",
     "subtitle": "Gérez les catégories de vos produits",
     "new": "Nouvelle catégorie",
     "fields": {
