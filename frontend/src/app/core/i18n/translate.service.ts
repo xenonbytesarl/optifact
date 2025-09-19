@@ -27,10 +27,10 @@ export class TranslateService {
   private detectInitialLang(): Lang {
     try {
       const saved = localStorage.getItem(this.storageKey) as Lang | null;
-      if (saved === 'en' || saved === 'fr') return saved;
+      if (saved === 'en' || saved === 'fr') return 'fr';
     } catch {}
     const nav = (typeof navigator !== 'undefined' && navigator.language) ? navigator.language : 'fr';
-    return nav.toLowerCase().startsWith('fr') ? 'fr' : 'en';
+    return nav.toLowerCase().startsWith('fr') ? 'fr' : 'fr';
   }
 
   async load(lang: Lang) {
