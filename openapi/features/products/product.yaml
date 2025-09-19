@@ -29,6 +29,12 @@ paths:
           required: false
           schema:
             type: string
+        - name: claimNameFilter
+          in: query
+          description: Optional claim name filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
         - name: codeFilter
           in: query
           description: Optional code filter (case-insensitive, partial match)
@@ -256,6 +262,10 @@ components:
           type: string
           description: Product name
           example: "Consulting Service"
+        claimName:
+          type: string
+          description: Product claimName
+          example: "Demand consulting Service"
         amount:
           type: number
           format: decimal
@@ -318,6 +328,10 @@ components:
           type: string
           description: Product name
           example: "Consulting Service"
+        claimName:
+          type: string
+          description: Product claimName
+          example: "Demand consulting Service"
         amount:
           type: number
           format: decimal

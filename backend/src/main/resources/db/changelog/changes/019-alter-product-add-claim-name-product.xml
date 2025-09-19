@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Add an optional claim name self-reference to the product table -->
+    <changeSet id="19092025_1439_add_claim_name_to_product" author="brice.mbiandji">
+        <addColumn tableName="t_product">
+            <column name="c_claim_name" type="varchar(255)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+        </addColumn>
+
+        <!-- Create an index for faster joins/lookups -->
+        <createIndex indexName="idx_t_product_claim_name" tableName="t_product">
+            <column name="c_claim_name"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>

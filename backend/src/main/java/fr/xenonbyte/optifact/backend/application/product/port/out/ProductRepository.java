@@ -22,7 +22,7 @@ public interface ProductRepository {
 
     Optional<Product> findById(UUID categoryId);
 
-    Pagination<Product> search(String nameFilter, String codeFilter, String categoryNameFilter, String typeFilter, CommonSearch search);
+    Pagination<Product> search(String nameFilter, String claimNameFilter, String codeFilter, String categoryNameFilter, String typeFilter, CommonSearch search);
 
     Boolean existByName(String name);
 
@@ -37,4 +37,8 @@ public interface ProductRepository {
     void delete(Product product);
 
     boolean existsById(UUID productId);
+
+    Boolean existByClaimName(String claimName);
+
+    Boolean existByClaimNameExcludingId(String claimName, UUID productId);
 }

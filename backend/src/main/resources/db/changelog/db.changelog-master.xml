@@ -23,4 +23,5 @@
     <include file="/db/changelog/changes/016-rename-invoice-issue-at-to-due-at.xml"/>
     <include file="/db/changelog/changes/017-alter-claim-table-update-columns.xml"/>
     <include file="/db/changelog/changes/018-alter-product-add-extra-product.xml"/>
+    <include file="/db/changelog/changes/019-alter-product-add-claim-name-product.xml"/>
 </databaseChangeLog>

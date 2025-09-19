@@ -30,12 +30,12 @@ public final class SearchProductsApplicationService implements SearchProductsUse
     }
     
     @Override
-    public Pagination<Product> searchProducts(String nameFilter, String codeFilter,
+    public Pagination<Product> searchProducts(String nameFilter, String claimNameFilter, String codeFilter,
                                               String categoryNameFilter, String typeFilter, CommonSearch search) {
-        LOGGER.info("Searching products with nameFilter: '" + nameFilter + "', typeFilter: '" + typeFilter
+        LOGGER.info("Searching products with nameFilter: '" + nameFilter + "' claimNameFilter: '" + claimNameFilter + "', typeFilter: '" + typeFilter
                 + "', categoryNameFilter: '" + categoryNameFilter + "', codeFilter: '" + codeFilter + "'" );
 
-        Pagination<Product> productProductsPage = repository.search(nameFilter, codeFilter, categoryNameFilter, typeFilter, search);
+        Pagination<Product> productProductsPage = repository.search(nameFilter, claimNameFilter, codeFilter, categoryNameFilter, typeFilter, search);
 
         LOGGER.info("Found " + productProductsPage.elements().size() + " products (total: " + productProductsPage.totalElements() + ")");
         return productProductsPage;

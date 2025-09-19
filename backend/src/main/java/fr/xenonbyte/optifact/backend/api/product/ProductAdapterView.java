@@ -73,6 +73,7 @@ public class ProductAdapterView {
     }
 
     public ProductPageResponseView searchProducts(String nameFilter,
+                                                  String claimNameFilter,
                                                   Integer page,
                                                   Integer size,
                                                   String sortField,
@@ -99,6 +100,7 @@ public class ProductAdapterView {
         Pagination<Product> productPage = searchProductsUseCase.searchProducts(
                 nameFilter,
                 codeFilter,
+                claimNameFilter,
                 categoryNameFilter,
                 typeFilter,
                 new CommonSearch(safePage, safeSize, safeSort, safeDirection)

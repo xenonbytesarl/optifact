@@ -69,14 +69,14 @@ public class ProductResource implements ProductsApi {
     }
 
     @Override
-    public ResponseEntity<ProductPageApiResponseView> searchProducts(String acceptLanguage, Integer page, Integer size, String sortField, String sortDirection, String nameFilter, String codeFilter, String typeFilter, String categoryNameFilter) {
+    public ResponseEntity<ProductPageApiResponseView> searchProducts(String acceptLanguage, Integer page, Integer size, String sortField, String sortDirection, String nameFilter, String claimNameFilter, String codeFilter, String typeFilter, String categoryNameFilter) {
         return ResponseEntity.status(OK).body(
                 new ProductPageApiResponseView()
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .status(OK.name())
                         .message(MessageUtil.getMessage(ProductMessageView.PRODUCTS_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(of(CONTENT, adapterView.searchProducts(nameFilter, page, size, sortField, sortDirection, codeFilter, typeFilter, categoryNameFilter)))
+                        .data(of(CONTENT, adapterView.searchProducts(nameFilter, claimNameFilter, page, size, sortField, sortDirection, codeFilter, typeFilter, categoryNameFilter)))
         );
     }
 
