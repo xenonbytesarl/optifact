@@ -38,6 +38,7 @@ export function useProductScreen() {
   const form: FormGroup = fb.group({
     code: ['', [Validators.required]],
     name: ['', [Validators.required]],
+    claimName: [''],
     type: ['FLAT_AMOUNT', [Validators.required]],
     amount: [0],
     rate: [null],
@@ -52,6 +53,7 @@ export function useProductScreen() {
   const initialProductFormValue: ProductFormValue = {
     code: '',
     name: '',
+    claimName: '',
     type: 'FLAT_AMOUNT',
     amount: 0,
     rate: null,
@@ -79,6 +81,7 @@ export function useProductScreen() {
     if (current && form.pristine) {
       const code = current.code ?? '';
       const name = current.name ?? '';
+      const claimName = current.claimName ?? '';
       const type = current.type ?? 'FLAT_AMOUNT';
       const amount = current.amount ?? 0;
       const rate = current.rate ?? null;
@@ -88,8 +91,8 @@ export function useProductScreen() {
       const description = current.description ?? '';
       const currency = (current as any).currency ?? null;
       const attachmentTypeIds = current.attachmentTypeIds ?? [];
-      formValue.set({ code, name, type, amount, rate, categoryId, sequenceId, extraProductId, description, currency, attachmentTypeIds });
-      form.patchValue({ code, name, type, amount, rate, categoryId, sequenceId, extraProductId, description, currency, attachmentTypeIds });
+      formValue.set({ code, name, claimName, type, amount, rate, categoryId, sequenceId, extraProductId, description, currency, attachmentTypeIds });
+      form.patchValue({ code, name, claimName, type, amount, rate, categoryId, sequenceId, extraProductId, description, currency, attachmentTypeIds });
       form.markAsPristine();
       form.markAsUntouched();
     }
@@ -132,6 +135,7 @@ export function useProductScreen() {
     form.patchValue({
       code: v.code,
       name: v.name,
+      claimName: v.claimName,
       type: v.type,
       amount: v.amount,
       rate: v.rate,
@@ -146,6 +150,10 @@ export function useProductScreen() {
 
   function onNameBlur() {
     form.get('name')?.markAsTouched();
+  }
+
+  function onClaimNameBlur() {
+    form.get('claimName')?.markAsTouched();
   }
 
   function onCodeBlur() {
@@ -239,6 +247,7 @@ export function useProductScreen() {
     onValueChange,
     onCodeBlur,
     onNameBlur,
+    onClaimNameBlur,
     onTypeBlur,
     onCategoryIdBlur,
     onRateBlur,

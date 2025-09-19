@@ -46,6 +46,7 @@ export const productStore = signalStore(
 
       async search(
         nameFilter: string,
+        claimNameFilter: string,
         codeFilter: string,
         typeFilter: string,
         categoryNameFilter: string,
@@ -55,7 +56,7 @@ export const productStore = signalStore(
         sort: ProductSortColumn
       ) {
         patchState(store, { loading: true, error: null, message: null });
-        const response = await api.search(nameFilter, codeFilter, typeFilter, categoryNameFilter, page, size, direction, sort );
+        const response = await api.search(nameFilter, claimNameFilter, codeFilter, typeFilter, categoryNameFilter, page, size, direction, sort );
         if(response.success) {
           const payload = response as SuccessApiResponse<Page<Product>>;
           patchState(store, {productPage: payload.data.content as any, message: payload.message ?? 'products.messages.search.success', loading: false });

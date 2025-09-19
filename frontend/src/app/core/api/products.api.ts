@@ -11,6 +11,7 @@ export interface Product {
   id: string;
   code: string;
   name: string;
+  claimName: string;
   type: ProductType;
   amount?: number | null; // montant (forfait)
   rate?: number | null;   // taux (pourcentage)
@@ -29,7 +30,7 @@ export class ProductsApi extends GlobalApi {
 
   private base = this.apiUrl + '/products';
 
-  async search(nameFilter: string, codeFilter: string, typeFilter: string, categoryNameFilter: string, page: number, size: number, direction: Direction, sort: ProductSortColumn) {
+  async search(nameFilter: string, claimNameFilter: string, codeFilter: string, typeFilter: string, categoryNameFilter: string, page: number, size: number, direction: Direction, sort: ProductSortColumn) {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
@@ -37,6 +38,7 @@ export class ProductsApi extends GlobalApi {
       .set('sortDirection', direction.valueOf());
 
     if (nameFilter) params = params.set('nameFilter', nameFilter);
+    if (nameFilter) params = params.set('claimNameFilter', claimNameFilter);
     if (codeFilter) params = params.set('codeFilter', nameFilter);
     if (typeFilter) params = params.set('typeFilter', nameFilter);
     if (categoryNameFilter) params = params.set('categoryNameFilter', nameFilter);

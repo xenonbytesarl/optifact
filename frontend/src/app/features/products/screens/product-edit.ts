@@ -9,11 +9,12 @@ import {useProductScreen} from './product-screen.util';
 import { ProductDocumentTypesTabComponent } from '../components/product-document-types-tab';
 import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
 import { TranslateService } from '../../../core/i18n/translate.service';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 
 @Component({
   selector: 'app-product-edit-page',
   standalone: true,
-  imports: [CommonModule, ProductFormComponent, ActionBarComponent, CardComponent, SpinnerComponent, ProductDocumentTypesTabComponent, TabsComponent],
+  imports: [CommonModule, TranslatePipe, ProductFormComponent, ActionBarComponent, CardComponent, SpinnerComponent, ProductDocumentTypesTabComponent, TabsComponent],
   providers: [],
   template: `
     <app-action-bar
@@ -31,36 +32,43 @@ import { TranslateService } from '../../../core/i18n/translate.service';
       <app-card>
         <app-tabs [items]="tabItems()" [(active)]="activeTab">
           @if (activeTab === 'info') {
-            <app-product-form
-              [disabled]="loading()"
-              [value]="formValue()"
-              [codeRequiredError]="codeHasError()"
-              [nameRequiredError]="nameHasError()"
-              [typeRequiredError]="typeHasError()"
-              [categoryIdRequiredError]="categoryIdHasError()"
-              [rateRequiredError]="rateHasError()"
-              [amountRequiredError]="amountHasError()"
-              [productCategories]="productCategories()"
-              [sequences]="sequences()"
-              [extraProducts]="extraProducts()"
-              (blurCode)="onCodeBlur()"
-              (blurName)="onNameBlur()"
-              (blurType)="onTypeBlur()"
-              (blurCategory)="onCategoryIdBlur()"
-              (blurSequence)="onSequenceIdBlur()"
-              (blurAmount)="onAmountBlur()"
-              (blurRate)="onRateBlur()"
-              (blurExtraProduct)="onExtraProductBlur()"
-              (valueChange)="onValueChange($event)"
-            />
+            <section class="flex flex-col gap-4">
+              <h3 class="text-sm font-semibold text-muted uppercase">{{ 'products.tabs.info' | t }}</h3>
+              <app-product-form
+                [disabled]="loading()"
+                [value]="formValue()"
+                [codeRequiredError]="codeHasError()"
+                [nameRequiredError]="nameHasError()"
+                [typeRequiredError]="typeHasError()"
+                [categoryIdRequiredError]="categoryIdHasError()"
+                [rateRequiredError]="rateHasError()"
+                [amountRequiredError]="amountHasError()"
+                [productCategories]="productCategories()"
+                [sequences]="sequences()"
+                [extraProducts]="extraProducts()"
+                (blurCode)="onCodeBlur()"
+                (blurName)="onNameBlur()"
+                (blurClaimName)="onClaimNameBlur()"
+                (blurType)="onTypeBlur()"
+                (blurCategory)="onCategoryIdBlur()"
+                (blurSequence)="onSequenceIdBlur()"
+                (blurAmount)="onAmountBlur()"
+                (blurRate)="onRateBlur()"
+                (blurExtraProduct)="onExtraProductBlur()"
+                (valueChange)="onValueChange($event)"
+              />
+            </section>
           }
           @if (activeTab === 'docTypes') {
-            <app-product-document-types-tab
-              [modelIds]="formValue().attachmentTypeIds ?? []"
-              [attachmentTypes]="attachmentTypes()"
-              [currentAttachmentTypes]="currentAttachmentTypes()"
-              (modelIdsChange)="onAttachmentTypeIds($event)"
-            />
+            <section class="flex flex-col gap-4">
+              <h3 class="text-sm font-semibold text-muted uppercase">{{ 'products.docTypes.sectionTitle' | t }}</h3>
+              <app-product-document-types-tab
+                [modelIds]="formValue().attachmentTypeIds ?? []"
+                [attachmentTypes]="attachmentTypes()"
+                [currentAttachmentTypes]="currentAttachmentTypes()"
+                (modelIdsChange)="onAttachmentTypeIds($event)"
+              />
+            </section>
           }
         </app-tabs>
       </app-card>
@@ -117,6 +125,7 @@ export class ProductEditPage {
   onValueChange(v: any) { return this.ui.onValueChange(v); }
   onCodeBlur() { return this.ui.onCodeBlur(); }
   onNameBlur() { return this.ui.onNameBlur(); }
+  onClaimNameBlur() { return this.ui.onClaimNameBlur(); }
   onTypeBlur() { return this.ui.onTypeBlur(); }
   onCategoryIdBlur() { return this.ui.onCategoryIdBlur(); }
   onSequenceIdBlur() { return this.ui.onSequenceIdBlur(); }

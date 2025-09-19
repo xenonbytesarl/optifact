@@ -44,6 +44,7 @@ import { TabsComponent, TabItem } from '../../../shared/ui/tabs';
               [extraProducts]="extraProducts()"
               (blurCode)="onCodeBlur()"
               (blurName)="onNameBlur()"
+              (blurClaimName)="onClaimNameBlur()"
               (blurType)="onTypeBlur()"
               (blurCategory)="onCategoryIdBlur()"
               (blurAmount)="onAmountBlur()"
@@ -96,6 +97,7 @@ export class ProductNewPage {
   onValueChange(v: any) { return this.ui.onValueChange(v); }
   onCodeBlur() { return this.ui.onCodeBlur(); }
   onNameBlur() { return this.ui.onNameBlur(); }
+  onClaimNameBlur() { return this.ui.onClaimNameBlur(); }
   onTypeBlur() { return this.ui.onTypeBlur(); }
   onCategoryIdBlur() { return this.ui.onCategoryIdBlur(); }
   onRateBlur() { return this.ui.onRateBlur(); }

@@ -116,7 +116,8 @@
       "amountFlat": "Montant (forfait)",
       "rate": "Taux",
       "description": "Description",
-      "noDescription": "Aucune description fournie."
+      "noDescription": "Aucune description fournie.",
+      "extraProductName": "Service supplémentaire"
     },
     "title": "Services Facturés",
     "subtitle": "Catalogue de service",
@@ -128,6 +129,7 @@
     "fields": {
       "code": "Code",
       "name": "Nom",
+      "claimName": "Nom (demande)",
       "type": "Type",
       "amount": "Montant",
       "rate": "Taux (%)",
@@ -155,7 +157,14 @@
       "empty": "Aucun type de document associé. Sélectionnez un type puis cliquez sur Ajouter.",
       "alreadyAssociated": "Ce type de document est déjà associé"
     },
-    "empty": "Aucun produit"
+    "empty": "Aucun produit",
+    "sections": {
+      "identification": "Identification",
+      "classification": "Classification",
+      "pricing": "Tarification",
+      "relations": "Relations",
+      "description": "Description"
+    }
   },
   "productCategories": {
     "title": "Catégories de Service",

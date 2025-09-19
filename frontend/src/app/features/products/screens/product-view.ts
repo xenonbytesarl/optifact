@@ -31,6 +31,7 @@ import {sequencesStore} from '../../sequences/sequences.store';
                 <span class="material-symbols-outlined text-neutral-600 dark:text-neutral-300 text-3xl">inventory_2</span>
               </div>
               <div class="flex-1 space-y-6">
+                <!-- Header -->
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                   <div>
                     <div class="text-2xl font-semibold leading-tight">{{ name() || '-' }}</div>
@@ -39,46 +40,83 @@ import {sequencesStore} from '../../sequences/sequences.store';
                   <div class="flex items-center gap-2"></div>
                 </div>
 
-                <div class="grid gap-6 md:grid-cols-2">
-                  <div class="rounded border border-token p-4 bg-surface/50">
-                    <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.category') }}</div>
-                    <div class="text-base">{{ categoryName() || '—' }}</div>
+                <!-- Identification -->
+                <section class="flex flex-col gap-3">
+                  <h3 class="text-sm font-semibold text-muted uppercase">{{ i18n.t('products.sections.identification') }}</h3>
+                  <div class="grid gap-3 md:grid-cols-2">
+                    <div class="rounded border border-token p-4 bg-surface/50">
+                      <div class="text-xs text-muted mb-1">{{ i18n.t('products.fields.code') }}</div>
+                      <div class="text-base">{{ code() || '—' }}</div>
+                    </div>
+                    <div class="rounded border border-token p-4 bg-surface/50">
+                      <div class="text-xs text-muted mb-1">{{ i18n.t('products.fields.claimName') }}</div>
+                      <div class="text-base">{{ claimName() || '—' }}</div>
+                    </div>
+                    <div class="rounded border border-token p-4 bg-surface/50">
+                      <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.extraProductName') }}</div>
+                      <div class="text-base">{{ extraProductName() || '—' }}</div>
+                    </div>
                   </div>
-                  <div class="rounded border border-token p-4 bg-surface/50">
-                    <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.type') }}</div>
-                    <div class="text-base">{{ type() }}</div>
-                  </div>
-                  <div class="rounded border border-token p-4 bg-surface/50">
-                    <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.sequence') }}</div>
-                    <div class="text-base">{{ sequenceName() || '—' }}</div>
-                  </div>
-                  <div class="rounded border border-token p-4 bg-surface/50">
-                    @if (rawType() === 'FLAT_AMOUNT') {
-                      <div>
-                        <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.amountFlat') }}</div>
-                        <div class="text-base font-medium">{{ amount() | amountCurrency: currency():0:0 }}</div>
-                      </div>
-                    } @else {
-                      <div>
-                        <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.rate') }}</div>
-                        <div class="text-base font-medium">{{ rate() | rate:0 }}</div>
-                      </div>
-                    }
-                  </div>
-                  <div class="rounded border border-token p-4 bg-surface/50">
-                    <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.extraProductName') }}</div>
-                    <div class="text-base">{{ extraProductName() || '—' }}</div>
-                  </div>
-                </div>
+                </section>
 
-                @if (description()) {
-                  <div>
-                    <div class="text-sm text-muted mb-1">{{ i18n.t('products.view.description') }}</div>
-                    <div class="text-base whitespace-pre-wrap">{{ description() }}</div>
+                <hr class="border-token" />
+
+                <!-- Classification -->
+                <section class="flex flex-col gap-3">
+                  <h3 class="text-sm font-semibold text-muted uppercase">{{ i18n.t('products.sections.classification') }}</h3>
+                  <div class="grid gap-3 md:grid-cols-2">
+                    <div class="rounded border border-token p-4 bg-surface/50">
+                      <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.category') }}</div>
+                      <div class="text-base">{{ categoryName() || '—' }}</div>
+                    </div>
+                    <div class="rounded border border-token p-4 bg-surface/50">
+                      <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.sequence') }}</div>
+                      <div class="text-base">{{ sequenceName() || '—' }}</div>
+                    </div>
                   </div>
-                } @else {
-                  <div class="text-sm text-muted">{{ i18n.t('products.view.noDescription') }}</div>
-                }
+                </section>
+
+                <hr class="border-token" />
+
+                <!-- Pricing -->
+                <section class="flex flex-col gap-3">
+                  <h3 class="text-sm font-semibold text-muted uppercase">{{ i18n.t('products.sections.pricing') }}</h3>
+                  <div class="grid gap-3 md:grid-cols-2">
+                    <div class="rounded border border-token p-4 bg-surface/50">
+                      <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.type') }}</div>
+                      <div class="text-base">{{ type() }}</div>
+                    </div>
+                    <div class="rounded border border-token p-4 bg-surface/50">
+
+                      @if (rawType() === 'FLAT_AMOUNT') {
+                        <div>
+                          <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.amountFlat') }}</div>
+                          <div class="text-base font-medium">{{ amount() | amountCurrency: currency():0:0 }}</div>
+                        </div>
+                      } @else {
+                        <div>
+                          <div class="text-xs text-muted mb-1">{{ i18n.t('products.view.rate') }}</div>
+                          <div class="text-base font-medium">{{ rate() | rate:0 }}</div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </section>
+
+                <hr class="border-token" />
+
+                <!-- Description -->
+                <section class="flex flex-col gap-3">
+                  <h3 class="text-sm font-semibold text-muted uppercase">{{ i18n.t('products.sections.description') }}</h3>
+                  @if (description()) {
+                    <div>
+                      <div class="text-sm text-muted mb-1">{{ i18n.t('products.view.description') }}</div>
+                      <div class="text-base whitespace-pre-wrap">{{ description() }}</div>
+                    </div>
+                  } @else {
+                    <div class="text-sm text-muted">{{ i18n.t('products.view.noDescription') }}</div>
+                  }
+                </section>
               </div>
             </div>
           }
@@ -121,6 +159,7 @@ export class ProductViewPage {
   id = computed(() => this.store.current()?.id ?? '');
   code = computed(() => this.store.current()?.code ?? '');
   name = computed(() => this.store.current()?.name ?? '');
+  claimName = computed(() => this.store.current()?.claimName ?? '');
   rawType = computed(() => this.store.current()?.type ?? '');
   type = computed(() => {
     const t = this.rawType();

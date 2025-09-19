@@ -8,7 +8,7 @@ import {productStore} from './products.store';
 export const productSearchResolver: ResolveFn<boolean> = async (route, state) => {
   const store = inject(productStore);
   try {
-    await store.search('', '', '', '', DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, Direction.ASC, 'name')
+    await store.search('', '','', '', '', DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, Direction.ASC, 'name')
     return true;
   } catch {
     return false;

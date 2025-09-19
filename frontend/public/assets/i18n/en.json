@@ -116,7 +116,8 @@
       "amountFlat": "Amount (flat)",
       "rate": "Rate",
       "description": "Description",
-      "noDescription": "No description provided."
+      "noDescription": "No description provided.",
+      "extraProductName": "Extra product"
     },
     "title": "Products",
     "subtitle": "Product catalog",
@@ -128,6 +129,7 @@
     "fields": {
       "code": "Code",
       "name": "Name",
+      "claimName": "Claim name",
       "type": "Type",
       "amount": "Amount",
       "rate": "Rate (%)",
@@ -137,7 +139,8 @@
       "selectSequence": "Select a sequence",
       "currency": "Currency",
       "description": "Description",
-      "actions": "Actions"
+      "actions": "Actions",
+      "extraProduct": "Extra product"
     },
     "types": {
       "forfait": "Flat amount",
@@ -154,7 +157,14 @@
       "empty": "No document type associated. Select a type then click Add.",
       "alreadyAssociated": "This document type is already associated"
     },
-    "empty": "No products"
+    "empty": "No products",
+    "sections": {
+      "identification": "Identification",
+      "classification": "Classification",
+      "pricing": "Pricing",
+      "relations": "Relations",
+      "description": "Description"
+    }
   },
   "productCategories": {
     "title": "Product categories",
