@@ -57,21 +57,11 @@ export class ClaimNewPage {
     label: a.reference ? `${a.name} (${a.reference})` : a.name
   })));
 
-  productItems = computed<AutocompleteItem[]>(() => this.products.productPage().elements.map(p => ({
+  productItems = computed<AutocompleteItem[]>(() => this.products.productPage().elements.filter(p => p.claimName).map(p => ({
     value: p.id,
-    label: p.code ? `${p.name} (${p.code})` : p.name
+    label: p.code ? `${p.claimName} (${p.code})` : p.claimName
   })));
 
-  tabItems = computed<TabItem[]>(() => {
-    this.i18n.lang();
-    return [
-      { id: 'lines', label: this.i18n.t('claims.tabs.lines') },
-      { id: 'audit', label: this.i18n.t('claims.tabs.audit') }
-    ];
-  });
-  activeTab: 'audit' | 'lines' = 'lines';
-
-  get form() { return this.ui.form; }
   get formValue() { return this.ui.formValue; }
   get loading() { return this.ui.loading; }
 

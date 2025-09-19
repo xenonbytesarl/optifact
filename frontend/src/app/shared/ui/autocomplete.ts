@@ -27,7 +27,7 @@ export interface AutocompleteItem { value: string; label: string; icon?: string 
           (keydown)="onKeydown($event)"
           (blur)="onBlur()"
         />
-        @if (clearable() && (query() || value())) {
+        @if (clearable() && (query() || value()) && !disabled()) {
           <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-muted hover:text-fg p-1 h-6 w-6 inline-flex items-center justify-center" (click)="clear($event)">
             <span class="material-symbols-outlined text-sm leading-none">close</span>
           </button>

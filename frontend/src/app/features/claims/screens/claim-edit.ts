@@ -127,9 +127,9 @@ export class ClaimEditPage {
     label: a.reference ? `${a.name} (${a.reference})` : a.name
   })));
 
-  productItems = computed<AutocompleteItem[]>(() => this.products.productPage().elements.map(p => ({
+  productItems = computed<AutocompleteItem[]>(() => this.products.productPage().elements.filter(p => p.claimName).map(p => ({
     value: p.id,
-    label: p.code ? `${p.name} (${p.code})` : p.name
+    label: p.code ? `${p.claimName} (${p.code})` : p.claimName
   })));
 
   claimId = computed(() => this.route.snapshot.paramMap.get('id') as string);

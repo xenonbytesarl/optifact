@@ -106,7 +106,7 @@ export class ClaimListComponent {
     const id = row?.productId;
     if (!id) return '—';
     const p = this.products.productPage().elements.find(x => x.id === id);
-    return p ? (p.code ? `${p.name} (${p.code})` : p.name) : id;
+    return p ? (p.code ? `${p.claimName} (${p.code})` : p.claimName) : id;
   }
 
   onSortChange(e: { key: string; direction: DirectionType }) {
