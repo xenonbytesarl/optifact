@@ -21,6 +21,7 @@ import static java.util.UUID.randomUUID;
 public final class Product extends BaseEntity {
     private final String code;
     private final String name;
+    private final String claimName;
     private final UUID categoryId;
     private final ProductType type;
     private final Double rate;
@@ -35,6 +36,7 @@ public final class Product extends BaseEntity {
     public Product(UUID id,
                    String code,
                    String name,
+                   String claimName,
                    UUID categoryId,
                    ProductType type,
                    Double rate,
@@ -49,6 +51,7 @@ public final class Product extends BaseEntity {
         this.id = id;
         this.code = code;
         this.name = name;
+        this.claimName = claimName;
         this.categoryId = categoryId;
         this.type = type;
         this.rate = rate;
@@ -62,6 +65,7 @@ public final class Product extends BaseEntity {
 
     public static Product create(String code,
                                  String name,
+                                 String claimName,
                                  UUID categoryId,
                                  ProductType type,
                                  Double rate,
@@ -76,6 +80,7 @@ public final class Product extends BaseEntity {
                 randomUUID(),
                 code.trim(),
                 name.trim(),
+                claimName,
                 categoryId,
                 type,
                 rate,
@@ -92,6 +97,7 @@ public final class Product extends BaseEntity {
               UUID id,
               String code,
               String name,
+              String claimName,
               UUID categoryId,
               ProductType type,
               Double rate,
@@ -106,6 +112,7 @@ public final class Product extends BaseEntity {
                 id,
                 code.trim(),
                 name.trim(),
+                claimName,
                 categoryId,
                 type,
                 rate,
@@ -120,6 +127,7 @@ public final class Product extends BaseEntity {
 
     public Product update(String code,
                           String name,
+                          String claimName,
                           UUID categoryId,
                           ProductType type,
                           Double rate,
@@ -133,7 +141,8 @@ public final class Product extends BaseEntity {
         Product product = new Product(
                 id, 
                 code.trim(), 
-                name.trim(), 
+                name.trim(),
+                claimName,
                 categoryId, 
                 type, 
                 rate, 
@@ -195,6 +204,10 @@ public final class Product extends BaseEntity {
 
     public String getName() {
         return name;
+    }
+
+    public String getClaimName() {
+        return claimName;
     }
 
     public UUID getCategoryId() {

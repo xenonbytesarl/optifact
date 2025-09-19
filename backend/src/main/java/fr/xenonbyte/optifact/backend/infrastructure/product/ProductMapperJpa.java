@@ -1,6 +1,5 @@
 package fr.xenonbyte.optifact.backend.infrastructure.product;
 
-import fr.xenonbyte.optifact.backend.domain.common.attachementtype.AttachmentType;
 import fr.xenonbyte.optifact.backend.domain.product.product.Product;
 import fr.xenonbyte.optifact.backend.domain.product.product.ProductType;
 import fr.xenonbyte.optifact.backend.infrastructure.common.attachmenttype.AttachmentTypeJpa;
@@ -9,7 +8,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
 
 import java.util.Currency;
-import java.util.stream.Collectors;
 
 /**
  * @author bamk
@@ -32,6 +30,7 @@ public interface ProductMapperJpa {
                 productJpa.getId(),
                 productJpa.getCode(),
                 productJpa.getName(),
+                productJpa.getClaimName(),
                 productJpa.getCategory().getId(),
                 ProductType.valueOf(productJpa.getType().name()),
                 productJpa.getRate(),

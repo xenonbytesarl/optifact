@@ -40,6 +40,8 @@ import java.util.List;
 public class ProductJpa extends BaseEntityJpa {
     @Column(name = "c_name", nullable = false, unique = true)
     private String name;
+    @Column(name = "c_claim_name", unique = true)
+    private String claimName;
     @Column(name = "c_code", nullable = false, unique = true)
     private String code;
     @Enumerated(EnumType.STRING)

@@ -39,6 +39,7 @@ public interface ProductMapperView {
         return Product.create(
                 requestView.getCode(),
                 requestView.getName(),
+                requestView.getClaimName(),
                 requestView.getCategoryId(),
                 type,
                 requestView.getRate(),

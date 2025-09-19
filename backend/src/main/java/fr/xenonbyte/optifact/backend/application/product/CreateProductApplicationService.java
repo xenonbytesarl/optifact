@@ -1,6 +1,7 @@
 package fr.xenonbyte.optifact.backend.application.product;
 
 import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
+import fr.xenonbyte.optifact.backend.application.product.exception.ProductClaimNameConflictException;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductCodeConflictException;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductNameConflictException;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductProductCategoryIdNotFoundException;
@@ -12,6 +13,7 @@ import fr.xenonbyte.optifact.backend.application.productcategory.port.out.Produc
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.product.product.Product;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 
@@ -43,20 +45,29 @@ public final class CreateProductApplicationService implements CreateProductUseCa
     public Product createProduct(Product product) {
         LOGGER.info("Creating product...");
 
-        if(Boolean.TRUE.equals(repository.existByName(product.getName()))) {
-            throw new ProductNameConflictException(product.getName());
+        String name = product.getName();
+        if(Boolean.TRUE.equals(repository.existByName(name))) {
+            throw new ProductNameConflictException(name);
         }
 
-        if(Boolean.TRUE.equals(repository.existByCode(product.getCode()))) {
-            throw new ProductCodeConflictException(product.getCode());
+        String claimName = product.getClaimName();
+        if(claimName != null && Boolean.TRUE.equals(repository.existByClaimName(claimName))) {
+            throw new ProductClaimNameConflictException(claimName);
         }
 
-        if(!productCategoryRepository.existById(product.getCategoryId())) {
-            throw new ProductProductCategoryIdNotFoundException(product.getCategoryId());
+        String code = product.getCode();
+        if(Boolean.TRUE.equals(repository.existByCode(code))) {
+            throw new ProductCodeConflictException(code);
         }
 
-        if(product.getSequenceId() != null && !sequenceRepository.existById(product.getSequenceId())) {
-            throw new ProductSequenceIdNotFoundException(product.getSequenceId());
+        UUID categoryId = product.getCategoryId();
+        if(!productCategoryRepository.existById(categoryId)) {
+            throw new ProductProductCategoryIdNotFoundException(categoryId);
+        }
+
+        UUID sequenceId = product.getSequenceId();
+        if(sequenceId != null && !sequenceRepository.existById(sequenceId)) {
+            throw new ProductSequenceIdNotFoundException(sequenceId);
         }
 
         product = repository.save(product);

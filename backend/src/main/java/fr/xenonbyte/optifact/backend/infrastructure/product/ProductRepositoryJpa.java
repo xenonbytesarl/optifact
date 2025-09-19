@@ -18,4 +18,7 @@ public interface ProductRepositoryJpa extends JpaRepository<ProductJpa, UUID>, J
 
     Boolean existsByNameEqualsIgnoreCaseAndIdNot(String name, UUID productId);
     Boolean existsByCodeEqualsIgnoreCaseAndIdNot(String code, UUID productId);
+
+    Boolean existsByClaimNameIgnoreCase(String claimName);
+    Boolean existsByClaimNameIgnoreCaseAndIdNot(String claimName, UUID productId);
 }

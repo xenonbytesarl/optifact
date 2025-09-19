@@ -44,10 +44,11 @@ public final class ProductRepositoryAdapterJpa implements ProductRepository {
     }
 
     @Override
-    public Pagination<Product> search(String nameFilter, String codeFilter, String categoryNameFilter, String typeFilter, CommonSearch search) {
+    public Pagination<Product> search(String nameFilter, String claimNameFilter, String codeFilter, String categoryNameFilter, String typeFilter, CommonSearch search) {
         Specification<ProductJpa> spec = (root, query, cb) -> cb.conjunction();
 
         spec =  addNativeStringFilter(nameFilter, "name", spec);
+        spec =  addNativeStringFilter(nameFilter, "claimName", spec);
         spec =  addNativeStringFilter(codeFilter, "code", spec);
         spec =  addManyToOneFilter(categoryNameFilter, "category", spec);
         spec =  addNativeStringFilter(typeFilter, "type", spec);
@@ -82,7 +83,7 @@ public final class ProductRepositoryAdapterJpa implements ProductRepository {
 
         // Map the property name to the corresponding field name in the JPA entity
         String fieldName = switch (field) {
-            case "name", "code", "type" -> field;
+            case "name", "code", "type", "claimName" -> field;
             case "description" -> "description";
             case "createdAt" -> "createdAt";
             case "updatedAt" -> "updatedAt";
@@ -147,5 +148,15 @@ public final class ProductRepositoryAdapterJpa implements ProductRepository {
     @Override
     public boolean existsById(UUID productId) {
         return repositoryJpa.existsById(productId);
+    }
+
+    @Override
+    public Boolean existByClaimName(String claimName) {
+        return repositoryJpa.existsByClaimNameIgnoreCase(claimName);
+    }
+
+    @Override
+    public Boolean existByClaimNameExcludingId(String claimName, UUID productId) {
+        return repositoryJpa.existsByClaimNameIgnoreCaseAndIdNot(claimName, productId);
     }
 }

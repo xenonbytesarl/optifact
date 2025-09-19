@@ -2,6 +2,7 @@ package fr.xenonbyte.optifact.backend.application.product;
 
 
 import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
+import fr.xenonbyte.optifact.backend.application.product.exception.ProductClaimNameConflictException;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductCodeConflictException;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductNameConflictException;
@@ -49,33 +50,43 @@ public final class UpdateProductApplicationService implements UpdateProductUseCa
             throw new ProductIdNotFoundException(productId);
         }
 
-        if(Boolean.TRUE.equals(repository.existByNameExcludingId(product.getName(), productId))) {
-            throw new ProductNameConflictException(product.getName());
+        String name = product.getName();
+        if(Boolean.TRUE.equals(repository.existByNameExcludingId(name, productId))) {
+            throw new ProductNameConflictException(name);
         }
 
-        if(Boolean.TRUE.equals(repository.existByCodeExcludingId(product.getCode(), productId))) {
-            throw new ProductCodeConflictException(product.getName());
+        String claimName = product.getClaimName();
+        if(claimName != null && Boolean.TRUE.equals(repository.existByClaimNameExcludingId(claimName, productId))) {
+            throw new ProductClaimNameConflictException(claimName);
         }
 
-        if(!productCategoryRepository.existById(product.getCategoryId())) {
-            throw new ProductProductCategoryIdNotFoundException(product.getCategoryId());
+        String code = product.getCode();
+        if(Boolean.TRUE.equals(repository.existByCodeExcludingId(code, productId))) {
+            throw new ProductCodeConflictException(code);
         }
 
-        if(product.getSequenceId() != null && !sequenceRepository.existById(product.getSequenceId())) {
-            throw new ProductSequenceIdNotFoundException(product.getSequenceId());
+        UUID categoryId = product.getCategoryId();
+        if(!productCategoryRepository.existById(categoryId)) {
+            throw new ProductProductCategoryIdNotFoundException(categoryId);
+        }
+
+        UUID sequenceId = product.getSequenceId();
+        if(sequenceId != null && !sequenceRepository.existById(sequenceId)) {
+            throw new ProductSequenceIdNotFoundException(sequenceId);
         }
 
         Product existing = optional.get();
         existing = existing.update(
-                product.getCode(),
-                product.getName(),
-                product.getCategoryId(),
+                code,
+                name,
+                claimName,
+                categoryId,
                 product.getType(),
                 product.getRate(),
                 product.getAmount(),
                 product.getCurrency(),
                 product.getDescription(),
-                product.getSequenceId(),
+                sequenceId,
                 product.getExtraProductId(),
                 product.getAttachementTypeIds()
         );

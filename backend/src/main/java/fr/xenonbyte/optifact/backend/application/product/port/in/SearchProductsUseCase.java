@@ -13,5 +13,5 @@ import fr.xenonbyte.optifact.backend.domain.product.product.Product;
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
 public interface SearchProductsUseCase {
-    Pagination<Product> searchProducts(String nameFilter, String codeFilter, String categoryNameFilter, String typeFilter, CommonSearch search);
+    Pagination<Product> searchProducts(String nameFilter, String claimNameFilter, String codeFilter, String categoryNameFilter, String typeFilter, CommonSearch search);
 }

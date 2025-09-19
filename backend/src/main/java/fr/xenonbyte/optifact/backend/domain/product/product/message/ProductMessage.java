@@ -13,6 +13,7 @@ public final class ProductMessage {
     public static final String PRODUCT_RATE_INVALID = "product.rate.invalid";
     public static final String PRODUCT_AMOUNT_INVALID = "product.amount.invalid";
     public static final String PRODUCT_NAME_CONFLICT = "product.name.conflict";
+    public static final String PRODUCT_CLAIM_NAME_CONFLICT = "product.claim.name.conflict";
     public static final String PRODUCT_CODE_CONFLICT = "product.code.conflict";
     public static final String PRODUCT_ID_NOT_FOUND = "product.id.not.found";
     public static final String PRODUCT_PRODUCT_CATEGORY_ID_NOT_FOUND = "product.product.category.id.not.found";
