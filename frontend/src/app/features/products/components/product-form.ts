@@ -23,6 +23,7 @@ import {InputHiddenComponent} from '../../../shared/ui/input-hidden';
 export interface ProductFormValue {
   code: string;
   name: string;
+  claimName: string;
   type: ProductType;
   amount?: number | null;
   rate?: number | null;
@@ -39,47 +40,84 @@ export interface ProductFormValue {
   standalone: true,
   imports: [CommonModule, TranslatePipe, InputTextComponent, InputNumberComponent, InputCurrencyComponent, AutocompleteComponent, FormFieldComponent, SelectComponent, InputHiddenComponent],
   template: `
-    <form class="flex flex-col gap-3">
+    <form class="flex flex-col gap-6">
 
-        <app-input-hidden [value]="value().currency || 'XAF'"  />
+      <app-input-hidden [value]="value().currency || 'XAF'" />
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <app-form-field [label]="('products.fields.code' | t)" [required]="true" [error]="codeRequiredError() ? ('validation.required' | t) : null">
-          <app-input [disabled]="disabled()" [error]="codeRequiredError()" [value]="value().code" (valueChange)="onCode($event)" (blurred)="blurCode.emit()" />
-        </app-form-field>
-        <app-form-field [label]="('products.fields.name' | t)" [required]="true" [error]="nameRequiredError() ? ('validation.required' | t) : null">
-          <app-input [disabled]="disabled()" [error]="nameRequiredError()" [value]="value().name" (valueChange)="onName($event)" (blurred)="blurName.emit()" />
-        </app-form-field>
-
-        <app-form-field [label]="('products.fields.category' | t)" [required]="true" [error]="categoryIdRequiredError() ? ('validation.required' | t) : null" >
-          <app-autocomplete [disabled]="disabled()"   [placeholder]="('products.fields.selectCategory' | t)" [error]="categoryIdRequiredError()"
-                             [items]="categoryItems()" [value]="value().categoryId ?? null" (valueChange)="onCategoryId($event)" (blurred)="blurCategory.emit()" />
-        </app-form-field>
-        <app-form-field [label]="('products.fields.type' | t)" [required]="true" [error]="typeRequiredError() ? ('validation.required' | t) : null">
-          <app-select [disabled]="disabled()"  [options]="typeOptions()" [value]="value().type" (valueChange)="onType($event)" [error]="typeRequiredError()" (blurred)="blurType.emit()" />
-        </app-form-field>
-        <app-form-field [label]="('products.fields.sequence' | t)" >
-          <app-autocomplete [disabled]="disabled()"   [placeholder]="('products.fields.selectSequence' | t)"
-                            [items]="sequenceItems()" [value]="value().sequenceId ?? null" (valueChange)="onSequenceId($event)" (blurred)="blurSequence.emit()" />
-        </app-form-field>
-        @if (value().type === 'FLAT_AMOUNT') {
-          <app-form-field [label]="('products.fields.amount' | t)" [hint]="('products.hints.amount' | t)" [error]="amountRequiredError() ? ('validation.required' | t) : null">
-            <app-input-currency [disabled]="disabled()" [value]="value().amount ?? null" [currency]="value().currency || 'EUR'" [error]="amountRequiredError()" (valueChange)="onAmount($event)" (blurred)="blurAmount.emit()"/>
+      <!-- Identification -->
+      <section class="flex flex-col gap-3">
+        <h3 class="text-sm font-semibold text-muted uppercase">{{ 'products.sections.identification' | t }}</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <app-form-field [label]="('products.fields.code' | t)" [required]="true" [error]="codeRequiredError() ? ('validation.required' | t) : null">
+            <app-input [disabled]="disabled()" [error]="codeRequiredError()" [value]="value().code" (valueChange)="onCode($event)" (blurred)="blurCode.emit()" />
           </app-form-field>
-        }
-        @if (value().type === 'PERCENTAGE') {
-          <app-form-field [label]="('products.fields.rate' | t)" [hint]="('products.hints.rate' | t)" [error]="rateRequiredError() ? ('validation.required' | t) : null">
-            <app-input-number [disabled]="disabled()" [min]="0" [error]="rateRequiredError()" [max]="100" [step]="0.01" [value]="value().rate ?? null" (valueChange)="onRate($event)" (blurred)="blurRate.emit()"/>
+
+          <app-form-field [label]="('products.fields.name' | t)" [required]="true" [error]="nameRequiredError() ? ('validation.required' | t) : null">
+            <app-input [disabled]="disabled()" [error]="nameRequiredError()" [value]="value().name" (valueChange)="onName($event)" (blurred)="blurName.emit()" />
           </app-form-field>
-        }
-        <app-form-field [label]="('products.fields.extraProduct' | t)" >
-          <app-autocomplete [disabled]="disabled()"   [placeholder]="('products.fields.extraProduct' | t)"
-                            [items]="extraProductItems()" [value]="value().extraProductId ?? null" (valueChange)="onExtraProductId($event)" (blurred)="blurExtraProduct.emit()" />
+
+          <app-form-field [label]="('products.fields.claimName' | t)">
+            <app-input [disabled]="disabled()" [value]="value().claimName" (valueChange)="onClaimName($event)" (blurred)="blurClaimName.emit()" />
+          </app-form-field>
+
+          <app-form-field [label]="('products.fields.extraProduct' | t)">
+            <app-autocomplete [disabled]="disabled()" [placeholder]="('products.fields.extraProduct' | t)"
+                              [items]="extraProductItems()" [value]="value().extraProductId ?? null" (valueChange)="onExtraProductId($event)" (blurred)="blurExtraProduct.emit()" />
+          </app-form-field>
+        </div>
+      </section>
+
+      <hr class="border-token" />
+
+      <!-- Classification -->
+      <section class="flex flex-col gap-3">
+        <h3 class="text-sm font-semibold text-muted uppercase">{{ 'products.sections.classification' | t }}</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <app-form-field [label]="('products.fields.category' | t)" [required]="true" [error]="categoryIdRequiredError() ? ('validation.required' | t) : null">
+            <app-autocomplete [disabled]="disabled()" [placeholder]="('products.fields.selectCategory' | t)" [error]="categoryIdRequiredError()"
+                               [items]="categoryItems()" [value]="value().categoryId ?? null" (valueChange)="onCategoryId($event)" (blurred)="blurCategory.emit()" />
+          </app-form-field>
+
+          <app-form-field [label]="('products.fields.sequence' | t)">
+            <app-autocomplete [disabled]="disabled()" [placeholder]="('products.fields.selectSequence' | t)"
+                              [items]="sequenceItems()" [value]="value().sequenceId ?? null" (valueChange)="onSequenceId($event)" (blurred)="blurSequence.emit()" />
+          </app-form-field>
+        </div>
+      </section>
+
+      <hr class="border-token" />
+
+      <!-- Pricing -->
+      <section class="flex flex-col gap-3">
+        <h3 class="text-sm font-semibold text-muted uppercase">{{ 'products.sections.pricing' | t }}</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <app-form-field [label]="('products.fields.type' | t)" [required]="true" [error]="typeRequiredError() ? ('validation.required' | t) : null">
+            <app-select [disabled]="disabled()" [options]="typeOptions()" [value]="value().type" (valueChange)="onType($event)" [error]="typeRequiredError()" (blurred)="blurType.emit()" />
+          </app-form-field>
+
+          @if (value().type === 'FLAT_AMOUNT') {
+            <app-form-field [label]="('products.fields.amount' | t)" [hint]="('products.hints.amount' | t)" [error]="amountRequiredError() ? ('validation.required' | t) : null">
+              <app-input-currency [disabled]="disabled()" [value]="value().amount ?? null" [currency]="value().currency || 'EUR'" [error]="amountRequiredError()" (valueChange)="onAmount($event)" (blurred)="blurAmount.emit()"/>
+            </app-form-field>
+          }
+          @if (value().type === 'PERCENTAGE') {
+            <app-form-field [label]="('products.fields.rate' | t)" [hint]="('products.hints.rate' | t)" [error]="rateRequiredError() ? ('validation.required' | t) : null">
+              <app-input-number [disabled]="disabled()" [min]="0" [error]="rateRequiredError()" [max]="100" [step]="0.01" [value]="value().rate ?? null" (valueChange)="onRate($event)" (blurred)="blurRate.emit()"/>
+            </app-form-field>
+          }
+        </div>
+      </section>
+
+      <hr class="border-token" />
+
+      <!-- Description -->
+      <section class="flex flex-col gap-3">
+        <h3 class="text-sm font-semibold text-muted uppercase">{{ 'products.sections.description' | t }}</h3>
+        <app-form-field [label]="('products.fields.description' | t)">
+          <textarea class="w-full border border-token bg-surface text-fg placeholder-muted px-3 py-2 text-sm outline-none focus:ring-1 ring-primary shadow-sm min-h-24" [value]="value().description ?? ''" (input)="onDescription(($any($event.target)).value)"></textarea>
         </app-form-field>
-      </div>
-      <app-form-field [label]="('products.fields.description' | t)">
-        <textarea class="w-full  border border-token bg-surface text-fg placeholder-muted px-3 py-2 text-sm outline-none focus:ring-1 ring-primary shadow-sm min-h-24" [value]="value().description ?? ''" (input)="onDescription(($any($event.target)).value)"></textarea>
-      </app-form-field>
+      </section>
+
     </form>
   `,
   changeDetection: ChangeDetectionStrategy.Default
@@ -103,6 +141,7 @@ export class ProductFormComponent {
   value = model<ProductFormValue>({
     code: '',
     name: '',
+    claimName: '',
     type: 'FLAT_AMOUNT',
     amount: null,
     rate: null,
@@ -118,6 +157,7 @@ export class ProductFormComponent {
   cancel = output<void>();
   blurCode = output<void>();
   blurName = output<void>();
+  blurClaimName = output<void>();
   blurCategory = output<void>();
   blurType = output<void>();
   blurRate = output<void>();
@@ -154,6 +194,11 @@ export class ProductFormComponent {
   onName(v: string | null) {
     const name = (v ?? '').toString();
     this.value.set({ ...this.value(), name });
+  }
+
+  onClaimName(v: string | null) {
+    const claimName = (v ?? '').toString();
+    this.value.set({ ...this.value(), claimName });
   }
 
   onCategoryId(v: string | null) {

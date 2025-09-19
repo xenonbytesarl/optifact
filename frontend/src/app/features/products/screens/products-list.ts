@@ -68,12 +68,12 @@ export class ProductsListPage {
 
   async onPageChange(page1Based: number) {
     const size = this.uiPageSize();
-    await this.store.search('', '', '', '', page1Based - 1, size, this.sortDirection, this.sortColumn);
+    await this.store.search('', '', '', '', '', page1Based - 1, size, this.sortDirection, this.sortColumn);
   }
 
   async onPageSizeChange(size: number) {
     // Reset page to 0 when size changes
-    await this.store.search('', '', '', '',  0, size, this.sortDirection, this.sortColumn);
+    await this.store.search('', '', '', '', '',  0, size, this.sortDirection, this.sortColumn);
   }
 
   async onSort(e: { key: string; direction: DirectionType }) {
@@ -82,7 +82,7 @@ export class ProductsListPage {
     this.sortDirection = e.direction === 'ASC' ? Direction.ASC : Direction.DESC;
     // Reset to the first page on sort change
     const size = this.uiPageSize();
-    await this.store.search('', '', '', '', 0, size, this.sortDirection, this.sortColumn);
+    await this.store.search('', '','', '', '', 0, size, this.sortDirection, this.sortColumn);
   }
 
   goEdit(id: string) {
@@ -111,7 +111,7 @@ export class ProductsListPage {
       // refresh the table
       this.sortDirection = Direction.ASC;
       this.sortColumn = 'name';
-      await this.store.search('', '', '', '', DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, this.sortDirection, this.sortColumn);
+      await this.store.search('', '','', '', '', DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, this.sortDirection, this.sortColumn);
     } else {
       this.toast.error(this.store.error() || this.i18n.t('common.error'));
     }
