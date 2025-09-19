@@ -81,7 +81,7 @@ export type ClaimFormModel = {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <app-form-field [label]="('claims.fields.actorName' | t)">
           <app-autocomplete
-            [disabled]="disabled()"
+            [disabled]="disabled() || value().state !== 'DRAFT'"
             [items]="actorItems()"
             [placeholder]="('claims.fields.actorName' | t)"
             [value]="value().actorId"
@@ -93,7 +93,7 @@ export type ClaimFormModel = {
         </app-form-field>
         <app-form-field [label]="('claims.fields.productName' | t)">
           <app-autocomplete
-            [disabled]="disabled()"
+            [disabled]="disabled() || value().state !== 'DRAFT'"
             [items]="productItems()"
             [placeholder]="('claims.fields.productName' | t)"
             [value]="value().productId"
