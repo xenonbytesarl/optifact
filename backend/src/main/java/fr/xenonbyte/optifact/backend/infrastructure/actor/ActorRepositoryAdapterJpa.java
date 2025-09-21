@@ -104,6 +104,11 @@ public final class ActorRepositoryAdapterJpa implements ActorRepository {
         return repositoryJpa.findAllById(actorIds).stream().map(mapperJpa::toDomain).toList();
     }
 
+    @Override
+    public Optional<Actor> findByRefence(String actorReference) {
+        return repositoryJpa.findByReference(actorReference).map(mapperJpa::toDomain);
+    }
+
     private Sort parseSort(String field, Direction direction) {
         if (field == null || field.isBlank() || direction == null) {
             // The default sort is by ID ascending

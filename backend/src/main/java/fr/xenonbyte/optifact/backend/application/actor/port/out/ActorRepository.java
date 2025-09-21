@@ -38,4 +38,6 @@ public interface ActorRepository {
     boolean existsById(UUID actorId);
 
     List<Actor> findByIds(Set<UUID> actorIds);
+
+    Optional<Actor> findByRefence(String actorReference);
 }

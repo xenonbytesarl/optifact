@@ -4,6 +4,7 @@ import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -20,4 +21,6 @@ public interface ActorRepositoryJpa extends JpaRepository<ActorJpa, UUID>, JpaSp
     Boolean existsByReferenceAndIdNot(String reference, UUID actorId);
 
     Boolean existsByNameIgnoreCaseAndIdNot(String name, UUID actorId);
+
+    Optional<ActorJpa> findByReference(String actorReference);
 }

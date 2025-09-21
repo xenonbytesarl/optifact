@@ -15,6 +15,7 @@ public final class UserMessage {
 
     public static final String ROLE_CODE_REQUIRED = "role.code.required";
     public static final String ROLE_NAME_REQUIRED = "role.name.required";
+    public static final String ROLE_CODE_NOT_FOUND = "role.code.not.found";
     public static final String ROLE_PRIVILEGES_REQUIRED = "role.privileges.required";
 
     public static final String USER_LASTNAME_REQUIRED = "user.lastname.required";
@@ -24,4 +25,5 @@ public final class UserMessage {
     public static final String USER_ID_NOT_FOUND = "user.id.not.found";
     public static final String USER_EMAIL_CONFLICT = "user.email.conflict";
     public static final String USER_EMAIL_NOT_FOUND = "user.email.not.found";
+    public static final String USER_PASSWORD_AND_CONFIRM_NOT_MATCH = "user.password.and.confirm.not.matched";
 }
