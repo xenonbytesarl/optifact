@@ -27,4 +27,5 @@
     <include file="/db/changelog/changes/020-create-setting-table.xml"/>
     <include file="/db/changelog/changes/021-create-user-role-privilege-tables.xml"/>
     <include file="/db/changelog/changes/022-alter-claim-add-agreement-attachments-and-insert-attachment-type.xml"/>
+    <include file="/db/changelog/changes/023-insert-privileges-and-roles.xml"/>
 </databaseChangeLog>

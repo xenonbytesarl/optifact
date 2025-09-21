@@ -23,6 +23,7 @@ export class SidebarComponent {
     { link: '/products', icon: 'inventory', label: 'products.title' },
     { icon: 'settings', label: 'nav.settings', children: [
       { link: '/settings', icon: 'settings', label: 'settings.title' },
+      { link: '/settings/users', icon: 'group', label: 'users.title' },
       { link: '/product-categories', icon: 'category', label: 'productCategories.title' },
       { link: '/attachment-types', icon: 'description', label: 'attachmentTypes.title' },
       { link: '/sequences', icon: '123', label: 'sequences.title' }

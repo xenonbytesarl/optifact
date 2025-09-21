@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Ensure pgcrypto is available for gen_random_uuid() -->
+    <changeSet id="023-00-enable-pgcrypto" author="junie">
+        <sql>CREATE EXTENSION IF NOT EXISTS pgcrypto;</sql>
+    </changeSet>
+
+    <!-- Insert privileges for various resources, generate UUIDs -->
+    <changeSet id="023-01-insert-privileges" author="junie">
+        <!-- product_category -->
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="create:product_category"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="update:product_category"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="read:product_category"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="delete:product_category"/>
+        </insert>
+
+        <!-- product -->
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="create:product"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="update:product"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="read:product"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="delete:product"/>
+        </insert>
+
+        <!-- sequence -->
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="create:sequence"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="update:sequence"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="read:sequence"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="delete:sequence"/>
+        </insert>
+
+        <!-- user -->
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="create:user"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="update:user"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="read:user"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="delete:user"/>
+        </insert>
+
+        <!-- attachment_type -->
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="create:attachment_type"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="update:attachment_type"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="read:attachment_type"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="delete:attachment_type"/>
+        </insert>
+
+        <!-- attachment (note: update name as provided: 'update:attachmen') -->
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="create:attachment"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="update:attachmen"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="read:attachment"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="delete:attachment"/>
+        </insert>
+
+        <!-- actor -->
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="create:actor"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="update:actor"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="read:actor"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="delete:actor"/>
+        </insert>
+
+        <!-- setting (only read/update) -->
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="update:setting"/>
+        </insert>
+        <insert tableName="t_privilege">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_name" value="read:setting"/>
+        </insert>
+    </changeSet>
+
+    <!-- Insert roles (generate UUIDs) -->
+    <changeSet id="023-02-insert-roles" author="junie">
+        <insert tableName="t_role">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_code" value="ACTOR"/>
+            <column name="c_name" value="Actor"/>
+        </insert>
+        <insert tableName="t_role">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_code" value="MANAGER"/>
+            <column name="c_name" value="Manager"/>
+        </insert>
+        <insert tableName="t_role">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_code" value="AGENT"/>
+            <column name="c_name" value="Agent"/>
+        </insert>
+        <insert tableName="t_role">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_code" value="CABINET"/>
+            <column name="c_name" value="Cabinet"/>
+        </insert>
+        <insert tableName="t_role">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_code" value="COLLEGE"/>
+            <column name="c_name" value="College"/>
+        </insert>
+        <insert tableName="t_role">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_code" value="FACTURATION"/>
+            <column name="c_name" value="Facturation"/>
+        </insert>
+        <insert tableName="t_role">
+            <column name="c_id" valueComputed="gen_random_uuid()"/>
+            <column name="c_created_at" valueDate="now()"/>
+            <column name="c_code" value="ADMIN"/>
+            <column name="c_name" value="Administrateur"/>
+        </insert>
+    </changeSet>
+
+    <!-- Assign privileges (resolve IDs via role codes and privilege names) -->
+    <changeSet id="023-03-assign-privileges" author="junie">
+        <!-- Admin gets all privileges -->
+        <sql>
+            INSERT INTO t_role_privilege (c_role_id, c_privilege_id)
+            SELECT r.c_id, p.c_id
+            FROM t_role r CROSS JOIN t_privilege p
+            WHERE r.c_code = 'ADMIN';
+        </sql>
+
+        <!-- Other roles get a limited set -->
+        <sql>
+            INSERT INTO t_role_privilege (c_role_id, c_privilege_id)
+            SELECT r.c_id, p.c_id
+            FROM t_role r
+            JOIN t_privilege p ON p.c_name IN ('read:product','read:actor','read:attachment_type','create:attachment','update:attachmen','read:attachment')
+            WHERE r.c_code IN ('ACTOR','MANAGER','AGENT','CABINET','COLLEGE','FACTURATION');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

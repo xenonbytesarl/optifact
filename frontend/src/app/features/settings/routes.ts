@@ -16,6 +16,10 @@ export const settingsRoutes: Routes = [
         path: 'edit',
         loadComponent: () => import('./screens/setting-edit').then(m => m.SettingEditPage),
         resolve: { settingFindById: settingFindFirstResolver }
+      },
+      {
+        path: 'users',
+        loadChildren: () => import('../users/routes').then(m => m.usersRoutes)
       }
     ]
   }
