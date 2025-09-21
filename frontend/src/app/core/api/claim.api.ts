@@ -350,9 +350,13 @@ export class ClaimApi extends GlobalApi {
     }
   }
 
-  async agreementGranted(claimId: string) {
+  async agreementGranted(claimId: string, files: File[]) {
     try {
-      return await firstValueFrom(this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/agreement-granted`, {}));
+      const formData = new FormData();
+      if (files.length > 0) {
+        formData.append('file', files[0]);
+      }
+      return await firstValueFrom(this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/agreement-granted`, formData));
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.error) {
         return error.error as ErrorApiResponse;
@@ -361,9 +365,13 @@ export class ClaimApi extends GlobalApi {
     }
   }
 
-  async agreementRefused(claimId: string) {
+  async agreementRefused(claimId: string, files: File[]) {
     try {
-      return await firstValueFrom(this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/agreement-refused`, {}));
+      const formData = new FormData();
+      if (files.length > 0) {
+        formData.append('file', files[0]);
+      }
+      return await firstValueFrom(this.http.post<SuccessApiResponse<Claim | ErrorApiResponse>>(`${this.base}/${claimId}/agreement-refused`, formData));
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.error) {
         return error.error as ErrorApiResponse;

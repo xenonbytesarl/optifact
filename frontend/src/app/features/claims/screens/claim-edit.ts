@@ -18,11 +18,12 @@ import { AttachmentTransfert, ClaimLine } from '../../../core/api/claim.api';
 import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog';
 import { ClaimLineRejectDialogComponent } from '../components/claim-line-reject-dialog';
 import { ToastService } from '../../../shared/ui/toast';
+import { DecisionUploadDialogComponent, DecisionUploadPayload } from '../components/decision-upload-dialog';
 
 @Component({
   selector: 'app-claim-edit-page',
   standalone: true,
-  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, ClaimFormComponent, TabsComponent, ClaimLinesTabComponent, ClaimAuditTabComponent, ClaimInvoicesTabComponent, ConfirmDialogComponent, ClaimLineRejectDialogComponent],
+  imports: [CommonModule, ActionBarComponent, CardComponent, SpinnerComponent, ClaimFormComponent, TabsComponent, ClaimLinesTabComponent, ClaimAuditTabComponent, ClaimInvoicesTabComponent, ConfirmDialogComponent, ClaimLineRejectDialogComponent, DecisionUploadDialogComponent],
   template: `
     <app-action-bar
       [showNew]="false"
@@ -102,6 +103,14 @@ import { ToastService } from '../../../shared/ui/toast';
         (confirm)="onRejectConfirm($event)"
         (cancelled)="onRejectCancelled()"
       />
+
+      <!-- Decision upload dialog (grant/refuse) -->
+      <app-decision-upload-dialog
+        [(open)]="decisionDialogOpen"
+        [claimId]="claimId()"
+        [action]="decisionAction()"
+        (confirm)="onDecisionConfirm($event)"
+      />
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -110,6 +119,9 @@ export class ClaimEditPage {
   // Dialog state for line validate/reject
   validateDialogOpen = signal(false);
   rejectDialogOpen = signal(false);
+  // Decision dialog state
+  decisionDialogOpen = signal(false);
+  decisionAction = signal<'granted' | 'refused'>('granted');
   // Prevent double API calls on fast double-clicks
   private validating = signal(false);
   selectedLine: ClaimLine | null = null;
@@ -213,25 +225,15 @@ export class ClaimEditPage {
   async onAgreementGranted() {
     const id = this.claimId();
     if (!id || this.loading()) return;
-    const ok = await this.ui.store.agreementGranted(id);
-    if (ok) {
-      this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.agreementGranted.success'));
-      await this.ui.store.findById(id);
-    } else {
-      this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.agreementGranted.error'));
-    }
+    this.decisionAction.set('granted');
+    this.decisionDialogOpen.set(true);
   }
 
   async onAgreementRefused() {
     const id = this.claimId();
     if (!id || this.loading()) return;
-    const ok = await this.ui.store.agreementRefused(id);
-    if (ok) {
-      this.toast.success(this.ui.store.message() || this.i18n.t('claims.messages.agreementRefused.success'));
-      await this.ui.store.findById(id);
-    } else {
-      this.toast.error(this.ui.store.error() || this.i18n.t('claims.messages.agreementRefused.error'));
-    }
+    this.decisionAction.set('refused');
+    this.decisionDialogOpen.set(true);
   }
 
   async onAgreementAdjourned() {
@@ -312,5 +314,22 @@ export class ClaimEditPage {
   onOpenInvoice(invoiceId: string) {
     if (!invoiceId) return;
     this.router.navigate(['/invoices', invoiceId, 'edit']);
+  }
+
+  async onDecisionConfirm(payload: DecisionUploadPayload) {
+    const { claimId, files, action } = payload;
+    if (!claimId || !files) return;
+    if (this.loading()) return;
+    const ok = action === 'granted'
+      ? await this.ui.store.agreementGranted(claimId, files)
+      : await this.ui.store.agreementRefused(claimId, files);
+    if (ok) {
+      const msgKey = action === 'granted' ? 'claims.messages.agreementGranted.success' : 'claims.messages.agreementRefused.success';
+      this.toast.success(this.ui.store.message() || this.i18n.t(msgKey));
+      await this.ui.store.findById(claimId);
+    } else {
+      const errKey = action === 'granted' ? 'claims.messages.agreementGranted.error' : 'claims.messages.agreementRefused.error';
+      this.toast.error(this.ui.store.error() || this.i18n.t(errKey));
+    }
   }
 }
