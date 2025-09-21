@@ -42,6 +42,20 @@ export const settingStore = signalStore(
         }
       },
 
+      async findFirst() {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.getFirst();
+        if (response.success) {
+          const payload = response as SuccessApiResponse<Setting>;
+          patchState(store, { current: payload.data.content ?? null, message: payload.message ?? 'setting.messages.find.success', loading: false });
+          return payload.data.content;
+        } else {
+          const payload = response as ErrorApiResponse;
+          patchState(store, { error: payload.reason ?? 'setting.messages.find.error', loading: false });
+          return null;
+        }
+      },
+
       async update(id: string, payload: SettingPayload) {
         patchState(store, { loading: true, error: null, message: null });
         const response = await api.update(id, payload);

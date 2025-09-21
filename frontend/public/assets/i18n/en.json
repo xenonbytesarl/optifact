@@ -1,515 +1,69 @@
 {
-  "common": {
-    "error": "An unexpected error occurred.",
-    "deleted": "Deleted successfully.",
-    "yes": "Yes",
-    "no": "No",
-    "actions": {
-      "edit": "Edit",
-      "delete": "Delete"
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Company configuration and email server",
+    "empty": "No settings found.",
+    "sections": {
+      "company": "Company",
+      "address": "Address",
+      "contact": "Contact",
+      "bank": "Bank details",
+      "email": "Email server"
+    },
+    "company": {
+      "name": "Name",
+      "presidentId": "President (UUID)",
+      "logo": "Logo",
+      "noLogo": "No logo"
     }
   },
-  "search": {
-    "label": "Search",
-    "placeholder": "Search...",
-    "clear": "Clear search"
+  "address": {
+    "street": "Street",
+    "city": "City",
+    "zipCode": "ZIP code",
+    "country": "Country",
+    "website": "Website"
   },
-  "app": {
-    "name": "Optifact"
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "function": "Function"
+  },
+  "bank": {
+    "owner": "Account owner",
+    "name": "Bank",
+    "code": "Bank code",
+    "counter": "Counter",
+    "number": "Account number",
+    "key": "Key"
+  },
+  "email": {
+    "from": "From",
+    "type": "Type",
+    "state": "State",
+    "host": "Host",
+    "port": "Port",
+    "protocol": "Protocol",
+    "tls": "TLS",
+    "auth": "Authentication",
+    "username": "Username"
   },
   "actions": {
     "new": "New",
-    "view": "View",
     "edit": "Edit",
     "cancel": "Cancel",
-    "save": "Save",
-    "validate": "Validate",
-    "reject": "Reject",
-    "confirm": "Confirm",
-    "open": "Open",
-    "send": "Send",
-    "pay": "Pay"
+    "save": "Save"
   },
-  "actors": {
-    "title": "Actors",
-    "subtitle": "Manage your actors",
-    "new": "New actor",
-    "fields": {
-      "name": "Name",
-      "reference": "Reference",
-      "actions": "Actions"
-    },
-    "tabs": {
-      "addresses": "Addresses",
-      "contacts": "Contacts"
-    },
-    "addresses": {
-      "actions": {
-        "add": "Add address"
-      },
-      "dialog": {
-        "title": "Add/Edit address",
-        "action": {
-          "cancel": "Close",
-          "addNew": "Save and add another",
-          "addClose": "Save and close"
-        }
-      },
-      "fields": {
-        "type": "Type",
-        "street": "Street",
-        "city": "City",
-        "country": "Country",
-        "zipCode": "Zip code",
-        "state": "State"
-      },
-      "types": {
-        "default": "Default",
-        "invoice": "Invoice",
-        "shipping": "Shipping",
-        "other": "Other"
-      }
-    },
-    "contacts": {
-      "actions": {
-        "add": "Add contact"
-      },
-      "dialog": {
-        "title": "Add/Edit contact",
-        "action": {
-          "cancel": "Close",
-          "addNew": "Save and add another",
-          "addClose": "Save and close"
-        }
-      },
-      "fields": {
-        "type": "Type",
-        "name": "Name",
-        "email": "Email",
-        "phone": "Phone",
-        "function": "Role"
-      },
-      "types": {
-        "commercial": "Commercial",
-        "project": "Project",
-        "accounting": "Accounting",
-        "technical": "Technical",
-        "other": "Other"
-      }
-    },
-    "empty": "No actors"
-  },
-  "nav": {
-    "dashboard": "Dashboard",
-    "actors": "Actors",
-    "products": "Products",
-    "quotes": "Quotes",
-    "invoices": "Invoices",
-    "payments": "Payments",
-    "settings": "Settings"
-  },
-  "products": {
-    "view": {
-      "category": "Category",
-      "type": "Type",
-      "sequence": "Sequence",
-      "amountFlat": "Amount (flat)",
-      "rate": "Rate",
-      "description": "Description",
-      "noDescription": "No description provided.",
-      "extraProductName": "Extra product"
-    },
-    "title": "Products",
-    "subtitle": "Product catalog",
-    "tabs": {
-      "info": "General information",
-      "docTypes": "Document types"
-    },
-    "new": "New product",
-    "fields": {
-      "code": "Code",
-      "name": "Name",
-      "claimName": "Claim name",
-      "type": "Type",
-      "amount": "Amount",
-      "rate": "Rate (%)",
-      "category": "Category",
-      "sequence": "Sequence",
-      "selectCategory": "Select a category",
-      "selectSequence": "Select a sequence",
-      "currency": "Currency",
-      "description": "Description",
-      "actions": "Actions",
-      "extraProduct": "Extra product"
-    },
-    "types": {
-      "forfait": "Flat amount",
-      "pourcentage": "Percentage"
-    },
-    "hints": {
-      "amount": "Used when the type is flat amount",
-      "rate": "Used when the type is percentage"
-    },
-    "docTypes": {
-      "sectionTitle": "Document Types",
-      "searchPlaceholder": "Search a document type",
-      "add": "Add",
-      "empty": "No document type associated. Select a type then click Add.",
-      "alreadyAssociated": "This document type is already associated"
-    },
-    "empty": "No products",
-    "sections": {
-      "identification": "Identification",
-      "classification": "Classification",
-      "pricing": "Pricing",
-      "relations": "Relations",
-      "description": "Description"
-    }
-  },
-  "productCategories": {
-    "title": "Product categories",
-    "subtitle": "Manage product categories",
-    "new": "New category",
-    "fields": {
-      "name": "Name",
-      "actions": "Actions"
-    },
-    "empty": "No categories",
-    "count": "Count",
+  "setting": {
     "messages": {
-      "deleted": {
-        "success": "Product category deleted successfully.",
-        "error": "Failed to delete product category."
-      },
-      "created": {
-        "success": "Product category created successfully.",
-        "error": "Failed to create product category."
+      "find": {
+        "success": "Settings loaded successfully.",
+        "error": "Failed to load settings."
       },
       "update": {
-        "success": "Product category updated successfully.",
-        "error": "Failed to update product category."
-      },
-      "find": {
-        "success": "Product category retrieved successfully.",
-        "error": "Failed to retrieve product category."
-      },
-      "search": {
-        "success": "Product categories loaded successfully.",
-        "error": "Failed to load product categories."
-      }
-    }
-  },
-  "quotes": {
-    "title": "Quotes",
-    "subtitle": "Sales proposals",
-    "new": "New quote"
-  },
-  "invoices": {
-    "title": "Invoices",
-    "subtitle": "Track your invoices",
-    "new": "New invoice",
-    "fields": {
-      "reference": "Reference",
-      "createdAt": "Created at",
-      "actor": "Actor",
-      "claim": "Claim",
-      "state": "Status",
-      "status": "Status",
-      "issueAt": "Due at",
-      "sendAt": "Sent at",
-      "amount": "Amount",
-      "total": "Total"
-    },
-    "states": {
-      "draft": "Draft",
-      "validate": "Validated",
-      "paid": "Paid",
-      "cancel": "Cancelled"
-    },
-    "tabs": {
-      "lines": "Lines"
-    },
-    "empty": "No invoices",
-    "validation": {
-      "actorRequired": "Actor is required.",
-      "linesRequired": "At least one invoice line is required."
-    },
-    "lines": {
-      "actions": { "add": "Add line" },
-      "headers": {
-        "name": "Name",
-        "product": "Product",
-        "qty": "Qty",
-        "unitPrice": "Unit price",
-        "amount": "Amount",
-        "actions": "Actions"
-      },
-      "fields": {
-        "product": "Product",
-        "qty": "Qty",
-        "unitPrice": "Unit price",
-        "amount": "Amount",
-        "name": "Name"
-      },
-      "dialog": {
-        "title": "Add/Edit line",
-        "action": {
-          "cancel": "Close",
-          "addNew": "Save and add another",
-          "addClose": "Save and close"
-        }
-      },
-      "empty": "No lines",
-      "validation": {
-        "productRequired": "Product is required.",
-        "nameRequired": "Name is required.",
-        "qtyMin": "Quantity must be greater than 0.",
-        "unitPriceMin": "Unit price must be greater than 0."
-      }
-    },
-    "messages": {
-      "deleted": { "success": "Invoice deleted successfully.", "error": "Failed to delete invoice." },
-      "created": { "success": "Invoice created successfully.", "error": "Failed to create invoice." },
-      "update": { "success": "Invoice updated successfully.", "error": "Failed to update invoice." },
-      "find": { "success": "Invoice retrieved successfully.", "error": "Failed to retrieve invoice." },
-      "search": { "success": "Invoices loaded successfully.", "error": "Failed to load invoices." },
-      "remove": { "success": "Invoice deleted successfully.", "error": "Failed to delete invoice." }
-    }
-  },
-  "payments": {
-    "title": "Payments",
-    "subtitle": "Record payments",
-    "new": "New payment"
-  },
-  "claims": {
-    "title": "Claims",
-    "subtitle": "Manage claims",
-    "new": "New claim",
-    "fields": {
-      "referencePrefix": "Claim N°",
-      "referencePrefixNew": "New Claim",
-      "reference": "Reference",
-      "actorName": "Actor",
-      "productName": "Product",
-      "state": "Status",
-      "createdAt": "Created at",
-      "submitAt": "Submitted at",
-      "inInstructionAt": "In instruction at",
-      "instructionRejectedAt": "Instruction rejected at",
-      "compliantAt": "Compliant at",
-      "doneAt": "Instruction done at",
-      "agreementGrantedAt": "Agreement granted at",
-      "agreementRefusedAt": "Agreement refused at",
-      "agreementAdjournedAt": "Agreement adjourned at",
-      "cancelAt": "Cancelled at"
-    },
-    "states": {
-      "draft": "Draft",
-      "submit": "Submitted",
-      "in_instruction": "In instruction",
-      "instruction_reject": "Instruction rejected",
-      "instruction_done": "Instruction done",
-      "complete_compliant": "Complete & Compliant",
-      "agreement_granted": "Agreement granted",
-      "agreement_refused": "Agreement refused",
-      "agreement_adjourned": "Agreement adjourned",
-      "cancelled": "Cancelled"
-    },
-    "actions": {
-      "submit": "Submit",
-      "instruction": "Put to instruction",
-      "doneInstruction": "Finish instruction",
-      "backDraft": "Back to draft",
-      "completeCompliant": "Mark complete & compliant",
-      "agreementGranted": "Grant agreement",
-      "agreementRefused": "Refuse agreement",
-      "agreementAdjourned": "Adjourn agreement",
-      "done": {
-        "instruction": "Finish instruction"
-      }
-    },
-    "messages": {
-      "submit": { "success": "Claim submitted successfully.", "error": "Failed to submit claim." },
-      "instruction": {
-        "success": "Claim put to instruction successfully.",
-        "error": "Failed to put claim to instruction.",
-        "done": { "success": "Claim instruction completed successfully.", "error": "Failed to complete claim instruction." }
-      },
-      "backToDraft": { "success": "Claim moved back to draft.", "error": "Failed to move claim back to draft." },
-      "completeCompliant": { "success": "Claim marked complete and compliant.", "error": "Failed to mark claim complete and compliant." },
-      "agreementGranted": { "success": "Agreement granted successfully.", "error": "Failed to grant agreement." },
-      "agreementRefused": { "success": "Agreement refused successfully.", "error": "Failed to refuse agreement." },
-      "agreementAdjourned": { "success": "Agreement adjourned successfully.", "error": "Failed to adjourn agreement." },
-      "deleted": { "success": "Claim deleted successfully.", "error": "Failed to delete claim." },
-      "created": { "success": "Claim created successfully.", "error": "Failed to create claim." },
-      "update": { "success": "Claim updated successfully.", "error": "Failed to update claim." },
-      "find": { "success": "Claim retrieved successfully.", "error": "Failed to retrieve claim." },
-      "search": { "success": "Claims loaded successfully.", "error": "Failed to load claims." },
-      "attachment": {
-        "transfert": { "success": "Attachment transferred successfully.", "error": "Failed to transfer attachment." },
-        "download": { "success": "Attachment download started.", "error": "Failed to download attachment." }
-      },
-      "lines": {
-        "validate": { "success": "Attachment validated successfully.", "error": "Failed to validate attachment." },
-        "reject": { "success": "Attachment rejected successfully.", "error": "Failed to reject attachment." }
-      }
-    },
-    "lines": {
-      "empty": "No claim lines",
-      "createdAt": "Created at",
-      "uploadedAt": "Upload at",
-      "validatedAt": "Validated at",
-      "rejectedAt": "Rejected at",
-      "cancelledAt": "Cancelled at",
-      "reason": "Reason",
-      "status": {
-        "draft": "Draft",
-        "uploaded": "Uploaded",
-        "validated": "Validated",
-        "rejected": "Rejected",
-        "cancelled": "Cancelled"
-      },
-      "uploadConfirm": "Transfer",
-      "validate": {
-        "title": "Validate attachment",
-        "message": "Are you sure you want to validate this attachment?"
-      },
-      "reject": {
-        "title": "Reject attachment",
-        "message": "Please provide a reason to reject this attachment.",
-        "placeholder": "Enter the rejection reason here..."
-      }
-    },
-    "tabs": {
-      "audit": "audit",
-      "lines": "Lines",
-      "invoices": "Invoices"
-    }
-  },
-  "settings": {
-    "title": "Settings",
-    "subtitle": "Application preferences"
-  },
-  "sequences": {
-    "title": "Sequences",
-    "subtitle": "Manage numbering sequences",
-    "new": "New sequence",
-    "fields": {
-      "name": "Name",
-      "code": "Code",
-      "step": "Step",
-      "size": "Size",
-      "next": "Next",
-      "prefix": "Prefix",
-      "suffix": "Suffix",
-      "active": "Active",
-      "actions": "Actions"
-    },
-    "empty": "No sequences",
-    "patterns": {
-      "title": "Available patterns",
-      "year": "4-digit year (e.g., 2025)",
-      "y": "2-digit year (e.g., 25)",
-      "month": "Month number 01..12",
-      "weekday": "ISO weekday 1..7 (Mon=1)",
-      "day": "Day of month 01..31",
-      "doy": "Day of year 001..366",
-      "woy": "ISO week of year 01..53",
-      "h24": "Hour 00..23",
-      "min": "Minute 00..59",
-      "sec": "Second 00..59"
-    },
-    "messages": {
-      "deleted": { "success": "Sequence deleted successfully.", "error": "Failed to delete sequence." },
-      "created": { "success": "Sequence created successfully.", "error": "Failed to create sequence." },
-      "update": { "success": "Sequence updated successfully.", "error": "Failed to update sequence." },
-      "find": { "success": "Sequence retrieved successfully.", "error": "Failed to retrieve sequence." },
-      "search": { "success": "Sequences loaded successfully.", "error": "Failed to load sequences." }
-    }
-  },
-  "attachmentTypes": {
-    "title": "Document types",
-    "subtitle": "Manage document types",
-    "new": "New document type",
-    "fields": {
-      "name": "Name",
-      "actions": "Actions"
-    },
-    "empty": "No document types",
-    "messages": {
-      "deleted": {
-        "success": "Document type deleted successfully.",
-        "error": "Failed to delete document type."
-      },
-      "created": {
-        "success": "Document type created successfully.",
-        "error": "Failed to create document type."
-      },
-      "update": {
-        "success": "Document type updated successfully.",
-        "error": "Failed to update document type."
-      },
-      "find": {
-        "success": "Document type retrieved successfully.",
-        "error": "Failed to retrieve document type."
-      },
-      "search": {
-        "success": "Document types loaded successfully.",
-        "error": "Failed to load document types."
-      }
-    }
-  },
-  "dashboard": {
-    "title": "Dashboard",
-    "refresh": "Refresh"
-  },
-  "paginator": {
-    "noItems": "No items",
-    "of": "of",
-    "perPage": "Per page",
-    "first": "First",
-    "prev": "Previous",
-    "next": "Next",
-    "last": "Last",
-    "pageXofY": "Page {{page}} / {{total}}"
-  },
-  "confirm": {
-    "title": "Confirmation",
-    "message": {
-      "default": "Are you sure you want to continue?"
-    },
-    "ok": "Yes",
-    "cancel": "No",
-    "delete": {
-      "actor": "Delete this actor?",
-      "address": "Delete this address?",
-      "contact": "Delete this contact?",
-      "product": "Delete this product?",
-      "productCategory": "Delete this category?",
-      "attachmentType": "Delete this document type?",
-      "claim": "Delete this claim?",
-      "invoice": "Delete this invoice?"
-    }
-  },
-  "validation": {
-    "required": "This fiels is required."
-  },
-  "email": {
-    "invalid": "Invalid email address."
-  },
-  "claim": {
-    "submit": "Claim submitted successfully",
-    "instruction": "Claim moved to instruction successfully",
-    "instruction": {
-      "done": "Claim instruction terminated successfully"
-    },
-    "line": {
-      "validated": "Claim line validated successfully",
-      "rejected": "Claim line rejected successfully"
-    },
-    "has": {
-      "non": {
-        "instructed": "Claim has non-instructed lines and cannot be terminated"
+        "success": "Settings updated successfully.",
+        "error": "Failed to update settings."
       }
     }
   }

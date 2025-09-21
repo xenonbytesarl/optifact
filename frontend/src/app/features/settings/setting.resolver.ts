@@ -12,3 +12,13 @@ export const settingFindByIdResolver: ResolveFn<boolean> = async (route) => {
     return false;
   }
 };
+
+export const settingFindFirstResolver: ResolveFn<boolean> = async () => {
+  const store = inject(settingStore);
+  try {
+    await store.findFirst();
+    return true;
+  } catch {
+    return false;
+  }
+};

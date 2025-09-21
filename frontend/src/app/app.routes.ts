@@ -44,7 +44,7 @@ export const routes: Routes = [
   },
   {
     path: 'settings',
-    loadComponent: () => import('./features/settings/page').then(m => m.SettingsPage),
+    loadChildren: () => import('./features/settings/routes').then(m => m.settingsRoutes),
     data: { title: 'Paramètres' }
   },
   {
