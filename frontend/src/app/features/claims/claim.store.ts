@@ -310,9 +310,9 @@ export const claimStore = signalStore(
           return false;
         }
       },
-      async agreementGranted(id: string) {
+      async agreementGranted(id: string, files: File[]) {
         patchState(store, { loading: true, error: null, message: null });
-        const response = await api.agreementGranted(id);
+        const response = await api.agreementGranted(id, files);
         if (response.success) {
           const payload = response as SuccessApiResponse<Claim>;
           patchState(store, {
@@ -331,9 +331,9 @@ export const claimStore = signalStore(
           return false;
         }
       },
-      async agreementRefused(id: string) {
+      async agreementRefused(id: string, files: File[]) {
         patchState(store, { loading: true, error: null, message: null });
-        const response = await api.agreementRefused(id);
+        const response = await api.agreementRefused(id, files);
         if (response.success) {
           const payload = response as SuccessApiResponse<Claim>;
           patchState(store, {
