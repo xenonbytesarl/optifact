@@ -4,7 +4,9 @@ import fr.xenonbyte.optifact.backend.api.user.generated.view.PrivilegeView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.RolePageResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.RoleView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiRequestView;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.UserPageResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserResponseView;
+import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.domain.user.Privilege;
 import fr.xenonbyte.optifact.backend.domain.user.Role;
 import fr.xenonbyte.optifact.backend.domain.user.User;
@@ -76,6 +78,19 @@ public interface UserMapperView {
                 (long) elements.size(),
                 Boolean.TRUE,
                 Boolean.TRUE,
+                elements
+        );
+    }
+
+    default UserPageResponseView toResponsePageView(Pagination<User> page) {
+        List<UserResponseView> elements = page.elements() == null ? List.of() : page.elements().stream().map(this::toResponseView).toList();
+        return new UserPageResponseView(
+                page.totalElements(),
+                page.totalPages(),
+                page.page(),
+                page.size(),
+                page.first(),
+                page.last(),
                 elements
         );
     }

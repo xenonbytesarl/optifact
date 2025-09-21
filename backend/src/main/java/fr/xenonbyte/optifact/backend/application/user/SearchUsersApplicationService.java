@@ -1,5 +1,7 @@
 package fr.xenonbyte.optifact.backend.application.user;
 
+import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
+import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.application.user.port.in.SearchUsersUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.out.UserRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
@@ -21,8 +23,8 @@ public final class SearchUsersApplicationService implements SearchUsersUseCase {
     }
 
     @Override
-    public List<User> searchUsers(String nameFilter, String emailFilter, String phoneFilter, String roleNameFilter) {
+    public Pagination<User> searchUsers(String nameFilter, String emailFilter, String phoneFilter, String roleNameFilter, CommonSearch search) {
         LOGGER.info("Searching users with provided filters...");
-        return repository.search(nameFilter, emailFilter, phoneFilter, roleNameFilter);
+        return repository.search(nameFilter, emailFilter, phoneFilter, roleNameFilter, search);
     }
 }

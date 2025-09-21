@@ -1,10 +1,16 @@
 package fr.xenonbyte.optifact.backend.infrastructure.user;
 
+import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
+import fr.xenonbyte.optifact.backend.application.common.payload.Direction;
+import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.application.user.port.out.RoleRepository;
 import fr.xenonbyte.optifact.backend.application.user.port.out.UserRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.user.Role;
 import fr.xenonbyte.optifact.backend.domain.user.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
@@ -50,7 +56,7 @@ public final class UserAdapterJpa implements UserRepository, RoleRepository {
     }
 
     @Override
-    public List<User> search(String nameFilter, String emailFilter, String phoneFilter, String roleNameFilter) {
+    public Pagination<User> search(String nameFilter, String emailFilter, String phoneFilter, String roleNameFilter, CommonSearch search) {
         Specification<UserJpa> spec = (root, query, cb) -> cb.conjunction();
 
         if (isNotBlank(nameFilter)) {
@@ -78,8 +84,22 @@ public final class UserAdapterJpa implements UserRepository, RoleRepository {
                 return cb.like(cb.lower(root.join("roles").get("name")), like);
             });
         }
+        Sort sort = parseSort(search.sort(), search.direction());
 
-        return userRepository.findAll(spec).stream().map(mapper::toDomain).collect(Collectors.toList());
+        PageRequest pageRequest = PageRequest.of(search.page().intValue(), search.size().intValue(), sort);
+
+        Page<UserJpa> userJpaPage = userRepository.findAll(spec, pageRequest);
+        List<User> users = userJpaPage.getContent().stream().map(mapper::toDomain).toList();
+
+        return  Pagination.create(
+                users,
+                userJpaPage.getTotalPages(),
+                userJpaPage.getTotalElements(),
+                search.page(),
+                search.size(),
+                !userJpaPage.hasNext(),
+                !userJpaPage.hasPrevious()
+        );
     }
 
     @Override
@@ -99,5 +119,26 @@ public final class UserAdapterJpa implements UserRepository, RoleRepository {
     @Override
     public Optional<Role> findByCode(String code) {
         return roleRepository.findByCode(code).map(mapper::toDomain);
+    }
+
+    private Sort parseSort(String field, Direction direction) {
+        if (field == null || field.isBlank() || direction == null) {
+            // The default sort is by ID ascending
+            return Sort.by(Sort.Direction.ASC, "id");
+        }
+
+        Sort.Direction sort = "DESC".equalsIgnoreCase(direction.name())
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        // Map the property name to the corresponding field name in the JPA entity
+        String fieldName = switch (field) {
+            case "name", "phone", "email" -> field;
+            case "createdAt" -> "createdAt";
+            case "updatedAt" -> "updatedAt";
+            default -> "id";
+        };
+
+        return Sort.by(sort, fieldName);
     }
 }

@@ -2,9 +2,12 @@ package fr.xenonbyte.optifact.backend.api.user;
 
 import fr.xenonbyte.optifact.backend.api.common.locale.MessageUtil;
 import fr.xenonbyte.optifact.backend.api.user.generated.UsersApi;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.CreateUserPasswordRequestView;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.RegisterUserApiRequestView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.RolePageApiResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiRequestView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiResponseView;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.UserPageApiResponseView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,6 +42,12 @@ public class UserResource implements UsersApi {
     }
 
     @Override
+    public ResponseEntity<Void> createUserPassword(String acceptLanguage, UUID id, String verificationCode, CreateUserPasswordRequestView createUserPasswordRequestView) {
+        adapterView.createUserPassword(id, verificationCode, createUserPasswordRequestView);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
     public ResponseEntity<UserApiResponseView> findUserByEmail(String acceptLanguage, String email) {
         return ResponseEntity.status(OK).body(
                 new UserApiResponseView()
@@ -59,6 +68,36 @@ public class UserResource implements UsersApi {
                         .status(OK.name())
                         .message(MessageUtil.getMessage(UserMessageView.USER_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(of(CONTENT, adapterView.findUserById(id)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<Void> registerUser(String acceptLanguage, RegisterUserApiRequestView registerUserApiRequestView) {
+        adapterView.registerUser(registerUserApiRequestView);
+        return ResponseEntity.status(CREATED).build();
+    }
+
+    @Override
+    public ResponseEntity<UserPageApiResponseView> searchUsers(String acceptLanguage, Integer page, Integer size, String sortField, String sortDirection, String nameFilter, String emailFilter, String phoneFilter, String roleNameFilter) {
+        return ResponseEntity.status(OK).body(
+                new UserPageApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(UserMessageView.USERS_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.searchUsers(nameFilter, emailFilter, phoneFilter, roleNameFilter, page, size, sortField, sortDirection)))
+        );
+    }
+    
+    @Override
+    public ResponseEntity<UserApiResponseView> updateUser(String acceptLanguage, UUID id, UserApiRequestView userApiRequestView) {
+        return ResponseEntity.status(OK).body(
+                new UserApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(UserMessageView.USER_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.updateUser(id, userApiRequestView)))
         );
     }
 

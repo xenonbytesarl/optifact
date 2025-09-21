@@ -1,5 +1,7 @@
 package fr.xenonbyte.optifact.backend.application.user.port.out;
 
+import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
+import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.user.User;
 
@@ -22,7 +24,7 @@ public interface UserRepository {
 
     boolean existsByEmail(String email);
 
-    List<User> search(String nameFilter, String emailFilter, String phoneFilter, String roleNameFilter);
+    Pagination<User> search(String nameFilter, String emailFilter, String phoneFilter, String roleNameFilter, CommonSearch search);
 
     boolean existByEmailExcludingId(String email, UUID userId);
 }

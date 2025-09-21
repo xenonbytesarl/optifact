@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import {settingFindByIdResolver, settingFindFirstResolver} from './setting.resolver';
+import {settingFindFirstResolver} from './setting.resolver';
 
 export const settingsRoutes: Routes = [
   {
@@ -16,10 +16,6 @@ export const settingsRoutes: Routes = [
         path: 'edit',
         loadComponent: () => import('./screens/setting-edit').then(m => m.SettingEditPage),
         resolve: { settingFindById: settingFindFirstResolver }
-      },
-      {
-        path: 'users',
-        loadChildren: () => import('../users/routes').then(m => m.usersRoutes)
       }
     ]
   }

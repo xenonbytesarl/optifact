@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: User API
   version: 1.0.0
-  description: Endpoints for user management (create user, find by id/email) and roles retrieval.
+  description: Endpoints for user management (create, update, register, set password, search) and roles retrieval.
 servers:
   - url: /api/v1/optifact
 paths:
@@ -27,6 +27,46 @@ paths:
                 $ref: '#/components/schemas/UserApiResponseView'
         '409':
           description: Email already exists
+    get:
+      operationId: searchUsers
+      summary: Search users with pagination and sorting
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - $ref: '../../parameters/common.yaml#/pageParam'
+        - $ref: '../../parameters/common.yaml#/sizeParam'
+        - $ref: '../../parameters/common.yaml#/sortFieldParam'
+        - $ref: '../../parameters/common.yaml#/sortDirectionParam'
+        - name: nameFilter
+          in: query
+          description: Optional name filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+        - name: emailFilter
+          in: query
+          description: Optional email filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+        - name: phoneFilter
+          in: query
+          description: Optional phone filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+        - name: roleNameFilter
+          in: query
+          description: Optional roleName filter (case-insensitive, partial match)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paged list of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPageApiResponseView'
   /users/{id}:
     get:
       operationId: findUserById
@@ -48,6 +88,77 @@ paths:
                 $ref: '#/components/schemas/UserApiResponseView'
         '404':
           description: User not found
+    put:
+      operationId: updateUser
+      summary: Update an existing user
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserApiRequestView'
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserApiResponseView'
+        '404':
+          description: User not found
+  /users/{id}/password/{verificatyionCode}:
+    post:
+      operationId: createUserPassword
+      summary: Create or set the user's password
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: verificationCode
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserPasswordRequestView'
+      responses:
+        '204':
+          description: Password created
+        '404':
+          description: User not found
+  /users/register:
+    post:
+      operationId: registerUser
+      summary: Register a new user linked to an actor by reference
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUserApiRequestView'
+      responses:
+        '201':
+          description: User registered
+        '409':
+          description: Email already exists or actor reference invalid
   /users/email/{email}:
     get:
       operationId: findUserByEmail
@@ -163,6 +274,32 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RoleView'
+    RegisterUserApiRequestView:
+      type: object
+      required: [lastname, email, actorReference]
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        actorReference:
+          type: string
+          description: External reference used to link the user to an actor
+    CreateUserPasswordRequestView:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+          format: password
+        confirmPassword:
+          type: string
+          format: password
     UserApiResponseView:
       allOf:
         - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
@@ -193,3 +330,24 @@ components:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/RolePageResponseView'
+    UserPageResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/PaginationResponseView'
+        - type: object
+          required:
+            - elements
+          properties:
+            elements:
+              type: array
+              description: The list of users
+              items:
+                $ref: '#/components/schemas/UserResponseView'
+    UserPageApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/UserPageResponseView'
