@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Insert new attachment type: "Decision de la demande" -->
+    <changeSet id="022-01-insert-attachment-type-decision" author="junie">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="t_attachment_type"/>
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM t_attachment_type WHERE lower(c_name) = lower('Decision de la demande')</sqlCheck>
+        </preConditions>
+        <insert tableName="t_attachment_type">
+            <column name="c_id" value="01996ce0-d592-7a9a-9a29-4cacaba71f2c"/>
+            <column name="c_created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="c_updated_at"/>
+            <column name="c_name" value="Decision de la demande"/>
+            <column name="c_active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <!-- Add two optional attachment columns to t_claim for granted/refused agreement attachments -->
+    <changeSet id="022-02-add-claim-agreement-attachment-columns" author="junie">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="t_claim"/>
+        </preConditions>
+        <addColumn tableName="t_claim">
+            <column name="c_granted_agreement_attachment_id" type="uuid"/>
+            <column name="c_refused_agreement_attachment_id" type="uuid"/>
+        </addColumn>
+        <createIndex indexName="idx_t_claim_granted_agreement_attachment_id" tableName="t_claim">
+            <column name="c_granted_agreement_attachment_id"/>
+        </createIndex>
+        <createIndex indexName="idx_t_claim_refused_agreement_attachment_id" tableName="t_claim">
+            <column name="c_refused_agreement_attachment_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Add foreign keys to t_attachment for these new columns -->
+    <changeSet id="022-03-add-claim-agreement-attachment-fks" author="junie">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="t_claim"/>
+            <tableExists tableName="t_attachment"/>
+            <columnExists tableName="t_claim" columnName="c_granted_agreement_attachment_id"/>
+            <columnExists tableName="t_claim" columnName="c_refused_agreement_attachment_id"/>
+        </preConditions>
+        <addForeignKeyConstraint
+                baseTableName="t_claim"
+                baseColumnNames="c_granted_agreement_attachment_id"
+                constraintName="fk_t_claim_granted_agreement_attachment"
+                referencedTableName="t_attachment"
+                referencedColumnNames="c_id"
+                onDelete="SET NULL"
+                onUpdate="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="t_claim"
+                baseColumnNames="c_refused_agreement_attachment_id"
+                constraintName="fk_t_claim_refused_agreement_attachment"
+                referencedTableName="t_attachment"
+                referencedColumnNames="c_id"
+                onDelete="SET NULL"
+                onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

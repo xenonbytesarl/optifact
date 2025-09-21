@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,4 +20,6 @@ public interface AttachmentTypeRepositoryJpa extends JpaRepository<AttachmentTyp
     Boolean existsByNameEqualsIgnoreCaseAndIdNot(String name, UUID categoryId);
 
     List<AttachmentTypeJpa> findByIdIn(List<UUID> ids);
+
+    Optional<AttachmentTypeJpa> findByNameIgnoreCase(String name);
 }

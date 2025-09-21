@@ -18,6 +18,8 @@ public interface ClaimMapperJpa {
     @Mapping(target = "actor", expression = "java(fr.xenonbyte.optifact.backend.infrastructure.actor.ActorJpa.builder().id(claim.getActorId()).build())")
     @Mapping(target = "product", expression = "java(fr.xenonbyte.optifact.backend.infrastructure.product.ProductJpa.builder().id(claim.getProductId()).build())")
     @Mapping(target = "state", expression = "java(fr.xenonbyte.optifact.backend.infrastructure.claim.ClaimStateJpa.valueOf(claim.getState().name()))")
+    @Mapping(target = "grantedAgreementAttachment", expression = "java(claim.getGrantedAgreementAttachmentId() == null ? null : fr.xenonbyte.optifact.backend.infrastructure.common.attachment.AttachmentJpa.builder().id(claim.getGrantedAgreementAttachmentId()).build())")
+    @Mapping(target = "refusedAgreementAttachment", expression = "java(claim.getRefusedAgreementAttachmentId() == null ? null : fr.xenonbyte.optifact.backend.infrastructure.common.attachment.AttachmentJpa.builder().id(claim.getRefusedAgreementAttachmentId()).build())")
     @Mapping(target = "lines", expression = "java(toJpaLines(claim.getLines()))")
     ClaimJpa toJpa(Claim claim);
 
@@ -92,6 +94,8 @@ public interface ClaimMapperJpa {
                 jpa.getCancelAt(),
                 ClaimState.valueOf(jpa.getState().name()),
                 jpa.getReference(),
+                jpa.getGrantedAgreementAttachment() != null? jpa.getGrantedAgreementAttachment().getId(): null,
+                jpa.getRefusedAgreementAttachment() != null? jpa.getRefusedAgreementAttachment().getId(): null,
                 lines
         );
     }

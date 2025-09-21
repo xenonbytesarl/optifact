@@ -13,5 +13,5 @@ import java.util.UUID;
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
 public interface RefuseClaimAgreementClaimUseCase {
-    Claim refuseClaimAgreement(UUID claimId);
+    Claim refuseClaimAgreement(UUID claimId, UUID refusedAttachmentDecisionId);
 }

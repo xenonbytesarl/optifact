@@ -13,5 +13,5 @@ import java.util.UUID;
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
 public interface GrantClaimAgreementClaimUseCase {
-    Claim grantClaimAgreement(UUID claimId);
+    Claim grantClaimAgreement(UUID claimId, UUID grantedAttachmentDecisionId);
 }

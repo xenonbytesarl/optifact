@@ -74,6 +74,8 @@ public interface ClaimMapperView {
                 null,
                 ClaimState.DRAFT,
                 view.getReference(),
+                null,
+                null,
                 Collections.emptyList()
         );
     }
