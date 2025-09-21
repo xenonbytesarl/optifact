@@ -5,7 +5,9 @@ import fr.xenonbyte.optifact.backend.application.user.port.out.UserRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.user.Role;
 import fr.xenonbyte.optifact.backend.domain.user.User;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -43,18 +45,59 @@ public final class UserAdapterJpa implements UserRepository, RoleRepository {
     }
 
     @Override
-    public boolean existByEmail(String email) {
+    public boolean existsByEmail(String email) {
         return userRepository.existsByEmailIgnoreCase(email);
     }
 
     @Override
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmailIgnoreCase(email);
+    public List<User> search(String nameFilter, String emailFilter, String phoneFilter, String roleNameFilter) {
+        Specification<UserJpa> spec = (root, query, cb) -> cb.conjunction();
+
+        if (isNotBlank(nameFilter)) {
+            String like = like(nameFilter);
+            spec = spec.and((root, query, cb) -> cb.or(
+                    cb.like(cb.lower(root.get("firstname")), like),
+                    cb.like(cb.lower(root.get("lastname")), like)
+            ));
+        }
+        if (isNotBlank(emailFilter)) {
+            String like = like(emailFilter);
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("email")), like));
+        }
+        if (isNotBlank(phoneFilter)) {
+            String like = like(phoneFilter);
+            spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("phone")), like));
+        }
+        if (isNotBlank(roleNameFilter)) {
+            String like = like(roleNameFilter);
+            spec = spec.and((root, query, cb) -> {
+                // Avoid duplicates when joining
+                if(query != null) {
+                    query.distinct(true);
+                }
+                return cb.like(cb.lower(root.join("roles").get("name")), like);
+            });
+        }
+
+        return userRepository.findAll(spec).stream().map(mapper::toDomain).collect(Collectors.toList());
     }
+
+    @Override
+    public boolean existByEmailExcludingId(String email, UUID userId) {
+        return userRepository.existsByEmailIgnoreCaseAndIdNot(email, userId);
+    }
+
+    private static boolean isNotBlank(String v) { return v != null && !v.isBlank(); }
+    private static String like(String v) { return "%" + v.toLowerCase() + "%"; }
 
     // RoleRepository implementation
     @Override
     public Set<Role> findRoles() {
         return roleRepository.findAll().stream().map(mapper::toDomain).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Optional<Role> findByCode(String code) {
+        return roleRepository.findByCode(code).map(mapper::toDomain);
     }
 }

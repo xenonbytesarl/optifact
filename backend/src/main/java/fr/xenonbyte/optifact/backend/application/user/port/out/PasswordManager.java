@@ -1,10 +1,6 @@
 package fr.xenonbyte.optifact.backend.application.user.port.out;
 
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
-import fr.xenonbyte.optifact.backend.domain.user.Role;
-
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * @author bamk
@@ -12,10 +8,7 @@ import java.util.Set;
  * @since 21/09/2025
  */
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.SECONDARY_PORT)
-@Hexagonal.Repository
 @Hexagonal.SecondaryPort
-public interface RoleRepository {
-    Set<Role> findRoles();
-
-    Optional<Role> findByCode(String code);
+public interface PasswordManager {
+    String encrypt(String password);
 }

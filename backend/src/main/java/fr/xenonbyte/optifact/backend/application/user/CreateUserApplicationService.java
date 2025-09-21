@@ -37,6 +37,9 @@ public final class CreateUserApplicationService implements CreateUserUseCase {
 
         User saved = repository.save(user);
         LOGGER.info("User created successfully with id: '" + saved.getId() + "'");
+
+        //TODO create verification code
+        //TODO create and send account activation link
         return saved;
     }
 }

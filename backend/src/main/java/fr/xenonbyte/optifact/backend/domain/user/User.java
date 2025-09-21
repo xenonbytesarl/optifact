@@ -20,6 +20,9 @@ import static java.util.UUID.randomUUID;
 @Hexagonal(layer = Hexagonal.Layer.DOMAIN, componentType = Hexagonal.ComponentType.ENTITY)
 @Hexagonal.Entity
 public final class User extends BaseEntity {
+
+    public static final String DEFAULT_ACTOR_ROLE = "ACTOR";
+
     private final String firstname;
     private final String lastname; // required
     private final String email; // required
@@ -123,6 +126,22 @@ public final class User extends BaseEntity {
                 actorId,
                 roles
         );
+    }
+
+    public static void checkPassword(String password, String confirmPassword) {
+        if(password == null || password.isBlank()) {
+            throw new IllegalArgumentException(UserMessage.USER_PASSWORD_REQUIRED);
+        }
+
+        if(confirmPassword == null || confirmPassword.isBlank()) {
+            throw new IllegalArgumentException(UserMessage.USER_PASSWORD_REQUIRED);
+        }
+
+        if (!password.equals(confirmPassword)) {
+            throw new IllegalArgumentException(UserMessage.USER_PASSWORD_AND_CONFIRM_NOT_MATCH);
+        }
+
+
     }
 
     public User update(String firstname,
@@ -330,6 +349,26 @@ public final class User extends BaseEntity {
                 this.mfaEnabled,
                 this.totalLoginAttempt,
                 this.actorId,
+                roles);
+        u.updateAudit(this.createdAt);
+        return u;
+    }
+
+    public User withActorId(UUID actorId) {
+        User u = new User(
+                this.id,
+                this.firstname,
+                this.lastname,
+                this.email,
+                this.password,
+                this.phone,
+                this.accountEnabled,
+                this.accountLocked,
+                this.accountExpired,
+                this.credentialExpired,
+                this.mfaEnabled,
+                this.totalLoginAttempt,
+                actorId,
                 roles);
         u.updateAudit(this.createdAt);
         return u;

@@ -10,4 +10,5 @@ public final class ActorMessage {
     public static final String ACTOR_REFERENCE_CONFLICT = "actor.reference.conflict";
     public static final String ACTOR_NAME_CONFLICT = "actor.name.conflict";
     public static final String ACTOR_ID_NOT_FOUND = "actor.id.not.found";
+    public static final String ACTOR_REFERENCE_NOT_FOUND = "actor.reference.not.found";
 }
