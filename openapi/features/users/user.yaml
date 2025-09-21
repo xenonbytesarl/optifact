@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: Endpoints for user management (create user, find by id/email) and roles retrieval.
 servers:
-  - url: /api
+  - url: /api/v1/optifact
 paths:
   /users:
     post:
@@ -69,7 +69,7 @@ paths:
                 $ref: '#/components/schemas/UserApiResponseView'
         '404':
           description: User not found
-  /roles:
+  /users/roles:
     get:
       operationId: findRoles
       summary: List all roles

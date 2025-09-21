@@ -2,7 +2,6 @@ package fr.xenonbyte.optifact.backend.api.user;
 
 import fr.xenonbyte.optifact.backend.api.common.locale.MessageUtil;
 import fr.xenonbyte.optifact.backend.api.user.generated.UsersApi;
-import fr.xenonbyte.optifact.backend.api.user.generated.RolesApi;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.RolePageApiResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiRequestView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiResponseView;
@@ -19,7 +18,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-public class UserResource implements UsersApi, RolesApi {
+public class UserResource implements UsersApi {
 
     private final UserAdapterView adapterView;
 
