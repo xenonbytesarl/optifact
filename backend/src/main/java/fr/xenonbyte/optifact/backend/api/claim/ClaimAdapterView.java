@@ -221,12 +221,13 @@ public class ClaimAdapterView {
     }
 
     public ClaimPageResponseView searchClaims(String referenceFilter,
+                                              String stateFilter,
+                                              String actorName,
+                                              String productName,
                                               Integer page,
                                               Integer size,
                                               String sortField,
-                                              String sortDirection,
-                                              String actorName,
-                                              String productName) {
+                                              String sortDirection) {
         long safePage = page == null ? 0L : page.longValue();
         long safeSize = size == null ? 20L : size.longValue();
         String safeSort = (sortField == null || sortField.isBlank()) ? "createdAt" : sortField;
@@ -239,6 +240,7 @@ public class ClaimAdapterView {
         }
         Pagination<Claim> pageResult = searchUseCase.searchClaims(
                 referenceFilter,
+                stateFilter,
                 actorName,
                 productName,
                 new CommonSearch(safePage, safeSize, safeSort, safeDirection)

@@ -29,7 +29,7 @@ public interface ClaimRepository {
 
     void delete(Claim claim);
 
-    Pagination<Claim> search(String referenceFilter, String actorName, String productName, CommonSearch search);
+    Pagination<Claim> search(String referenceFilter, String stateFilter, String actorName, String productName, CommonSearch search);
 
     boolean existsById(UUID claimId);
 

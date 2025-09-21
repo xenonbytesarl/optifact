@@ -13,5 +13,5 @@ import fr.xenonbyte.optifact.backend.domain.claim.Claim;
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
 public interface SearchClaimsUseCase {
-    Pagination<Claim> searchClaims(String referenceFilter, String actorName, String productName, CommonSearch search);
+    Pagination<Claim> searchClaims(String referenceFilter, String stateFilter, String actorName, String productName, CommonSearch search);
 }

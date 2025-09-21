@@ -156,14 +156,14 @@ public class ClaimResource implements ClaimsApi {
     }
 
     @Override
-    public ResponseEntity<ClaimPageApiResponseView> searchClaims(String acceptLanguage, Integer page, Integer size, String sortField, String sortDirection, String referenceFilter, String actorName, String productName) {
+    public ResponseEntity<ClaimPageApiResponseView> searchClaims(String acceptLanguage, Integer page, Integer size, String sortField, String sortDirection, String referenceFilter, String stateFilter, String actorNameFilter, String productNameFilter) {
         return ResponseEntity.status(OK).body(
                 new ClaimPageApiResponseView()
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .status(OK.name())
                         .message(MessageUtil.getMessage(ClaimMessageView.CLAIMS_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(of(CONTENT, adapterView.searchClaims(referenceFilter, page, size, sortField, sortDirection, actorName, productName)))
+                        .data(of(CONTENT, adapterView.searchClaims(referenceFilter, stateFilter, actorNameFilter, productNameFilter, page, size, sortField, sortDirection)))
         );
     }
 

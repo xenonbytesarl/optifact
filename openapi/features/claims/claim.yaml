@@ -29,13 +29,20 @@ paths:
           required: false
           schema:
             type: string
-        - name: actorName
+        - name: stateFilter
+          in: query
+          description: Optional state filter
+          required: false
+          schema:
+            type: string
+            enum: [DRAFT, SUBMITTED, IN_INSTRUCTION, INSTRUCTION_REJECTED, INSTRUCTION_DONE, COMPLETE_COMPLIANT, AGREEMENT_REFUSED, AGREEMENT_GRANTED, AGREEMENT_ADJOURNED, CANCELLED]
+        - name: actorNameFilter
           in: query
           description: Optional actor name filter (case-insensitive, partial match)
           required: false
           schema:
             type: string
-        - name: productName
+        - name: productNameFilter
           in: query
           description: Optional product name filter (case-insensitive, partial match)
           required: false
