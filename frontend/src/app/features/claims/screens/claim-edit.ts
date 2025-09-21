@@ -129,7 +129,7 @@ export class ClaimEditPage {
 
   productItems = computed<AutocompleteItem[]>(() => this.products.productPage().elements.filter(p => p.claimName).map(p => ({
     value: p.id,
-    label: p.code ? `${p.claimName} (${p.code})` : p.claimName
+    label: p.claimName
   })));
 
   claimId = computed(() => this.route.snapshot.paramMap.get('id') as string);

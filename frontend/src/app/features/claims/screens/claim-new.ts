@@ -59,7 +59,7 @@ export class ClaimNewPage {
 
   productItems = computed<AutocompleteItem[]>(() => this.products.productPage().elements.filter(p => p.claimName).map(p => ({
     value: p.id,
-    label: p.code ? `${p.claimName} (${p.code})` : p.claimName
+    label: p.claimName
   })));
 
   get formValue() { return this.ui.formValue; }
