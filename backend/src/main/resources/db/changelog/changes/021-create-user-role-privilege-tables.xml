@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="021-01-create-privilege-table" author="junie">
+        <createTable tableName="t_privilege">
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+            <column name="c_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="021-02-create-role-table" author="junie">
+        <createTable tableName="t_role">
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+            <column name="c_code" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="c_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="021-03-create-role-privilege-table" author="junie">
+        <createTable tableName="t_role_privilege">
+            <column name="c_role_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_privilege_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="t_role_privilege" columnNames="c_role_id, c_privilege_id" constraintName="pk_role_privilege"/>
+        <addForeignKeyConstraint baseTableName="t_role_privilege"
+                                 baseColumnNames="c_role_id"
+                                 referencedTableName="t_role"
+                                 referencedColumnNames="c_id"
+                                 constraintName="fk_role_privilege_role"
+                                 onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="t_role_privilege"
+                                 baseColumnNames="c_privilege_id"
+                                 referencedTableName="t_privilege"
+                                 referencedColumnNames="c_id"
+                                 constraintName="fk_role_privilege_privilege"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="021-04-create-user-table" author="junie">
+        <createTable tableName="t_user">
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <column name="c_firstname" type="varchar(255)"/>
+            <column name="c_lastname" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_email" type="varchar(320)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="c_password" type="varchar(255)"/>
+            <column name="c_phone" type="varchar(50)"/>
+
+            <column name="c_account_enabled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_account_locked" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_account_expired" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_credential_expired" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_mfa_enabled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_total_login_attempt" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="c_actor_id" type="uuid"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="t_user"
+                                 baseColumnNames="c_actor_id"
+                                 referencedTableName="t_actor"
+                                 referencedColumnNames="c_id"
+                                 constraintName="fk_user_actor"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="021-05-create-user-role-table" author="junie">
+        <createTable tableName="t_user_role">
+            <column name="c_user_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_role_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="t_user_role" columnNames="c_user_id, c_role_id" constraintName="pk_user_role"/>
+        <addForeignKeyConstraint baseTableName="t_user_role"
+                                 baseColumnNames="c_user_id"
+                                 referencedTableName="t_user"
+                                 referencedColumnNames="c_id"
+                                 constraintName="fk_user_role_user"
+                                 onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="t_user_role"
+                                 baseColumnNames="c_role_id"
+                                 referencedTableName="t_role"
+                                 referencedColumnNames="c_id"
+                                 constraintName="fk_user_role_role"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>
