@@ -1,4 +1,504 @@
 {
+  "common": {
+    "error": "Une erreur inattendue s'est produite.",
+    "deleted": "Supprimé avec succès.",
+    "yes": "Oui",
+    "no": "Non",
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer"
+    }
+  },
+  "search": {
+    "label": "Rechercher",
+    "placeholder": "Rechercher...",
+    "clear": "Effacer la recherche"
+  },
+  "app": {
+    "name": "Optifact"
+  },
+  "actions": {
+    "new": "Créer",
+    "view": "Voir",
+    "edit": "Modifier",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "validate": "Valider",
+    "reject": "Rejeter",
+    "confirm": "Confirmer",
+    "open": "Ouvrir",
+    "send": "Envoyer",
+    "pay": "Payer"
+  },
+  "actors": {
+    "title": "Acteurs",
+    "subtitle": "Gérez vos acteurs",
+    "new": "Nouvel acteur",
+    "fields": {
+      "name": "Nom",
+      "reference": "Référence",
+      "actions": "Actions"
+    },
+    "tabs": {
+      "addresses": "Adresses",
+      "contacts": "Contacts"
+    },
+    "addresses": {
+      "actions": {
+        "add": "Ajouter une adresse"
+      },
+      "dialog": {
+        "title": "Ajouter/Modifier une adresse",
+        "action": {
+          "cancel": "Fermer",
+          "addNew": "Enregistrer et ajouter",
+          "addClose": "Enregistrer et fermer"
+        }
+      },
+      "fields": {
+        "type": "Type",
+        "street": "Rue",
+        "city": "Ville",
+        "country": "Pays",
+        "zipCode": "Code postal",
+        "state": "Région"
+      },
+      "types": {
+        "default": "Par défaut",
+        "invoice": "Facturation",
+        "shipping": "Livraison",
+        "other": "Autre"
+      }
+    },
+    "contacts": {
+      "actions": {
+        "add": "Ajouter un contact"
+      },
+      "dialog": {
+        "title": "Ajouter/Modifier un contact",
+        "action": {
+          "cancel": "Fermer",
+          "addNew": "Enregistrer et ajouter",
+          "addClose": "Enregistrer et fermer"
+        }
+      },
+      "fields": {
+        "type": "Type",
+        "name": "Nom",
+        "email": "Email",
+        "phone": "Téléphone",
+        "function": "Fonction"
+      },
+      "types": {
+        "commercial": "Commercial",
+        "project": "Projet",
+        "accounting": "Comptabilité",
+        "technical": "Technique",
+        "other": "Autre"
+      }
+    },
+    "empty": "Aucun acteur"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "actors": "Acteurs",
+    "products": "Produits",
+    "quotes": "Devis",
+    "invoices": "Factures",
+    "payments": "Paiements",
+    "settings": "Paramètres"
+  },
+  "products": {
+    "view": {
+      "category": "Catégorie",
+      "type": "Type",
+      "sequence": "Sequence",
+      "amountFlat": "Montant (forfait)",
+      "rate": "Taux",
+      "description": "Description",
+      "noDescription": "Aucune description fournie."
+    },
+    "title": "Produits",
+    "subtitle": "Catalogue des produits",
+    "tabs": {
+      "info": "Informations générales",
+      "docTypes": "Types de document"
+    },
+    "new": "Nouveau produit",
+    "fields": {
+      "code": "Code",
+      "name": "Nom",
+      "type": "Type",
+      "amount": "Montant",
+      "rate": "Taux (%)",
+      "category": "Catégorie",
+      "sequence": "Sequence",
+      "selectCategory": "Sélectionner une catégorie",
+      "selectSequence": "Sélectionner une séquence",
+      "currency": "Devise",
+      "description": "Description",
+      "actions": "Actions"
+    },
+    "types": {
+      "forfait": "Forfait",
+      "pourcentage": "Pourcentage"
+    },
+    "hints": {
+      "amount": "Utilisé lorsque le type est forfait",
+      "rate": "Utilisé lorsque le type est pourcentage"
+    },
+    "docTypes": {
+      "sectionTitle": "Type de Documents",
+      "searchPlaceholder": "Rechercher un type de document",
+      "add": "Ajouter",
+      "empty": "Aucun type de document associé. Sélectionnez un type puis cliquez sur Ajouter.",
+      "alreadyAssociated": "Ce type de document est déjà associé"
+    },
+    "empty": "Aucun produit"
+  },
+  "productCategories": {
+    "title": "Catégories de produit",
+    "subtitle": "Gérez les catégories de vos produits",
+    "new": "Nouvelle catégorie",
+    "fields": {
+      "name": "Nom",
+      "actions": "Actions"
+    },
+    "empty": "Aucune catégorie",
+    "count": "Nombre",
+    "messages": {
+      "deleted": {
+        "success": "Catégorie de produit supprimée avec succès.",
+        "error": "Échec de la suppression de la catégorie de produit."
+      },
+      "created": {
+        "success": "Catégorie de produit créée avec succès.",
+        "error": "Échec de la création de la catégorie de produit."
+      },
+      "update": {
+        "success": "Catégorie de produit mise à jour avec succès.",
+        "error": "Échec de la mise à jour de la catégorie de produit."
+      },
+      "find": {
+        "success": "Catégorie de produit récupérée avec succès.",
+        "error": "Échec de la récupération de la catégorie de produit."
+      },
+      "search": {
+        "success": "Catégories de produit chargées avec succès.",
+        "error": "Échec du chargement des catégories de produit."
+      }
+    }
+  },
+  "quotes": {
+    "title": "Devis",
+    "subtitle": "Propositions commerciales",
+    "new": "Nouveau devis"
+  },
+  "invoices": {
+    "title": "Factures",
+    "subtitle": "Suivez vos factures",
+    "new": "Nouvelle facture",
+    "fields": {
+      "reference": "Référence",
+      "createdAt": "Créée le",
+      "actor": "Acteur",
+      "claim": "Demande",
+      "state": "Statut",
+      "status": "Statut",
+      "issueAt": "A payer avant le",
+      "sendAt": "Envoyée le",
+      "amount": "Montant",
+      "total": "Total"
+    },
+    "states": {
+      "draft": "Brouillon",
+      "validate": "Validée",
+      "paid": "Payée",
+      "cancel": "Annulée"
+    },
+    "tabs": {
+      "lines": "Lignes"
+    },
+    "empty": "Aucune facture",
+    "validation": {
+      "actorRequired": "L'acteur est obligatoire.",
+      "linesRequired": "Au moins une ligne de facture est requise."
+    },
+    "lines": {
+      "actions": { "add": "Ajouter une ligne" },
+      "headers": {
+        "name": "Nom",
+        "product": "Produit",
+        "qty": "Qté",
+        "unitPrice": "Prix unitaire",
+        "amount": "Montant",
+        "actions": "Actions"
+      },
+      "fields": {
+        "product": "Produit",
+        "qty": "Qté",
+        "unitPrice": "Prix unitaire",
+        "amount": "Montant",
+        "name": "Libellé"
+      },
+      "dialog": {
+        "title": "Ajouter/Modifier une ligne",
+        "action": {
+          "cancel": "Fermer",
+          "addNew": "Enregistrer et ajouter",
+          "addClose": "Enregistrer et fermer"
+        }
+      },
+      "empty": "Aucune ligne",
+      "validation": {
+        "productRequired": "Le produit est obligatoire.",
+        "nameRequired": "Le libellé est obligatoire.",
+        "qtyMin": "La quantité doit être supérieure à 0.",
+        "unitPriceMin": "Le prix unitaire doit être supérieur à 0."
+      }
+    },
+    "messages": {
+      "deleted": { "success": "Facture supprimée avec succès.", "error": "Échec de la suppression de la facture." },
+      "created": { "success": "Facture créée avec succès.", "error": "Échec de la création de la facture." },
+      "update": { "success": "Facture mise à jour avec succès.", "error": "Échec de la mise à jour de la facture." },
+      "find": { "success": "Facture récupérée avec succès.", "error": "Échec de la récupération de la facture." },
+      "search": { "success": "Factures chargées avec succès.", "error": "Échec du chargement des factures." },
+      "remove": { "success": "Facture supprimée avec succès.", "error": "Échec de la suppression de la facture." }
+    }
+  },
+  "payments": {
+    "title": "Paiements",
+    "subtitle": "Enregistrer les règlements",
+    "new": "Nouveau paiement"
+  },
+  "claims": {
+    "title": "Demandes",
+    "subtitle": "Gérer les demandes",
+    "new": "Nouvelle demande",
+    "fields": {
+      "referencePrefix": "Demande N°",
+      "referencePrefixNew": "Nouvelle Demande",
+      "reference": "Référence",
+      "actorName": "Acteur",
+      "productName": "Produit",
+      "state": "Statut",
+      "createdAt": "Créée le",
+      "submitAt": "Soumise le",
+      "inInstructionAt": "En instruction le",
+      "instructionRejectedAt": "Instruction rejetée le",
+      "compliantAt": "Conforme le",
+      "doneAt": "Instruction terminée le",
+      "agreementGrantedAt": "Agrément accordé le",
+      "agreementRefusedAt": "Agrément refusé le",
+      "agreementAdjournedAt": "Agrément ajourné le",
+      "cancelAt": "Annulée le"
+    },
+    "states": {
+      "draft": "Brouillon",
+      "submit": "Soumise",
+      "in_instruction": "En instruction",
+      "instruction_reject": "Instruction Rejetée",
+      "instruction_done": "Instruction terminée",
+      "complete_compliant": "Complet et conforme",
+      "agreement_granted": "Agreement accordé",
+      "agreement_refused": "Agreement refusé",
+      "agreement_adjourned": "Agreement ajournée",
+      "cancelled": "Annulée"
+    },
+    "actions": {
+      "submit": "Soumettre",
+      "instruction": "Mettre en instruction",
+      "doneInstruction": "Terminer l'instruction",
+      "backDraft": "Revenir au brouillon",
+      "completeCompliant": "Marquer complet et conforme",
+      "agreementGranted": "Accorder",
+      "agreementRefused": "Refuser",
+      "agreementAdjourned": "Ajourner",
+      "done": {
+        "instruction": "Terminer l'instruction"
+      }
+    },
+    "messages": {
+      "submit": { "success": "Demande soumise avec succès.", "error": "Échec de la soumission de la demande." },
+      "instruction": {
+        "success": "Demande mise en instruction avec succès.",
+        "error": "Échec de la mise en instruction de la demande.",
+        "done": { "success": "Instruction terminée avec succès.", "error": "Échec de la terminaison de l'instruction." }
+      },
+      "backToDraft": { "success": "Demande revenue au brouillon.", "error": "Échec du retour de la demande au brouillon." },
+      "completeCompliant": { "success": "Demande marquée comme complète et conforme.", "error": "Échec du marquage de la demande comme complète et conforme." },
+      "agreementGranted": { "success": "Agrément accordé avec succès.", "error": "Échec de l'accord de l'agrément." },
+      "agreementRefused": { "success": "Agrément refusé avec succès.", "error": "Échec du refus de l'agrément." },
+      "agreementAdjourned": { "success": "Agrément ajourné avec succès.", "error": "Échec de l'ajournement de l'agrément." },
+      "deleted": { "success": "Demande supprimée avec succès.", "error": "Échec de la suppression de la demande." },
+      "created": { "success": "Demande créée avec succès.", "error": "Échec de la création de la demande." },
+      "update": { "success": "Demande mise à jour avec succès.", "error": "Échec de la mise à jour de la demande." },
+      "find": { "success": "Demande récupérée avec succès.", "error": "Échec de la récupération de la demande." },
+      "search": { "success": "Demandes chargées avec succès.", "error": "Échec du chargement des demandes." },
+      "attachment": {
+        "transfert": { "success": "Pièce jointe transférée avec succès.", "error": "Échec du transfert de la pièce jointe." },
+        "download": { "success": "Téléchargement de la pièce jointe démarré.", "error": "Échec du téléchargement de la pièce jointe." }
+      },
+      "lines": {
+        "validate": { "success": "Pièce jointe validée avec succès.", "error": "Échec de la validation de la pièce jointe." },
+        "reject": { "success": "Pièce jointe rejetée avec succès.", "error": "Échec du rejet de la pièce jointe." }
+      }
+    },
+    "lines": {
+      "empty": "Aucune ligne de réclamation",
+      "createdAt": "Créé le",
+      "uploadedAt": "Téléversé le",
+      "validatedAt": "Validé le",
+      "rejectedAt": "Rejeté le",
+      "cancelledAt": "Annulé le",
+      "reason": "Motif",
+      "status": {
+        "draft": "Brouillon",
+        "uploaded": "Téléchargé",
+        "validated": "Validée",
+        "rejected": "Rejetée",
+        "cancelled": "Annulée"
+      },
+      "uploadConfirm": "Transférer",
+      "validate": {
+        "title": "Valider la pièce jointe",
+        "message": "Confirmez-vous la validation de cette pièce jointe ?"
+      },
+      "reject": {
+        "title": "Rejeter la pièce jointe",
+        "message": "Merci de saisir un motif de rejet pour cette pièce jointe.",
+        "placeholder": "Saisissez ici le motif de rejet..."
+      }
+    },
+    "tabs": {
+      "audit": "Audit",
+      "lines": "Lignes",
+      "invoices": "Factures"
+    }
+  },
+  "sequences": {
+    "title": "Séquences",
+    "subtitle": "Gérez les séquences de numérotation",
+    "new": "Nouvelle séquence",
+    "fields": {
+      "name": "Nom",
+      "code": "Code",
+      "step": "Pas",
+      "size": "Taille",
+      "next": "Prochain",
+      "prefix": "Préfixe",
+      "suffix": "Suffixe",
+      "active": "Actif",
+      "actions": "Actions"
+    },
+    "empty": "Aucune séquence",
+    "patterns": {
+      "title": "Motifs disponibles",
+      "year": "Année sur 4 chiffres (ex. 2025)",
+      "y": "Année sur 2 chiffres (ex. 25)",
+      "month": "Mois 01..12",
+      "weekday": "Jour de semaine ISO 1..7 (Lun=1)",
+      "day": "Jour du mois 01..31",
+      "doy": "Jour de l'année 001..366",
+      "woy": "Semaine ISO de l'année 01..53",
+      "h24": "Heure 00..23",
+      "min": "Minute 00..59",
+      "sec": "Seconde 00..59"
+    },
+    "messages": {
+      "deleted": { "success": "Séquence supprimée avec succès.", "error": "Échec de la suppression de la séquence." },
+      "created": { "success": "Séquence créée avec succès.", "error": "Échec de la création de la séquence." },
+      "update": { "success": "Séquence mise à jour avec succès.", "error": "Échec de la mise à jour de la séquence." },
+      "find": { "success": "Séquence récupérée avec succès.", "error": "Échec de la récupération de la séquence." },
+      "search": { "success": "Séquences chargées avec succès.", "error": "Échec du chargement des séquences." }
+    }
+  },
+  "attachmentTypes": {
+    "title": "Types de documents",
+    "subtitle": "Gérez les types de documents",
+    "new": "Nouveau type de document",
+    "fields": {
+      "name": "Nom",
+      "actions": "Actions"
+    },
+    "empty": "Aucun type de document",
+    "messages": {
+      "deleted": {
+        "success": "Type de document supprimé avec succès.",
+        "error": "Échec de la suppression du type de document."
+      },
+      "created": {
+        "success": "Type de document créé avec succès.",
+        "error": "Échec de la création du type de document."
+      },
+      "update": {
+        "success": "Type de document mis à jour avec succès.",
+        "error": "Échec de la mise à jour du type de document."
+      },
+      "find": {
+        "success": "Type de document récupéré avec succès.",
+        "error": "Échec de la récupération du type de document."
+      },
+      "search": {
+        "success": "Types de documents chargés avec succès.",
+        "error": "Échec du chargement des types de documents."
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "refresh": "Actualiser"
+  },
+  "paginator": {
+    "noItems": "Aucun élément",
+    "of": "sur",
+    "perPage": "Par page",
+    "first": "Première",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "last": "Dernière",
+    "pageXofY": "Page {{page}} / {{total}}"
+  },
+  "confirm": {
+    "title": "Confirmation",
+    "message": {
+      "default": "Êtes-vous sûr de vouloir continuer ?"
+    },
+    "ok": "Oui",
+    "cancel": "Non",
+    "delete": {
+      "actor": "Supprimer cet acteur ?",
+      "address": "Supprimer cette adresse ?",
+      "contact": "Supprimer ce contact ?",
+      "product": "Supprimer ce produit ?",
+      "productCategory": "Supprimer cette catégorie ?",
+      "attachmentType": "Supprimer ce type de document ?",
+      "claim": "Supprimer cette demande ?",
+      "invoice": "Supprimer cette facture ?"
+    }
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire."
+  },
+  "email": {
+    "invalid": "Email invalide"
+  },
+  "claim": {
+    "submit": "Demande soumise avec succès",
+    "instruction": "Demande passée en instruction avec succès",
+    "instruction": {
+      "done": "Instruction de la demande terminée avec succès"
+    },
+    "line": {
+      "validated": "Ligne de demande validée avec succès",
+      "rejected": "Ligne de demande rejetée avec succès"
+    },
+    "has": {
+      "non": {
+        "instructed": "La demande contient des lignes non instruites et ne peut pas être terminée"
+      }
+    }
+  },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Configuration de l'entreprise et du serveur email",
@@ -48,12 +548,6 @@
     "tls": "TLS",
     "auth": "Authentification",
     "username": "Nom d'utilisateur"
-  },
-  "actions": {
-    "new": "Nouveau",
-    "edit": "Modifier",
-    "cancel": "Annuler",
-    "save": "Enregistrer"
   },
   "setting": {
     "messages": {
