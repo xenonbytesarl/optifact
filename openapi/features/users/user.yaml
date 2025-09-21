@@ -114,7 +114,7 @@ paths:
                 $ref: '#/components/schemas/UserApiResponseView'
         '404':
           description: User not found
-  /users/{id}/password/{verificatyionCode}:
+  /users/{id}/password/{code}:
     post:
       operationId: createUserPassword
       summary: Create or set the user's password
@@ -126,7 +126,7 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: verificationCode
+        - name: code
           in: path
           required: true
           schema:
@@ -193,8 +193,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RolePageApiResponseView'
+  /auth/login:
+    post:
+      operationId: login
+      summary: Authenticate user and obtain tokens (supports 2FA)
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccessResponse'
+        '401':
+          description: Invalid credentials
 components:
   schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    LoginSuccessResponse:
+      type: object
+      required: [accessToken, refreshToken]
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
     PrivilegeView:
       type: object
       properties:

@@ -40,3 +40,14 @@ optifact:
   file:
     claim:
       rootDirectory: ${CLAIM_FILE_ROOT_DIR}
+  jwt:
+    issuer: ${JWT_ISSUER}
+    secret: ${JWT_SECRET}
+    access:
+      expiration: ${JWT_EXPIRATION}
+    refresh:
+      expiration: ${JWT_REFRESH_EXPIRATION}
+
+logging:
+  level:
+    org.springframework.security: DEBUG

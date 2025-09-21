@@ -141,11 +141,11 @@ public final class UserAdapterView {
         registerUserUseCase.registerUser(toRegister, request.getActorReference());
     }
 
-    public void createUserPassword(UUID id, String verificationCode, CreateUserPasswordRequestView request) {
+    public void createUserPassword(UUID id, String code, CreateUserPasswordRequestView request) {
         String password = request.getPassword();
         String confirmPassword = request.getConfirmPassword();
         // In this minimal implementation, use the same value for confirmPassword; verificationCode is not yet supported
-        createUserPasswordUseCase.createUserPassword(id, password, confirmPassword, verificationCode);
+        createUserPasswordUseCase.createUserPassword(id, password, confirmPassword, code);
     }
 
     public UserResponseView findUserById(UUID id) {

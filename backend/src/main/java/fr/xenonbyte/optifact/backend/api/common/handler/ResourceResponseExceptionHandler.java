@@ -6,10 +6,16 @@ import fr.xenonbyte.optifact.backend.application.common.exception.BadException;
 import fr.xenonbyte.optifact.backend.application.common.exception.ConflictException;
 import fr.xenonbyte.optifact.backend.application.common.exception.NotFoundException;
 import fr.xenonbyte.optifact.backend.application.common.exception.TechnicalException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -191,13 +197,24 @@ public class ResourceResponseExceptionHandler extends ResponseEntityExceptionHan
     @ExceptionHandler({Exception.class})
     protected ResponseEntity<ErrorResponseView> handleException(Exception exception, WebRequest request, Locale locale ) {
         log.error("", exception);
+        return switch (exception) {
+            case BadCredentialsException e -> createExceptionResponse(HttpStatus.UNAUTHORIZED, request, locale);
+            case AccountExpiredException e -> createExceptionResponse(HttpStatus.UNAUTHORIZED, request, locale);
+            case AccountStatusException e -> createExceptionResponse(HttpStatus.UNAUTHORIZED, request, locale);
+            case SignatureException e -> createExceptionResponse(HttpStatus.FORBIDDEN, request, locale);
+            case ExpiredJwtException e -> createExceptionResponse(HttpStatus.UNAUTHORIZED, request, locale);
+            default -> createExceptionResponse(INTERNAL_SERVER_ERROR, request, locale);
+        };
+    }
+
+    private static ResponseEntity<ErrorResponseView> createExceptionResponse(HttpStatus httpStatus, WebRequest request, Locale locale) {
         return ResponseEntity
-                .status(INTERNAL_SERVER_ERROR)
+                .status(httpStatus)
                 .body(
                         ErrorResponseView.builder()
                                 .timestamp(now())
-                                .code(INTERNAL_SERVER_ERROR.value())
-                                .status(INTERNAL_SERVER_ERROR.name())
+                                .code(httpStatus.value())
+                                .status(httpStatus.name())
                                 .success(SUCCESS_FALSE)
                                 .correlationId(UUID.randomUUID())
                                 .reason(getMessage(UNEXPECTED_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST, locale, ""))
