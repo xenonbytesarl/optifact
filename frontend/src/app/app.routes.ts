@@ -53,6 +53,11 @@ export const routes: Routes = [
     data: { title: 'Séquences' }
   },
   {
+    path: 'users',
+    loadChildren: () => import('./features/users/routes').then(m => m.usersRoutes),
+    data: { title: 'Utilisateurs' }
+  },
+  {
     path: 'claims',
     loadChildren: () => import('./features/claims/routes').then(m => m.claimsRoutes),
     data: { title: 'Demandes' }
