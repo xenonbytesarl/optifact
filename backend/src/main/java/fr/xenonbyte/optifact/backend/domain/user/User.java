@@ -74,7 +74,7 @@ public final class User extends BaseEntity {
                               String phone,
                               UUID actorId,
                               Set<Role> roles) {
-        validateRequired(lastname, email);
+        validateRequired(lastname, email, roles);
         return new User(
                 randomUUID(),
                 firstname,
@@ -106,7 +106,7 @@ public final class User extends BaseEntity {
                               Integer totalLoginAttempt,
                               UUID actorId,
                               Set<Role> roles) {
-        validateRequired(lastname, email);
+        validateRequired(lastname, email, roles);
         return new User(
                 id,
                 firstname,
@@ -131,7 +131,7 @@ public final class User extends BaseEntity {
                        String phone,
                        UUID actorId,
                        Set<Role> roles) {
-        validateRequired(lastname, email);
+        validateRequired(lastname, email, roles);
         User user = new User(
                 this.id,
                 firstname,
@@ -335,12 +335,16 @@ public final class User extends BaseEntity {
         return u;
     }
 
-    private static void validateRequired(String lastname, String email) {
+    private static void validateRequired(String lastname, String email, Set<Role> roles) {
         if (lastname == null || lastname.isBlank()) {
             throw new IllegalArgumentException(UserMessage.USER_LASTNAME_REQUIRED);
         }
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException(UserMessage.USER_EMAIL_REQUIRED);
+        }
+
+        if(roles == null || roles.isEmpty()) {
+            throw new IllegalArgumentException(UserMessage.USER_ROLE_REQUIRED);
         }
     }
 

@@ -7,6 +7,8 @@ package fr.xenonbyte.optifact.backend.domain.user.message;
  */
 public final class UserMessage {
 
+
+
     private UserMessage() {}
 
     public static final String PRIVILEGE_NAME_REQUIRED = "privilege.name.required";
@@ -18,4 +20,8 @@ public final class UserMessage {
     public static final String USER_LASTNAME_REQUIRED = "user.lastname.required";
     public static final String USER_EMAIL_REQUIRED = "user.email.required";
     public static final String USER_PASSWORD_REQUIRED = "user.password.required";
+    public static final String USER_ROLE_REQUIRED = "user.roles.required";
+    public static final String USER_ID_NOT_FOUND = "user.id.not.found";
+    public static final String USER_EMAIL_CONFLICT = "user.email.conflict";
+    public static final String USER_EMAIL_NOT_FOUND = "user.email.not.found";
 }
