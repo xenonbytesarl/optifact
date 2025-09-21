@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Create a table for application Setting aggregate (company + email server) -->
+    <changeSet id="20092025_1345_create_setting_table" author="brice.mbiandji">
+        <createTable tableName="t_setting">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Company fields -->
+            <column name="c_company_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_company_logo_filename" type="varchar(255)"/>
+            <column name="c_company_president_id" type="uuid"/>
+
+            <!-- Bank account (embedded) -->
+            <column name="c_bank_account_owner" type="varchar(255)"/>
+            <column name="c_bank_name" type="varchar(255)"/>
+            <column name="c_bank_code" type="varchar(255)"/>
+            <column name="c_bank_counter" type="varchar(255)"/>
+            <column name="c_bank_account_number" type="varchar(255)"/>
+            <column name="c_bank_account_key" type="varchar(255)"/>
+
+            <!-- Address (embedded) -->
+            <column name="c_address_street" type="varchar(255)"/>
+            <column name="c_address_city" type="varchar(255)"/>
+            <column name="c_address_country" type="varchar(255)"/>
+            <column name="c_address_zip_code" type="varchar(50)"/>
+            <column name="c_address_website" type="varchar(255)"/>
+
+            <!-- Contact (embedded) -->
+            <column name="c_contact_name" type="varchar(255)"/>
+            <column name="c_contact_email" type="varchar(255)"/>
+            <column name="c_contact_phone" type="varchar(100)"/>
+            <column name="c_contact_function" type="varchar(255)"/>
+
+            <!-- Email server -->
+            <column name="c_mail_from" type="varchar(255)"/>
+            <column name="c_mail_type" type="varchar(50)"/>
+            <column name="c_mail_host" type="varchar(255)"/>
+            <column name="c_mail_port" type="integer"/>
+            <column name="c_mail_protocol" type="varchar(50)"/>
+            <column name="c_mail_use_tls" type="boolean"/>
+            <column name="c_mail_use_auth" type="boolean"/>
+            <column name="c_mail_username" type="varchar(255)"/>
+            <column name="c_mail_password" type="varchar(255)"/>
+            <column name="c_mail_state" type="varchar(50)"/>
+            <column name="c_mail_confirmed_at" type="timestamp with time zone"/>
+        </createTable>
+
+        <!-- Index that can help quickly lookup by company name -->
+        <createIndex indexName="idx_t_setting_company_name" tableName="t_setting">
+            <column name="c_company_name"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Seed an initial setting row with company name COSUMAF -->
+    <changeSet id="20092025_1346_insert_initial_setting_cosumaf" author="brice.mbiandji">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableIsEmpty tableName="t_setting"/>
+            </not>
+        </preConditions>
+        <!-- If the table is not empty, mark running; otherwise, proceed with the insert below via a simple select -->
+        <sql>SELECT 1</sql>
+    </changeSet>
+
+    <changeSet id="20092025_1347_insert_cosumaf" author="brice.mbiandji">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="t_setting"/>
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM t_setting WHERE lower(c_company_name) = 'cosumaf'</sqlCheck>
+        </preConditions>
+        <insert tableName="t_setting">
+            <column name="c_id" value="019966f4-3cdf-7490-9e40-8ac55a98cc80"/>
+            <column name="c_created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="c_updated_at"/>
+            <column name="c_company_name" value="COSUMAF"/>
+            <column name="c_company_logo_filename"/>
+            <column name="c_company_president_id"/>
+            <column name="c_bank_account_owner"/>
+            <column name="c_bank_name"/>
+            <column name="c_bank_code"/>
+            <column name="c_bank_counter"/>
+            <column name="c_bank_account_number"/>
+            <column name="c_bank_account_key"/>
+            <column name="c_address_street"/>
+            <column name="c_address_city"/>
+            <column name="c_address_country"/>
+            <column name="c_address_zip_code"/>
+            <column name="c_address_website"/>
+            <column name="c_contact_name"/>
+            <column name="c_contact_email"/>
+            <column name="c_contact_phone"/>
+            <column name="c_contact_function"/>
+            <column name="c_mail_from"/>
+            <column name="c_mail_type"/>
+            <column name="c_mail_host"/>
+            <column name="c_mail_port"/>
+            <column name="c_mail_protocol"/>
+            <column name="c_mail_use_tls"/>
+            <column name="c_mail_use_auth"/>
+            <column name="c_mail_username"/>
+            <column name="c_mail_password"/>
+            <column name="c_mail_state"/>
+            <column name="c_mail_confirmed_at"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

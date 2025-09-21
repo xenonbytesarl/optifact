@@ -388,6 +388,34 @@
                             </configOptions>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>setting</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/../openapi/features/commons/setting.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <apiPackage>fr.xenonbyte.optifact.backend.api.common.setting.generated</apiPackage>
+                            <modelPackage>fr.xenonbyte.optifact.backend.api.common.setting.generated.view</modelPackage>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <configOptions>
+                                <delegatePattern>false</delegatePattern>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java8</dateLibrary>
+                                <documentationProvider>springdoc</documentationProvider>
+                                <requestMappingMode>api_interface</requestMappingMode>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useResponseEntity>true</useResponseEntity>
+                                <useBeanValidation>true</useBeanValidation>
+                                <performBeanValidation>true</performBeanValidation>
+                                <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+                            </configOptions>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

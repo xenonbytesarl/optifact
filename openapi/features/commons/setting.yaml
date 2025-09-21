@@ -1,0 +1,261 @@
+openapi: 3.0.3
+info:
+  title: Setting API
+  description: API for application settings (company profile and email server)
+  version: 1.0.0
+servers:
+  - url: /api/v1/optifact
+    description: Default server
+tags:
+  - name: Setting
+    description: Operations related to application settings
+paths:
+  /settings/{settingId}:
+    get:
+      tags:
+        - Setting
+      summary: Find setting by ID
+      description: Retrieves setting details by its unique identifier
+      operationId: findSettingById
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: settingId
+          in: path
+          description: ID of the setting to retrieve
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Setting found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Setting not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+    put:
+      tags:
+        - Setting
+      summary: Update setting
+      description: Updates the application setting with the given identifier
+      operationId: updateSetting
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: settingId
+          in: path
+          description: ID of the setting to update
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingApiRequestView'
+      responses:
+        '200':
+          description: Setting updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Setting not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+
+components:
+  schemas:
+    SettingApiRequestView:
+      type: object
+      required:
+        - company
+      properties:
+        company:
+          $ref: '#/components/schemas/CompanyRequestView'
+        emailServer:
+          $ref: '#/components/schemas/EmailServerRequestView'
+    SettingResponseView:
+      type: object
+      required:
+        - id
+        - company
+      properties:
+        id:
+          type: string
+          format: uuid
+        company:
+          $ref: '#/components/schemas/CompanyResponseView'
+        emailServer:
+          $ref: '#/components/schemas/EmailServerResponseView'
+    SettingApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/SettingResponseView'
+
+    CompanyRequestView:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        logoFilename:
+          type: string
+          description: Logo filename stored in attachments
+        presidentId:
+          type: string
+          format: uuid
+        bankAccount:
+          $ref: '#/components/schemas/BankAccountView'
+        address:
+          $ref: '#/components/schemas/AddressView'
+        contact:
+          $ref: '#/components/schemas/ContactView'
+
+    CompanyResponseView:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        logoFilename:
+          type: string
+        presidentId:
+          type: string
+          format: uuid
+        bankAccount:
+          $ref: '#/components/schemas/BankAccountView'
+        address:
+          $ref: '#/components/schemas/AddressView'
+        contact:
+          $ref: '#/components/schemas/ContactView'
+
+    AddressView:
+      type: object
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        zipCode:
+          type: string
+        website:
+          type: string
+
+    ContactView:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        function:
+          type: string
+
+    BankAccountView:
+      type: object
+      properties:
+        bankAccountOwner:
+          type: string
+        bankName:
+          type: string
+        bankCode:
+          type: string
+        bankCounter:
+          type: string
+        bankAccountNumber:
+          type: string
+        bankAccountKey:
+          type: string
+
+    EmailServerRequestView:
+      type: object
+      properties:
+        from:
+          type: string
+        type:
+          $ref: '#/components/schemas/MailServerTypeView'
+        host:
+          type: string
+        port:
+          type: integer
+          format: int32
+        protocol:
+          type: string
+        useTLS:
+          type: boolean
+        useAuth:
+          type: boolean
+        username:
+          type: string
+        password:
+          type: string
+        state:
+          $ref: '#/components/schemas/MailServerStateView'
+        confirmedAt:
+          type: string
+          format: date-time
+
+    EmailServerResponseView:
+      allOf:
+        - $ref: '#/components/schemas/EmailServerRequestView'
+
+    MailServerTypeView:
+      type: string
+      enum:
+        - GOOGLE
+        - YAHOO
+        - MICROSOFT
+        - OTHER
+
+    MailServerStateView:
+      type: string
+      enum:
+        - NEW
+        - CONFIRM
+        - WAITING
