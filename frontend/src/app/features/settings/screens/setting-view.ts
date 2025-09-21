@@ -21,7 +21,7 @@ import { Router } from '@angular/router';
       @if (setting()) {
         <!-- Tabs header -->
         <div class="sticky top-[4.25rem] z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-token">
-          <div class="px-4">
+          <div class="px-4 mt-4">
             <nav class="flex items-end gap-4" role="tablist" aria-label="Settings tabs">
               <button type="button"
                       (click)="activeTab.set('company')"
