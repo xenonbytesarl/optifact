@@ -1,0 +1,195 @@
+openapi: 3.0.3
+info:
+  title: User API
+  version: 1.0.0
+  description: Endpoints for user management (create user, find by id/email) and roles retrieval.
+servers:
+  - url: /api
+paths:
+  /users:
+    post:
+      operationId: createUser
+      summary: Create a new user
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserApiRequestView'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserApiResponseView'
+        '409':
+          description: Email already exists
+  /users/{id}:
+    get:
+      operationId: findUserById
+      summary: Find user by id
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserApiResponseView'
+        '404':
+          description: User not found
+  /users/email/{email}:
+    get:
+      operationId: findUserByEmail
+      summary: Find user by email
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserApiResponseView'
+        '404':
+          description: User not found
+  /roles:
+    get:
+      operationId: findRoles
+      summary: List all roles
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      responses:
+        '200':
+          description: List of roles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePageApiResponseView'
+components:
+  schemas:
+    PrivilegeView:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required: [id, name]
+    RoleView:
+      type: object
+      required: [id, code, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name:
+          type: string
+        privileges:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrivilegeView'
+    UserResponseView:
+      type: object
+      required: [id, lastname, email, accountEnabled, accountLocked, accountExpired, credentialExpired, mfaEnabled, totalLoginAttempt, roles]
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        accountEnabled:
+          type: boolean
+        accountLocked:
+          type: boolean
+        accountExpired:
+          type: boolean
+        credentialExpired:
+          type: boolean
+        mfaEnabled:
+          type: boolean
+        totalLoginAttempt:
+          type: integer
+        actorId:
+          type: string
+          format: uuid
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleView'
+    UserApiRequestView:
+      type: object
+      required: [lastname, email, roleIds]
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        actorId:
+          type: string
+          format: uuid
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleView'
+    UserApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/UserResponseView'
+    RolePageResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/PaginationResponseView'
+        - type: object
+          required:
+            - elements
+          properties:
+            elements:
+              type: array
+              description: The list of roles
+              items:
+                $ref: '#/components/schemas/RoleView'
+    RolePageApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/RolePageResponseView'
