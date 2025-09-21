@@ -100,6 +100,7 @@ public final class User extends BaseEntity {
                               String firstname,
                               String lastname,
                               String email,
+                              String password,
                               String phone,
                               Boolean accountEnabled,
                               Boolean accountLocked,
@@ -115,7 +116,7 @@ public final class User extends BaseEntity {
                 firstname,
                 lastname,
                 email,
-                null,
+                password,
                 phone,
                 accountEnabled,
                 accountLocked,
@@ -291,7 +292,7 @@ public final class User extends BaseEntity {
         return u;
     }
 
-    public User withPassword(String newPassword) {
+    public User withPassword(String password) {
         if(password == null || password.isBlank()) {
             throw new IllegalArgumentException(UserMessage.USER_PASSWORD_REQUIRED);
         }
@@ -300,7 +301,7 @@ public final class User extends BaseEntity {
                 this.firstname,
                 this.lastname,
                 this.email,
-                newPassword,
+                password,
                 this.phone,
                 this.accountEnabled,
                 this.accountLocked,

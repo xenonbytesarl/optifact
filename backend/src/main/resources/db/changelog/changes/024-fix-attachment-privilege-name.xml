@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Fix typo in t_privilege: update:attachmen -> update:attachment -->
+    <changeSet id="024-01-fix-attachment-privilege-name" author="junie">
+        <comment>Rename privilege 'update:attachmen' to 'update:attachment' in t_privilege</comment>
+        <update tableName="t_privilege">
+            <column name="c_name" value="update:attachment"/>
+            <where>c_name = 'update:attachmen'</where>
+        </update>
+        <rollback>
+            <update tableName="t_privilege">
+                <column name="c_name" value="update:attachmen"/>
+                <where>c_name = 'update:attachment'</where>
+            </update>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

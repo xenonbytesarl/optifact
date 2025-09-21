@@ -72,6 +72,7 @@ public interface UserMapperJpa {
                 jpa.getFirstname(),
                 jpa.getLastname(),
                 jpa.getEmail(),
+                jpa.getPassword(),
                 jpa.getPhone(),
                 jpa.getAccountEnabled(),
                 jpa.getAccountLocked(),

@@ -1,6 +1,7 @@
 package fr.xenonbyte.optifact.backend.api.user;
 
 import fr.xenonbyte.optifact.backend.api.common.locale.MessageUtil;
+import fr.xenonbyte.optifact.backend.api.user.generated.AuthApi;
 import fr.xenonbyte.optifact.backend.api.user.generated.UsersApi;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.CreateUserPasswordRequestView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.RegisterUserApiRequestView;
@@ -8,6 +9,10 @@ import fr.xenonbyte.optifact.backend.api.user.generated.view.RolePageApiResponse
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiRequestView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserPageApiResponseView;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.LoginRequest;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.LoginSuccessResponse;
+import fr.xenonbyte.optifact.backend.application.user.payload.LoginResponse;
+import fr.xenonbyte.optifact.backend.application.user.port.in.LoginUserUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,12 +26,14 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-public class UserResource implements UsersApi {
+public class UserResource implements UsersApi, AuthApi {
 
     private final UserAdapterView adapterView;
+    private final LoginUserUseCase loginUserUseCase;
 
-    public UserResource(UserAdapterView adapterView) {
+    public UserResource(UserAdapterView adapterView, LoginUserUseCase loginUserUseCase) {
         this.adapterView = adapterView;
+        this.loginUserUseCase = loginUserUseCase;
     }
 
     @Override
@@ -42,8 +49,8 @@ public class UserResource implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<Void> createUserPassword(String acceptLanguage, UUID id, String verificationCode, CreateUserPasswordRequestView createUserPasswordRequestView) {
-        adapterView.createUserPassword(id, verificationCode, createUserPasswordRequestView);
+    public ResponseEntity<Void> createUserPassword(String acceptLanguage, UUID id, String code, CreateUserPasswordRequestView createUserPasswordRequestView) {
+        adapterView.createUserPassword(id, code, createUserPasswordRequestView);
         return ResponseEntity.noContent().build();
     }
 
@@ -111,5 +118,12 @@ public class UserResource implements UsersApi {
                         .message(MessageUtil.getMessage(UserMessageView.ROLES_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(of(CONTENT, adapterView.findRoles()))
         );
+    }
+
+    @Override
+    public ResponseEntity<LoginSuccessResponse> login(String acceptLanguage, LoginRequest loginRequest) {
+        LoginResponse response = loginUserUseCase.login(loginRequest.getUsername(), loginRequest.getPassword());
+        LoginSuccessResponse body = new LoginSuccessResponse(response.getAccessToken(), response.getRefreshToken());
+        return ResponseEntity.ok(body);
     }
 }

@@ -1,0 +1,16 @@
+package fr.xenonbyte.optifact.backend.application.user.port.in;
+
+import fr.xenonbyte.optifact.backend.application.user.payload.LoginResponse;
+import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
+import fr.xenonbyte.optifact.backend.domain.user.User;
+
+/**
+ * @author bamk
+ * @version 1.0
+ * @since 21/09/2025
+ */
+@Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
+@Hexagonal.PrimaryPort
+public interface LoginUserUseCase {
+    LoginResponse login(String username, String password);
+}
