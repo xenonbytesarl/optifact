@@ -27,9 +27,9 @@ public final class SearchClaimsApplicationService implements SearchClaimsUseCase
     }
 
     @Override
-    public Pagination<Claim> searchClaims(String referenceFilter, String actorName, String productName, CommonSearch search) {
+    public Pagination<Claim> searchClaims(String referenceFilter, String stateFilter, String actorName, String productName, CommonSearch search) {
         LOGGER.info("Searching claims...");
-        Pagination<Claim> result = repository.search(referenceFilter, actorName, productName, search);
+        Pagination<Claim> result = repository.search(referenceFilter, stateFilter, actorName, productName, search);
         LOGGER.info("Claims search completed. Page: " + result.page() + ", size: " + result.size());
         return result;
     }

@@ -54,12 +54,16 @@ public final class ClaimRepositoryAdapterJpa implements ClaimRepository {
     }
 
     @Override
-    public Pagination<Claim> search(String referenceFilter, String actorName, String productName, CommonSearch search) {
+    public Pagination<Claim> search(String referenceFilter, String stateFilter, String actorName, String productName, CommonSearch search) {
         Specification<ClaimJpa> spec = (root, query, cb) -> cb.conjunction();
 
         // reference like
         if (referenceFilter != null && !referenceFilter.isBlank()) {
             spec = spec.and((root, q, cb2) -> cb2.like(cb2.lower(root.get("reference")), "%" + referenceFilter.toLowerCase() + "%"));
+        }
+
+        if (stateFilter != null && !stateFilter.isBlank()) {
+            spec = spec.and((root, q, cb2) -> cb2.like(cb2.lower(root.get("state")), "%" + stateFilter.toLowerCase() + "%"));
         }
         // actor name like (join)
         if (actorName != null && !actorName.isBlank()) {
