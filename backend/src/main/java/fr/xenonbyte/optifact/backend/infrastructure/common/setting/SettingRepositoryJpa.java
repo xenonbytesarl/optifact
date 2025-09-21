@@ -12,4 +12,5 @@ import java.util.UUID;
  */
 @Hexagonal.Repository
 public interface SettingRepositoryJpa extends JpaRepository<SettingJpa, UUID> {
+    SettingJpa findFirstByOrderByCreatedAtAsc();
 }

@@ -38,7 +38,7 @@ public final class BankAccount {
             String bankAccountNumber,
             String bankAccountKey
     ) {
-        validateParams(bankAccountOwner, bankName, bankCode, bankCounter, bankAccountNumber, bankAccountKey);
+        //validateParams(bankAccountOwner, bankName, bankCode, bankCounter, bankAccountNumber, bankAccountKey);
         return new BankAccount(bankAccountOwner, bankName, bankCode, bankCounter, bankAccountNumber, bankAccountKey);
     }
 

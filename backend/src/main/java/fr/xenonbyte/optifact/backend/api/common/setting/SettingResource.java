@@ -5,6 +5,8 @@ import fr.xenonbyte.optifact.backend.api.common.setting.generated.SettingsApi;
 import fr.xenonbyte.optifact.backend.api.common.setting.generated.view.SettingApiRequestView;
 import fr.xenonbyte.optifact.backend.api.common.setting.generated.view.SettingApiResponseView;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
@@ -47,4 +49,17 @@ public class SettingResource implements SettingsApi {
                         .data(of(CONTENT, adapterView.update(settingId, settingApiRequestView)))
         );
     }
+
+    @Override
+    public ResponseEntity<SettingApiResponseView> findFirstSetting(String acceptLanguage) {
+        return ResponseEntity.status(OK).body(
+                new SettingApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(SettingMessageView.SETTING_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.findFirst()))
+        );
+    }
+
 }

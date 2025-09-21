@@ -92,6 +92,19 @@ export class SettingApi extends GlobalApi {
     }
   }
 
+  async getFirst() {
+    try {
+      return await firstValueFrom(
+        this.http.get<SuccessApiResponse<Setting | ErrorApiResponse>>(`${this.base}/first`)
+      );
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
   async update(id: string, payload: SettingPayload) {
     try {
       return await firstValueFrom(

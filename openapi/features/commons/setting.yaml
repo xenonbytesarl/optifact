@@ -97,6 +97,40 @@ paths:
             application/json:
               schema:
                 $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /settings/first:
+    get:
+      tags:
+        - Setting
+      summary: Find first setting
+      description: Retrieves the first setting available in the database
+      operationId: findFirstSetting
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      responses:
+        '200':
+          description: First setting found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Setting not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
 
 components:
   schemas:

@@ -16,5 +16,6 @@ import java.util.UUID;
 public interface SettingRepository {
     Setting save(Setting setting);
     Optional<Setting> findById(UUID settingId);
+    Optional<Setting> findFirst();
     boolean existById(UUID settingId);
 }

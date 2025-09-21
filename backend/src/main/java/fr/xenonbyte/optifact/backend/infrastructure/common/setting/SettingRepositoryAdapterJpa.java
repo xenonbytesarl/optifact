@@ -35,6 +35,11 @@ public final class SettingRepositoryAdapterJpa implements SettingRepository {
     }
 
     @Override
+    public Optional<Setting> findFirst() {
+        return Optional.ofNullable(repositoryJpa.findFirstByOrderByCreatedAtAsc()).map(mapperJpa::toDomain);
+    }
+
+    @Override
     public boolean existById(UUID settingId) {
         return repositoryJpa.existsById(settingId);
     }

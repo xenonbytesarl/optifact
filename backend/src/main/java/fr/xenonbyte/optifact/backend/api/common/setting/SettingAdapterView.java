@@ -15,15 +15,21 @@ public final class SettingAdapterView {
     private final FindSettingByIdUseCase findUseCase;
     private final UpdateSettingUseCase updateUseCase;
     private final SettingMapperView mapperView;
+    private final fr.xenonbyte.optifact.backend.application.common.setting.port.in.FindFirstSettingUseCase findFirstUseCase;
 
-    public SettingAdapterView(FindSettingByIdUseCase findUseCase, UpdateSettingUseCase updateUseCase, SettingMapperView mapperView) {
+    public SettingAdapterView(FindSettingByIdUseCase findUseCase, UpdateSettingUseCase updateUseCase, SettingMapperView mapperView, fr.xenonbyte.optifact.backend.application.common.setting.port.in.FindFirstSettingUseCase findFirstUseCase) {
         this.findUseCase = findUseCase;
         this.updateUseCase = updateUseCase;
         this.mapperView = mapperView;
+        this.findFirstUseCase = findFirstUseCase;
     }
 
     public SettingResponseView findById(UUID id) {
         return mapperView.toResponseView(findUseCase.findSettingById(id));
+    }
+
+    public SettingResponseView findFirst() {
+        return mapperView.toResponseView(findFirstUseCase.findFirstSetting());
     }
 
     public SettingResponseView update(UUID id, SettingApiRequestView request) {
