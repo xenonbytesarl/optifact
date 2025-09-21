@@ -8,22 +8,27 @@ import { InputTextComponent } from '../../../shared/ui/input';
 import { SelectComponent, SelectOption } from '../../../shared/ui/select';
 import { SpinnerComponent } from '../../../shared/ui/spinner';
 import { MailServerType } from '../../../core/api/setting.api';
-import {ActionBarComponent} from '../../../shared/ui/action-bar';
+import { ActionBarComponent } from '../../../shared/ui/action-bar';
+import { CountryAutocompleteComponent } from '../../../shared/ui/country-autocomplete';
+import { InputPhoneComponent } from '../../../shared/ui/input-phone';
+import { Router } from '@angular/router';
+import { ToastService } from '../../../shared/ui/toast';
+import { COUNTRIES } from '../../../shared/ui/countries.data';
 
 @Component({
   selector: 'app-setting-edit-page',
   standalone: true,
-  imports: [CommonModule, CardComponent, TranslatePipe, FormFieldComponent, InputTextComponent, SelectComponent, SpinnerComponent, ActionBarComponent],
+  imports: [CommonModule, CardComponent, TranslatePipe, FormFieldComponent, InputTextComponent, SelectComponent, SpinnerComponent, ActionBarComponent, CountryAutocompleteComponent, InputPhoneComponent],
   changeDetection: ChangeDetectionStrategy.Default,
   template: `
     <form class="p-4 space-y-4">
       @if (loading()) { <app-spinner [overlay]="true" label="Chargement…" /> }
 
-      <app-action-bar [showNew]="false" [showEdit]="false" [disableSave]="loading()" (cancelClicked)="onCancel()" (saveClicked)="onSubmit()" />
+      <app-action-bar [showNew]="false" [showEdit]="false" [disableSave]="loading() || hasErrors()" (cancelClicked)="onCancel()" (saveClicked)="onSubmit()" />
 
       <!-- Tabs header -->
       <div class="sticky top-[4.25rem] z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-token">
-        <div class="px-4">
+        <div class="px-4 mt-4">
           <nav class="flex items-end gap-4" role="tablist" aria-label="Settings tabs">
             <button type="button"
                     (click)="activeTab.set('company')"
@@ -79,8 +84,10 @@ import {ActionBarComponent} from '../../../shared/ui/action-bar';
             <app-form-field [label]="'address.street' | t"><app-input [(value)]="street" /></app-form-field>
             <app-form-field [label]="'address.city' | t"><app-input [(value)]="city" /></app-form-field>
             <app-form-field [label]="'address.zipCode' | t"><app-input [(value)]="zipCode" /></app-form-field>
-            <app-form-field [label]="'address.country' | t"><app-input [(value)]="country" /></app-form-field>
-            <app-form-field [label]="'address.website' | t"><app-input [(value)]="website" placeholder="https://" /></app-form-field>
+            <app-form-field [label]="'address.country' | t"><app-country-autocomplete [(value)]="country" /></app-form-field>
+            <app-form-field [label]="'address.website' | t" [hint]="'Ex: https://exemple.com'" [error]="websiteError()">
+                          <app-input [(value)]="website" placeholder="https://" [error]="!!websiteError()" />
+                        </app-form-field>
           </div>
         </app-card>
 
@@ -88,8 +95,12 @@ import {ActionBarComponent} from '../../../shared/ui/action-bar';
         <app-card [title]="'settings.sections.contact' | t">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <app-form-field [label]="'contact.name' | t"><app-input [(value)]="contactName" /></app-form-field>
-            <app-form-field [label]="'contact.email' | t"><app-input type="email" [(value)]="contactEmail" /></app-form-field>
-            <app-form-field [label]="'contact.phone' | t"><app-input type="tel" [(value)]="contactPhone" /></app-form-field>
+            <app-form-field [label]="'contact.email' | t" [error]="contactEmailError()">
+                          <app-input type="email" [(value)]="contactEmail" [error]="!!contactEmailError()" />
+                        </app-form-field>
+            <app-form-field [label]="'contact.phone' | t">
+                          <app-input-phone [(value)]="contactPhone" [(country)]="country" />
+                        </app-form-field>
             <app-form-field [label]="'contact.function' | t"><app-input [(value)]="contactFunction" /></app-form-field>
           </div>
         </app-card>
@@ -111,14 +122,18 @@ import {ActionBarComponent} from '../../../shared/ui/action-bar';
       @if (activeTab() === 'email') {
         <app-card [title]="'settings.sections.email' | t">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <app-form-field [label]="'email.from' | t"><app-input type="email" [(value)]="emailFrom" /></app-form-field>
+            <app-form-field [label]="'email.from' | t" [error]="emailFromError()">
+                          <app-input type="email" [(value)]="emailFrom" [error]="!!emailFromError()" />
+                        </app-form-field>
             <app-form-field [label]="'email.type' | t">
               <app-select [options]="emailTypeOptions" [(value)]="emailType" placeholder="Type" />
             </app-form-field>
             <app-form-field [label]="'email.host' | t"><app-input [(value)]="emailHost" /></app-form-field>
             <app-form-field [label]="'email.port' | t"><app-input type="number" [(value)]="emailPort" /></app-form-field>
             <app-form-field [label]="'email.protocol' | t"><app-input [(value)]="emailProtocol" /></app-form-field>
-            <app-form-field [label]="'email.username' | t"><app-input [(value)]="emailUsername" /></app-form-field>
+            <app-form-field [label]="'email.username' | t" [error]="emailUsernameError()">
+                          <app-input type="email" [(value)]="emailUsername" [error]="!!emailUsernameError()" />
+                        </app-form-field>
             <div class="md:col-span-3 flex flex-wrap items-center gap-4 text-sm text-muted">
               <label class="inline-flex items-center gap-2">
                 <input type="checkbox" [checked]="emailUseTLS()" (change)="onToggleTLS($event)" /> {{ 'email.tls' | t }}
@@ -135,6 +150,8 @@ import {ActionBarComponent} from '../../../shared/ui/action-bar';
 })
 export class SettingEditPage {
   private store = inject(settingStore);
+  private router = inject(Router);
+  private toast = inject(ToastService);
   // Pre-load current setting into signals
   private current = computed(() => this.store.current());
   loading = computed(() => this.store.loading());
@@ -178,6 +195,38 @@ export class SettingEditPage {
   emailUseAuth = signal<boolean>(this.current()?.emailServer?.useAuth ?? false);
   emailUsername = signal<string | null>(this.current()?.emailServer?.username ?? '');
 
+  // local saving guard to avoid double submitting of the form
+  saving = signal(false);
+
+  // Validation helpers
+  private emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  contactEmailError = computed<string | null>(() => {
+    const v = (this.contactEmail() || '').trim();
+    if (!v) return null;
+    return this.emailRegex.test(v) ? null : 'Email invalide';
+  });
+  emailFromError = computed<string | null>(() => {
+    const v = (this.emailFrom() || '').trim();
+    if (!v) return null;
+    return this.emailRegex.test(v) ? null : 'Email expediteur invalide';
+  });
+  emailUsernameError = computed<string | null>(() => {
+    const v = (this.emailUsername() || '').trim();
+    if (!v) return null;
+    return this.emailRegex.test(v) ? null : 'Nom utilisateur (email) invalide';
+  });
+  websiteError = computed<string | null>(() => {
+    const v = (this.website() || '').trim();
+    if (!v) return null;
+    try {
+      const u = new URL(v);
+      return (u.protocol === 'http:' || u.protocol === 'https:') ? null : 'URL invalide';
+    } catch {
+      return 'URL invalide';
+    }
+  });
+  hasErrors = computed(() => !!(this.contactEmailError() || this.emailFromError() || this.emailUsernameError() || this.websiteError()));
+
   emailTypeOptions: SelectOption[] = [
     { value: MailServerType.GOOGLE, label: 'Google' },
     { value: MailServerType.YAHOO, label: 'Yahoo' },
@@ -208,8 +257,18 @@ export class SettingEditPage {
   }
 
   async onSubmit() {
+    if (this.store.loading() || this.saving()) return;
     const id = this.current()?.id;
     if (!id) return;
+    if (this.hasErrors()) return;
+
+    // Map selected country code to full country name before saving
+    const rawCountry = (this.country() || '').trim();
+    let countryName: string | null = null;
+    if (rawCountry) {
+      const found = COUNTRIES.find(c => c.code === rawCountry || c.name.toLowerCase() === rawCountry.toLowerCase());
+      countryName = found ? found.name : rawCountry;
+    }
 
     // TODO: integrate with backend upload endpoint for the logo; for now we only send the filename
     const payload = {
@@ -220,7 +279,7 @@ export class SettingEditPage {
         address: {
           street: this.street() || null,
           city: this.city() || null,
-          country: this.country() || null,
+          country: countryName,
           zipCode: this.zipCode() || null,
           website: this.website() || null,
         },
@@ -251,7 +310,17 @@ export class SettingEditPage {
       }
     };
 
-    await this.store.update(id, payload as any);
+    this.saving.set(true);
+
+    const updated = await this.store.update(id, payload as any);
+    if (updated) {
+      this.toast.success(this.store.message() || 'settings.messages.update.success');
+      this.router.navigate(['/settings', 'view']);
+    } else {
+      this.toast.error(this.store.error() || 'common.error');
+    }
+
+    this.saving.set(false);
   }
 
   onCancel() {
