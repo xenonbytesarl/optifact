@@ -611,6 +611,18 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
       responses:
         '200':
           description: Agreement granted successfully
@@ -658,6 +670,18 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
       responses:
         '200':
           description: Agreement refused successfully
@@ -1013,6 +1037,12 @@ components:
           type: boolean
         uploadEnded:
           type: boolean
+        grantedAgreementAttachmentId:
+          type: string
+          format: uuid
+        refusedAgreementAttachmentId:
+          type: string
+          format: uuid
         lines:
           type: array
           items:

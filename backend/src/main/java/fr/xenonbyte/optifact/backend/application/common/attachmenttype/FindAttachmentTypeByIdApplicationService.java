@@ -31,13 +31,13 @@ public class FindAttachmentTypeByIdApplicationService implements FindAttachmentT
     }
 
     @Override
-    public AttachmentType findAttachmentTypeById(UUID categoryId) {
-        LOGGER.info("Find product category with id: '" + categoryId + "'" );
+    public AttachmentType findAttachmentTypeById(UUID attachmentTypeId) {
+        LOGGER.info("Find attachment type with id: '" + attachmentTypeId + "'" );
 
-        AttachmentType productCategory = repository.findById(categoryId)
-                .orElseThrow(() -> new AttachmentTypeIdNotFoundException(categoryId));
+        AttachmentType attachmentType = repository.findById(attachmentTypeId)
+                .orElseThrow(() -> new AttachmentTypeIdNotFoundException(attachmentTypeId));
 
-        LOGGER.info("Product category found successfully with id: '" + categoryId + "'" );
-        return productCategory;
+        LOGGER.info("Attachment type found successfully with id: '" + attachmentTypeId + "'" );
+        return attachmentType;
     }
 }

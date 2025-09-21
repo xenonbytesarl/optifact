@@ -43,26 +43,26 @@ public class ClaimResource implements ClaimsApi {
     }
 
     @Override
-    public ResponseEntity<ClaimApiResponseView> agreementGranted(String acceptLanguage, UUID claimId) {
+    public ResponseEntity<ClaimApiResponseView> agreementGranted(String acceptLanguage, UUID claimId, MultipartFile file) {
         return ResponseEntity.status(OK).body(
                 new ClaimApiResponseView()
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .status(OK.name())
                         .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_AGREEMENT_GRANTED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(of(CONTENT, adapterView.agreementGranted(claimId)))
+                        .data(of(CONTENT, adapterView.agreementGranted(claimId, file)))
         );
     }
 
     @Override
-    public ResponseEntity<ClaimApiResponseView> agreementRefused(String acceptLanguage, UUID claimId) {
+    public ResponseEntity<ClaimApiResponseView> agreementRefused(String acceptLanguage, UUID claimId, MultipartFile file) {
         return ResponseEntity.status(OK).body(
                 new ClaimApiResponseView()
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .status(OK.name())
                         .message(MessageUtil.getMessage(ClaimMessageView.CLAIM_AGREEMENT_REFUSED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(of(CONTENT, adapterView.agreementRefused(claimId)))
+                        .data(of(CONTENT, adapterView.agreementRefused(claimId, file)))
         );
     }
 

@@ -92,6 +92,8 @@ public final class UpdateClaimApplicationService implements UpdateClaimUseCase {
                 claim.getCancelAt(),
                 claim.getState(),
                 claim.getReference(),
+                claim.getGrantedAgreementAttachmentId(),
+                claim.getRefusedAgreementAttachmentId(),
                 claim.getLines()
         );
 

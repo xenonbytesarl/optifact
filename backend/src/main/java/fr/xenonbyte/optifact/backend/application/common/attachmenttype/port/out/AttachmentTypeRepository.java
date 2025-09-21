@@ -34,4 +34,6 @@ public interface AttachmentTypeRepository {
     void delete(AttachmentType attachmentType);
 
     List<AttachmentType> findByIds(Set<UUID> categoryIds);
+
+    Optional<AttachmentType> findByName(String name);
 }

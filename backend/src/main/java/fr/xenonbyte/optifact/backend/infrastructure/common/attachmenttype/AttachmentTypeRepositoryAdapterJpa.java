@@ -98,4 +98,9 @@ public class AttachmentTypeRepositoryAdapterJpa implements AttachmentTypeReposit
     public List<AttachmentType> findByIds(Set<UUID> attachmentTypeIds) {
         return repositoryJpa.findByIdIn(attachmentTypeIds.stream().toList()).stream().map(mapperJpa::toDomain).toList();
     }
+
+    @Override
+    public Optional<AttachmentType> findByName(String name) {
+        return repositoryJpa.findByNameIgnoreCase(name).map(mapperJpa::toDomain);
+    }
 }

@@ -2,6 +2,7 @@ package fr.xenonbyte.optifact.backend.infrastructure.claim;
 
 import fr.xenonbyte.optifact.backend.infrastructure.actor.ActorJpa;
 import fr.xenonbyte.optifact.backend.infrastructure.common.BaseEntityJpa;
+import fr.xenonbyte.optifact.backend.infrastructure.common.attachment.AttachmentJpa;
 import fr.xenonbyte.optifact.backend.infrastructure.product.ProductJpa;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -79,6 +80,14 @@ public class ClaimJpa extends BaseEntityJpa {
 
     @Column(name = "c_reference", nullable = false, unique = true)
     private String reference;
+
+    @ManyToOne
+    @JoinColumn(name = "c_granted_agreement_attachment_id")
+    private AttachmentJpa grantedAgreementAttachment;
+
+    @ManyToOne
+    @JoinColumn(name = "c_refused_agreement_attachment_id")
+    private AttachmentJpa refusedAgreementAttachment;
 
     @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClaimLineJpa> lines;

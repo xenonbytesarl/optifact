@@ -29,7 +29,7 @@ public final class RefuseClaimAgreementApplicationService implements RefuseClaim
     }
 
     @Override
-    public Claim refuseClaimAgreement(UUID claimId) {
+    public Claim refuseClaimAgreement(UUID claimId, UUID refuseAttachmentDecisionId) {
         LOGGER.info("Refuse claim agreement with id: '" + claimId + "'");
 
         Claim claim = repository.findById(claimId).orElseThrow(
@@ -41,7 +41,7 @@ public final class RefuseClaimAgreementApplicationService implements RefuseClaim
         }
 
         //TODO the agreementById will be set when user management will be completed
-        claim = claim.withAgreementRefused(ZonedDateTime.now(), null);
+        claim = claim.withAgreementRefused(ZonedDateTime.now(), null, refuseAttachmentDecisionId);
 
         claim = repository.save(claim);
 

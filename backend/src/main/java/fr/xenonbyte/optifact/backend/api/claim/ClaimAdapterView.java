@@ -23,10 +23,12 @@ import fr.xenonbyte.optifact.backend.application.claim.port.in.CompleteCompliant
 import fr.xenonbyte.optifact.backend.application.claim.port.in.GrantClaimAgreementClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.RefuseClaimAgreementClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.AdjournClaimAgreementClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.CreateAttachmentUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdsUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.UploadAttachmentUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachmenttype.port.in.FindAttachmentTypeByIdsUseCase;
+import fr.xenonbyte.optifact.backend.application.common.attachmenttype.port.in.FindAttachmentTypeByNameUseCase;
 import fr.xenonbyte.optifact.backend.application.common.exception.TechnicalException;
 import fr.xenonbyte.optifact.backend.application.common.file.exception.FileNameBadException;
 import fr.xenonbyte.optifact.backend.application.common.file.exception.FileNameNotFoundException;
@@ -39,6 +41,7 @@ import fr.xenonbyte.optifact.backend.domain.claim.ClaimLine;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.attachementtype.AttachmentType;
 import fr.xenonbyte.optifact.backend.domain.common.attachment.Attachment;
+import fr.xenonbyte.optifact.backend.domain.common.attachment.AttachmentScope;
 import fr.xenonbyte.optifact.backend.domain.invoice.Invoice;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,9 +67,10 @@ import static org.springframework.http.HttpStatus.OK;
 @Hexagonal.PrimaryAdapter
 public class ClaimAdapterView {
 
+    public static final String DECISION_DE_LA_DEMANDE = "Decision de la demande";
     private final CreateClaimUseCase createUseCase;
     private final UpdateClaimUseCase updateUseCase;
-    private final FindClaimByIdUseCase findByIdUseCase;
+    private final FindClaimByIdUseCase findClaimByIdUseCase;
     private final DeleteClaimByIdUseCase deleteByIdUseCase;
     private final SearchClaimsUseCase searchUseCase;
     private final ClaimMapperView mapperView;
@@ -86,13 +90,15 @@ public class ClaimAdapterView {
     private final RefuseClaimAgreementClaimUseCase refuseClaimAgreementClaimUseCase;
     private final AdjournClaimAgreementClaimUseCase adjournClaimAgreementClaimUseCase;
     private final FindInvoiceByClaimIdUseCase findInvoiceByClaimIdUseCase;
+    private final CreateAttachmentUseCase createAttachmentUseCase;
+    private final FindAttachmentTypeByNameUseCase findAttachmentTypeByNameUseCase;
 
     @Value("${optifact.file.claim.rootDirectory}")
     private String rootDirectory;
 
     public ClaimAdapterView(CreateClaimUseCase createUseCase,
                             UpdateClaimUseCase updateUseCase,
-                            FindClaimByIdUseCase findByIdUseCase,
+                            FindClaimByIdUseCase findClaimByIdUseCase,
                             DeleteClaimByIdUseCase deleteByIdUseCase,
                             SearchClaimsUseCase searchUseCase,
                             ClaimMapperView mapperView,
@@ -111,10 +117,12 @@ public class ClaimAdapterView {
                             GrantClaimAgreementClaimUseCase grantClaimAgreementClaimUseCase,
                             RefuseClaimAgreementClaimUseCase refuseClaimAgreementClaimUseCase,
                             AdjournClaimAgreementClaimUseCase adjournClaimAgreementClaimUseCase,
-                            FindInvoiceByClaimIdUseCase findInvoiceByClaimIdUseCase) {
+                            FindInvoiceByClaimIdUseCase findInvoiceByClaimIdUseCase,
+                            CreateAttachmentUseCase createAttachmentUseCase,
+                            FindAttachmentTypeByNameUseCase findAttachmentTypeByNameUseCase) {
         this.createUseCase = createUseCase;
         this.updateUseCase = updateUseCase;
-        this.findByIdUseCase = findByIdUseCase;
+        this.findClaimByIdUseCase = findClaimByIdUseCase;
         this.deleteByIdUseCase = deleteByIdUseCase;
         this.searchUseCase = searchUseCase;
         this.mapperView = mapperView;
@@ -134,6 +142,8 @@ public class ClaimAdapterView {
         this.refuseClaimAgreementClaimUseCase = refuseClaimAgreementClaimUseCase;
         this.adjournClaimAgreementClaimUseCase = adjournClaimAgreementClaimUseCase;
         this.findInvoiceByClaimIdUseCase = findInvoiceByClaimIdUseCase;
+        this.createAttachmentUseCase = createAttachmentUseCase;
+        this.findAttachmentTypeByNameUseCase = findAttachmentTypeByNameUseCase;
     }
 
     public ClaimResponseView createClaim(ClaimApiRequestView view) {
@@ -149,7 +159,7 @@ public class ClaimAdapterView {
     }
 
     public ClaimResponseView findClaimById(UUID id) {
-        Claim claim = findByIdUseCase.findClaimById(id);
+        Claim claim = findClaimByIdUseCase.findClaimById(id);
 
         // Collect unique attachment IDs from claim lines
         Set<UUID> attachmentIds = claim.getLines().stream()
@@ -249,7 +259,7 @@ public class ClaimAdapterView {
     }
 
     public ClaimResponseView transfertClaimAttachment(UUID claimId, UUID claimLineId, UUID attachmentId, MultipartFile file) {
-        Claim claim = findByIdUseCase.findClaimById(claimId);
+        Claim claim = findClaimByIdUseCase.findClaimById(claimId);
         Attachment attachment = findAttachmentByIdUseCase.findAttachmentById(attachmentId);
 
         String filename = file.getOriginalFilename();
@@ -270,7 +280,7 @@ public class ClaimAdapterView {
 
     public ResponseEntity<Resource> downloadAttachment(UUID claimId, UUID attachmentId) {
         // Ensure claim exists (also validates access in a real scenario)
-        Claim claim = findByIdUseCase.findClaimById(claimId);
+        Claim claim = findClaimByIdUseCase.findClaimById(claimId);
         Attachment attachment = findAttachmentByIdUseCase.findAttachmentById(attachmentId);
 
         String filepath = attachment.getFilename();
@@ -323,12 +333,48 @@ public class ClaimAdapterView {
         return mapperView.toResponseView(completeCompliantClaimUseCase.completeCompliantClaim(claimId));
     }
 
-    public ClaimResponseView agreementGranted(UUID claimId) {
-        return mapperView.toResponseView(grantClaimAgreementClaimUseCase.grantClaimAgreement(claimId));
+    public ClaimResponseView agreementGranted(UUID claimId, MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        String mimeType = file.getContentType();
+
+        Claim claim = findClaimByIdUseCase.findClaimById(claimId);
+
+        AttachmentType grantedDecisionAttachmentType = findAttachmentTypeByNameUseCase.findAttachmentTypeByName(DECISION_DE_LA_DEMANDE);
+
+        //TODO te be set when user implementation complete
+        Attachment grantedDecisionAttachment = Attachment.create(null, null, grantedDecisionAttachmentType.getId(),
+                AttachmentScope.EXTERNAL, claimId, claim.getReference(), null);
+
+        grantedDecisionAttachment = createAttachmentUseCase.createAttachment(grantedDecisionAttachment);
+
+        try {
+            uploadAttachmentUseCase.uploadFile(grantedDecisionAttachment, claim.getReference(), mimeType, filename, rootDirectory, file.getBytes());
+        } catch (IOException e) {
+            throw new TechnicalException(e.getMessage(), e);
+        }
+        return mapperView.toResponseView(grantClaimAgreementClaimUseCase.grantClaimAgreement(claimId, grantedDecisionAttachment.getId()));
     }
 
-    public ClaimResponseView agreementRefused(UUID claimId) {
-        return mapperView.toResponseView(refuseClaimAgreementClaimUseCase.refuseClaimAgreement(claimId));
+    public ClaimResponseView agreementRefused(UUID claimId, MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        String mimeType = file.getContentType();
+
+        Claim claim = findClaimByIdUseCase.findClaimById(claimId);
+
+        AttachmentType refusedDecisionAttachmentType = findAttachmentTypeByNameUseCase.findAttachmentTypeByName(DECISION_DE_LA_DEMANDE);
+
+        //TODO te be set when user implementation complete
+        Attachment refusedDecisionAttachment = Attachment.create(null, null, refusedDecisionAttachmentType.getId(),
+                AttachmentScope.EXTERNAL, claimId, claim.getReference(), null);
+
+        refusedDecisionAttachment = createAttachmentUseCase.createAttachment(refusedDecisionAttachment);
+
+        try {
+            uploadAttachmentUseCase.uploadFile(refusedDecisionAttachment, claim.getReference(), mimeType, filename, rootDirectory, file.getBytes());
+        } catch (IOException e) {
+            throw new TechnicalException(e.getMessage(), e);
+        }
+        return mapperView.toResponseView(refuseClaimAgreementClaimUseCase.refuseClaimAgreement(claimId, refusedDecisionAttachment.getId()));
     }
 
     public ClaimResponseView agreementAdjourned(UUID claimId) {

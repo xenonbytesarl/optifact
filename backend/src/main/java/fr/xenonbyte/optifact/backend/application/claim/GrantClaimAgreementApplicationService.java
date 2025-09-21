@@ -20,6 +20,7 @@ import fr.xenonbyte.optifact.backend.domain.product.product.ProductType;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -58,7 +59,7 @@ public final class GrantClaimAgreementApplicationService implements GrantClaimAg
     }
 
     @Override
-    public Claim grantClaimAgreement(UUID claimId) {
+    public Claim grantClaimAgreement(UUID claimId, UUID grantedAttachmentDecisionId) {
         LOGGER.info("Grant claim agreement with id: '" + claimId + "'");
 
         Claim claim = repository.findById(claimId).orElseThrow(
@@ -72,7 +73,7 @@ public final class GrantClaimAgreementApplicationService implements GrantClaimAg
         generateInvoice(claimId, claim);
 
         //TODO the agreementById will be set when user management will be completed
-        claim = claim.withAgreementGranted(ZonedDateTime.now(), null);
+        claim = claim.withAgreementGranted(ZonedDateTime.now(), null, grantedAttachmentDecisionId);
 
         claim = repository.save(claim);
 
@@ -87,14 +88,15 @@ public final class GrantClaimAgreementApplicationService implements GrantClaimAg
                 () -> new ProductIdNotFoundException(productId)
         );
 
+        Currency currency = product.getCurrency() == null ? Currency.getInstance("XAF") : product.getCurrency();
         InvoiceLine invoiceLine = InvoiceLine.create(
                 product.getId(),
                 product.getName(),
                 product.getType().equals(ProductType.PERCENTAGE)? product.getRate()/100.0: 1.0 ,
                 product.getType().equals(ProductType.PERCENTAGE)? BigDecimal.ZERO: product.getAmount(),
-                product.getCurrency(),
+                currency, //TODO set a default product currency when product currency is null or product type is rate
                 null,
-                product.getCurrency(),
+                currency, //TODO set a default product currency when product currency is null or product type is rate
                 null
         );
 
@@ -105,7 +107,7 @@ public final class GrantClaimAgreementApplicationService implements GrantClaimAg
                 claim.getActorId(),
                 ZonedDateTime.now().plusDays(30L),
                 null,
-                product.getCurrency(),
+                currency,
                 claimId,
                 null, //TODO will populate when company information will complete
                 InvoiceState.DRAFT,
