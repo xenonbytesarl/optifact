@@ -1,6 +1,8 @@
 package fr.xenonbyte.optifact.backend.application.user;
 
+import fr.xenonbyte.optifact.backend.application.user.payload.AuthResponse;
 import fr.xenonbyte.optifact.backend.application.user.payload.LoginResponse;
+import fr.xenonbyte.optifact.backend.application.user.payload.MfaResponse;
 import fr.xenonbyte.optifact.backend.application.user.port.in.LoginUserUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.out.AuthenticationGateway;
 import fr.xenonbyte.optifact.backend.application.user.port.out.TokenProvider;
@@ -16,29 +18,35 @@ import java.util.logging.Logger;
  */
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.APPLICATION_SERVICE)
 @Hexagonal.ApplicationService
-public final class LoginApplicationService implements LoginUserUseCase {
+public final class LoginUserApplicationService implements LoginUserUseCase {
 
-    private static final Logger LOGGER = Logger.getLogger(LoginApplicationService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(LoginUserApplicationService.class.getName());
 
     private final AuthenticationGateway gateway;
     private final TokenProvider tokenProvider;
 
-    public LoginApplicationService(AuthenticationGateway gateway, TokenProvider tokenProvider) {
+    public LoginUserApplicationService(AuthenticationGateway gateway, TokenProvider tokenProvider) {
         this.gateway = gateway;
         this.tokenProvider = tokenProvider;
     }
 
     @Override
-    public LoginResponse login(String username, String password) {
+    public AuthResponse login(String username, String password) {
         LOGGER.info("Logging user with username: '" + username + "'");
 
         User user  = gateway.login(username, password);
 
-        LOGGER.info("User logged successfully with username: '" + username + "'");
+        if(user.getMfaEnabled()) {
+            //TODO generate and save verification code
+            LOGGER.info("Verification code create for username: '" + username + "'");
+            return new MfaResponse(true, username);
 
-        String accessToken = tokenProvider.generateAccessToken(user);
-        String refreshToken = tokenProvider.generateRefreshToken(user);
+        } else {
+            String accessToken = tokenProvider.generateAccessToken(user);
+            String refreshToken = tokenProvider.generateRefreshToken(user);
+            LOGGER.info("User logged successfully with username: '" + username + "'");
+            return new LoginResponse(accessToken, refreshToken);
+        }
 
-        return new LoginResponse(accessToken, refreshToken);
     }
 }

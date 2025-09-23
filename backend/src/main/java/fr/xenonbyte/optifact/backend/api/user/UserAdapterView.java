@@ -1,6 +1,8 @@
 package fr.xenonbyte.optifact.backend.api.user;
 
 import fr.xenonbyte.optifact.backend.api.user.generated.view.CreateUserPasswordRequestView;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.LoginApiRequestView;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.LoginResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.RegisterUserApiRequestView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.RolePageResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiRequestView;
@@ -8,11 +10,15 @@ import fr.xenonbyte.optifact.backend.api.user.generated.view.UserPageResponseVie
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserResponseView;
 import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
 import fr.xenonbyte.optifact.backend.application.common.payload.Direction;
+import fr.xenonbyte.optifact.backend.application.user.payload.AuthResponse;
+import fr.xenonbyte.optifact.backend.application.user.payload.LoginResponse;
+import fr.xenonbyte.optifact.backend.application.user.payload.MfaResponse;
 import fr.xenonbyte.optifact.backend.application.user.port.in.CreateUserPasswordUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.CreateUserUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.FindRolesUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.FindUserByEmailUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.FindUserByIdUseCase;
+import fr.xenonbyte.optifact.backend.application.user.port.in.LoginUserUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.RegisterUserUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.SearchUsersUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.UpdateUserUseCase;
@@ -37,6 +43,7 @@ public final class UserAdapterView {
     private final FindUserByEmailUseCase findUserByEmailUseCase;
     private final FindRolesUseCase findRolesUseCase;
     private final UserMapperView mapperView;
+    private final LoginUserUseCase loginUserUseCase;
 
     public UserAdapterView(CreateUserUseCase createUserUseCase,
                            UpdateUserUseCase updateUserUseCase,
@@ -46,7 +53,8 @@ public final class UserAdapterView {
                            FindUserByIdUseCase findUserByIdUseCase,
                            FindUserByEmailUseCase findUserByEmailUseCase,
                            FindRolesUseCase findRolesUseCase,
-                           UserMapperView mapperView) {
+                           UserMapperView mapperView,
+                           LoginUserUseCase loginUserUseCase) {
         this.createUserUseCase = createUserUseCase;
         this.updateUserUseCase = updateUserUseCase;
         this.registerUserUseCase = registerUserUseCase;
@@ -56,6 +64,7 @@ public final class UserAdapterView {
         this.findUserByEmailUseCase = findUserByEmailUseCase;
         this.findRolesUseCase = findRolesUseCase;
         this.mapperView = mapperView;
+        this.loginUserUseCase = loginUserUseCase;
     }
 
     public UserResponseView createUser(UserApiRequestView request) {
@@ -158,5 +167,9 @@ public final class UserAdapterView {
 
     public RolePageResponseView findRoles() {
         return mapperView.toRolePageResponseView(findRolesUseCase.findRoles());
+    }
+
+    public LoginResponseView login(LoginApiRequestView request) {
+        return mapperView.toLoginResponseView(loginUserUseCase.login(request.getUsername(), request.getPassword()));
     }
 }
