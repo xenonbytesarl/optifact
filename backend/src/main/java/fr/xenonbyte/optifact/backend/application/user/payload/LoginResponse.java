@@ -5,7 +5,7 @@ package fr.xenonbyte.optifact.backend.application.user.payload;
  * @version 1.0
  * @since 23/09/2025
  */
-public class LoginResponse extends AuthResponse {
+public class LoginResponse implements AuthResponse {
     private final String accessToken;
     private final String refreshToken;
 

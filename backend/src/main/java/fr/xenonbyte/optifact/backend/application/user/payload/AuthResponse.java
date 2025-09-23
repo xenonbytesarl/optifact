@@ -3,5 +3,5 @@ package fr.xenonbyte.optifact.backend.application.user.payload;/**
 * @version 1.0
 * @since 23/09/2025
 */
-public class AuthResponse {
+public interface AuthResponse {
 }

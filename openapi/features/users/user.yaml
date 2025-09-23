@@ -140,9 +140,13 @@ paths:
       responses:
         '204':
           description: Password created
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
         '404':
           description: User not found
-  /users/register:
+  /users/auth/register:
     post:
       operationId: registerUser
       summary: Register a new user linked to an actor by reference
@@ -157,6 +161,10 @@ paths:
       responses:
         '201':
           description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
         '409':
           description: Email already exists or actor reference invalid
   /users/email/{email}:
@@ -193,7 +201,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RolePageApiResponseView'
-  /auth/login:
+  /users/auth/login:
     post:
       operationId: login
       summary: Authenticate user and obtain tokens (supports 2FA)
@@ -204,19 +212,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: '#/components/schemas/LoginApiRequestView'
       responses:
         '200':
           description: Login successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginSuccessResponse'
+                $ref: '#/components/schemas/LoginApiResponseView'
         '401':
           description: Invalid credentials
 components:
   schemas:
-    LoginRequest:
+    LoginApiRequestView:
       type: object
       required: [username, password]
       properties:
@@ -226,7 +234,18 @@ components:
         password:
           type: string
           format: password
-    LoginSuccessResponse:
+    LoginPendingResponseView:
+      type: object
+      required:
+        - email
+        - mfaEnable
+      properties:
+        email:
+          type: string
+          format: email
+        mfaEnable:
+          type: boolean
+    LoginSuccessResponseView:
       type: object
       required: [accessToken, refreshToken]
       properties:
@@ -234,6 +253,10 @@ components:
           type: string
         refreshToken:
           type: string
+    LoginResponseView:
+      oneOf:
+        - $ref: '#/components/schemas/LoginSuccessResponseView'
+        - $ref: '#/components/schemas/LoginPendingResponseView'
     PrivilegeView:
       type: object
       properties:
@@ -390,3 +413,12 @@ components:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/UserPageResponseView'
+    LoginApiResponseView:
+      allOf:
+        - $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/LoginResponseView'

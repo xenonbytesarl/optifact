@@ -1,5 +1,8 @@
 package fr.xenonbyte.optifact.backend.api.user;
 
+import fr.xenonbyte.optifact.backend.api.user.generated.view.LoginPendingResponseView;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.LoginResponseView;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.LoginSuccessResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.PrivilegeView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.RolePageResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.RoleView;
@@ -7,6 +10,9 @@ import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiRequestView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserPageResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserResponseView;
 import fr.xenonbyte.optifact.backend.application.common.payload.Pagination;
+import fr.xenonbyte.optifact.backend.application.user.payload.AuthResponse;
+import fr.xenonbyte.optifact.backend.application.user.payload.LoginResponse;
+import fr.xenonbyte.optifact.backend.application.user.payload.MfaResponse;
 import fr.xenonbyte.optifact.backend.domain.user.Privilege;
 import fr.xenonbyte.optifact.backend.domain.user.Role;
 import fr.xenonbyte.optifact.backend.domain.user.User;
@@ -93,5 +99,31 @@ public interface UserMapperView {
                 page.last(),
                 elements
         );
+    }
+
+    default LoginResponseView toLoginSuccessResponseView(LoginResponse loginResponse) {
+        return new LoginSuccessResponseView()
+                .accessToken(loginResponse.getAccessToken())
+                .refreshToken(loginResponse.getRefreshToken());
+    }
+
+    default LoginResponseView toLoginPendingResponseView(MfaResponse mfaResponse) {
+        return new LoginPendingResponseView()
+                .mfaEnable(mfaResponse.isMfaEnabled())
+                .email(mfaResponse.getEmail());
+    }
+
+    default LoginResponseView toLoginResponseView(AuthResponse authResponse) {
+        if(authResponse instanceof LoginResponse loginResponse) {
+            return new LoginSuccessResponseView()
+                    .accessToken(loginResponse.getAccessToken())
+                    .refreshToken(loginResponse.getRefreshToken());
+        }
+        else if(authResponse instanceof MfaResponse mfaResponse) {
+            return new LoginPendingResponseView()
+                    .mfaEnable(mfaResponse.isMfaEnabled())
+                    .email(mfaResponse.getEmail());
+        }
+        return new LoginResponseView() {};
     }
 }
