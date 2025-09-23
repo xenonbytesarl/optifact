@@ -5,6 +5,6 @@ package fr.xenonbyte.optifact.backend.domain.verification;
  * @version 1.0
  * @since 23/09/2025
  */
-public enum VerificationState {
+public enum VerificationStatus {
     PENDING, VERIFIED, CANCEL
 }

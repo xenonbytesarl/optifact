@@ -2,6 +2,7 @@ package fr.xenonbyte.optifact.backend.application.verification.port.out;
 
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.verification.Verification;
+import fr.xenonbyte.optifact.backend.domain.verification.VerificationStatus;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -15,9 +16,9 @@ import java.util.UUID;
 @Hexagonal.Repository
 @Hexagonal.SecondaryPort
 public interface VerificationRepository {
-    Optional<Verification> findByCodeAndUserId(String code, UUID userId);
+    Optional<Verification> findByUserIdAndState(UUID userId, VerificationStatus status);
 
-    Optional<Verification> findByCodeAndServerId(String code, UUID serverId);
+    Optional<Verification> findByServerIdState(UUID serverId, VerificationStatus status);
 
     Verification save(Verification verification);
 }

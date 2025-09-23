@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="23092025_2125_alter_verification_add_fk_user" author="brice.mbiandji">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="t_veriffication"/>
+                <columnExists tableName="t_veriffication" columnName="c_user_id"/>
+                <tableExists tableName="t_user"/>
+            </and>
+        </preConditions>
+
+        <addForeignKeyConstraint
+                baseTableName="t_veriffication"
+                baseColumnNames="c_user_id"
+                constraintName="fk_t_veriffication_user"
+                referencedTableName="t_user"
+                referencedColumnNames="c_id"
+                onDelete="SET NULL"
+                onUpdate="CASCADE"/>
+
+        <!-- Optional: index for FK column if not already present on combined indexes -->
+        <createIndex indexName="idx_t_verif_user_id" tableName="t_veriffication">
+            <column name="c_user_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

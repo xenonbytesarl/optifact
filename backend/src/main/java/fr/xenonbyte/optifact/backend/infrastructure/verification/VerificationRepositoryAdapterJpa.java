@@ -3,6 +3,8 @@ package fr.xenonbyte.optifact.backend.infrastructure.verification;
 import fr.xenonbyte.optifact.backend.application.verification.port.out.VerificationRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.verification.Verification;
+import fr.xenonbyte.optifact.backend.domain.verification.VerificationStatus;
+import fr.xenonbyte.optifact.backend.infrastructure.user.UserJpa;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -20,13 +22,13 @@ public final class VerificationRepositoryAdapterJpa implements VerificationRepos
     }
 
     @Override
-    public Optional<Verification> findByCodeAndUserId(String code, UUID userId) {
-        return repositoryJpa.findByCodeAndUserId(code, userId).map(mapperJpa::toDomain);
+    public Optional<Verification> findByUserIdAndState(UUID userId, VerificationStatus status) {
+        return repositoryJpa.findByUserAndStatus(UserJpa.builder().id(userId).build(), VerificationStateJpa.valueOf(status.name())).map(mapperJpa::toDomain);
     }
 
     @Override
-    public Optional<Verification> findByCodeAndServerId(String code, UUID serverId) {
-        return repositoryJpa.findByCodeAndServerId(code, serverId).map(mapperJpa::toDomain);
+    public Optional<Verification> findByServerIdState(UUID serverId, VerificationStatus status) {
+        return repositoryJpa.findByServerIdAndStatus(serverId, VerificationStateJpa.valueOf(status.name())).map(mapperJpa::toDomain);
     }
 
     @Override

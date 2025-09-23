@@ -3,9 +3,6 @@ package fr.xenonbyte.optifact.backend.application.verification.port.in;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.verification.Verification;
 
-import java.time.ZonedDateTime;
-import java.util.UUID;
-
 /**
  *
  * @author bamk
@@ -16,5 +13,5 @@ import java.util.UUID;
 @Hexagonal.PrimaryPort
 public interface CreateVerificationUseCase {
 
-    Verification create(Verification verification);
+    Verification createVerification(Verification verification);
 }

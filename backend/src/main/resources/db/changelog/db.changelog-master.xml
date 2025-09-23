@@ -30,4 +30,5 @@
     <include file="/db/changelog/changes/023-insert-privileges-and-roles.xml"/>
     <include file="/db/changelog/changes/024-fix-attachment-privilege-name.xml"/>
     <include file="/db/changelog/changes/025-create-verification-table.xml"/>
+    <include file="/db/changelog/changes/026-alter-verification-add-fk-user.xml"/>
 </databaseChangeLog>
