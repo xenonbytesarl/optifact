@@ -35,6 +35,18 @@ paths:
           required: false
           schema:
             type: string
+        - name: taxNumberFilter
+          in: query
+          description: Filtre optionnel sur la numero de contribuable (insensible à la casse, correspondance partielle)
+          required: false
+          schema:
+            type: string
+        - name: registrationNumberFilter
+          in: query
+          description: Filtre optionnel sur le registre de commerce (insensible à la casse, correspondance partielle)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Recherche effectuée avec succès
@@ -242,6 +254,14 @@ components:
           type: string
           description: Référence interne ou code de l'acteur
           example: "CLI-2025-0001"
+        registrationNumber:
+          type: string
+          description: Registration number ou code de l'acteur
+          example: "CLI-2025-0001"
+        taxNumber:
+          type: string
+          description: Tax number ou code de l'acteur
+          example: "CLI-2025-0001"
         active:
           type: boolean
           description: Indique si l'acteur est actif
@@ -267,6 +287,14 @@ components:
         reference:
           type: string
           description: Référence interne ou code de l'acteur
+        registrationNumber:
+          type: string
+          description: Registration number ou code de l'acteur
+          example: "CLI-2025-0001"
+        taxNumber:
+          type: string
+          description: Tax number ou code de l'acteur
+          example: "CLI-2025-0001"
         active:
           type: boolean
           description: Indique si l'acteur est actif
@@ -320,6 +348,14 @@ components:
           type: string
           description: Référence interne ou code de l'acteur
           example: "CLI-2025-0001"
+        registrationNumber:
+          type: string
+          description: Registration number ou code de l'acteur
+          example: "CLI-2025-0001"
+        taxNumber:
+          type: string
+          description: Tax number ou code de l'acteur
+          example: "CLI-2025-0001"
         addresses:
           type: array
           description: Adresses associées à l'acteur
@@ -352,6 +388,14 @@ components:
         reference:
           type: string
           description: Référence interne ou code de l'acteur
+          example: "CLI-2025-0001"
+        registrationNumber:
+          type: string
+          description: Registration number ou code de l'acteur
+          example: "CLI-2025-0001"
+        taxNumber:
+          type: string
+          description: Tax number ou code de l'acteur
           example: "CLI-2025-0001"
         addresses:
           type: array
@@ -393,6 +437,14 @@ components:
         reference:
           type: string
           description: Référence interne ou code de l'acteur
+          example: "CLI-2025-0001"
+        registrationNumber:
+          type: string
+          description: Registration number ou code de l'acteur
+          example: "CLI-2025-0001"
+        taxNumber:
+          type: string
+          description: Tax number ou code de l'acteur
           example: "CLI-2025-0001"
         active:
           type: boolean

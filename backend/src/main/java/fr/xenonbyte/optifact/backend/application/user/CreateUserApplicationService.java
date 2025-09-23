@@ -2,11 +2,14 @@ package fr.xenonbyte.optifact.backend.application.user;
 
 import fr.xenonbyte.optifact.backend.application.user.exception.UserEmailConflictException;
 import fr.xenonbyte.optifact.backend.application.user.port.in.CreateUserUseCase;
-import fr.xenonbyte.optifact.backend.application.user.port.out.RoleRepository;
 import fr.xenonbyte.optifact.backend.application.user.port.out.UserRepository;
+import fr.xenonbyte.optifact.backend.application.verification.port.in.CreateVerificationUseCase;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.user.User;
+import fr.xenonbyte.optifact.backend.domain.verification.Verification;
+import fr.xenonbyte.optifact.backend.domain.verification.VerificationType;
 
+import java.time.ZonedDateTime;
 import java.util.logging.Logger;
 
 /**
@@ -21,9 +24,11 @@ public final class CreateUserApplicationService implements CreateUserUseCase {
     private static final Logger LOGGER = Logger.getLogger(CreateUserApplicationService.class.getName());
 
     private final UserRepository repository;
+    private final CreateVerificationUseCase createVerificationUseCase;
 
-    public CreateUserApplicationService(UserRepository repository) {
+    public CreateUserApplicationService(UserRepository repository, CreateVerificationUseCase createVerificationUseCase) {
         this.repository = repository;
+        this.createVerificationUseCase = createVerificationUseCase;
     }
 
     @Override
@@ -38,7 +43,8 @@ public final class CreateUserApplicationService implements CreateUserUseCase {
         User saved = repository.save(user);
         LOGGER.info("User created successfully with id: '" + saved.getId() + "'");
 
-        //TODO create verification code
+        Verification verification = Verification.create(saved.getId(), null, null, VerificationType.LINK, ZonedDateTime.now().plusDays(User.ACTIVATE_ACCOUNT_CODE_DURATION_DAY));
+        verification = createVerificationUseCase.createVerification(verification);
         //TODO create and send account activation link
         return saved;
     }

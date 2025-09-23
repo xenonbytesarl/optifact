@@ -33,6 +33,10 @@ import java.util.List;
 public class ActorJpa extends BaseEntityJpa {
     @Column(name = "c_reference", unique = true)
     private String reference;
+    @Column(name = "c_tax_number", unique = true)
+    private String taxNumber;
+    @Column(name = "c_registration_number", unique = true)
+    private String registrationNumber;
     @Column(name = "c_name", nullable = false, unique = true)
     private String name;
     @Column(name = "c_active", nullable = false)

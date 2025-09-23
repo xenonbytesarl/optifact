@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Add tax number and registration number columns to t_actor -->
+    <changeSet id="20250923_2256_alter_actor_add_tax_and_registration" author="brice.mbiandji">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="t_actor"/>
+        </preConditions>
+
+        <addColumn tableName="t_actor">
+            <column name="c_tax_number" type="varchar(255)"/>
+            <column name="c_registration_number" type="varchar(255)"/>
+        </addColumn>
+
+        <!-- Explicit unique constraints to mirror JPA unique flags -->
+        <addUniqueConstraint constraintName="uk_t_actor_tax_number" tableName="t_actor" columnNames="c_tax_number"/>
+        <addUniqueConstraint constraintName="uk_t_actor_registration_number" tableName="t_actor" columnNames="c_registration_number"/>
+    </changeSet>
+</databaseChangeLog>

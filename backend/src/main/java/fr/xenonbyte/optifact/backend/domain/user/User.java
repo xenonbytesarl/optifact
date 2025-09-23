@@ -4,7 +4,6 @@ import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.entity.BaseEntity;
 import fr.xenonbyte.optifact.backend.domain.user.message.UserMessage;
 
-import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +21,8 @@ import static java.util.UUID.randomUUID;
 public final class User extends BaseEntity {
 
     public static final String DEFAULT_ACTOR_ROLE = "ACTOR";
-    public static final int MFA_CODE_DURATION = 5;
+    public static final int MFA_CODE_DURATION_MINUTE = 5;
+    public static final int ACTIVATE_ACCOUNT_CODE_DURATION_DAY = 5;
 
     private final String firstname;
     private final String lastname; // required

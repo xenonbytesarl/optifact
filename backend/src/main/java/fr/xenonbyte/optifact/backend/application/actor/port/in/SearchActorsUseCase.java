@@ -13,5 +13,5 @@ import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
 public interface SearchActorsUseCase {
-    Pagination<Actor> searchActors(String referenceFilter, String nameFilter, CommonSearch search);
+    Pagination<Actor> searchActors(String referenceFilter, String nameFilter, String registrationNumberFilter, String taxNumberFilter, CommonSearch search);
 }

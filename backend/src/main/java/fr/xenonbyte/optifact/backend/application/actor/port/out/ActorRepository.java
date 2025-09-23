@@ -33,7 +33,7 @@ public interface ActorRepository {
 
     void delete(Actor actor);
 
-    Pagination<Actor> search(String referenceFilter, String nameFilter, CommonSearch search);
+    Pagination<Actor> search(String referenceFilter, String nameFilter, String registrationNumberFilter, String taxNumberFilter, CommonSearch search);
 
     boolean existsById(UUID actorId);
 

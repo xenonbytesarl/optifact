@@ -28,6 +28,8 @@ public interface ActorMapperJpa {
         return Actor.create(
                 actorJpa.getId(),
                 actorJpa.getName(),
+                actorJpa.getRegistrationNumber(),
+                actorJpa.getTaxNumber(),
                 actorJpa.getReference(),
                 actorJpa.getAddresses() == null ? null : actorJpa.getAddresses().stream()
                         .map(addressMapper::toDomain)

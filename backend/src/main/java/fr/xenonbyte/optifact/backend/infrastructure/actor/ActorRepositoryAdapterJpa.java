@@ -71,11 +71,13 @@ public final class ActorRepositoryAdapterJpa implements ActorRepository {
     }
 
     @Override
-    public Pagination<Actor> search(String referenceFilter, String nameFilter, CommonSearch search) {
+    public Pagination<Actor> search(String referenceFilter, String nameFilter, String registrationNumberFilter, String taxNumberFilter, CommonSearch search) {
         Specification<ActorJpa> spec = (root, query, cb) -> cb.conjunction();
 
         spec =  addNativeStringFilter(nameFilter, "name", spec);
         spec =  addNativeStringFilter(referenceFilter, "reference", spec);
+        spec =  addNativeStringFilter(registrationNumberFilter, "registrationNumber", spec);
+        spec =  addNativeStringFilter(taxNumberFilter, "taxNumber", spec);
 
         Sort sort = parseSort(search.sort(), search.direction());
 
@@ -121,7 +123,7 @@ public final class ActorRepositoryAdapterJpa implements ActorRepository {
 
         // Map the property name to the corresponding field name in the JPA entity
         String fieldName = switch (field) {
-            case "name", "reference" -> field;
+            case "name", "reference", "taxNumber", "registrationNumber" -> field;
             default -> "id";
         };
 

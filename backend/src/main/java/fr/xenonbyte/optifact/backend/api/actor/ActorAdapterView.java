@@ -58,7 +58,7 @@ public final class ActorAdapterView {
         deleteActorByIdUseCase.deleteActorById(actorId);
     }
 
-    public ActorPageResponseView searchActors(String referenceFilter, String nameFilter, Integer page, Integer size, String sortField, String sortDirection) {
+    public ActorPageResponseView searchActors(String referenceFilter, String nameFilter, String registrationNumberFilter, String taxNumberFilter,  Integer page, Integer size, String sortField, String sortDirection) {
         // Defaults and normalization to avoid NPEs and IllegalArgumentException
         long safePage = page == null ? 0L : page.longValue();
         long safeSize = size == null ? 20L : size.longValue();
@@ -76,6 +76,8 @@ public final class ActorAdapterView {
         return mapperView.toActorPageResponseView(searchActorsUseCase.searchActors(
                 referenceFilter,
                 nameFilter,
+                registrationNumberFilter,
+                taxNumberFilter,
                 new CommonSearch(safePage, safeSize, safeSort, safeDirection))
         );
     }

@@ -28,10 +28,10 @@ public final class SearchActorsApplicationService implements SearchActorsUseCase
     }
     
     @Override
-    public Pagination<Actor> searchActors(String referenceFilter, String nameFilter, CommonSearch search) {
+    public Pagination<Actor> searchActors(String referenceFilter, String nameFilter, String registrationNumberFilter, String taxNumberFilter, CommonSearch search) {
         LOGGER.info("Searching actors with nameFilter: '" + nameFilter + "', referenceFilter: '" + referenceFilter + "'" );
 
-        Pagination<Actor> actorsPage = repository.search(referenceFilter, nameFilter, search);
+        Pagination<Actor> actorsPage = repository.search(referenceFilter, nameFilter, registrationNumberFilter, taxNumberFilter, search);
 
         LOGGER.info("Found " + actorsPage.elements().size() + " actors (total: " + actorsPage.totalElements() + ")");
         return actorsPage;
