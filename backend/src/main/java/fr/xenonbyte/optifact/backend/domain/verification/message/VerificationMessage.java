@@ -8,4 +8,5 @@ package fr.xenonbyte.optifact.backend.domain.verification.message;
 public final class VerificationMessage {
     public static final String VERIFICATION_USER_ID_NOT_FOUND = "verification.user.id.not.found";
     public static final String VERIFICATION_USER_ID_EXPIRATION_BAD = "verification.user.id.expiration.bad";
+    public static final String VERIFICATION_STATUS_BAD = "verification.code.already.used";
 }

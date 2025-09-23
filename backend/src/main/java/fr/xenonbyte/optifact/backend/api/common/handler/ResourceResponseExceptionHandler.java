@@ -6,6 +6,7 @@ import fr.xenonbyte.optifact.backend.application.common.exception.BadException;
 import fr.xenonbyte.optifact.backend.application.common.exception.ConflictException;
 import fr.xenonbyte.optifact.backend.application.common.exception.NotFoundException;
 import fr.xenonbyte.optifact.backend.application.common.exception.TechnicalException;
+import fr.xenonbyte.optifact.backend.application.common.exception.UnAuthorizeException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,7 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 
 @Slf4j
@@ -129,6 +131,25 @@ public class ResourceResponseExceptionHandler extends ResponseEntityExceptionHan
                                 .timestamp(now())
                                 .code(BAD_REQUEST.value())
                                 .status(BAD_REQUEST.name())
+                                .success(false)
+                                .reason(getMessage(exception.getLocalizedMessage(), MessageUtil.toStringArray(exception.getArgs()) ))
+                                .path(request.getDescription(false).replace(PATH_URI_REPLACE, ""))
+                                .build()
+
+                );
+    }
+
+    @ExceptionHandler({UnAuthorizeException.class})
+    protected ResponseEntity<ErrorResponseView> handleUnAuthorizeException
+            (UnAuthorizeException exception, WebRequest request) {
+        log.error("", exception);
+        return ResponseEntity
+                .status(UNAUTHORIZED)
+                .body(
+                        ErrorResponseView.builder()
+                                .timestamp(now())
+                                .code(UNAUTHORIZED.value())
+                                .status(UNAUTHORIZED.name())
                                 .success(false)
                                 .reason(getMessage(exception.getLocalizedMessage(), MessageUtil.toStringArray(exception.getArgs()) ))
                                 .path(request.getDescription(false).replace(PATH_URI_REPLACE, ""))
