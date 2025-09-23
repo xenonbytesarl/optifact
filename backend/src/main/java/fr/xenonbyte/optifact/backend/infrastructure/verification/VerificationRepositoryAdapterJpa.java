@@ -23,7 +23,10 @@ public final class VerificationRepositoryAdapterJpa implements VerificationRepos
 
     @Override
     public Optional<Verification> findByUserIdAndState(UUID userId, VerificationStatus status) {
-        return repositoryJpa.findByUserAndStatus(UserJpa.builder().id(userId).build(), VerificationStateJpa.valueOf(status.name())).map(mapperJpa::toDomain);
+        return repositoryJpa.findByUserAndStatus(
+                    UserJpa.builder().id(userId).build(),
+                    VerificationStateJpa.valueOf(status.name()))
+                .map(mapperJpa::toDomain);
     }
 
     @Override
@@ -34,6 +37,15 @@ public final class VerificationRepositoryAdapterJpa implements VerificationRepos
     @Override
     public Verification save(Verification verification) {
         return mapperJpa.toDomain(repositoryJpa.save(mapperJpa.toJpa(verification)));
+    }
+
+    @Override
+    public Optional<Verification> findByCodeAndUserIdAndState(String code, UUID userId, VerificationStatus status) {
+        return repositoryJpa.findByCodeAndUserAndStatus(
+                        code,
+                        UserJpa.builder().id(userId).build(),
+                        VerificationStateJpa.valueOf(status.name()))
+                .map(mapperJpa::toDomain);
     }
 
 }

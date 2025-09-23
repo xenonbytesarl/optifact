@@ -22,6 +22,7 @@ import static java.util.UUID.randomUUID;
 public final class User extends BaseEntity {
 
     public static final String DEFAULT_ACTOR_ROLE = "ACTOR";
+    public static final int MFA_CODE_DURATION = 5;
 
     private final String firstname;
     private final String lastname; // required

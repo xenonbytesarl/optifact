@@ -10,6 +10,6 @@ import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
  */
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
-public interface LoginUserUseCase {
-    AuthResponse login(String email, String password);
+public interface VerifyMfaUserCodeUseCase {
+    AuthResponse verifyMfaCode(String username, String code);
 }

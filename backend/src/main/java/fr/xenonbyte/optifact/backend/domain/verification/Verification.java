@@ -129,4 +129,8 @@ public final class Verification extends BaseEntity {
         }
         return sb.toString();
     }
+
+    public boolean isExpired() {
+        return expiredAt.isBefore(ZonedDateTime.now());
+    }
 }
