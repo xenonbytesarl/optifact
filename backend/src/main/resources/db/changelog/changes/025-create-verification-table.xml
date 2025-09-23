@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="23092025_2055_create_verification_table" author="brice.mbiandji">
+        <createTable tableName="t_verification">
+            <!-- Base entity fields -->
+            <column name="c_id" type="uuid">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="c_created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_updated_at" type="timestamp with time zone"/>
+
+            <!-- Domain fields -->
+            <column name="c_code" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="c_user_id" type="uuid"/>
+            <column name="c_server_id" type="uuid"/>
+            <column name="c_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_expired_at" type="timestamp with time zone"/>
+            <column name="c_status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_verified_at" type="timestamp with time zone"/>
+            <column name="c_cancelled_at" type="timestamp with time zone"/>
+        </createTable>
+
+        <!-- Indexes for fast lookup -->
+        <createIndex indexName="idx_t_verif_code_user" tableName="t_verification">
+            <column name="c_code"/>
+            <column name="c_user_id"/>
+        </createIndex>
+        <createIndex indexName="idx_t_verif_code_server" tableName="t_verification">
+            <column name="c_code"/>
+            <column name="c_server_id"/>
+        </createIndex>
+
+        <addUniqueConstraint
+                constraintName="uk_t_verification_code"
+                tableName="t_verification"
+                columnNames="c_code"/>
+    </changeSet>
+</databaseChangeLog>
