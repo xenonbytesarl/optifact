@@ -1,7 +1,7 @@
 package fr.xenonbyte.optifact.backend.application.verification;
 
-import fr.xenonbyte.optifact.backend.application.verification.exception.VerificationExpiredAtBadException;
-import fr.xenonbyte.optifact.backend.application.verification.exception.VerificationUserCodeNotFound;
+import fr.xenonbyte.optifact.backend.application.verification.exception.VerificationExpiredAtUnAuthorizationException;
+import fr.xenonbyte.optifact.backend.application.verification.exception.VerificationUserCodeUnAuthorizationException;
 import fr.xenonbyte.optifact.backend.application.verification.port.in.VerifiedVerificationUseCase;
 import fr.xenonbyte.optifact.backend.application.verification.port.out.VerificationRepository;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
@@ -33,16 +33,20 @@ public final class VerifiedVerificationApplicationService implements VerifiedVer
     public void verifyUserCode(UUID userId, String code) {
         LOGGER.info("Verifying verification code...");
 
-        Optional<Verification> optionalVerification = repository.findByCodeAndUserIdAndState(code, userId, VerificationStatus.PENDING);
+        Optional<Verification> optionalVerification = repository.findByCodeAndUserId(code, userId);
 
         if(optionalVerification.isEmpty()) {
-            throw new VerificationUserCodeNotFound(userId);
+            throw new VerificationUserCodeUnAuthorizationException(userId);
         }
 
         Verification verification = optionalVerification.get();
 
+        if(verification.getStatus() != VerificationStatus.PENDING) {
+            throw new VerificationStatusBadException(verification.getStatus());
+        }
+
         if(verification.isExpired()) {
-            throw new VerificationExpiredAtBadException(verification.getUserId());
+            throw new VerificationExpiredAtUnAuthorizationException(verification.getUserId());
         }
 
         verification = verification.verify();
