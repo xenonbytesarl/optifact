@@ -222,13 +222,36 @@ paths:
                 $ref: '#/components/schemas/LoginApiResponseView'
         '401':
           description: Invalid credentials
+  /users/auth/mfa/verify:
+    post:
+      operationId: verifyMfaCode
+      summary: Verify MFA code and finalize login
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyMfaCodeApiRequestView'
+      responses:
+        '200':
+          description: MFA verified. Returns access and refresh tokens.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginApiResponseView'
+        '400':
+          description: Invalid or expired MFA code
+        '404':
+          description: User not found
 components:
   schemas:
     LoginApiRequestView:
       type: object
-      required: [username, password]
+      required: [email, password]
       properties:
-        username:
+        email:
           type: string
           format: email
         password:
@@ -266,6 +289,15 @@ components:
         name:
           type: string
       required: [id, name]
+    VerifyMfaCodeApiRequestView:
+      type: object
+      required: [email, code]
+      properties:
+        email:
+          type: string
+          format: email
+        code:
+          type: string
     RoleView:
       type: object
       required: [id, code, name]

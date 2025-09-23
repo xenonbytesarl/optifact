@@ -1,7 +1,6 @@
 package fr.xenonbyte.optifact.backend.application.verification.port.in;
 
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
-import fr.xenonbyte.optifact.backend.domain.verification.Verification;
 
 import java.util.UUID;
 
@@ -15,5 +14,5 @@ import java.util.UUID;
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.PRIMARY_PORT)
 @Hexagonal.PrimaryPort
 public interface VerifiedVerificationUseCase {
-    Verification verify(UUID verificationId);
+    void verifyUserCode(UUID userId, String code);
 }

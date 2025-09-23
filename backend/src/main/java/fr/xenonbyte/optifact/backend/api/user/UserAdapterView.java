@@ -8,6 +8,7 @@ import fr.xenonbyte.optifact.backend.api.user.generated.view.RolePageResponseVie
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiRequestView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserPageResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserResponseView;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.VerifyMfaCodeApiRequestView;
 import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
 import fr.xenonbyte.optifact.backend.application.common.payload.Direction;
 import fr.xenonbyte.optifact.backend.application.user.payload.AuthResponse;
@@ -22,6 +23,7 @@ import fr.xenonbyte.optifact.backend.application.user.port.in.LoginUserUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.RegisterUserUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.SearchUsersUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.UpdateUserUseCase;
+import fr.xenonbyte.optifact.backend.application.user.port.in.VerifyMfaUserCodeUseCase;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.user.Role;
 import fr.xenonbyte.optifact.backend.domain.user.User;
@@ -44,6 +46,7 @@ public final class UserAdapterView {
     private final FindRolesUseCase findRolesUseCase;
     private final UserMapperView mapperView;
     private final LoginUserUseCase loginUserUseCase;
+    private final VerifyMfaUserCodeUseCase verifyMfaUserCodeUseCase;
 
     public UserAdapterView(CreateUserUseCase createUserUseCase,
                            UpdateUserUseCase updateUserUseCase,
@@ -54,7 +57,8 @@ public final class UserAdapterView {
                            FindUserByEmailUseCase findUserByEmailUseCase,
                            FindRolesUseCase findRolesUseCase,
                            UserMapperView mapperView,
-                           LoginUserUseCase loginUserUseCase) {
+                           LoginUserUseCase loginUserUseCase,
+                           VerifyMfaUserCodeUseCase verifyMfaUserCodeUseCase) {
         this.createUserUseCase = createUserUseCase;
         this.updateUserUseCase = updateUserUseCase;
         this.registerUserUseCase = registerUserUseCase;
@@ -65,6 +69,7 @@ public final class UserAdapterView {
         this.findRolesUseCase = findRolesUseCase;
         this.mapperView = mapperView;
         this.loginUserUseCase = loginUserUseCase;
+        this.verifyMfaUserCodeUseCase = verifyMfaUserCodeUseCase;
     }
 
     public UserResponseView createUser(UserApiRequestView request) {
@@ -170,6 +175,10 @@ public final class UserAdapterView {
     }
 
     public LoginResponseView login(LoginApiRequestView request) {
-        return mapperView.toLoginResponseView(loginUserUseCase.login(request.getUsername(), request.getPassword()));
+        return mapperView.toLoginResponseView(loginUserUseCase.login(request.getEmail(), request.getPassword()));
+    }
+
+    public LoginResponseView verifyMfaCode(VerifyMfaCodeApiRequestView request) {
+        return mapperView.toLoginResponseView(verifyMfaUserCodeUseCase.verifyMfaCode(request.getEmail(), request.getCode()));
     }
 }

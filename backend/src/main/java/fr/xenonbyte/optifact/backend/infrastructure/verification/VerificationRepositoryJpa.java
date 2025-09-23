@@ -10,5 +10,7 @@ public interface VerificationRepositoryJpa extends JpaRepository<VerificationJpa
 
     Optional<VerificationJpa> findByUserAndStatus(UserJpa user, VerificationStateJpa status);
 
+    Optional<VerificationJpa> findByCodeAndUserAndStatus(String code, UserJpa user, VerificationStateJpa status);
+
     Optional<VerificationJpa> findByServerIdAndStatus(UUID serverId, VerificationStateJpa status);
 }

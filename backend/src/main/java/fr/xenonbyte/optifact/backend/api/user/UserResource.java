@@ -13,6 +13,7 @@ import fr.xenonbyte.optifact.backend.api.user.generated.view.RolePageApiResponse
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiRequestView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserPageApiResponseView;
+import fr.xenonbyte.optifact.backend.api.user.generated.view.VerifyMfaCodeApiRequestView;
 import fr.xenonbyte.optifact.backend.application.user.port.in.LoginUserUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -131,6 +132,19 @@ public class UserResource implements UsersApi {
                         .status(OK.name())
                         .message(MessageUtil.getMessage(UserMessageView.USER_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(of(CONTENT, adapterView.updateUser(id, userApiRequestView)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<LoginApiResponseView> verifyMfaCode(String acceptLanguage, VerifyMfaCodeApiRequestView verifyMfaCodeApiRequestView) {
+
+        return ResponseEntity.status(OK).body(
+                new LoginApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(UserMessageView.USER_LOGGED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.verifyMfaCode(verifyMfaCodeApiRequestView)))
         );
     }
 

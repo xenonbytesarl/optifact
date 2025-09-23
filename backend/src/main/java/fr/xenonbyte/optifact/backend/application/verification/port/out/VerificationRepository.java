@@ -21,4 +21,6 @@ public interface VerificationRepository {
     Optional<Verification> findByServerIdState(UUID serverId, VerificationStatus status);
 
     Verification save(Verification verification);
+
+    Optional<Verification> findByCodeAndUserIdAndState(String code, UUID userId, VerificationStatus status);
 }
