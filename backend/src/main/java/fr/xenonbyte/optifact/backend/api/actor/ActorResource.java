@@ -71,14 +71,14 @@ public class ActorResource implements ActorsApi {
     }
 
     @Override
-    public ResponseEntity<ActorPageApiResponseView> searchActors(String acceptLanguage, Integer page, Integer size, String sortField, String sortDirection, String nameFilter, String referenceFilter) {
+    public ResponseEntity<ActorPageApiResponseView> searchActors(String acceptLanguage, Integer page, Integer size, String sortField, String sortDirection, String nameFilter, String referenceFilter, String taxNumberFilter, String registrationNumberFilter) {
         return ResponseEntity.status(OK).body(
                 new ActorPageApiResponseView()
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .status(OK.name())
                         .message(MessageUtil.getMessage(ActorMessageView.ACTORS_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(of(CONTENT, adapterView.searchActors(referenceFilter, nameFilter, page, size, sortField, sortDirection)))
+                        .data(of(CONTENT, adapterView.searchActors(referenceFilter, nameFilter, registrationNumberFilter, taxNumberFilter, page, size, sortField, sortDirection)))
         );
     }
 

@@ -7,7 +7,6 @@ import fr.xenonbyte.optifact.backend.domain.common.entity.BaseEntity;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static java.util.UUID.randomUUID;
 
@@ -20,14 +19,18 @@ import static java.util.UUID.randomUUID;
 @Hexagonal.Entity
 public final class Actor extends BaseEntity {
     private final String name;
+    private final String registrationNumber;
+    private final String taxNumber;
     private final String reference;
     private final List<Address> addresses;
     private final List<Contact> contacts;
     private final Boolean active;
 
-    public Actor(UUID id, String name, String reference, List<Address> addresses, List<Contact> contacts, Boolean active) {
+    public Actor(UUID id, String name, String registrationNumber, String taxNumber, String reference, List<Address> addresses, List<Contact> contacts, Boolean active) {
         this.id = id;
         this.name = name;
+        this.registrationNumber = registrationNumber;
+        this.taxNumber = taxNumber;
         this.reference = reference;
         this.addresses = addresses;
         this.contacts = contacts;
@@ -35,7 +38,7 @@ public final class Actor extends BaseEntity {
     }
 
 
-    public static Actor create(String name, String reference, List<Address> addresses, List<Contact> contacts, Boolean active) {
+    public static Actor create(String name, String registrationNumber, String taxNumber, String reference, List<Address> addresses, List<Contact> contacts, Boolean active) {
         if(name == null || name.isBlank()) {
             throw new IllegalArgumentException(ActorMessage.ACTOR_NAME_REQUIRED);
         }
@@ -48,7 +51,7 @@ public final class Actor extends BaseEntity {
 
         reference = normalizeReference(reference);
 
-        return new Actor(id, name, reference, addresses, contacts, active);
+        return new Actor(id, name, registrationNumber, taxNumber, reference, addresses, contacts, active);
     }
 
     private static String normalizeReference(String reference) {
@@ -65,7 +68,7 @@ public final class Actor extends BaseEntity {
         return addresses;
     }
 
-    public static Actor create(UUID id, String name, String reference, List<Address> addresses, List<Contact> contacts, Boolean active) {
+    public static Actor create(UUID id, String name, String registrationNumber, String taxNumber, String reference, List<Address> addresses, List<Contact> contacts, Boolean active) {
         if(name == null || name.isBlank()) {
             throw new IllegalArgumentException(ActorMessage.ACTOR_NAME_REQUIRED);
         }
@@ -76,7 +79,7 @@ public final class Actor extends BaseEntity {
 
         reference = normalizeReference(reference);
 
-        return new Actor(id, name, reference, addresses, contacts, active);
+        return new Actor(id, name, registrationNumber, taxNumber, reference, addresses, contacts, active);
     }
 
     private static List<Contact> normalizeContacts(UUID id, List<Contact> contacts) {
@@ -86,14 +89,14 @@ public final class Actor extends BaseEntity {
         return contacts;
     }
 
-    public Actor update(String name, String reference, List<Address> addresses, List<Contact> contacts) {
+    public Actor update(String name, String registrationNumber, String taxNumber, String reference, List<Address> addresses, List<Contact> contacts) {
         if(name == null || name.isBlank()) {
             throw new IllegalArgumentException(ActorMessage.ACTOR_NAME_REQUIRED);
         }
         reference = normalizeReference(reference);
         addresses = normalizeAddresses(addresses, id);
         contacts = normalizeContacts(id, contacts);
-        Actor actor = new Actor(id, name, reference, addresses, contacts, active);
+        Actor actor = new Actor(id, name, registrationNumber, taxNumber, reference, addresses, contacts, active);
         actor.updateAudit(createdAt);
         return actor;
     }
@@ -118,5 +121,13 @@ public final class Actor extends BaseEntity {
 
     public Boolean getActive() {
         return active;
+    }
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public String getTaxNumber() {
+        return taxNumber;
     }
 }

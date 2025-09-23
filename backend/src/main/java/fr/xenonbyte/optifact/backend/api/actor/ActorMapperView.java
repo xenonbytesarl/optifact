@@ -88,6 +88,8 @@ public interface ActorMapperView {
                 .toList();
         return Actor.create(
                 requestView.getName(),
+                requestView.getRegistrationNumber(),
+                requestView.getTaxNumber(),
                 requestView.getReference(),
                 addresses,
                 contacts,
@@ -108,6 +110,8 @@ public interface ActorMapperView {
                 .toList();
         return Actor.create(
                 requestView.getName(),
+                requestView.getRegistrationNumber(),
+                requestView.getTaxNumber(),
                 requestView.getReference(),
                 addresses,
                 contacts,

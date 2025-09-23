@@ -46,7 +46,7 @@ public final class LoginUserApplicationService implements LoginUserUseCase {
         User user  = gateway.login(email, password);
 
         if(user.getMfaEnabled()) {
-            Verification verification = Verification.create(user.getId(), null, null, VerificationType.CODE, ZonedDateTime.now().plusMinutes(User.MFA_CODE_DURATION));
+            Verification verification = Verification.create(user.getId(), null, null, VerificationType.CODE, ZonedDateTime.now().plusMinutes(User.MFA_CODE_DURATION_MINUTE));
             createVerificationUseCase.createVerification(verification);
             LOGGER.info("Verification code create for email: '" + email + "'");
             return new MfaResponse(true, email);

@@ -50,7 +50,7 @@ public final class UpdateActorApplicationService implements UpdateActorUseCase {
 
         Actor existing = optionalActor.get();
 
-        existing = existing.update(actor.getName(), actor.getReference(), actor.getAddresses(), actor.getContacts());
+        existing = existing.update(actor.getName(), actor.getRegistrationNumber(), actor.getTaxNumber(), actor.getReference(), actor.getAddresses(), actor.getContacts());
 
         actor = repository.save(existing);
 
