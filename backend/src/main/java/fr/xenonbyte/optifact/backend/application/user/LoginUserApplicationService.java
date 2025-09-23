@@ -6,8 +6,11 @@ import fr.xenonbyte.optifact.backend.application.user.payload.MfaResponse;
 import fr.xenonbyte.optifact.backend.application.user.port.in.LoginUserUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.out.AuthenticationGateway;
 import fr.xenonbyte.optifact.backend.application.user.port.out.TokenProvider;
+import fr.xenonbyte.optifact.backend.application.verification.port.in.CreateVerificationUseCase;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.user.User;
+import fr.xenonbyte.optifact.backend.domain.verification.Verification;
+import fr.xenonbyte.optifact.backend.domain.verification.VerificationType;
 
 import java.util.logging.Logger;
 
@@ -24,10 +27,15 @@ public final class LoginUserApplicationService implements LoginUserUseCase {
 
     private final AuthenticationGateway gateway;
     private final TokenProvider tokenProvider;
+    private final CreateVerificationUseCase createVerificationUseCase;
 
-    public LoginUserApplicationService(AuthenticationGateway gateway, TokenProvider tokenProvider) {
+    public LoginUserApplicationService(
+            AuthenticationGateway gateway,
+            TokenProvider tokenProvider,
+            CreateVerificationUseCase createVerificationUseCase) {
         this.gateway = gateway;
         this.tokenProvider = tokenProvider;
+        this.createVerificationUseCase = createVerificationUseCase;
     }
 
     @Override
@@ -37,7 +45,8 @@ public final class LoginUserApplicationService implements LoginUserUseCase {
         User user  = gateway.login(username, password);
 
         if(user.getMfaEnabled()) {
-            //TODO generate and save verification code
+            Verification verification = Verification.create(user.getId(), null, null, VerificationType.CODE, null);
+            createVerificationUseCase.createVerification(verification);
             LOGGER.info("Verification code create for username: '" + username + "'");
             return new MfaResponse(true, username);
 

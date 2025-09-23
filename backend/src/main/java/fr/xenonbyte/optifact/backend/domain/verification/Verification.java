@@ -19,7 +19,7 @@ public final class Verification extends BaseEntity {
     private final UUID serverId;
     private final VerificationType type;
     private final ZonedDateTime expiredAt;
-    private final VerificationState status;
+    private final VerificationStatus status;
     private final ZonedDateTime verifiedAt;
     private final ZonedDateTime cancelledAt;
 
@@ -29,7 +29,7 @@ public final class Verification extends BaseEntity {
                          UUID serverId,
                          VerificationType type,
                          ZonedDateTime expiredAt,
-                         VerificationState status,
+                         VerificationStatus status,
                          ZonedDateTime verifiedAt,
                          ZonedDateTime cancelledAt) {
         this.id = id;
@@ -43,15 +43,15 @@ public final class Verification extends BaseEntity {
         this.cancelledAt = cancelledAt;
         }
 
-    public static Verification createCode(UUID userId, UUID serverId, String code, ZonedDateTime expiredAt) {
+    public static Verification create(UUID userId, UUID serverId, String code, VerificationType type, ZonedDateTime expiredAt) {
         return new Verification(
                 randomUUID(),
                 code,
                 userId,
                 serverId,
-                VerificationType.CODE,
+                type,
                 expiredAt,
-                VerificationState.PENDING,
+                VerificationStatus.PENDING,
                 null,
                 null
         );
@@ -63,7 +63,7 @@ public final class Verification extends BaseEntity {
             UUID userId,
             UUID serverId,
             VerificationType type,
-            VerificationState state,
+            VerificationStatus state,
             ZonedDateTime expiredAt,
             ZonedDateTime verifiedAt,
             ZonedDateTime cancelledAt) {
@@ -75,11 +75,11 @@ public final class Verification extends BaseEntity {
     }
 
     public Verification verify() {
-        return new Verification(id, this.code, this.userId, this.serverId, this.type, this.expiredAt, VerificationState.VERIFIED, ZonedDateTime.now(), null);
+        return new Verification(id, this.code, this.userId, this.serverId, this.type, this.expiredAt, VerificationStatus.VERIFIED, ZonedDateTime.now(), null);
     }
 
     public Verification cancel() {
-        return new Verification(this.id, this.code, this.userId, this.serverId, this.type, this.expiredAt, VerificationState.CANCEL, null, ZonedDateTime.now());
+        return new Verification(this.id, this.code, this.userId, this.serverId, this.type, this.expiredAt, VerificationStatus.CANCEL, null, ZonedDateTime.now());
     }
 
     public String getCode() {
@@ -102,7 +102,7 @@ public final class Verification extends BaseEntity {
         return expiredAt;
     }
 
-    public VerificationState getStatus() {
+    public VerificationStatus getStatus() {
         return status;
     }
 

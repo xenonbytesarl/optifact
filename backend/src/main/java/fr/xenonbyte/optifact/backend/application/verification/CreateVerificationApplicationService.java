@@ -5,6 +5,7 @@ import fr.xenonbyte.optifact.backend.application.verification.port.out.Verificat
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.verification.CodeType;
 import fr.xenonbyte.optifact.backend.domain.verification.Verification;
+import fr.xenonbyte.optifact.backend.domain.verification.VerificationStatus;
 import fr.xenonbyte.optifact.backend.domain.verification.VerificationType;
 
 import java.util.Optional;
@@ -22,16 +23,20 @@ public final class CreateVerificationApplicationService implements CreateVerific
 
     private static final Logger LOGGER = Logger.getLogger(CreateVerificationApplicationService.class.getName());
 
-    private VerificationRepository repository;
+    private final VerificationRepository repository;
+
+    public CreateVerificationApplicationService(VerificationRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
-    public Verification create(Verification verification) {
+    public Verification createVerification(Verification verification) {
         LOGGER.info("Creating verification...");
-        String code = verification.getCode();
         UUID userId = verification.getUserId();
         UUID serverId = verification.getServerId();
 
-        cancelExistingCodeVerification(code, userId, serverId);
+        cancelExistingUserVerification(userId);
+        cancelExistingServerVerification(serverId);
 
         verification = verification.withCode(
                 Verification.generateCode(verification.getType().equals(VerificationType.LINK) ?  32: 6,
@@ -43,27 +48,31 @@ public final class CreateVerificationApplicationService implements CreateVerific
         return verification;
     }
 
-    private void cancelExistingCodeVerification(String code, UUID userId, UUID serverId) {
-        if(code != null) {
-            Optional<Verification> optionalUserVerification = repository.findByCodeAndUserId(code, userId);
-            Optional<Verification> optionalServerVerification = repository.findByCodeAndServerId(code, serverId);
+    private void cancelExistingUserVerification(UUID userId) {
 
+        if(userId != null) {
+            Optional<Verification> optionalUserVerification = repository.findByUserIdAndState(userId, VerificationStatus.PENDING);
             if(optionalUserVerification.isPresent()) {
-                LOGGER.warning("User verification already exists with code: '" + code + "'");
+                LOGGER.warning("User verification already exists with userId: '" + userId + "'");
                 Verification userVerification = optionalUserVerification.get();
-                userVerification.cancel();
+                userVerification = userVerification.cancel();
                 repository.save(userVerification);
-                LOGGER.info("User verification cancelled successfully with code: '" + userVerification.getCode() + "'");
+                LOGGER.info("User verification cancelled successfully with userId: '" + userId + "'");
             }
+        }
+    }
 
+    private void cancelExistingServerVerification(UUID serverId) {
+
+        if(serverId != null) {
+            Optional<Verification> optionalServerVerification = repository.findByServerIdState(serverId, VerificationStatus.PENDING);
             if(optionalServerVerification.isPresent()) {
-                LOGGER.warning("Server verification already exists with code: '" + code + "'");
+                LOGGER.warning("Server verification already exists with serverId: '" + serverId + "'");
                 Verification serverVerification = optionalServerVerification.get();
-                serverVerification.cancel();
+                serverVerification = serverVerification.cancel();
                 repository.save(serverVerification);
-                LOGGER.info("Server verification cancelled successfully with code: '" + serverVerification.getCode() + "'");
+                LOGGER.info("Server verification cancelled successfully with serverId: '" + serverId + "'");
             }
-
         }
     }
 }

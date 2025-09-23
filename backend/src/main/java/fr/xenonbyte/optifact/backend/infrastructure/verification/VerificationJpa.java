@@ -1,10 +1,13 @@
 package fr.xenonbyte.optifact.backend.infrastructure.verification;
 
 import fr.xenonbyte.optifact.backend.infrastructure.common.BaseEntityJpa;
+import fr.xenonbyte.optifact.backend.infrastructure.user.UserJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,9 +30,6 @@ public class VerificationJpa extends BaseEntityJpa {
     @Column(name = "c_code", nullable = false, unique = true)
     private String code;
 
-    @Column(name = "c_user_id")
-    private UUID userId;
-
     @Column(name = "c_server_id")
     private UUID serverId;
 
@@ -49,4 +49,8 @@ public class VerificationJpa extends BaseEntityJpa {
 
     @Column(name = "c_cancelled_at")
     private ZonedDateTime cancelledAt;
+
+    @ManyToOne
+    @JoinColumn(name = "c_user_id")
+    private UserJpa user;
 }
