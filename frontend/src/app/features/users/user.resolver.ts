@@ -23,3 +23,15 @@ export const roleFindAllResolver: ResolveFn<any> = async (route: ActivatedRouteS
     return false;
   }
 }
+
+export const searchUserResolver: ResolveFn<any> = async () => {
+  const store = inject(userStore);
+  try {
+    // Default search params
+    await store.search({ page: 0, size: 20, sortField: 'id', sortDirection: 'ASC' });
+    await store.loadRoles();
+    return true;
+  } catch {
+    return false;
+  }
+};

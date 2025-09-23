@@ -55,6 +55,31 @@ export function useUserScreen() {
     }
   }
 
+  async function saveEdit(id: string) {
+    if (invalid() || loading()) {
+      return false;
+    }
+    const v = formValue();
+    const roles = (store.roles() || []).filter(r => v.roleIds.includes(r.id));
+    const payload: Partial<UserView> = {
+      firstname: v.firstname,
+      lastname: v.lastname,
+      email: v.email,
+      phone: v.phone,
+      actorId: v.actorId,
+      roles
+    };
+    const response = await store.update( id, payload);
+    if (response) {
+      toast.info(store.message() as string);
+      router.navigate(['/users', store.current()?.id]);
+      return true;
+    } else {
+      toast.error(store.error() as string);
+      return false;
+    }
+  }
+
   function setFromCurrent() {
     const u = store.current();
     if (!u) return;
@@ -77,6 +102,7 @@ export function useUserScreen() {
     roleRequired,
     onValueChange,
     saveNew,
+    saveEdit,
     setFromCurrent,
     goBack,
   };
