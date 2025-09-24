@@ -376,6 +376,26 @@ public final class User extends BaseEntity {
         return u;
     }
 
+    public User activateAccount() {
+        User u = new User(
+                this.id,
+                this.firstname,
+                this.lastname,
+                this.email,
+                this.password,
+                this.phone,
+                true,
+                this.accountLocked,
+                this.accountExpired,
+                this.credentialExpired,
+                this.mfaEnabled,
+                this.totalLoginAttempt,
+                actorId,
+                roles);
+        u.updateAudit(this.createdAt);
+        return u;
+    }
+
     private static void validateRequired(String lastname, String email, Set<Role> roles) {
         if (lastname == null || lastname.isBlank()) {
             throw new IllegalArgumentException(UserMessage.USER_LASTNAME_REQUIRED);
@@ -443,6 +463,5 @@ public final class User extends BaseEntity {
     public UUID getActorId() {
         return actorId;
     }
-
 
 }

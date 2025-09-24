@@ -146,6 +146,36 @@ paths:
                 $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
         '404':
           description: User not found
+  /users/auth/{id}/activate/{code}:
+    post:
+      operationId: activateUserAccount
+      summary: Activate a user's account
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Account activated
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiSuccessResponse'
+        '404':
+          description: User not found
+        '409':
+          description: Account already enabled
+        '400':
+          description: Invalid or expired activation code
   /users/auth/register:
     post:
       operationId: registerUser

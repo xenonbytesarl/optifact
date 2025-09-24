@@ -12,6 +12,7 @@ public final class UserMessageView {
     public static final String ROLES_FOUND_SUCCESSFULLY = "roles.found";
     public static final String USER_LOGGED_SUCCESSFULLY = "user.logged";
     public static final String USER_MFA_VERIFICATION_CODE_SEND = "user.mfa.verification.code.send";
+    public static final String USER_ACCOUNT_ACTIVATED_SUCCESSFULLY = "user.account.activated";
 
     private UserMessageView() {}
 }

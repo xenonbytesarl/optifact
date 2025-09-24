@@ -9,4 +9,5 @@ public final class VerificationMessage {
     public static final String VERIFICATION_USER_ID_NOT_FOUND = "verification.user.id.not.found";
     public static final String VERIFICATION_USER_ID_EXPIRATION_BAD = "verification.user.id.expiration.bad";
     public static final String VERIFICATION_STATUS_BAD = "verification.code.already.used";
+    public static final String VERIFICATION_SERVER_ID_NOT_FOUND = "verification.server.not.found";
 }

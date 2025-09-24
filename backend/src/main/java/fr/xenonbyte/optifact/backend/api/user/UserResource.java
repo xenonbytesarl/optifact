@@ -14,7 +14,6 @@ import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiRequestView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserApiResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.UserPageApiResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.VerifyMfaCodeApiRequestView;
-import fr.xenonbyte.optifact.backend.application.user.port.in.LoginUserUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,11 +30,21 @@ import static org.springframework.http.HttpStatus.OK;
 public class UserResource implements UsersApi {
 
     private final UserAdapterView adapterView;
-    private final LoginUserUseCase loginUserUseCase;
 
-    public UserResource(UserAdapterView adapterView, LoginUserUseCase loginUserUseCase) {
+    public UserResource(UserAdapterView adapterView) {
         this.adapterView = adapterView;
-        this.loginUserUseCase = loginUserUseCase;
+    }
+
+    @Override
+    public ResponseEntity<ApiSuccessResponse> activateUserAccount(String acceptLanguage, UUID id, String code) {
+        adapterView.activateUserAccount(id, code);
+        return ResponseEntity.status(OK).body(
+                new ApiSuccessResponse()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(UserMessageView.USER_ACCOUNT_ACTIVATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+        );
     }
 
     @Override

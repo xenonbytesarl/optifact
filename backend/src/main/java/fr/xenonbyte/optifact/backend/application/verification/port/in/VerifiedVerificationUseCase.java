@@ -15,4 +15,6 @@ import java.util.UUID;
 @Hexagonal.PrimaryPort
 public interface VerifiedVerificationUseCase {
     void verifyUserCode(UUID userId, String code);
+
+    void verifyServerCode(UUID settingId, String code);
 }

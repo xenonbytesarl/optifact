@@ -65,12 +65,12 @@ public final class EmailServer {
         return new EmailServer(from, type, host, port, protocol, useTLS, useAuth, username, password, state, confirmedAt);
     }
 
-    public EmailServer withState(MailServerState state) {
-        return new EmailServer(from, type, host, port, protocol, useTLS, useAuth, username, password, state, confirmedAt);
+    public EmailServer withWaiting() {
+        return new EmailServer(from, type, host, port, protocol, useTLS, useAuth, username, password, MailServerState.WAITING, confirmedAt);
     }
 
-    public EmailServer withConfirmedAt(ZonedDateTime confirmedAt) {
-        return new EmailServer(from, type, host, port, protocol, useTLS, useAuth, username, password, state, confirmedAt);
+    public EmailServer withConfirmed() {
+        return new EmailServer(from, type, host, port, protocol, useTLS, useAuth, username, password, MailServerState.CONFIRM, ZonedDateTime.now());
     }
 
     public String getFrom() {
