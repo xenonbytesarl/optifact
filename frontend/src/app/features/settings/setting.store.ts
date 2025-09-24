@@ -97,6 +97,29 @@ export const settingStore = signalStore(
           return null;
         }
       },
+
+      async updateMailPassword(settingId: string, password: string) {
+        const current = store.current();
+        if (!current) return null;
+        patchState(store, { loading: true, error: null, message: null });
+        const payload: any = {
+          company: current.company,
+          emailServer: {
+            ...(current.emailServer ?? {}),
+            password: password,
+          },
+        };
+        const response = await api.update(settingId, payload);
+        if (response.success) {
+          const payloadResp = response as SuccessApiResponse<Setting>;
+          patchState(store, { current: payloadResp.data.content ?? null, message: payloadResp.message ?? 'setting.mail.password.updated', loading: false });
+          return payloadResp.data.content;
+        } else {
+          const payloadErr = response as ErrorApiResponse;
+          patchState(store, { error: payloadErr.reason ?? 'setting.mail.password.update.error', loading: false });
+          return null;
+        }
+      },
     };
   })
 );

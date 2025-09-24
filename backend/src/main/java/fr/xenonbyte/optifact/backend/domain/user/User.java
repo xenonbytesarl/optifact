@@ -23,6 +23,7 @@ public final class User extends BaseEntity {
     public static final String DEFAULT_ACTOR_ROLE = "ACTOR";
     public static final int MFA_CODE_DURATION_MINUTE = 5;
     public static final int ACTIVATE_ACCOUNT_CODE_DURATION_DAY = 5;
+    public static final int CREATE_PASSWORD_CODE_DURATION_DAY = 5;
 
     private final String firstname;
     private final String lastname; // required
@@ -464,4 +465,7 @@ public final class User extends BaseEntity {
         return actorId;
     }
 
+    public String getFullName() {
+        return firstname == null || firstname.isBlank() ? lastname : firstname + " " + lastname;
+    }
 }

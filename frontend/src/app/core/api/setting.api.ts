@@ -59,7 +59,8 @@ export interface EmailServer {
   useTLS?: boolean | null;
   useAuth?: boolean | null;
   username?: string | null;
-  // password is not returned by API for security
+  // password is not returned by API for security, but can be sent when updating
+  password?: string | null;
   state?: MailServerState | null;
   confirmedAt?: string | null; // ISO date-time
 }

@@ -11,11 +11,12 @@ import {userStore} from '../user.store';
 import { ToastService } from '../../../shared/ui/toast';
 import {TranslateService} from '../../../core/i18n/translate.service';
 import { CardComponent } from '../../../shared/ui/card';
+import { InputPasswordComponent } from '../../../shared/ui/input-password';
 
 @Component({
   selector: 'app-login-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormFieldComponent, InputTextComponent, ButtonComponent, TranslatePipe, CardComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FormFieldComponent, InputTextComponent, ButtonComponent, TranslatePipe, CardComponent, InputPasswordComponent],
   template: `
     <div class="min-h-dvh flex items-center justify-center px-4">
       <div class="w-full max-w-md">
@@ -32,7 +33,7 @@ import { CardComponent } from '../../../shared/ui/card';
             </app-form-field>
 
             <app-form-field [label]="'users.password' | t" [required]="true" [error]="passwordError()">
-              <app-input type="password" placeholder="••••••••" [error]="!!passwordError()" [value]="password" (valueChange)="form.controls['password'].setValue($event)" (blurred)="form.controls['password'].markAsTouched()" />
+              <app-input-password placeholder="••••••••" [error]="!!passwordError()" [value]="password" (valueChange)="form.controls['password'].setValue($event)" (blurred)="form.controls['password'].markAsTouched()" />
             </app-form-field>
 
             <div class="flex items-center gap-3 mt-2">
