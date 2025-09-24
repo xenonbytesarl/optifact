@@ -1,5 +1,6 @@
 package fr.xenonbyte.optifact.backend.infrastructure.actor;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -23,4 +24,7 @@ public interface ActorRepositoryJpa extends JpaRepository<ActorJpa, UUID>, JpaSp
     Boolean existsByNameIgnoreCaseAndIdNot(String name, UUID actorId);
 
     Optional<ActorJpa> findByReference(String actorReference);
+
+    Optional<ActorJpa> findByTaxNumber(String taxNumber);
+    Optional<ActorJpa> findByRegistrationNumber(String registrationNumber);
 }

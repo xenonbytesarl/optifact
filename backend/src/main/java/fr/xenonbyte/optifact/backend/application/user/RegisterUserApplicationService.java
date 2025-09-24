@@ -1,6 +1,7 @@
 package fr.xenonbyte.optifact.backend.application.user;
 
 import fr.xenonbyte.optifact.backend.application.actor.exception.ActorReferenceConflictException;
+import fr.xenonbyte.optifact.backend.application.actor.port.in.CreateActorUseCase;
 import fr.xenonbyte.optifact.backend.application.actor.port.out.ActorRepository;
 import fr.xenonbyte.optifact.backend.application.user.exception.RoleCodeNotFoundException;
 import fr.xenonbyte.optifact.backend.application.user.exception.UserEmailConflictException;
@@ -21,6 +22,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static fr.xenonbyte.optifact.backend.domain.user.User.DEFAULT_ACTOR_ROLE;
+import static fr.xenonbyte.optifact.backend.domain.user.User.create;
 
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.APPLICATION_SERVICE)
 @Hexagonal.ApplicationService
@@ -32,29 +34,32 @@ public final class RegisterUserApplicationService implements RegisterUserUseCase
     private final ActorRepository actorRepository;
     private final RoleRepository roleRepository;
     private final CreateVerificationUseCase createVerificationUseCase;
+    private final CreateActorUseCase createActorUseCase;
 
     public RegisterUserApplicationService(
             UserRepository repository,
             ActorRepository actorRepository,
             RoleRepository roleRepository,
-            CreateVerificationUseCase createVerificationUseCase) {
+            CreateVerificationUseCase createVerificationUseCase, CreateActorUseCase createActorUseCase) {
         this.repository = repository;
         this.actorRepository = actorRepository;
         this.roleRepository = roleRepository;
         this.createVerificationUseCase = createVerificationUseCase;
+        this.createActorUseCase = createActorUseCase;
     }
 
     @Override
-    public void registerUser(User user, String actorReference) {
+    public void registerUser(User user, Actor actor) {
         LOGGER.info("Registering user...");
 
         if (repository.existsByEmail(user.getEmail())) {
             throw new UserEmailConflictException(user.getEmail());
         }
 
-        Optional<Actor> optionalActor = actorRepository.findByRefence(actorReference);
-        if(optionalActor.isEmpty()) {
-            throw new ActorReferenceConflictException(actorReference);
+
+        Actor existing = findActor(actor);
+        if(existing == null) {
+            existing = createActorUseCase.createActor(actor);
         }
 
         Optional<Role> optionalRole = roleRepository.findByCode(DEFAULT_ACTOR_ROLE);
@@ -63,7 +68,9 @@ public final class RegisterUserApplicationService implements RegisterUserUseCase
             throw new RoleCodeNotFoundException(DEFAULT_ACTOR_ROLE);
         }
 
-        user  = user.withActorId(optionalActor.get().getId()).withRoles(Set.of(optionalRole.get()));
+        user  = user.withActorId(existing.getId()).withRoles(Set.of(optionalRole.get()));
+
+        user.validateRoles();
 
         repository.save(user);
         LOGGER.info("User registered successfully.");
@@ -71,5 +78,21 @@ public final class RegisterUserApplicationService implements RegisterUserUseCase
         Verification verification = Verification.create(user.getId(), null, null, VerificationType.LINK, ZonedDateTime.now().plusDays(User.ACTIVATE_ACCOUNT_CODE_DURATION_DAY));
         verification = createVerificationUseCase.createVerification(verification);
         //TODO create and send account activation link
+    }
+
+    private Actor findActor(Actor actor) {
+        if(actor.getTaxNumber() != null) {
+            Optional<Actor> optionalActor = actorRepository.findByTaxNumber(actor.getTaxNumber());
+            if (optionalActor.isPresent()) {
+                return optionalActor.get();
+            }
+        }
+        if(actor.getRegistrationNumber() != null) {
+            Optional<Actor> optionalActor = actorRepository.findByRegistrationNumber(actor.getRegistrationNumber());
+            if (optionalActor.isPresent()) {
+                return optionalActor.get();
+            }
+        }
+        return null;
     }
 }

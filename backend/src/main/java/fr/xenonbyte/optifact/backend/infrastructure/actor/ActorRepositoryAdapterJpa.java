@@ -111,6 +111,16 @@ public final class ActorRepositoryAdapterJpa implements ActorRepository {
         return repositoryJpa.findByReference(actorReference).map(mapperJpa::toDomain);
     }
 
+    @Override
+    public Optional<Actor> findByTaxNumber(String taxNumber) {
+        return repositoryJpa.findByTaxNumber(taxNumber).map(mapperJpa::toDomain);
+    }
+
+    @Override
+    public Optional<Actor> findByRegistrationNumber(String registrationNumber) {
+        return repositoryJpa.findByRegistrationNumber(registrationNumber).map(mapperJpa::toDomain);
+    }
+
     private Sort parseSort(String field, Direction direction) {
         if (field == null || field.isBlank() || direction == null) {
             // The default sort is by ID ascending

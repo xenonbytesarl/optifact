@@ -11,9 +11,6 @@ import fr.xenonbyte.optifact.backend.api.user.generated.view.UserResponseView;
 import fr.xenonbyte.optifact.backend.api.user.generated.view.VerifyMfaCodeApiRequestView;
 import fr.xenonbyte.optifact.backend.application.common.payload.CommonSearch;
 import fr.xenonbyte.optifact.backend.application.common.payload.Direction;
-import fr.xenonbyte.optifact.backend.application.user.payload.AuthResponse;
-import fr.xenonbyte.optifact.backend.application.user.payload.LoginResponse;
-import fr.xenonbyte.optifact.backend.application.user.payload.MfaResponse;
 import fr.xenonbyte.optifact.backend.application.user.port.in.CreateUserPasswordUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.CreateUserUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.FindRolesUseCase;
@@ -24,10 +21,12 @@ import fr.xenonbyte.optifact.backend.application.user.port.in.RegisterUserUseCas
 import fr.xenonbyte.optifact.backend.application.user.port.in.SearchUsersUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.UpdateUserUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.VerifyMfaUserCodeUseCase;
+import fr.xenonbyte.optifact.backend.domain.actor.Actor;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.user.Role;
 import fr.xenonbyte.optifact.backend.domain.user.User;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -144,7 +143,7 @@ public final class UserAdapterView {
     }
 
     public void registerUser(RegisterUserApiRequestView request) {
-        User toRegister = User.create(
+        User user = User.create(
                 request.getFirstname(),
                 request.getLastname(),
                 request.getEmail(),
@@ -152,7 +151,14 @@ public final class UserAdapterView {
                 null,
                 java.util.Collections.emptySet()
         );
-        registerUserUseCase.registerUser(toRegister, request.getActorReference());
+
+        Actor actor = Actor.create(
+                request.getActorName(),
+                request.getRegistrationNumber(),
+                request.getTaxNumber(),
+                null, List.of(),
+                List.of(), true);
+        registerUserUseCase.registerUser(user, actor);
     }
 
     public void createUserPassword(UUID id, String code, CreateUserPasswordRequestView request) {
