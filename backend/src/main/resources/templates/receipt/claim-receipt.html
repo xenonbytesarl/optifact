@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="${title} ?: 'Récépissé de dépôt'"></title>
+  <style type="text/css">
+    /* Simple PDF-friendly styles */
+    @page {
+      size: A4;
+      margin: 20mm;
+      @bottom-center {
+        content: element(pdf-footer);
+      }
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; color:#222; }
+    .header, .footer { width:100%; }
+    .header { display:flex; align-items:center; gap:12px; border-bottom:1px solid #ddd; padding-bottom:10px; margin-bottom:16px; }
+    .brand-logo { width:56px; height:56px; object-fit:contain; }
+    .brand { display:flex; flex-direction:column; }
+    .brand-name { font-weight:700; font-size:16px; }
+    .brand-meta { font-size:11px; color:#555; }
+    h1 { font-size:20px; margin:8px 0 12px; }
+    .meta-table { width:100%; border-collapse:collapse; margin-top:12px; font-size:12px; }
+    .meta-table th, .meta-table td { border:1px solid #ccc; padding:8px 10px; }
+    .meta-table th { background:#f7f7f7; text-align:left; font-weight:600; }
+    table { width:100%; border-collapse:collapse; margin-top:14px; }
+    th, td { border:1px solid #ccc; padding:8px 10px; font-size:12px; }
+    th { background:#f7f7f7; text-align:left; }
+    .checkbox { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; }
+    .footer { position: running(pdf-footer); border-top:1px solid #ddd; margin-top:18px; padding-top:8px; font-size:11px; color:#666; }
+    .footer-content { text-align:center; }
+    .footer-line { margin:2px 0; }
+    .footer-strong { font-weight:600; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <img class="brand-logo" th:src="${#strings.defaultString(logoUrl, '../static/images/logo.png')}" alt="Logo" />
+    <div class="brand">
+      <div class="brand-name" th:text="${companyName} ?: 'Votre organisation'"></div>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <h1 th:text="${title} ?: 'Récépissé de dépôt'"></h1>
+  <br/>
+  <!-- Receipt meta information in a two-row table -->
+  <table class="meta-table" aria-label="Métadonnées du récépissé">
+    <thead>
+      <tr>
+        <th>Date de création</th>
+        <th>Date de soumission</th>
+        <th>N° facture frais de dossier</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td th:text="${creationDate} ?: '-'">-</td>
+        <td th:text="${submissionDate} ?: '-'">-</td>
+        <td th:text="${dossierInvoiceNumber} ?: '-'">-</td>
+      </tr>
+    </tbody>
+  </table>
+  <br/>
+  <!-- Documents table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Type de document</th>
+        <th>Déposé</th>
+        <th>Instruit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="row : ${rows}">
+        <td th:text="${row.type} ?: 'Document'"></td>
+        <td class="checkbox" th:text="${row.deposited} ? '[x]' : '[ ]'"></td>
+        <td class="checkbox" th:text="${row.instructed} ? '[x]' : '[ ]'"></td>
+      </tr>
+      <tr th:if="${rows == null or #lists.isEmpty(rows)}">
+        <td colspan="3" style="text-align:center; color:#777;">Aucun document</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-content">
+      <div class="footer-line" th:if="${companyAddress}" th:text="${companyAddress}"></div>
+      <div class="footer-line">
+        <span th:if="${companyPhone}" th:text="${companyPhone}"></span>
+        <span th:if="${companyEmail}" th:text="${(companyPhone != null ? ' • ' : '') + companyEmail}"></span>
+        <span th:if="${companyWebsite}" th:text="${((companyPhone != null) or (companyEmail != null)) ? ' • ' + companyWebsite : companyWebsite}"></span>
+      </div>
+      <div class="footer-line" style="font-size:10px; color:#777;">Récépissé généré automatiquement</div>
+    </div>
+  </div>
+</body>
+</html>

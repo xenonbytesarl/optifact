@@ -1,6 +1,7 @@
 package fr.xenonbyte.optifact.backend.application.claim;
 
 import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimIdNotFoundException;
+import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimStateNotInstructionDoneBadException;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.CompleteCompliantClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.out.ClaimRepository;
 import fr.xenonbyte.optifact.backend.domain.claim.Claim;

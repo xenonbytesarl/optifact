@@ -23,6 +23,7 @@ import fr.xenonbyte.optifact.backend.application.claim.port.in.CompleteCompliant
 import fr.xenonbyte.optifact.backend.application.claim.port.in.GrantClaimAgreementClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.RefuseClaimAgreementClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.AdjournClaimAgreementClaimUseCase;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.PrintClaimReceiptUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.CreateAttachmentUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.common.attachment.port.in.FindAttachmentByIdsUseCase;
@@ -45,6 +46,7 @@ import fr.xenonbyte.optifact.backend.domain.common.attachment.AttachmentScope;
 import fr.xenonbyte.optifact.backend.domain.invoice.Invoice;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -90,6 +92,7 @@ public class ClaimAdapterView {
     private final RefuseClaimAgreementClaimUseCase refuseClaimAgreementClaimUseCase;
     private final AdjournClaimAgreementClaimUseCase adjournClaimAgreementClaimUseCase;
     private final FindInvoiceByClaimIdUseCase findInvoiceByClaimIdUseCase;
+    private final PrintClaimReceiptUseCase printClaimReceiptUseCase;
     private final CreateAttachmentUseCase createAttachmentUseCase;
     private final FindAttachmentTypeByNameUseCase findAttachmentTypeByNameUseCase;
 
@@ -118,6 +121,7 @@ public class ClaimAdapterView {
                             RefuseClaimAgreementClaimUseCase refuseClaimAgreementClaimUseCase,
                             AdjournClaimAgreementClaimUseCase adjournClaimAgreementClaimUseCase,
                             FindInvoiceByClaimIdUseCase findInvoiceByClaimIdUseCase,
+                            PrintClaimReceiptUseCase printClaimReceiptUseCase,
                             CreateAttachmentUseCase createAttachmentUseCase,
                             FindAttachmentTypeByNameUseCase findAttachmentTypeByNameUseCase) {
         this.createUseCase = createUseCase;
@@ -142,6 +146,7 @@ public class ClaimAdapterView {
         this.refuseClaimAgreementClaimUseCase = refuseClaimAgreementClaimUseCase;
         this.adjournClaimAgreementClaimUseCase = adjournClaimAgreementClaimUseCase;
         this.findInvoiceByClaimIdUseCase = findInvoiceByClaimIdUseCase;
+        this.printClaimReceiptUseCase = printClaimReceiptUseCase;
         this.createAttachmentUseCase = createAttachmentUseCase;
         this.findAttachmentTypeByNameUseCase = findAttachmentTypeByNameUseCase;
     }
@@ -307,6 +312,16 @@ public class ClaimAdapterView {
 
     public ClaimResponseView rejectClaimLine(UUID claimId, UUID claimLineId, RejectClaimLineRequest request) {
         return mapperView.toResponseView(rejectClaimLineUseCase.rejectClaimLine(claimId, claimLineId, request.getReason()));
+    }
+
+    public ResponseEntity<Resource> printClaimReceipt(UUID claimId) {
+        byte[] pdf = printClaimReceiptUseCase.printClaimReceipt(claimId.toString());
+        String filename = "claim-receipt-" + claimId + ".pdf";
+        return ResponseEntity
+                .status(OK)
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "inline; filename=\"" + filename + "\"")
+                .body(new ByteArrayResource(pdf));
     }
 
     public ClaimResponseView validateClaimLine(UUID claimId, UUID claimLineId) {

@@ -144,6 +144,11 @@ public class ClaimResource implements ClaimsApi {
     }
 
     @Override
+    public ResponseEntity<Resource> printClaimReceipt(String acceptLanguage, UUID claimId) {
+        return adapterView.printClaimReceipt(claimId);
+    }
+
+    @Override
     public ResponseEntity<ClaimApiResponseView> rejectClaimLine(String acceptLanguage, UUID claimId, UUID claimLineId, RejectClaimLineRequest rejectClaimLineRequest) {
         return ResponseEntity.status(OK).body(
                 new ClaimApiResponseView()
