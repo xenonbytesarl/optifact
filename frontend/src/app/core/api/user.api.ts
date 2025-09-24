@@ -37,13 +37,32 @@ export interface RegisterUserRequest {
   lastname: string;
   email: string;
   phone?: string | null;
-  actorReference: string;
+  actorName?: string | null;
+  registrationNumber?: string | null;
+  taxNumber?: string | null;
 }
 
 export interface CreateUserPasswordRequest {
   password: string;
   confirmPassword?: string;
 }
+
+export interface LoginApiRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginPendingResponse {
+  email: string;
+  mfaEnable: boolean;
+}
+
+export interface LoginSuccessResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export type LoginResponse = LoginPendingResponse | LoginSuccessResponse;
 
 @Injectable({ providedIn: 'root' })
 export class UserApi extends GlobalApi {
@@ -79,7 +98,7 @@ export class UserApi extends GlobalApi {
   async register(payload: RegisterUserRequest) {
     try {
       return await firstValueFrom(
-        this.http.post<SuccessApiResponse<void> | ErrorApiResponse>(`${this.base}/register`, payload, { headers: this.headers })
+        this.http.post<SuccessApiResponse<void> | ErrorApiResponse>(`${this.base}/auth/register`, payload, { headers: this.headers })
       );
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.error) {
@@ -156,6 +175,32 @@ export class UserApi extends GlobalApi {
     try {
       return await firstValueFrom(
         this.http.get<SuccessApiResponse<{ elements: RoleView[] } | ErrorApiResponse>>(`${this.base}/roles`, { headers: this.headers })
+      );
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
+  async login(payload: LoginApiRequest) {
+    try {
+      return await firstValueFrom(
+        this.http.post<SuccessApiResponse<LoginResponse> | ErrorApiResponse>(`${this.base}/auth/login`, payload, { headers: this.headers })
+      );
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
+  async verifyMfaCode(payload: { email: string; code: string }) {
+    try {
+      return await firstValueFrom(
+        this.http.post<SuccessApiResponse<LoginResponse> | ErrorApiResponse>(`${this.base}/auth/mfa/verify`, payload, { headers: this.headers })
       );
     } catch (error) {
       if (error instanceof HttpErrorResponse && error.error) {

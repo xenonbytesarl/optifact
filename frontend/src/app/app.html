@@ -1,26 +1,32 @@
 <!-- App Shell Layout: Topbar + Sidebar + Main Content -->
 <div class="app-shell min-h-dvh text-fg bg-gray-50 dark:bg-gray-900">
-  <!-- Topbar -->
-  <app-topbar
-    [isDarkMode]="theme.isDarkMode()"
-    (toggleSidebar)="toggleSidebar()"
-    (toggleTheme)="theme.toggleTheme()"
-  />
+  @if (user.loggedIn()) {
+    <!-- Topbar -->
+    <app-topbar
+      [isDarkMode]="theme.isDarkMode()"
+      (toggleSidebar)="toggleSidebar()"
+      (toggleTheme)="theme.toggleTheme()"
+    />
 
-  <!-- Layout grid: sidebar + content -->
-  <div class="pt-20 flex">
-    <app-sidebar [isOpen]="isSidebarOpen()" (close)="closeSidebar()" />
+    <!-- Layout grid: sidebar + content when logged in -->
+    <div class="pt-20 flex">
+      <app-sidebar [isOpen]="isSidebarOpen()" (close)="closeSidebar()" />
 
-    <!-- Main content -->
-    <main class="flex-1 w-full lg:ml-72">
-      <div class="px-4 md:px-6 py-6  mx-auto">
-       <!-- <div class="mb-4">
-          <app-breadcrumbs />
-        </div>-->
+      <!-- Main content with reserved space for sidebar -->
+      <main class="flex-1 w-full lg:ml-72">
+        <div class="px-4 md:px-6 py-6 mx-auto">
+          <router-outlet />
+        </div>
+      </main>
+    </div>
+  } @else {
+    <!-- Minimal layout when not logged in: no topbar, no sidebar, no extra paddings -->
+    <main class="flex-1 w-full">
+      <div class="px-4 md:px-6 py-6 mx-auto">
         <router-outlet />
       </div>
     </main>
-  </div>
+  }
 </div>
 
 <app-toasts />

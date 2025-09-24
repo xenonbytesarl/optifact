@@ -19,7 +19,10 @@
     "name": "Optifact"
   },
   "validation": {
-    "required": "This field is required."
+    "required": "This field is required.",
+    "email": "Invalid email address.",
+    "phoneRequired": "Phone is required.",
+    "registrationOrTaxRequired": "Registration number or tax number is required."
   },
   "email": {
     "invalid": "Invalid email address."
@@ -282,9 +285,18 @@
     "title": "Users",
     "subtitle": "Manage users",
     "new": "New user",
+    "register": "Create account",
+    "login": "Login",
+    "password": "Password",
+    "noAccountQuestion": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "createAccount": "Create an account",
+    "registerEmailLinkSent": "A link valid for 5 days has been sent to your email to activate your account. Please check your inbox.",
     "sections": {
       "identity": "Identity",
-      "relations": "Relations"
+      "relations": "Relations",
+      "user": "User",
+      "actor": "Actor"
     },
     "fields": {
       "firstname": "First name",
@@ -294,7 +306,10 @@
       "actor": "Actor",
       "role": "Role",
       "actorPlaceholder": "Select an actor (optional)",
-      "rolePlaceholder": "Select a role"
+      "rolePlaceholder": "Select a role",
+      "actorName": "Actor name",
+      "registrationNumber": "Registration number",
+      "taxNumber": "Tax number"
     },
     "messages": {
       "loading": "Loading user..."
@@ -314,6 +329,22 @@
     "create": {
       "success": "User created successfully.",
       "error": "Failed to create user."
+    },
+    "mfa": {
+      "verifyTitle": "Verify code",
+      "info": "A verification code valid for 5 minutes has been sent by email. Paste it here.",
+      "code": "Verification code",
+      "check": "Verify",
+      "lostCodeQuestion": "Lost code?",
+      "requestNew": "Request a new one.",
+      "verify": {
+        "success": "MFA code verified successfully.",
+        "error": "Invalid MFA code."
+      }
+    },
+    "login": {
+      "success": "Login successful.",
+      "error": "Login failed."
     }
   },
   "claims": {

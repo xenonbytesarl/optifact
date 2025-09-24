@@ -40,7 +40,7 @@ export class CountryAutocompleteComponent {
 
   items = computed<AutocompleteItem[]>(() => {
     const fo = this.flagOnly();
-    return COUNTRIES.map(c => ({ value: c.code, label: fo ? `${c.flag} ${c.code}` : `${c.flag} ${c.name}` }));
+    return COUNTRIES.map(c => ({ value: c.code, label: fo ? `${c.flag}` : `${c.flag} ${c.name}` }));
   });
 
 }

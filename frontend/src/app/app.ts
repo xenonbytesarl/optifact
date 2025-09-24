@@ -5,6 +5,7 @@ import { TopbarComponent } from './shared/layout/topbar/topbar';
 import { SidebarComponent } from './shared/layout/sidebar/sidebar';
 import { ThemeService } from './core/settings/theme.service';
 import { ToastsComponent } from './shared/ui/toast';
+import { userStore } from './features/users/user.store';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,9 @@ export class App {
 
   // Theme is delegated to a specialized service (SSR-safe)
   theme = inject(ThemeService);
+
+  // Auth store to know if user is logged in
+  user = inject(userStore);
 
   toggleSidebar() {
     this.isSidebarOpen.update(v => !v);

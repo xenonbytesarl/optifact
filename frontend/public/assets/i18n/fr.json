@@ -18,12 +18,6 @@
   "app": {
     "name": "Optifact"
   },
-  "validation": {
-    "required": "Champ obligatoire."
-  },
-  "email": {
-    "invalid": "Email invalide."
-  },
   "actions": {
     "new": "Créer",
     "view": "Voir",
@@ -282,9 +276,17 @@
     "title": "Utilisateurs",
     "subtitle": "Gérer les utilisateurs",
     "new": "Nouvel utilisateur",
+    "register": "Créer un compte",
+    "password": "Mot de passe",
+    "noAccountQuestion": "Vous n'avez pas de compte ?",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "createAccount": "Créer un compte",
+    "registerEmailLinkSent": "Un lien valable 5 jours vous a été envoyé par email pour activer votre compte. Consultez votre boîte mail.",
     "sections": {
       "identity": "Identité",
-      "relations": "Relations"
+      "relations": "Relations",
+      "user": "Utilisateur",
+      "actor": "Acteur"
     },
     "fields": {
       "firstname": "Prénom",
@@ -294,7 +296,11 @@
       "actor": "Acteur",
       "role": "Rôle",
       "actorPlaceholder": "Sélectionner un acteur (optionnel)",
-      "rolePlaceholder": "Sélectionner un rôle"
+      "rolePlaceholder": "Sélectionner un rôle",
+      "login": "Se connecter",
+      "actorName": "Nom de l'acteur",
+      "registrationNumber": "Numéro d'immatriculation",
+      "taxNumber": "Numéro de TVA"
     },
     "messages": {
       "loading": "Chargement de l'utilisateur..."
@@ -314,6 +320,22 @@
     "create": {
       "success": "Utilisateur créé avec succès.",
       "error": "Échec de la création de l'utilisateur."
+    },
+    "mfa": {
+      "verifyTitle": "Vérifier le code",
+      "info": "Un code de verification d'une durée de 5mn vous a été envoyé par mail. copiez le ici",
+      "code": "Code de vérification",
+      "check": "Verifier",
+      "lostCodeQuestion": "Code perdu?",
+      "requestNew": "Demander un nouveau.",
+      "verify": {
+        "success": "Code MFA vérifié avec succès.",
+        "error": "Code MFA invalide."
+      }
+    },
+    "login": {
+      "success": "Connexion réussie.",
+      "error": "Échec de la connexion."
     }
   },
   "claims": {
@@ -523,10 +545,10 @@
     }
   },
   "validation": {
-    "required": "Ce champ est obligatoire."
-  },
-  "email": {
-    "invalid": "Email invalide"
+    "required": "Ce champ est obligatoire.",
+    "email": "Email invalide.",
+    "phoneRequired": "Le téléphone est obligatoire.",
+    "registrationOrTaxRequired": "Le numéro d'immatriculation ou le numéro de TVA est obligatoire."
   },
   "claim": {
     "submit": "Demande soumise avec succès",
@@ -592,7 +614,8 @@
     "protocol": "Protocole",
     "tls": "TLS",
     "auth": "Authentification",
-    "username": "Nom d'utilisateur"
+    "username": "Nom d'utilisateur",
+    "invalid": "Email invalide"
   },
   "setting": {
     "messages": {
