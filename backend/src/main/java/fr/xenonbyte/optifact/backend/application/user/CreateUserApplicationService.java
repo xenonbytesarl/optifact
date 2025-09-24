@@ -39,6 +39,7 @@ public final class CreateUserApplicationService implements CreateUserUseCase {
             throw new UserEmailConflictException(user.getEmail());
         }
 
+        user.validateRoles();
 
         User saved = repository.save(user);
         LOGGER.info("User created successfully with id: '" + saved.getId() + "'");

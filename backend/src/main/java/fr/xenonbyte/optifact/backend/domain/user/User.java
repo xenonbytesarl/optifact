@@ -384,6 +384,9 @@ public final class User extends BaseEntity {
             throw new IllegalArgumentException(UserMessage.USER_EMAIL_REQUIRED);
         }
 
+    }
+
+    public void validateRoles() {
         if(roles == null || roles.isEmpty()) {
             throw new IllegalArgumentException(UserMessage.USER_ROLE_REQUIRED);
         }
@@ -440,4 +443,6 @@ public final class User extends BaseEntity {
     public UUID getActorId() {
         return actorId;
     }
+
+
 }

@@ -40,4 +40,8 @@ public interface ActorRepository {
     List<Actor> findByIds(Set<UUID> actorIds);
 
     Optional<Actor> findByRefence(String actorReference);
+
+    Optional<Actor> findByTaxNumber(String taxNumber);
+
+    Optional<Actor> findByRegistrationNumber(String registrationNumber);
 }
