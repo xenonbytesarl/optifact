@@ -1,5 +1,7 @@
 package fr.xenonbyte.optifact.backend.application.common.setting;
 
+import fr.xenonbyte.optifact.backend.application.common.setting.exception.SettingEmailServerAlreadyConfirmedBadException;
+import fr.xenonbyte.optifact.backend.application.common.setting.exception.SettingEmailServerPasswordBadException;
 import fr.xenonbyte.optifact.backend.application.common.setting.exception.SettingIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.common.setting.port.in.VerifyMailServerUseCase;
 import fr.xenonbyte.optifact.backend.application.common.setting.port.out.SettingRepository;
@@ -47,6 +49,11 @@ public final class VerifyMailServerApplicationService implements VerifyMailServe
 
         Setting setting = repository.findById(settingId)
                 .orElseThrow(() -> new SettingIdNotFoundException(settingId));
+
+        if(setting.getEmailServer().getUseAuth() &&
+                (setting.getEmailServer().getPassword() == null || setting.getEmailServer().getPassword().isBlank())) {
+            throw new SettingEmailServerPasswordBadException();
+        }
 
         // Create verification with expiration
         Verification verification = Verification.create(null, settingId, null, VerificationType.LINK,

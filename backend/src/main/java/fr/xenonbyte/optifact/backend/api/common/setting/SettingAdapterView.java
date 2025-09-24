@@ -2,6 +2,7 @@ package fr.xenonbyte.optifact.backend.api.common.setting;
 
 import fr.xenonbyte.optifact.backend.api.common.setting.generated.view.SettingApiRequestView;
 import fr.xenonbyte.optifact.backend.api.common.setting.generated.view.SettingResponseView;
+import fr.xenonbyte.optifact.backend.application.common.setting.port.in.CreateSettingEmailServerPasswordUseCase;
 import fr.xenonbyte.optifact.backend.application.common.setting.port.in.FindFirstSettingUseCase;
 import fr.xenonbyte.optifact.backend.application.common.setting.port.in.FindSettingByIdUseCase;
 import fr.xenonbyte.optifact.backend.application.common.setting.port.in.UpdateSettingUseCase;
@@ -21,19 +22,22 @@ public final class SettingAdapterView {
     private final FindFirstSettingUseCase findFirstUseCase;
     private final VerifyMailServerUseCase verifyMailServerUseCase;
     private final ValidateMailServerUseCase validateMailServerUseCase;
+    private final CreateSettingEmailServerPasswordUseCase createMailServerPasswordUseCase;
 
     public SettingAdapterView(FindSettingByIdUseCase findUseCase,
                               UpdateSettingUseCase updateUseCase,
                               SettingMapperView mapperView,
                               FindFirstSettingUseCase findFirstUseCase,
                               VerifyMailServerUseCase verifyMailServerUseCase,
-                              ValidateMailServerUseCase validateMailServerUseCase) {
+                              ValidateMailServerUseCase validateMailServerUseCase,
+                              CreateSettingEmailServerPasswordUseCase createMailServerPasswordUseCase) {
         this.findUseCase = findUseCase;
         this.updateUseCase = updateUseCase;
         this.mapperView = mapperView;
         this.findFirstUseCase = findFirstUseCase;
         this.verifyMailServerUseCase = verifyMailServerUseCase;
         this.validateMailServerUseCase = validateMailServerUseCase;
+        this.createMailServerPasswordUseCase = createMailServerPasswordUseCase;
     }
 
     public SettingResponseView findById(UUID id) {
@@ -54,5 +58,9 @@ public final class SettingAdapterView {
 
     public SettingResponseView validateMailServer(UUID settingId, String code) {
         return mapperView.toResponseView(validateMailServerUseCase.validateMailServer(settingId, code));
+    }
+
+    public SettingResponseView createEmailServerPassword(UUID settingId, String password) {
+        return mapperView.toResponseView(createMailServerPasswordUseCase.createSettingEmailServerPassword(settingId, password));
     }
 }

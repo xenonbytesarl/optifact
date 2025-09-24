@@ -135,21 +135,21 @@ import { InputPasswordComponent } from '../../../shared/ui/input-password';
                 </app-form-field>
               </div>
               <div dialog-actions>
-                <app-button variant="ghost" [label]="('common.cancel' | t) || 'Annuler'" (clicked)="closeDialog()" />
-                <app-button class="ml-2" variant="primary" tone="primary" icon="check" [label]="('common.validate' | t) || 'Valider'" [disabled]="!verificationCode() || loading()" (clicked)="submitCode()" />
+                <app-button variant="ghost" [label]="('settings.email.cancel' | t) || 'Annuler'" (clicked)="closeDialog()" />
+                <app-button class="ml-2" variant="primary" tone="primary" icon="check" [label]="('settings.email.validate' | t) || 'Valider'" [disabled]="!verificationCode() || loading()" (clicked)="submitCode()" />
               </div>
             </app-dialog>
 
             <!-- Set password dialog -->
             <app-dialog [title]="('settings.email.setPasswordTitle' | t) || 'Définir le mot de passe du serveur mail'" [(open)]="showPasswordDialog" [backdropClosable]="true" (closed)="onPasswordDialogClosed()" panelMaxWidth="480px">
               <div class="space-y-4">
-                <app-form-field [label]="('email.password' | t) || 'Mot de passe'" [required]="true">
+                <app-form-field [label]="('settings.email.password' | t) || 'Mot de passe'" [required]="true">
                   <app-input-password [(value)]="emailPassword" placeholder="••••••••" />
                 </app-form-field>
               </div>
               <div dialog-actions>
-                <app-button variant="ghost" [label]="('common.cancel' | t) || 'Annuler'" (clicked)="closePasswordDialog()" />
-                <app-button class="ml-2" variant="primary" tone="primary" icon="save" [label]="('common.save' | t) || 'Enregistrer'" [disabled]="!emailPassword() || loading()" (clicked)="submitPassword()" />
+                <app-button variant="ghost" [label]="('settings.email.cancel' | t) || 'Annuler'" (clicked)="closePasswordDialog()" />
+                <app-button class="ml-2" variant="primary" tone="primary" icon="save" [label]="('settings.email.save' | t) || 'Enregistrer'" [disabled]="!emailPassword() || loading()" (clicked)="submitPassword()" />
               </div>
             </app-dialog>
           </app-card>

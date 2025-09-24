@@ -7,4 +7,5 @@ package fr.xenonbyte.optifact.backend.domain.message;
  */
 public final class SettingMessage {
     public static final String SETTING_EMAIL_SERVER_ALREADY_CONFIRMED = "setting.email.server.already.confirmed";
+    public static final String SETTING_EMAIL_SERVER_PASSWORD = "setting.email.server.password";
 }

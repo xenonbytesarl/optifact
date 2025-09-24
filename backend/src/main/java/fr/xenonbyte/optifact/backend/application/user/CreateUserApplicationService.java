@@ -1,7 +1,6 @@
 package fr.xenonbyte.optifact.backend.application.user;
 
 import fr.xenonbyte.optifact.backend.application.common.setting.port.in.FindFirstSettingUseCase;
-import fr.xenonbyte.optifact.backend.application.common.setting.port.out.SettingRepository;
 import fr.xenonbyte.optifact.backend.application.notification.ports.in.SendEmailUseCase;
 import fr.xenonbyte.optifact.backend.application.user.exception.UserEmailConflictException;
 import fr.xenonbyte.optifact.backend.application.user.port.in.CreateUserUseCase;
@@ -13,6 +12,7 @@ import fr.xenonbyte.optifact.backend.domain.common.setting.vo.EmailServer;
 import fr.xenonbyte.optifact.backend.domain.user.User;
 import fr.xenonbyte.optifact.backend.domain.verification.Verification;
 import fr.xenonbyte.optifact.backend.domain.verification.VerificationType;
+import fr.xenonbyte.optifact.backend.application.common.port.out.FrontendUrlProvider;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -38,15 +38,19 @@ public final class CreateUserApplicationService implements CreateUserUseCase {
     private final SendEmailUseCase sendEmailUseCase;
     private final FindFirstSettingUseCase findFirstSettingUseCase;
 
+    private final FrontendUrlProvider frontendUrlProvider;
+
     public CreateUserApplicationService(
             UserRepository repository,
             CreateVerificationUseCase createVerificationUseCase,
             SendEmailUseCase sendEmailUseCase,
-            FindFirstSettingUseCase findFirstSettingUseCase) {
+            FindFirstSettingUseCase findFirstSettingUseCase,
+            FrontendUrlProvider frontendUrlProvider) {
         this.repository = repository;
         this.createVerificationUseCase = createVerificationUseCase;
         this.sendEmailUseCase = sendEmailUseCase;
         this.findFirstSettingUseCase = findFirstSettingUseCase;
+        this.frontendUrlProvider = frontendUrlProvider;
     }
 
     @Override
@@ -101,12 +105,12 @@ public final class CreateUserApplicationService implements CreateUserUseCase {
         return verification;
     }
 
-    private static Map<String, Object> buildEmailModel(User user, Verification verification) {
+    private Map<String, Object> buildEmailModel(User user, Verification verification) {
         Map<String, Object> model = new HashMap<>();
         model.put("applicationName", "COSUMAF");
         model.put("name", user.getFullName() );
         model.put("duration", User.ACTIVATE_ACCOUNT_CODE_DURATION_DAY + " jours");
-        model.put("activationLink", "/users/activate/" + user.getId() + "/" + verification.getCode());
+        model.put("activationLink", frontendUrlProvider.baseUrl() + "/users/activate/" + user.getId() + "/" + verification.getCode());
         return model;
     }
 }

@@ -344,6 +344,7 @@
       }
     },
     "login": {
+      "title": "Se connecter",
       "success": "Connexion réussie.",
       "error": "Échec de la connexion."
     },
@@ -603,6 +604,28 @@
       "presidentId": "Président (UUID)",
       "logo": "Logo",
       "noLogo": "Aucun logo"
+    },
+    "email": {
+      "verifyServer": "Verifier le serveur",
+      "setPassword": "Définir le mot de passe",
+      "sendCode": "Verifier le serveur",
+      "setPasswordTitle": "Définir le mot de passe",
+      "password": "Mot de passe",
+      "cancel": "Annuller",
+      "validate": "Valider",
+      "save": "Enregister",
+      "code": "Code",
+      "enterCode": "Entrez le code"
+    },
+    "messages": {
+      "find": {
+        "success": "Paramètres chargés avec succès.",
+        "error": "Échec du chargement des paramètres."
+      },
+      "update": {
+        "success": "Paramètres mis à jour avec succès.",
+        "error": "Échec de la mise à jour des paramètres."
+      }
     }
   },
   "address": {
@@ -637,17 +660,5 @@
     "auth": "Authentification",
     "username": "Nom d'utilisateur",
     "invalid": "Email invalide"
-  },
-  "setting": {
-    "messages": {
-      "find": {
-        "success": "Paramètres chargés avec succès.",
-        "error": "Échec du chargement des paramètres."
-      },
-      "update": {
-        "success": "Paramètres mis à jour avec succès.",
-        "error": "Échec de la mise à jour des paramètres."
-      }
-    }
   }
 }

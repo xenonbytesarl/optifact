@@ -1,6 +1,5 @@
 package fr.xenonbyte.optifact.backend.application.user;
 
-import fr.xenonbyte.optifact.backend.application.actor.exception.ActorReferenceConflictException;
 import fr.xenonbyte.optifact.backend.application.actor.port.in.CreateActorUseCase;
 import fr.xenonbyte.optifact.backend.application.actor.port.out.ActorRepository;
 import fr.xenonbyte.optifact.backend.application.common.setting.port.in.FindFirstSettingUseCase;
@@ -19,6 +18,7 @@ import fr.xenonbyte.optifact.backend.domain.user.Role;
 import fr.xenonbyte.optifact.backend.domain.user.User;
 import fr.xenonbyte.optifact.backend.domain.verification.Verification;
 import fr.xenonbyte.optifact.backend.domain.verification.VerificationType;
+import fr.xenonbyte.optifact.backend.application.common.port.out.FrontendUrlProvider;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -31,7 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static fr.xenonbyte.optifact.backend.domain.user.User.DEFAULT_ACTOR_ROLE;
-import static fr.xenonbyte.optifact.backend.domain.user.User.create;
 
 @Hexagonal(layer = Hexagonal.Layer.APPLICATION, componentType = Hexagonal.ComponentType.APPLICATION_SERVICE)
 @Hexagonal.ApplicationService
@@ -47,6 +46,8 @@ public final class RegisterUserApplicationService implements RegisterUserUseCase
     private final SendEmailUseCase sendEmailUseCase;
     private final FindFirstSettingUseCase findFirstSettingUseCase;
 
+    private final FrontendUrlProvider frontendUrlProvider;
+
     public RegisterUserApplicationService(
             UserRepository repository,
             ActorRepository actorRepository,
@@ -54,7 +55,8 @@ public final class RegisterUserApplicationService implements RegisterUserUseCase
             CreateVerificationUseCase createVerificationUseCase,
             CreateActorUseCase createActorUseCase,
             SendEmailUseCase sendEmailUseCase,
-            FindFirstSettingUseCase findFirstSettingUseCase) {
+            FindFirstSettingUseCase findFirstSettingUseCase,
+            FrontendUrlProvider frontendUrlProvider) {
         this.repository = repository;
         this.actorRepository = actorRepository;
         this.roleRepository = roleRepository;
@@ -62,6 +64,7 @@ public final class RegisterUserApplicationService implements RegisterUserUseCase
         this.createActorUseCase = createActorUseCase;
         this.sendEmailUseCase = sendEmailUseCase;
         this.findFirstSettingUseCase = findFirstSettingUseCase;
+        this.frontendUrlProvider = frontendUrlProvider;
     }
 
     @Override
@@ -126,12 +129,12 @@ public final class RegisterUserApplicationService implements RegisterUserUseCase
         });
     }
 
-    private static Map<String, Object> buildEmailModel(User user, Verification verification) {
+    private Map<String, Object> buildEmailModel(User user, Verification verification) {
         Map<String, Object> model = new HashMap<>();
         model.put("applicationName", "COSUMAF");
         model.put("name", user.getFullName() );
         model.put("duration", User.ACTIVATE_ACCOUNT_CODE_DURATION_DAY + " jours");
-        model.put("activationLink", "/users/activate/" + user.getId() + "/" + verification.getCode());
+        model.put("activationLink", frontendUrlProvider.baseUrl() + "/users/activate/" + user.getId() + "/" + verification.getCode());
         return model;
     }
 

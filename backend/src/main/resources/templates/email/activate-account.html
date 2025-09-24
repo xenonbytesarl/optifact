@@ -57,8 +57,20 @@
           Pour finaliser votre inscription et activer votre compte, merci de cliquer sur le lien ci-dessous :
         </p>
 
-        <p>
-          <a class="btn" th:href="${activationLink} ?: '#'">👉 Activer mon compte</a>
+        <!-- Button (table-based, inline styles for email clients) -->
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0 8px;">
+          <tr>
+            <td align="center" bgcolor="#B6852B" style="border-radius:10px;">
+              <a th:href="${activationLink} ?: '#'" style="display:block;padding:12px 18px;color:#ffffff;text-decoration:none;font:600 15px/1 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, 'Helvetica Neue', Arial;">👉 Activer mon compte</a>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Fallback raw link -->
+        <p class="muted" style="font-size:13px;margin-top:8px;">
+          Si le bouton ne s’affiche pas, copiez-collez ce lien dans votre navigateur :
+          <br/>
+          <a th:href="${activationLink} ?: '#'" th:text="${activationLink} ?: ''" style="color:#B6852B;word-break:break-all;text-decoration:underline;"></a>
         </p>
 
         <p class="muted" style="margin-top:12px;">
