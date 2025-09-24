@@ -51,6 +51,30 @@ public class SettingResource implements SettingsApi {
     }
 
     @Override
+    public ResponseEntity<SettingApiResponseView> validateMailServer(String acceptLanguage, UUID settingId, String code) {
+        return ResponseEntity.status(OK).body(
+                new SettingApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(SettingMessageView.SETTING_MAIL_SERVER_VALIDATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.validateMailServer(settingId, code)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<SettingApiResponseView> verifyMailServer(String acceptLanguage, UUID settingId) {
+        return ResponseEntity.status(OK).body(
+                new SettingApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(SettingMessageView.SETTING_MAIL_SERVER_VERIFIED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.verifyMailServer(settingId)))
+        );
+    }
+
+    @Override
     public ResponseEntity<SettingApiResponseView> findFirstSetting(String acceptLanguage) {
         return ResponseEntity.status(OK).body(
                 new SettingApiResponseView()

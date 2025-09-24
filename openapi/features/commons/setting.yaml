@@ -97,6 +97,100 @@ paths:
             application/json:
               schema:
                 $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /settings/{settingId}/email/verify:
+    post:
+      tags:
+        - Setting
+      summary: Verify email server configuration
+      description: Initiates verification for the email server and sets state to WAITING
+      operationId: verifyMailServer
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: settingId
+          in: path
+          description: ID of the setting to verify email server for
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Mail server verification initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingApiResponseView'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Setting not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+  /settings/{settingId}/email/validate/{code}:
+    post:
+      tags:
+        - Setting
+      summary: Validate email server configuration
+      description: Validates the email server using a verification code and marks it as confirmed
+      operationId: validateMailServer
+      parameters:
+        - $ref: '../../parameters/common.yaml#/accept-language'
+        - name: settingId
+          in: path
+          description: ID of the setting to validate email server for
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: code
+          in: path
+          description: Verification code received to confirm the email server
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Mail server validated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingApiResponseView'
+        '400':
+          description: Invalid or expired verification code
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '404':
+          description: Setting not found
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '409':
+          description: Mail server already confirmed
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '../../common/schemas.yaml#/ApiErrorResponse'
   /settings/first:
     get:
       tags:

@@ -21,6 +21,7 @@ import fr.xenonbyte.optifact.backend.application.user.port.in.RegisterUserUseCas
 import fr.xenonbyte.optifact.backend.application.user.port.in.SearchUsersUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.UpdateUserUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.in.VerifyMfaUserCodeUseCase;
+import fr.xenonbyte.optifact.backend.application.user.port.in.ActivateUserAccountUseCase;
 import fr.xenonbyte.optifact.backend.domain.actor.Actor;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.user.Role;
@@ -46,6 +47,7 @@ public final class UserAdapterView {
     private final UserMapperView mapperView;
     private final LoginUserUseCase loginUserUseCase;
     private final VerifyMfaUserCodeUseCase verifyMfaUserCodeUseCase;
+    private final ActivateUserAccountUseCase activateUserAccountUseCase;
 
     public UserAdapterView(CreateUserUseCase createUserUseCase,
                            UpdateUserUseCase updateUserUseCase,
@@ -57,7 +59,8 @@ public final class UserAdapterView {
                            FindRolesUseCase findRolesUseCase,
                            UserMapperView mapperView,
                            LoginUserUseCase loginUserUseCase,
-                           VerifyMfaUserCodeUseCase verifyMfaUserCodeUseCase) {
+                           VerifyMfaUserCodeUseCase verifyMfaUserCodeUseCase,
+                           ActivateUserAccountUseCase activateUserAccountUseCase) {
         this.createUserUseCase = createUserUseCase;
         this.updateUserUseCase = updateUserUseCase;
         this.registerUserUseCase = registerUserUseCase;
@@ -69,6 +72,7 @@ public final class UserAdapterView {
         this.mapperView = mapperView;
         this.loginUserUseCase = loginUserUseCase;
         this.verifyMfaUserCodeUseCase = verifyMfaUserCodeUseCase;
+        this.activateUserAccountUseCase = activateUserAccountUseCase;
     }
 
     public UserResponseView createUser(UserApiRequestView request) {
@@ -186,5 +190,9 @@ public final class UserAdapterView {
 
     public LoginResponseView verifyMfaCode(VerifyMfaCodeApiRequestView request) {
         return mapperView.toLoginResponseView(verifyMfaUserCodeUseCase.verifyMfaCode(request.getEmail(), request.getCode()));
+    }
+
+    public void activateUserAccount(UUID id, String code) {
+        activateUserAccountUseCase.activateUserAccount(id, code);
     }
 }

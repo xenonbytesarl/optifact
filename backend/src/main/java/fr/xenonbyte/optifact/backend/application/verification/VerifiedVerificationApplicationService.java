@@ -1,6 +1,7 @@
 package fr.xenonbyte.optifact.backend.application.verification;
 
 import fr.xenonbyte.optifact.backend.application.verification.exception.VerificationExpiredAtUnAuthorizationException;
+import fr.xenonbyte.optifact.backend.application.verification.exception.VerificationServerCodeNotFoundException;
 import fr.xenonbyte.optifact.backend.application.verification.exception.VerificationUserCodeUnAuthorizationException;
 import fr.xenonbyte.optifact.backend.application.verification.port.in.VerifiedVerificationUseCase;
 import fr.xenonbyte.optifact.backend.application.verification.port.out.VerificationRepository;
@@ -53,5 +54,30 @@ public final class VerifiedVerificationApplicationService implements VerifiedVer
         repository.save(verification);
         LOGGER.info("Verification code verified successfully with userId: '" + userId + "'");
 
+    }
+
+    @Override
+    public void verifyServerCode(UUID serverId, String code) {
+        LOGGER.info("Verifying verification code...");
+
+        Optional<Verification> optionalVerification = repository.findByCodeAndServerId(code, serverId);
+
+        if(optionalVerification.isEmpty()) {
+            throw new VerificationServerCodeNotFoundException(serverId);
+        }
+
+        Verification verification = optionalVerification.get();
+
+        if(verification.getStatus() != VerificationStatus.PENDING) {
+            throw new VerificationStatusBadException(verification.getStatus());
+        }
+
+        if(verification.isExpired()) {
+            throw new VerificationExpiredAtUnAuthorizationException(verification.getServerId());
+        }
+
+        verification = verification.verify();
+        repository.save(verification);
+        LOGGER.info("Verification code verified successfully with serverId: '" + serverId + "'");
     }
 }

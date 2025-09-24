@@ -54,4 +54,10 @@ public final class VerificationRepositoryAdapterJpa implements VerificationRepos
                 .map(mapperJpa::toDomain);
     }
 
+    @Override
+    public Optional<Verification> findByCodeAndServerId(String code, UUID serverId) {
+        return repositoryJpa.findByCodeAndServerId(code, serverId)
+                .map(mapperJpa::toDomain);
+    }
+
 }
