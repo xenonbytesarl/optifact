@@ -542,7 +542,19 @@
   },
   "dashboard": {
     "title": "Tableau de bord",
-    "refresh": "Actualiser"
+    "refresh": "Actualiser",
+    "loading": "Chargement du tableau de bord...",
+    "kpi": {
+      "inInstruction": "En instruction",
+      "adjourned": "Demandes ajournées",
+      "granted": "Agréments accordés",
+      "refused": "Agréments refusés"
+    },
+    "charts": {
+      "decisions": "Décisions des demandes",
+      "monthlyInvoiced": "Montant facturé par mois",
+      "invoicesByStatus": "Montant des factures par statut"
+    }
   },
   "paginator": {
     "noItems": "Aucun élément",
