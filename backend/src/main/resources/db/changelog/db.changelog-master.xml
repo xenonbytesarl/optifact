@@ -33,4 +33,5 @@
     <include file="/db/changelog/changes/026-alter-verification-add-fk-user.xml"/>
     <include file="/db/changelog/changes/027-alter-actor-add-tax-and-registration.xml"/>
     <include file="/db/changelog/changes/028-insert-smtp-settings.xml"/>
+    <include file="/db/changelog/changes/029-insert-admin-user.xml"/>
 </databaseChangeLog>

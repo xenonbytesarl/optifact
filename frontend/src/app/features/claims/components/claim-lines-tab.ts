@@ -33,21 +33,19 @@ import { ClaimLineUploadDialogComponent } from './claim-line-upload-dialog';
               <div>{{ i18n.t('claims.lines.rejectedAt') }}: {{ line.rejectedAt | appDateTime }}</div>
               <div>{{ i18n.t('claims.lines.cancelledAt') }}: {{ line.cancelledAt | appDateTime }}</div>
             </div>
-            @if (!readOnly() && line.status === 'DRAFT') {
-              <div class="absolute right-2 bottom-2">
+            <div class="absolute right-2 bottom-2 inline-flex flex-wrap items-center gap-1">
+              @if (!readOnly() && (line.status === 'DRAFT' || (line.status === 'REJECTED' && claimStatus() === 'DRAFT'))) {
                 <app-button size="icon" icon="upload" tone="neutral" shadow="none" variant="ghost" (clicked)="openUploadDialog(line)" aria-label="Upload"/>
-              </div>
-            }
+              }
 
-            @if (line.status !== 'DRAFT') {
-              <div class="absolute right-2 bottom-2 inline-flex items-center gap-1">
+              @if (line.status !== 'DRAFT') {
                 <app-button [disabled]="loading()" icon="download" tone="info" size="icon" shadow="none" variant="ghost" (clicked)="download(line)" aria-label="Download"/>
                 @if (line.status === 'UPLOADED' && claimStatus() === 'IN_INSTRUCTION') {
                   <app-button [disabled]="loading()" icon="done" tone="success" size="icon" shadow="none" variant="ghost" (clicked)="validate(line)" aria-label="Validate"/>
                   <app-button [disabled]="loading()" icon="close" tone="danger" size="icon" shadow="none" variant="ghost" (clicked)="reject(line)" aria-label="Reject"/>
                 }
-              </div>
-            }
+              }
+            </div>
           </div>
         }
       }

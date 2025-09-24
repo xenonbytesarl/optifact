@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Ensure pgcrypto is available for gen_random_uuid() -->
+    <changeSet id="029-00-enable-pgcrypto" author="junie">
+        <sql>CREATE EXTENSION IF NOT EXISTS pgcrypto;</sql>
+    </changeSet>
+
+    <!-- Insert default Administrateur user and assign ADMIN role -->
+    <changeSet id="029-01-insert-admin-user" author="junie">
+        <comment>Create initial admin user (Administrateur) with email notification@cosumaf.org and bcrypt password</comment>
+        <sql>
+            INSERT INTO t_user (
+                c_id, c_created_at, c_updated_at,
+                c_firstname, c_lastname, c_email, c_password, c_phone,
+                c_account_enabled, c_account_locked, c_account_expired, c_credential_expired, c_mfa_enabled,
+                c_total_login_attempt, c_actor_id
+            )
+            SELECT
+                gen_random_uuid(), now(), NULL,
+                NULL, 'Administrateur', 'notification@cosumaf.org', '$2a$10$gzM3IFwLQDqslnncBo10AePRARXbnlVa9Qt2U0z8KJsLwumhHSL12', NULL,
+                TRUE, FALSE, FALSE, FALSE, FALSE,
+                0, NULL
+            WHERE NOT EXISTS (
+                SELECT 1 FROM t_user WHERE c_email = 'notification@cosumaf.org'
+            );
+        </sql>
+
+        <sql>
+            INSERT INTO t_user_role (c_user_id, c_role_id)
+            SELECT u.c_id, r.c_id
+            FROM t_user u
+            JOIN t_role r ON r.c_code = 'ADMIN'
+            WHERE u.c_email = 'notification@cosumaf.org'
+              AND NOT EXISTS (
+                SELECT 1 FROM t_user_role ur WHERE ur.c_user_id = u.c_id AND ur.c_role_id = r.c_id
+              );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
