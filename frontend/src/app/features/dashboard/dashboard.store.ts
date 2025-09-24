@@ -91,25 +91,42 @@ export class DashboardStore {
       buckets.set(key, { label: key, month: d.getMonth() + 1, year: d.getFullYear(), amount: 0 });
     }
 
-    // Request a larger page to cover recent invoices
-    const res: any = await this.invoiceApi.search('', '', '', '', 0, 200, 'createdAt', Direction.DESC);
+    // Request a larger page to cover recent invoices (500)
+    const res: any = await this.invoiceApi.search('', '', '', '', 0, 500, 'createdAt', Direction.DESC);
     if (!res?.success) return Array.from(buckets.values());
 
     const page = res.data?.content;
     const items: Invoice[] = page?.elements ?? [];
 
+    const normalize = (val: any): number => {
+      if (val == null) return NaN;
+      if (typeof val === 'number') return val;
+      const s = String(val).replace(/\s/g, '').replace(',', '.');
+      const n = parseFloat(s);
+      return isNaN(n) ? NaN : n;
+    };
+
     // Aggregate per YYYY-MM over the last N months
     for (const inv of items) {
       const date = (inv.issueAt as any as Date) || (inv.sendAt as any as Date) || (inv.createdAt as any as Date) || null;
-      const rawAmount = (inv.amount as any) as string | number | null;
-      if (!date || rawAmount == null) continue;
+      if (!date) continue;
 
       const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       if (!buckets.has(key)) continue;
 
-      const normalized = typeof rawAmount === 'number' ? rawAmount : parseFloat(String(rawAmount).replace(/\s/g, '').replace(',', '.'));
-      if (!isNaN(normalized)) {
-        buckets.get(key)!.amount += normalized;
+      // Prefer invoice total amount; fallback to sum of line amounts when absent or zero
+      let amt = normalize((inv as any).amount);
+      if (!(amt > 0) && Array.isArray(inv.lines) && inv.lines.length) {
+        let sum = 0;
+        for (const ln of inv.lines as any[]) {
+          const la = normalize((ln as any).amount);
+          if (!isNaN(la)) sum += la;
+        }
+        if (sum > 0) amt = sum;
+      }
+
+      if (!isNaN(amt)) {
+        buckets.get(key)!.amount += amt;
       }
     }
 
@@ -123,7 +140,7 @@ export class DashboardStore {
       map.set(st, { state: st, amount: 0, count: 0 });
     }
 
-    const res: any = await this.invoiceApi.search('', '', '', '', 0, 200, 'createdAt', Direction.DESC);
+    const res: any = await this.invoiceApi.search('', '', '', '', 0, 100, 'createdAt', Direction.DESC);
     if (!res?.success) return Array.from(map.values());
 
     const page = res.data?.content;

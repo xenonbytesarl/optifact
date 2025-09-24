@@ -1,30 +1,39 @@
 package fr.xenonbyte.optifact.backend.application.claim;
 
+import fr.xenonbyte.optifact.backend.application.actor.port.out.ActorRepository;
 import fr.xenonbyte.optifact.backend.application.claim.exception.ClaimIdNotFoundException;
-import fr.xenonbyte.optifact.backend.application.claim.exception.InvoiceClaimIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.claim.port.in.SubmitClaimUseCase;
 import fr.xenonbyte.optifact.backend.application.claim.port.out.ClaimRepository;
+import fr.xenonbyte.optifact.backend.application.common.setting.port.in.FindFirstSettingUseCase;
 import fr.xenonbyte.optifact.backend.application.common.sequence.port.secondary.SequenceRepository;
-import fr.xenonbyte.optifact.backend.application.invoice.CreateInvoiceApplicationService;
 import fr.xenonbyte.optifact.backend.application.invoice.port.in.CreateInvoiceUseCase;
 import fr.xenonbyte.optifact.backend.application.invoice.port.in.ValidateInvoiceUseCase;
 import fr.xenonbyte.optifact.backend.application.invoice.port.out.InvoiceRepository;
+import fr.xenonbyte.optifact.backend.application.notification.ports.in.SendEmailUseCase;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductExtraIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.product.exception.ProductIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.product.port.out.ProductRepository;
+import fr.xenonbyte.optifact.backend.application.claim.port.in.PrintClaimReceiptUseCase;
+import fr.xenonbyte.optifact.backend.domain.actor.Actor;
+import fr.xenonbyte.optifact.backend.domain.actor.contact.Contact;
 import fr.xenonbyte.optifact.backend.domain.claim.Claim;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
+import fr.xenonbyte.optifact.backend.domain.common.setting.Setting;
+import fr.xenonbyte.optifact.backend.domain.common.setting.vo.EmailServer;
+import fr.xenonbyte.optifact.backend.domain.common.vo.EmailAttachment;
 import fr.xenonbyte.optifact.backend.domain.invoice.Invoice;
 import fr.xenonbyte.optifact.backend.domain.invoice.InvoiceLine;
 import fr.xenonbyte.optifact.backend.domain.invoice.InvoiceState;
 import fr.xenonbyte.optifact.backend.domain.product.product.Product;
 
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Currency;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -43,7 +52,11 @@ public final class SubmitClaimApplicationService implements SubmitClaimUseCase {
     private final InvoiceRepository invoiceRepository;
     private final CreateInvoiceUseCase createInvoiceUseCase;
     private final ValidateInvoiceUseCase validateInvoiceUseCase;
-    private final SequenceRepository sequenceRepository;
+
+    private final PrintClaimReceiptUseCase printClaimReceiptUseCase;
+    private final SendEmailUseCase sendEmailUseCase;
+    private final FindFirstSettingUseCase findFirstSettingUseCase;
+    private final ActorRepository actorRepository;
 
     public SubmitClaimApplicationService(
             ClaimRepository repository,
@@ -51,13 +64,20 @@ public final class SubmitClaimApplicationService implements SubmitClaimUseCase {
             InvoiceRepository invoiceRepository,
             CreateInvoiceUseCase createInvoiceUseCase,
             ValidateInvoiceUseCase validateInvoiceUseCase,
-            SequenceRepository sequenceRepository) {
+            SequenceRepository sequenceRepository,
+            PrintClaimReceiptUseCase printClaimReceiptUseCase,
+            SendEmailUseCase sendEmailUseCase,
+            FindFirstSettingUseCase findFirstSettingUseCase,
+            ActorRepository actorRepository) {
         this.repository = repository;
         this.productRepository = productRepository;
         this.invoiceRepository = invoiceRepository;
         this.createInvoiceUseCase = createInvoiceUseCase;
         this.validateInvoiceUseCase = validateInvoiceUseCase;
-        this.sequenceRepository = sequenceRepository;
+        this.printClaimReceiptUseCase = printClaimReceiptUseCase;
+        this.sendEmailUseCase = sendEmailUseCase;
+        this.findFirstSettingUseCase = findFirstSettingUseCase;
+        this.actorRepository = actorRepository;
     }
 
     @Override
@@ -70,17 +90,82 @@ public final class SubmitClaimApplicationService implements SubmitClaimUseCase {
 
         claim = claim.withSubmit(ZonedDateTime.now());
 
+        Invoice invoice = null;
+
         if(!invoiceRepository.existsByClaimId(claimId)) {
-            generateClaimInvoiceStudyFeeds(claimId, claim);
+            invoice = generateClaimInvoiceStudyFeeds(claimId, claim);
         }
 
         claim = repository.save(claim);
+
+        // Generate PDF receipt
+        byte[] pdf = new byte[0];
+        try {
+            pdf = printClaimReceiptUseCase.printClaimReceipt(claimId.toString());
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Failed to generate claim receipt PDF for claim '" + claimId + "'", e);
+        }
+
+        // Prepare and send email with attachment to claimant contacts
+        try {
+            Actor actor = actorRepository.findById(claim.getActorId()).orElse(null);
+            List<String> recipients = new ArrayList<>((actor == null || actor.getContacts() == null)
+                    ? List.of()
+                    : actor.getContacts().stream()
+                    .map(Contact::getEmail)
+                    .filter(Objects::nonNull)
+                    .map(String::trim)
+                    .filter(s -> !s.isBlank())
+                    .distinct()
+                    .toList());
+            Setting setting = findFirstSettingUseCase.findFirstSetting();
+            EmailServer server = setting.getEmailServer();
+            recipients.add(setting.getCompany().getContact().getEmail());
+            EmailAttachment attachment = (pdf != null && pdf.length > 0)
+                    ? new EmailAttachment("claim-receipt-" + claim.getReference() + ".pdf", "application/pdf", pdf)
+                    : null;
+
+            assert actor != null;
+            Map<String, Object> model = Map.of(
+                    "applicationName", "COSUMAF",
+                    "claimReference", claim.getReference(),
+                    "name", actor.getName()
+            );
+
+            CompletableFuture.runAsync(() -> {
+                try {
+                    if (attachment != null) {
+                        sendEmailUseCase.send(
+                                "email/claim-receipt",
+                                model,
+                                recipients,
+                                "Votre récépissé de dépôt",
+                                server,
+                                List.of(attachment)
+                        );
+                    } else {
+                        sendEmailUseCase.send(
+                                "email/claim-receipt",
+                                model,
+                                recipients,
+                                "Votre récépissé de dépôt",
+                                server
+                        );
+                    }
+                    LOGGER.info("Claim receipt email dispatch queued to '" + recipients + "'");
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, "Failed to send claim receipt email asynchronously", e);
+                }
+            });
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Unexpected error while preparing claim receipt email for claim '" + claimId + "'", e);
+        }
 
         LOGGER.info("Claim submitted successfully with id: '" + claim.getId() + "'");
         return claim;
     }
 
-    private void generateClaimInvoiceStudyFeeds(UUID claimId, Claim claim) {
+    private Invoice generateClaimInvoiceStudyFeeds(UUID claimId, Claim claim) {
         // We check if the product id is correct and if the extra product id is correct
         UUID productId = claim.getProductId();
         Product product = productRepository.findById(productId).orElseThrow(
@@ -120,6 +205,6 @@ public final class SubmitClaimApplicationService implements SubmitClaimUseCase {
 
         invoice = createInvoiceUseCase.createInvoice(invoice);
 
-        validateInvoiceUseCase.validateInvoice(invoice.getId());
+        return validateInvoiceUseCase.validateInvoice(invoice.getId());
     }
 }

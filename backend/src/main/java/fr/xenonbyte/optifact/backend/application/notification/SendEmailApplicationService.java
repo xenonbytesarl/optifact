@@ -1,6 +1,7 @@
 package fr.xenonbyte.optifact.backend.application.notification;
 
 import fr.xenonbyte.optifact.backend.application.notification.ports.in.SendEmailUseCase;
+import fr.xenonbyte.optifact.backend.domain.common.vo.EmailAttachment;
 import fr.xenonbyte.optifact.backend.application.notification.ports.out.MailSender;
 import fr.xenonbyte.optifact.backend.application.notification.ports.out.TemplateRenderer;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
@@ -33,6 +34,11 @@ public final class SendEmailApplicationService implements SendEmailUseCase {
 
     @Override
     public void send(String templateName, Map<String, Object> variables, List<String> to, String subject, EmailServer server) {
+        send(templateName, variables, to, subject, server, List.of());
+    }
+
+    @Override
+    public void send(String templateName, Map<String, Object> variables, List<String> to, String subject, EmailServer server, List<EmailAttachment> attachments) {
         // Basic validations
         if (server == null) throw new IllegalArgumentException("Email server must not be null");
         if (templateName == null || templateName.isBlank()) throw new IllegalArgumentException("templateName must not be blank");
@@ -46,8 +52,8 @@ public final class SendEmailApplicationService implements SendEmailUseCase {
         LOGGER.info("Rendering email template '" + templateName + "' for " + to.size() + " recipient(s)");
         String body = templateRenderer.render(templateName, model);
 
-        LOGGER.info("Sending email to " + to + " using server host '" + server.getHost() + "' and user '" + server.getUsername() + "'");
-        mailSender.send(server, to, subject, body);
+        LOGGER.info("Sending email to " + to + " using server host '" + server.getHost() + "' and user '" + server.getUsername() + "' with " + (attachments == null ? 0 : attachments.size()) + " attachment(s)");
+        mailSender.send(server, to, subject, body, attachments == null ? List.of() : attachments);
         LOGGER.info("Email sent successfully");
     }
 
