@@ -23,7 +23,7 @@ import { InputPasswordComponent } from '../../../shared/ui/input-password';
         <app-card>
           <div class="flex flex-col items-center mb-6">
             <img src="/assets/images/logo-black.png" alt="Logo" class="h-24 mb-2" />
-            <h2 class="text-xl font-semibold">{{ 'users.login' | t }}</h2>
+            <h2 class="text-xl font-semibold">{{ 'users.login.title' | t }}</h2>
           </div>
 
           <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">

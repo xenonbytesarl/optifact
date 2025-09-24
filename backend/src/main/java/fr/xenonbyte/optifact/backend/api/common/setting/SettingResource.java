@@ -2,6 +2,7 @@ package fr.xenonbyte.optifact.backend.api.common.setting;
 
 import fr.xenonbyte.optifact.backend.api.common.locale.MessageUtil;
 import fr.xenonbyte.optifact.backend.api.common.setting.generated.SettingsApi;
+import fr.xenonbyte.optifact.backend.api.common.setting.generated.view.SetMailServerPasswordRequest;
 import fr.xenonbyte.optifact.backend.api.common.setting.generated.view.SettingApiRequestView;
 import fr.xenonbyte.optifact.backend.api.common.setting.generated.view.SettingApiResponseView;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +72,18 @@ public class SettingResource implements SettingsApi {
                         .status(OK.name())
                         .message(MessageUtil.getMessage(SettingMessageView.SETTING_MAIL_SERVER_VERIFIED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(of(CONTENT, adapterView.verifyMailServer(settingId)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<SettingApiResponseView> createMailServerPassword(String acceptLanguage, UUID settingId, SetMailServerPasswordRequest setMailServerPasswordRequest) {
+        return ResponseEntity.status(OK).body(
+                new SettingApiResponseView()
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .status(OK.name())
+                        .message(MessageUtil.getMessage(SettingMessageView.SETTING_MAIL_SERVER_PASSWORD_CREATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(CONTENT, adapterView.createEmailServerPassword(settingId, setMailServerPasswordRequest.getPassword())))
         );
     }
 

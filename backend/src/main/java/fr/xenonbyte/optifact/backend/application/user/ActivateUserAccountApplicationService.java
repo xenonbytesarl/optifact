@@ -14,6 +14,7 @@ import fr.xenonbyte.optifact.backend.domain.common.setting.vo.EmailServer;
 import fr.xenonbyte.optifact.backend.domain.user.User;
 import fr.xenonbyte.optifact.backend.domain.verification.Verification;
 import fr.xenonbyte.optifact.backend.domain.verification.VerificationType;
+import fr.xenonbyte.optifact.backend.application.common.port.out.FrontendUrlProvider;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -41,17 +42,21 @@ public final class ActivateUserAccountApplicationService implements ActivateUser
     private final FindFirstSettingUseCase findFirstSettingUseCase;
     private final UserRepository userRepository;
 
+    private final FrontendUrlProvider frontendUrlProvider;
+
     public ActivateUserAccountApplicationService(
             VerifiedVerificationUseCase verificationUseCase,
             CreateVerificationUseCase createVerificationUseCase,
             SendEmailUseCase sendEmailUseCase,
             FindFirstSettingUseCase findFirstSettingUseCase,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            FrontendUrlProvider frontendUrlProvider) {
         this.verificationUseCase = verificationUseCase;
         this.createVerificationUseCase = createVerificationUseCase;
         this.sendEmailUseCase = sendEmailUseCase;
         this.findFirstSettingUseCase = findFirstSettingUseCase;
         this.userRepository = userRepository;
+        this.frontendUrlProvider = frontendUrlProvider;
     }
 
     @Override
@@ -115,13 +120,13 @@ public final class ActivateUserAccountApplicationService implements ActivateUser
         });
     }
 
-    private static Map<String, Object> buildEmailModel(User user, Verification createPwdVerification) {
+    private Map<String, Object> buildEmailModel(User user, Verification createPwdVerification) {
         // Prepare email model for create-password template
         Map<String, Object> model = new HashMap<>();
         model.put("applicationName", "COSUMAF");
         model.put("name", user.getFullName());
         model.put("duration", User.CREATE_PASSWORD_CODE_DURATION_DAY + " jours");
-        model.put("createPasswordLink", "/users/password/create/" + user.getId() + "/" + createPwdVerification.getCode());
+        model.put("createPasswordLink", frontendUrlProvider.baseUrl() + "/users/password/create/" + user.getId() + "/" + createPwdVerification.getCode());
         return model;
     }
 }

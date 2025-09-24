@@ -10,4 +10,5 @@ public final class SettingMessageView {
     public static final String SETTING_FOUND_SUCCESSFULLY = "setting.found";
     public static final String SETTING_MAIL_SERVER_VERIFIED_SUCCESSFULLY = "setting.mail.server.verified";
     public static final String SETTING_MAIL_SERVER_VALIDATED_SUCCESSFULLY = "setting.mail.server.validated";
+    public static final String SETTING_MAIL_SERVER_PASSWORD_CREATED_SUCCESSFULLY = "setting.mail.server.password.created";
 }

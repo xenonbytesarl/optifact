@@ -120,4 +120,8 @@ public final class EmailServer {
     public ZonedDateTime getConfirmedAt() {
         return confirmedAt;
     }
+
+    public EmailServer definePassword(String password) {
+        return new EmailServer(from, type, host, port, protocol, useTLS, useAuth, username, password, state, confirmedAt);
+    }
 }

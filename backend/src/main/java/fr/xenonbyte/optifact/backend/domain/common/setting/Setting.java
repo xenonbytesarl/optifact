@@ -56,4 +56,8 @@ public final class  Setting extends BaseEntity {
     public Setting confirmMailServer() {
         return with(company, emailServer.withConfirmed());
     }
+
+    public Setting definePassword(String password) {
+        return with(company, emailServer.definePassword(password));
+    }
 }
