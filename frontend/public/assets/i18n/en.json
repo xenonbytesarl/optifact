@@ -378,6 +378,9 @@
     "login": {
       "success": "Login successful.",
       "error": "Login failed."
+    },
+    "activate": {
+      "success": "Your account is activated. A link that expires in 2 days has been sent to your email to set your password."
     }
   },
   "claims": {

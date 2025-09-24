@@ -4,12 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CardComponent } from '../../../shared/ui/card';
 import { ButtonComponent } from '../../../shared/ui/button';
 import { InputHiddenComponent } from '../../../shared/ui/input-hidden';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { userStore } from '../user.store';
 
 @Component({
   selector: 'app-activate-account-form',
   standalone: true,
-  imports: [CommonModule, CardComponent, ButtonComponent, InputHiddenComponent],
+  imports: [CommonModule, CardComponent, ButtonComponent, InputHiddenComponent, TranslatePipe],
   template: `
     <div class="min-h-dvh flex items-center justify-center px-4">
       <div class="w-full max-w-md">
@@ -40,9 +41,7 @@ import { userStore } from '../user.store';
             </div>
           } @else {
             <div class="rounded-md border border-green-200 bg-green-50 text-green-800 p-4">
-              <p class="text-sm">
-                Votre compte est activé. un lien qui expire dans 2 jours vous a été  envoyé par email pour definir votre mot de passe
-              </p>
+              <p class="text-sm">{{ 'users.activate.success' | t }}</p>
             </div>
             <div class="mt-4">
               <app-button variant="ghost" (clicked)="goToLogin()">
@@ -51,6 +50,7 @@ import { userStore } from '../user.store';
               </app-button>
             </div>
           }
+          <p class="pb-15"></p>
         </app-card>
       </div>
     </div>

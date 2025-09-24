@@ -32,7 +32,7 @@ import { InputPasswordComponent } from '../../../shared/ui/input-password';
               <app-input type="email" placeholder="user@email.com" [error]="(!!emailError())" [value]="email" (valueChange)="form.controls['email'].setValue($event)" (blurred)="form.controls['email'].markAsTouched()" />
             </app-form-field>
 
-            <app-form-field [label]="'users.password' | t" [required]="true" [error]="passwordError()">
+            <app-form-field [label]="'users.password.label' | t" [required]="true" [error]="passwordError()">
               <app-input-password placeholder="••••••••" [error]="!!passwordError()" [value]="password" (valueChange)="form.controls['password'].setValue($event)" (blurred)="form.controls['password'].markAsTouched()" />
             </app-form-field>
 

@@ -20,7 +20,7 @@
   },
   "validation": {
     "phoneRequired": "Le téléphone est obligatoire.",
-    "registrationOrTaxRequired": "Le numéro d'immatriculation ou le numéro de TVA est obligatoire.",
+    "registrationOrTaxRequired": "Le Numéro de registre de commerce ou le Numéros de contribuable est obligatoire.",
     "required": "Ce champ est obligatoire.",
     "email": "Adresse e-mail invalide.",
     "minlength": "La valeur est trop courte.",
@@ -309,8 +309,8 @@
       "rolePlaceholder": "Sélectionner un rôle",
       "login": "Se connecter",
       "actorName": "Nom de l'acteur",
-      "registrationNumber": "Numéro d'immatriculation",
-      "taxNumber": "Numéro de TVA"
+      "registrationNumber": "Numéro de registre de commerce",
+      "taxNumber": "Numéros de contribuable"
     },
     "messages": {
       "loading": "Chargement de l'utilisateur..."
@@ -358,7 +358,11 @@
         "noUser": "Utilisateur introuvable pour cet e-mail."
       },
       "new": "Nouveau mot de passe",
-      "confirm": "Confirmer le mot de passe"
+      "confirm": "Confirmer le mot de passe",
+      "label": "Mot de passe"
+    },
+    "activate": {
+      "success": "Votre compte est activé. Un lien qui expire dans 2 jours vous a été envoyé par email pour définir votre mot de passe."
     }
   },
   "claims": {
