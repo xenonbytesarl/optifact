@@ -1,8 +1,10 @@
 package fr.xenonbyte.optifact.backend.infrastructure.notification;
 
+import fr.xenonbyte.optifact.backend.domain.common.vo.EmailAttachment;
 import fr.xenonbyte.optifact.backend.application.notification.ports.out.MailSender;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.common.setting.vo.EmailServer;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,11 @@ public class SmtpMailSenderAdapter implements MailSender {
 
     @Override
     public void send(EmailServer server, List<String> to, String subject, String body) {
+        send(server, to, subject, body, List.of());
+    }
+
+    @Override
+    public void send(EmailServer server, List<String> to, String subject, String body, List<EmailAttachment> attachments) {
         if (server == null) throw new IllegalArgumentException("Email server must not be null");
         if (to == null || to.isEmpty()) throw new IllegalArgumentException("Recipients list must not be empty");
 
@@ -32,12 +39,24 @@ public class SmtpMailSenderAdapter implements MailSender {
         MimeMessage message = sender.createMimeMessage();
 
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+            boolean hasAttachments = attachments != null && !attachments.isEmpty();
+            MimeMessageHelper helper = new MimeMessageHelper(message, hasAttachments, StandardCharsets.UTF_8.name());
             String from = server.getFrom() != null && !server.getFrom().isBlank() ? server.getFrom() : server.getUsername();
             helper.setFrom(from);
             helper.setTo(to.toArray(new String[0]));
             helper.setSubject(subject == null ? "" : subject);
             helper.setText(body == null ? "" : body, true); // HTML
+
+            if (hasAttachments) {
+                for (EmailAttachment att : attachments) {
+                    if (att == null) continue;
+                    ByteArrayResource resource = new ByteArrayResource(att.getContent()) {
+                        @Override
+                        public String getFilename() { return att.getFilename(); }
+                    };
+                    helper.addAttachment(att.getFilename(), resource, att.getContentType());
+                }
+            }
         } catch (MessagingException e) {
             throw new IllegalStateException("Failed to build email message", e);
         }
