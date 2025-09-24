@@ -123,6 +123,20 @@ export class UserApi extends GlobalApi {
     }
   }
 
+  async activateAccount(id: string, code: string) {
+    try {
+      return await firstValueFrom(
+        this.http.post<SuccessApiResponse<void> | ErrorApiResponse>(`${this.base}/auth/${id}/activate/${encodeURIComponent(code)}`,
+          {}, { headers: this.headers })
+      );
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
   async search(params: {
     page?: number; size?: number; sortField?: string; sortDirection?: 'ASC' | 'DESC';
     nameFilter?: string; emailFilter?: string; phoneFilter?: string; roleNameFilter?: string;

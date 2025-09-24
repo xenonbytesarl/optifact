@@ -69,6 +69,34 @@ export const settingStore = signalStore(
           return null;
         }
       },
+
+      async verifyMailServer(settingId: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.verifyMailServer(settingId);
+        if (response.success) {
+          const payloadResp = response as SuccessApiResponse<Setting>;
+          patchState(store, { current: payloadResp.data.content ?? null, message: payloadResp.message ?? 'setting.mail.verify.success', loading: false });
+          return payloadResp.data.content;
+        } else {
+          const payloadErr = response as ErrorApiResponse;
+          patchState(store, { error: payloadErr.reason ?? 'setting.mail.verify.error', loading: false });
+          return null;
+        }
+      },
+
+      async validateMailServer(settingId: string, code: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.validateMailServer(settingId, code);
+        if (response.success) {
+          const payloadResp = response as SuccessApiResponse<Setting>;
+          patchState(store, { current: payloadResp.data.content ?? null, message: payloadResp.message ?? 'setting.mail.validate.success', loading: false });
+          return payloadResp.data.content;
+        } else {
+          const payloadErr = response as ErrorApiResponse;
+          patchState(store, { error: payloadErr.reason ?? 'setting.mail.validate.error', loading: false });
+          return null;
+        }
+      },
     };
   })
 );

@@ -6,11 +6,17 @@ import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { SpinnerComponent } from '../../../shared/ui/spinner';
 import { ActionBarComponent } from '../../../shared/ui/action-bar';
 import { Router } from '@angular/router';
+import { ButtonComponent } from '../../../shared/ui/button';
+import { DialogComponent } from '../../../shared/ui/dialog';
+import { FormFieldComponent } from '../../../shared/ui/form-field';
+import { InputTextComponent } from '../../../shared/ui/input';
+import { ToastService } from '../../../shared/ui/toast';
+import {MailServerState} from '../../../core/api/setting.api';
 
 @Component({
   selector: 'app-setting-view-page',
   standalone: true,
-  imports: [CommonModule, CardComponent, TranslatePipe, SpinnerComponent, ActionBarComponent],
+  imports: [CommonModule, CardComponent, TranslatePipe, SpinnerComponent, ActionBarComponent, ButtonComponent, DialogComponent, FormFieldComponent, InputTextComponent],
   changeDetection: ChangeDetectionStrategy.Default,
   template: `
     <div class="p-4 space-y-4">
@@ -109,6 +115,28 @@ import { Router } from '@angular/router';
               <div class="flex items-center gap-2"><span class="text-muted min-w-32">Auth</span><span class="font-medium">{{ setting()?.emailServer?.useAuth ? 'Oui' : 'Non' }}</span></div>
               <div class="flex items-center gap-2"><span class="text-muted min-w-32">Username</span><span class="font-medium">{{ setting()?.emailServer?.username || '-' }}</span></div>
             </div>
+
+            <div class="mt-4 flex flex-wrap items-center gap-2 py-6">
+              @if (setting()?.emailServer?.state === MailServerState.NEW) {
+                <app-button size="sm" variant="primary" tone="primary" icon="forward_to_inbox" [label]="('settings.email.sendCode' | t) || 'Envoyer le code de vérification'" [disabled]="loading()" (clicked)="onSendVerification()" />
+              }
+              @if (setting()?.emailServer?.state === MailServerState.WAITING) {
+                <app-button size="sm" variant="secondary" tone="primary" icon="verified" [label]="('settings.email.verifyServer' | t) || 'Vérifier le serveur'" [disabled]="loading()" (clicked)="openCodeDialog()" />
+              }
+            </div>
+
+            <!-- Code verification dialog -->
+            <app-dialog [title]="('settings.email.enterCode' | t) || 'Entrer le code de vérification'" [(open)]="showCodeDialog" [backdropClosable]="true" (closed)="onDialogClosed()" panelMaxWidth="480px">
+              <div class="space-y-4">
+                <app-form-field [label]="('settings.email.code' | t) || 'Code'">
+                  <app-input [(value)]="verificationCode" placeholder="Code de vérification" />
+                </app-form-field>
+              </div>
+              <div dialog-actions>
+                <app-button variant="ghost" [label]="('common.cancel' | t) || 'Annuler'" (clicked)="closeDialog()" />
+                <app-button class="ml-2" variant="primary" tone="primary" icon="check" [label]="('common.validate' | t) || 'Valider'" [disabled]="!verificationCode() || loading()" (clicked)="submitCode()" />
+              </div>
+            </app-dialog>
           </app-card>
         }
       } @else {
@@ -122,11 +150,56 @@ import { Router } from '@angular/router';
 export class SettingViewPage {
   private store = inject(settingStore);
   private router = inject(Router);
+  private toast = inject(ToastService);
   setting = computed(() => this.store.current());
   loading = computed(() => this.store.loading());
   activeTab = signal<'company' | 'email'>('company');
 
+  // Dialog state for entering verification code
+  showCodeDialog = signal(false);
+  verificationCode = signal('');
+
   onEdit() {
     this.router.navigate(['/settings/edit']);
   }
+
+  async onSendVerification() {
+    const id = this.setting()?.id;
+    if (!id) return;
+    const res = await this.store.verifyMailServer(id);
+    if (res) {
+      this.toast.success(this.store.message() || 'Code de vérification envoyé');
+    } else {
+      this.toast.error(this.store.error() || 'Erreur lors de l\'envoi du code');
+    }
+  }
+
+  openCodeDialog() {
+    this.verificationCode.set('');
+    this.showCodeDialog.set(true);
+  }
+
+  closeDialog() {
+    this.showCodeDialog.set(false);
+  }
+
+  onDialogClosed() {
+    this.verificationCode.set('');
+  }
+
+  async submitCode() {
+    const id = this.setting()?.id;
+    const code = (this.verificationCode() || '').trim();
+    if (!id || !code) return;
+    const res = await this.store.validateMailServer(id, code);
+    if (res) {
+      this.toast.success(this.store.message() || 'Serveur email vérifié avec succès');
+      this.showCodeDialog.set(false);
+      this.verificationCode.set('');
+    } else {
+      this.toast.error(this.store.error() || 'Code invalide ou expiré');
+    }
+  }
+
+  protected readonly MailServerState = MailServerState;
 }

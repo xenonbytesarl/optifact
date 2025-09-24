@@ -27,6 +27,11 @@ export const usersRoutes: Routes = [
     loadComponent: () => import('./components/verify-mfa-code-form').then(m => m.VerifyMfaCodeFormComponent),
     data: { title: 'Vérifier le code MFA' }
   },
+  {
+    path: 'activate/:userId/:verificationCode',
+    loadComponent: () => import('./components/activate-account-form').then(m => m.ActivateAccountFormComponent),
+    data: { title: 'Activation du compte' }
+  },
 
   // Users management (protected)
   {
