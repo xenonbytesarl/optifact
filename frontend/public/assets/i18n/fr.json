@@ -18,6 +18,17 @@
   "app": {
     "name": "Optifact"
   },
+  "validation": {
+    "phoneRequired": "Le téléphone est obligatoire.",
+    "registrationOrTaxRequired": "Le numéro d'immatriculation ou le numéro de TVA est obligatoire.",
+    "required": "Ce champ est obligatoire.",
+    "email": "Adresse e-mail invalide.",
+    "minlength": "La valeur est trop courte.",
+    "password": {
+      "mismatch": "Les mots de passe ne correspondent pas.",
+      "minlength": "Le mot de passe doit contenir au moins 6 caractères."
+    }
+  },
   "actions": {
     "new": "Créer",
     "view": "Voir",
@@ -277,7 +288,6 @@
     "subtitle": "Gérer les utilisateurs",
     "new": "Nouvel utilisateur",
     "register": "Créer un compte",
-    "password": "Mot de passe",
     "noAccountQuestion": "Vous n'avez pas de compte ?",
     "alreadyHaveAccount": "Vous avez déjà un compte ?",
     "createAccount": "Créer un compte",
@@ -336,6 +346,19 @@
     "login": {
       "success": "Connexion réussie.",
       "error": "Échec de la connexion."
+    },
+    "verification": {
+      "code": "Code de vérification"
+    },
+    "password": {
+      "create": {
+        "title": "Créer votre mot de passe",
+        "success": "Mot de passe créé avec succès.",
+        "error": "Échec de la création du mot de passe.",
+        "noUser": "Utilisateur introuvable pour cet e-mail."
+      },
+      "new": "Nouveau mot de passe",
+      "confirm": "Confirmer le mot de passe"
     }
   },
   "claims": {
@@ -544,15 +567,9 @@
       "invoice": "Supprimer cette facture ?"
     }
   },
-  "validation": {
-    "required": "Ce champ est obligatoire.",
-    "email": "Email invalide.",
-    "phoneRequired": "Le téléphone est obligatoire.",
-    "registrationOrTaxRequired": "Le numéro d'immatriculation ou le numéro de TVA est obligatoire."
-  },
   "claim": {
     "submit": "Demande soumise avec succès",
-    "instruction": "Demande passée en instruction avec succès",
+    "inInstruction": "Demande passée en instruction avec succès",
     "instruction": {
       "done": "Instruction de la demande terminée avec succès"
     },

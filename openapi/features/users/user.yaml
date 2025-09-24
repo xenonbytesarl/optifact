@@ -114,7 +114,7 @@ paths:
                 $ref: '#/components/schemas/UserApiResponseView'
         '404':
           description: User not found
-  /users/{id}/password/{code}:
+  /users/auth/{id}/password/{code}:
     post:
       operationId: createUserPassword
       summary: Create or set the user's password

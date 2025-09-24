@@ -2,8 +2,10 @@ package fr.xenonbyte.optifact.backend.application.user;
 
 import fr.xenonbyte.optifact.backend.application.user.exception.UserIdNotFoundException;
 import fr.xenonbyte.optifact.backend.application.user.port.in.CreateUserPasswordUseCase;
+import fr.xenonbyte.optifact.backend.application.user.port.in.VerifyMfaUserCodeUseCase;
 import fr.xenonbyte.optifact.backend.application.user.port.out.PasswordManager;
 import fr.xenonbyte.optifact.backend.application.user.port.out.UserRepository;
+import fr.xenonbyte.optifact.backend.application.verification.port.in.VerifiedVerificationUseCase;
 import fr.xenonbyte.optifact.backend.domain.common.annotation.Hexagonal;
 import fr.xenonbyte.optifact.backend.domain.user.User;
 
@@ -19,10 +21,15 @@ public final class CreateUserPasswordApplicationService implements CreateUserPas
 
     private final UserRepository repository;
     private final PasswordManager passwordManager;
+    private final VerifiedVerificationUseCase verifiedVerificationUseCase;
 
-    public CreateUserPasswordApplicationService(UserRepository repository, PasswordManager passwordManager) {
+    public CreateUserPasswordApplicationService(
+            UserRepository repository,
+            PasswordManager passwordManager,
+             VerifiedVerificationUseCase verifiedVerificationUseCase) {
         this.repository = repository;
         this.passwordManager = passwordManager;
+        this.verifiedVerificationUseCase = verifiedVerificationUseCase;
     }
 
     @Override
@@ -34,6 +41,9 @@ public final class CreateUserPasswordApplicationService implements CreateUserPas
         //TODO fetch the verification code from database and check if it's valid(non expired, not already validated, useId matched)
 
         User.checkPassword(password, confirmPassword);
+
+
+        verifiedVerificationUseCase.verifyUserCode(userId, verificationCode);
 
         password = passwordManager.encrypt(password);
 
