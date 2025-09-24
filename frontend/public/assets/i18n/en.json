@@ -21,8 +21,41 @@
   "validation": {
     "required": "This field is required.",
     "email": "Invalid email address.",
+    "minlength": "The value is too short.",
+    "password": {
+      "mismatch": "Passwords do not match.",
+      "minlength": "Password must be at least 6 characters."
+    },
     "phoneRequired": "Phone is required.",
     "registrationOrTaxRequired": "Registration number or tax number is required."
+  },
+  "users": {
+    "verification": {
+      "code": "Verification code"
+    },
+    "password": {
+      "create": "Create password",
+      "create": {
+        "title": "Create your password",
+        "success": "Password created successfully.",
+        "error": "Failed to create password.",
+        "noUser": "User not found for this email."
+      },
+      "new": "New password",
+      "confirm": "Confirm password"
+    },
+    "mfa": {
+      "verifyTitle": "Verify MFA code",
+      "info": "Please enter the 6-digit code we sent to your email.",
+      "code": "Verification code",
+      "check": "Verify",
+      "requestNew": "Request a new code",
+      "lostCodeQuestion": "Didn't receive the code?",
+      "verify": {
+        "success": "MFA verified successfully.",
+        "error": "MFA verification failed."
+      }
+    }
   },
   "email": {
     "invalid": "Invalid email address."

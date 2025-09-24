@@ -112,7 +112,7 @@ export class UserApi extends GlobalApi {
     try {
       const confirm = payload.confirmPassword ?? payload.password;
       return await firstValueFrom(
-        this.http.post<SuccessApiResponse<void> | ErrorApiResponse>(`${this.base}/${id}/password/${encodeURIComponent(verificationCode)}`,
+        this.http.post<SuccessApiResponse<void> | ErrorApiResponse>(`${this.base}/auth/${id}/password/${encodeURIComponent(verificationCode)}`,
           { password: payload.password, confirmPassword: confirm }, { headers: this.headers })
       );
     } catch (error) {

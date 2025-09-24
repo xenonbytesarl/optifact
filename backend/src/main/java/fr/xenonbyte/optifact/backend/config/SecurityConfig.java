@@ -40,7 +40,7 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/api/v1/optifact/auth/**", "/api/v1/optifact/**").permitAll()
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/api/v1/optifact/users/auth/**").permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(session ->
