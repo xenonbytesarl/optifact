@@ -1,10 +1,14 @@
 import { inject } from '@angular/core';
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
-import { UserApi, UserView, RoleView, RegisterUserRequest, CreateUserPasswordRequest } from '../../core/api/user.api';
+import { UserApi, UserView, RoleView, RegisterUserRequest, CreateUserPasswordRequest, LoginApiRequest, LoginResponse } from '../../core/api/user.api';
 import { ErrorApiResponse, SuccessApiResponse, Page } from '../../core/model/response.model';
+
+const AUTH_STORAGE_KEY = 'optifact.auth';
 
 export interface UsersState {
   current: UserView | null;
+  auth: LoginResponse | null;
+  loggedIn: boolean;
   roles: RoleView[];
   loading: boolean;
   error: string | null;
@@ -13,6 +17,8 @@ export interface UsersState {
 
 const initialState: UsersState = {
   current: null,
+  auth: null,
+  loggedIn: false,
   roles: [],
   loading: false,
   error: null,
@@ -25,7 +31,53 @@ export const userStore = signalStore(
   withMethods((store) => {
     const api = inject(UserApi);
 
+    function isBrowser() {
+      return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+    }
+
+    function saveToStorage(data: LoginResponse) {
+      try {
+        if (!isBrowser()) return;
+        // Persist only when tokens are present (logged in)
+        const maybeToken = (data as any)?.accessToken;
+        if (maybeToken) {
+          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(data));
+        }
+      } catch { /* ignore */ }
+    }
+
+    function clearStorage() {
+      try { if (isBrowser()) localStorage.removeItem(AUTH_STORAGE_KEY); } catch { /* ignore */ }
+    }
+
+    function readFromStorage(): LoginResponse | null {
+      try {
+        if (!isBrowser()) return null;
+        const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object' && parsed.accessToken) {
+          return parsed as LoginResponse;
+        }
+        return null;
+      } catch {
+        return null;
+      }
+    }
+
     return {
+      hydrateFromStorage() {
+        const existing = readFromStorage();
+        if (existing) {
+          patchState(store, { auth: existing, loggedIn: true });
+        } else {
+          patchState(store, { auth: null, loggedIn: false });
+        }
+      },
+      logout() {
+        clearStorage();
+        patchState(store, { auth: null, loggedIn: false });
+      },
       resetForm() {
         patchState(store, { current: null, error: null, message: null });
       },
@@ -104,7 +156,7 @@ export const userStore = signalStore(
         const response = await api.register(payload);
         if ((response as any)?.success) {
           const payloadResp = response as SuccessApiResponse<void>;
-          patchState(store, { loading: false, message: payloadResp.message ?? 'users.register.success' });
+          patchState(store, { loading: false, message: payloadResp.message ?? 'users.registerEmailLinkSent' });
           return true;
         } else {
           const payloadErr = response as ErrorApiResponse;
@@ -137,6 +189,49 @@ export const userStore = signalStore(
           const payloadErr = response as ErrorApiResponse;
           patchState(store, { loading: false, error: payloadErr.reason ?? 'users.search.error' });
           return { elements: [], page: 0, size: 0, totalElements: 0, totalPages: 0, isFirst: true, isLast: true } as Page<UserView>;
+        }
+      },
+      async login(payload: LoginApiRequest) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.login(payload);
+        if ((response as any)?.success) {
+          const payloadResp = response as SuccessApiResponse<LoginResponse>;
+          const result = payloadResp.data?.content as any as LoginResponse;
+          const isLoggedIn = !!(result as any)?.accessToken;
+          if (isLoggedIn) {
+            saveToStorage(result);
+          } else {
+            // no tokens yet (MFA pending); ensure storage is empty
+            clearStorage();
+          }
+          patchState(store, { auth: result, loggedIn: isLoggedIn, loading: false, message: payloadResp.message ?? 'users.login.success' });
+          return result;
+        } else {
+          const payloadErr = response as ErrorApiResponse;
+          clearStorage();
+          patchState(store, { auth: null, loggedIn: false, loading: false, error: payloadErr.reason ?? 'users.login.error' });
+          return null;
+        }
+      },
+      async verifyMfaCode(email: string, code: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.verifyMfaCode({ email, code });
+        if ((response as any)?.success) {
+          const payloadResp = response as SuccessApiResponse<LoginResponse>;
+          const result = payloadResp.data?.content as any as LoginResponse;
+          const isLoggedIn = !!(result as any)?.accessToken;
+          if (isLoggedIn) {
+            saveToStorage(result);
+          } else {
+            clearStorage();
+          }
+          patchState(store, { auth: result, loggedIn: isLoggedIn, loading: false, message: payloadResp.message ?? 'users.mfa.verify.success' });
+          return result;
+        } else {
+          const payloadErr = response as ErrorApiResponse;
+          clearStorage();
+          patchState(store, { auth: null, loggedIn: false, loading: false, error: payloadErr.reason ?? 'users.mfa.verify.error' });
+          return null;
         }
       },
     };

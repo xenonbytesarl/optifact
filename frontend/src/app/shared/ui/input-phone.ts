@@ -10,7 +10,7 @@ import { COUNTRIES } from './countries.data';
   template: `
     <div class="flex items-stretch">
       @if (showFlag()) {
-        <div class="basis-1/5 shrink-0  -mr-px">
+        <div class="shrink-0 -mr-px w-[84px] max-w-[84px]">
           <app-country-autocomplete
             [value]="country()"
             (valueChange)="onCountry($event)"
@@ -18,13 +18,14 @@ import { COUNTRIES } from './countries.data';
             [rightSquare]="true"
             [clearable]="false"
             [flagOnly]="true"
+            [error]="error() || incomplete()"
           />
         </div>
       }
-      <div class="basis-4/5 flex flex-col">
+      <div class="flex-1 flex flex-col">
         <div class="flex items-center">
           @if (inlineFlag() && !showFlag()) {
-            <span class="text-xl" [attr.aria-label]="country() || ''">{{ currentFlag() }}</span>
+            <span class="text-2xl mr-2" [attr.aria-label]="country() || ''">{{ currentFlag() }}</span>
           }
           <input
             type="tel"

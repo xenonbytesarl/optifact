@@ -370,7 +370,7 @@ components:
             $ref: '#/components/schemas/RoleView'
     RegisterUserApiRequestView:
       type: object
-      required: [lastname, email, actorReference]
+      required: [lastname, email, phone]
       properties:
         firstname:
           type: string
@@ -381,9 +381,15 @@ components:
           format: email
         phone:
           type: string
-        actorReference:
+        taxNumber:
           type: string
-          description: External reference used to link the user to an actor
+          description: Tax number used to link the user to an actor
+        registrationNumber:
+          type: string
+          description: Registration number used to link the user to an actor
+        actorName:
+          type: string
+          description: Actor name used to link the user to an actor
     CreateUserPasswordRequestView:
       type: object
       required: [password]
