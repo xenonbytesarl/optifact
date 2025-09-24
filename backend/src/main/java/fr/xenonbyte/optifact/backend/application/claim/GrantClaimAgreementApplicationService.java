@@ -98,7 +98,7 @@ public final class GrantClaimAgreementApplicationService implements GrantClaimAg
                 null,
                 currency, //TODO set a default product currency when product currency is null or product type is rate
                 null
-        );
+        ).computeAmount();
 
         Invoice invoice = Invoice.create(
                 null,
@@ -114,6 +114,7 @@ public final class GrantClaimAgreementApplicationService implements GrantClaimAg
                 List.of(invoiceLine)
         );
 
-        createInvoiceUseCase.createInvoice(invoice);
+        invoice = createInvoiceUseCase.createInvoice(invoice);
+        validateInvoiceUseCase.validateInvoice(invoice.getId());
     }
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <!-- Define SMTP settings for COSUMAF -->
+    <changeSet id="20250924_2329_define_smtp_settings_cosumaf" author="brice.mbiandji">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="t_setting"/>
+            <!-- Ensure a COSUMAF row exists -->
+            <sqlCheck expectedResult="1">SELECT CASE WHEN EXISTS(SELECT 1 FROM t_setting WHERE lower(c_company_name) = 'cosumaf') THEN 1 ELSE 0 END</sqlCheck>
+        </preConditions>
+
+        <update tableName="t_setting">
+            <column name="c_mail_from" value="notifications@cosumaf.org"/>
+            <column name="c_mail_type" value="OTHER"/>
+            <column name="c_mail_host" value="smtp.office365.com"/>
+            <column name="c_mail_port" valueNumeric="587"/>
+            <column name="c_mail_protocol" value="smtp"/>
+            <column name="c_mail_use_tls" valueBoolean="true"/>
+            <column name="c_mail_use_auth" valueBoolean="true"/>
+            <!-- Username is not specified in the request; we keep it as-is (null/unchanged) -->
+            <column name="c_mail_password" value="C^796462426337og"/>
+            <column name="c_mail_state" value="NEW"/>
+            <where>lower(c_company_name) = 'cosumaf'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>
