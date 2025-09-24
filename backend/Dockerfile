@@ -33,7 +33,11 @@ ENV BACKEND_PORT=8080 \
     DB_PASSWORD=optifact \
     FRONTEND_HOST=frontend \
     FRONTEND_PORT=80 \
-    CLAIM_FILE_ROOT_DIR=/data/claimFiles
+    CLAIM_FILE_ROOT_DIR=/data/claimFiles \
+    JWT_ISSUER=optifact \
+    JWT_SECRET=optifact \
+    JWT_EXPIRATION=30000 \
+    JWT_REFRESH_EXPIRATION=500000
 
 # Common Spring envs (optional, in case the app reads standard keys)
 ENV SPRING_DATASOURCE_URL="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}" \
