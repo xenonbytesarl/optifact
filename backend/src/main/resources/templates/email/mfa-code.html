@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="(${emailTitle} ?: ('Votre code de sécurité ' + (${applicationName} ?: 'Optifact')))"></title>
+  <style>
+    /* Palette: #FFD04A (accent), #5D3A13 (dark), #828281 (secondary), #B2B1B1 (muted), Predominant: #B6852B */
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+    body { margin:0; padding:0; background:#f7f7f7; -webkit-font-smoothing: antialiased; }
+    .wrapper { width:100%; background:#f7f7f7; padding:24px 12px; }
+    .container { max-width:640px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+    .brand { display:flex; align-items:center; gap:12px; padding:16px 20px; background:#B6852B; color:#fff; }
+    .brand-logo-img { display:block; width:36px; height:36px; border-radius:6px; background:#ffffff11; object-fit:contain; }
+    .brand-title { font:600 16px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial; letter-spacing:.2px; }
+    .content { padding:28px 24px; color:#5D3A13; font:400 15px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial; }
+    h1 { margin:0 0 12px 0; font:700 20px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial; color:#5D3A13; }
+    p { margin:0 0 14px 0; }
+    .code-box { display:inline-block; margin:16px 0; padding:14px 18px; border-radius:10px; background:#FFF7DF; color:#5D3A13; font:700 22px/1 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial; letter-spacing:2px; }
+    .muted { color:#828281; }
+    .footer { padding:18px 24px 24px; color:#828281; font:400 13px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial; border-top:1px solid #B2B1B1; background:#ffffff; }
+    .small { font-size:12px; color:#B2B1B1; }
+    @media (prefers-color-scheme: dark) {
+      body, .wrapper { background:#1f1e1c; }
+      .container { background:#2b2926; box-shadow: none; }
+      .brand { background:#5D3A13; }
+      .content { color:#FFD04A; }
+      h1 { color:#FFD04A; }
+      .code-box { background:#3a2f1f; color:#FFD04A; }
+      .muted { color:#B2B1B1; }
+      .footer { background:#1f1e1c; border-top-color:#3a3834; color:#B2B1B1; }
+      .small { color:#828281; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <!-- Header / Brand -->
+      <div class="brand">
+        <img class="brand-logo-img" th:src="${#strings.defaultString(logoUrl, '/images/logo.png')}" alt="Logo" width="36" height="36" />
+        <div class="brand-title" th:text="(${applicationName} ?: (${companyName} ?: 'Optifact'))"></div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <h1>
+          <span>Objet : Votre code de sécurité </span><span th:text="${applicationName} ?: 'Optifact'"></span>
+        </h1>
+
+        <p>
+          Bonjour <span th:text="${name} ?: 'cher utilisateur'"></span>,
+        </p>
+
+        <p style="margin-top:8px;">
+          Vous avez activé l’authentification à deux facteurs sur votre compte
+          <strong th:text="${applicationName} ?: 'notre application'"></strong>.
+          Voici votre code de sécurité :
+        </p>
+
+        <div class="code-box">🔐 <span th:text="${code} ?: '000000'"></span></div>
+
+        <p>
+          👉 Copiez ce code pour valider votre connexion.
+        </p>
+
+        <p class="muted" style="margin-top:12px;">
+          ⚠️ Ce code est valable pendant <strong th:text="${duration} ?: 'quelques'"></strong> minutes. Passé ce délai, il ne sera plus utilisable.
+        </p>
+
+        <p class="muted" style="margin-top:16px;">
+          Si vous n’êtes pas à l’origine de cette tentative de connexion, nous vous recommandons de changer immédiatement votre mot de passe.
+        </p>
+
+        <p style="margin-top:18px;">
+          Merci,<br/>
+          L’équipe <span th:text="${applicationName} ?: 'Optifact'"></span>
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <div class="small">
+          Cet e-mail a été envoyé automatiquement, merci de ne pas y répondre. Si vous avez besoin d’aide, contactez le support.
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

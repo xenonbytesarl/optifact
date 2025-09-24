@@ -1,6 +1,5 @@
 package fr.xenonbyte.optifact.backend.api.actor;
 
-import fr.xenonbyte.optifact.backend.api.actor.generated.view.ActorApiRequestView;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.ActorPageResponseView;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.ActorResponseView;
 import fr.xenonbyte.optifact.backend.api.actor.generated.view.CreateActorApiRequestView;

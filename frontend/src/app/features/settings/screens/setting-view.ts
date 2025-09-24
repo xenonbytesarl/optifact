@@ -12,11 +12,12 @@ import { FormFieldComponent } from '../../../shared/ui/form-field';
 import { InputTextComponent } from '../../../shared/ui/input';
 import { ToastService } from '../../../shared/ui/toast';
 import {MailServerState} from '../../../core/api/setting.api';
+import { InputPasswordComponent } from '../../../shared/ui/input-password';
 
 @Component({
   selector: 'app-setting-view-page',
   standalone: true,
-  imports: [CommonModule, CardComponent, TranslatePipe, SpinnerComponent, ActionBarComponent, ButtonComponent, DialogComponent, FormFieldComponent, InputTextComponent],
+  imports: [CommonModule, CardComponent, TranslatePipe, SpinnerComponent, ActionBarComponent, ButtonComponent, DialogComponent, FormFieldComponent, InputTextComponent, InputPasswordComponent],
   changeDetection: ChangeDetectionStrategy.Default,
   template: `
     <div class="p-4 space-y-4">
@@ -118,6 +119,7 @@ import {MailServerState} from '../../../core/api/setting.api';
 
             <div class="mt-4 flex flex-wrap items-center gap-2 py-6">
               @if (setting()?.emailServer?.state === MailServerState.NEW) {
+                <app-button size="sm" variant="secondary" tone="primary" icon="key" [label]="('settings.email.setPassword' | t) || 'Définir le mot de passe'" [disabled]="loading()" (clicked)="openPasswordDialog()" />
                 <app-button size="sm" variant="primary" tone="primary" icon="forward_to_inbox" [label]="('settings.email.sendCode' | t) || 'Envoyer le code de vérification'" [disabled]="loading()" (clicked)="onSendVerification()" />
               }
               @if (setting()?.emailServer?.state === MailServerState.WAITING) {
@@ -135,6 +137,19 @@ import {MailServerState} from '../../../core/api/setting.api';
               <div dialog-actions>
                 <app-button variant="ghost" [label]="('common.cancel' | t) || 'Annuler'" (clicked)="closeDialog()" />
                 <app-button class="ml-2" variant="primary" tone="primary" icon="check" [label]="('common.validate' | t) || 'Valider'" [disabled]="!verificationCode() || loading()" (clicked)="submitCode()" />
+              </div>
+            </app-dialog>
+
+            <!-- Set password dialog -->
+            <app-dialog [title]="('settings.email.setPasswordTitle' | t) || 'Définir le mot de passe du serveur mail'" [(open)]="showPasswordDialog" [backdropClosable]="true" (closed)="onPasswordDialogClosed()" panelMaxWidth="480px">
+              <div class="space-y-4">
+                <app-form-field [label]="('email.password' | t) || 'Mot de passe'" [required]="true">
+                  <app-input-password [(value)]="emailPassword" placeholder="••••••••" />
+                </app-form-field>
+              </div>
+              <div dialog-actions>
+                <app-button variant="ghost" [label]="('common.cancel' | t) || 'Annuler'" (clicked)="closePasswordDialog()" />
+                <app-button class="ml-2" variant="primary" tone="primary" icon="save" [label]="('common.save' | t) || 'Enregistrer'" [disabled]="!emailPassword() || loading()" (clicked)="submitPassword()" />
               </div>
             </app-dialog>
           </app-card>
@@ -158,6 +173,10 @@ export class SettingViewPage {
   // Dialog state for entering verification code
   showCodeDialog = signal(false);
   verificationCode = signal('');
+
+  // Dialog state for setting email server password
+  showPasswordDialog = signal(false);
+  emailPassword = signal('');
 
   onEdit() {
     this.router.navigate(['/settings/edit']);
@@ -198,6 +217,33 @@ export class SettingViewPage {
       this.verificationCode.set('');
     } else {
       this.toast.error(this.store.error() || 'Code invalide ou expiré');
+    }
+  }
+
+  openPasswordDialog() {
+    this.emailPassword.set('');
+    this.showPasswordDialog.set(true);
+  }
+
+  closePasswordDialog() {
+    this.showPasswordDialog.set(false);
+  }
+
+  onPasswordDialogClosed() {
+    this.emailPassword.set('');
+  }
+
+  async submitPassword() {
+    const id = this.setting()?.id;
+    const pwd = (this.emailPassword() || '').trim();
+    if (!id || !pwd) return;
+    const res = await this.store.updateMailPassword(id, pwd);
+    if (res) {
+      this.toast.success(this.store.message() || 'Mot de passe mis à jour');
+      this.showPasswordDialog.set(false);
+      this.emailPassword.set('');
+    } else {
+      this.toast.error(this.store.error() || 'Erreur lors de la mise à jour du mot de passe');
     }
   }
 
