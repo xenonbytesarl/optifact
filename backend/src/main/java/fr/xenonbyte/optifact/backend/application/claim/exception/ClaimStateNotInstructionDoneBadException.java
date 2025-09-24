@@ -1,4 +1,4 @@
-package fr.xenonbyte.optifact.backend.application.claim;
+package fr.xenonbyte.optifact.backend.application.claim.exception;
 
 import fr.xenonbyte.optifact.backend.application.common.exception.BadException;
 import fr.xenonbyte.optifact.backend.domain.claim.message.ClaimMessage;
