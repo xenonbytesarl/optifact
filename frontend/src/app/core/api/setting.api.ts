@@ -117,4 +117,30 @@ export class SettingApi extends GlobalApi {
       return this.createErrorResponse(error);
     }
   }
+
+  async verifyMailServer(settingId: string) {
+    try {
+      return await firstValueFrom(
+        this.http.post<SuccessApiResponse<Setting | ErrorApiResponse>>(`${this.base}/${settingId}/email/verify`, {})
+      );
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
+
+  async validateMailServer(settingId: string, code: string) {
+    try {
+      return await firstValueFrom(
+        this.http.post<SuccessApiResponse<Setting | ErrorApiResponse>>(`${this.base}/${settingId}/email/validate/${encodeURIComponent(code)}`, {})
+      );
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.error) {
+        return error.error as ErrorApiResponse;
+      }
+      return this.createErrorResponse(error);
+    }
+  }
 }

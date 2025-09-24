@@ -46,7 +46,7 @@ public final class EmailServer {
         this.useAuth = useAuth;
         this.username = username;
         this.password = password;
-        this.state = state;
+        this.state = state == null ? MailServerState.NEW : state;
         this.confirmedAt = confirmedAt;
     }
 
@@ -63,6 +63,10 @@ public final class EmailServer {
             MailServerState state,
             ZonedDateTime confirmedAt) {
         return new EmailServer(from, type, host, port, protocol, useTLS, useAuth, username, password, state, confirmedAt);
+    }
+
+    public EmailServer update(EmailServer emailServer) {
+        return new EmailServer(emailServer.getFrom(), emailServer.getType(), emailServer.getHost(), emailServer.getPort(), emailServer.getProtocol(), emailServer.getUseTLS(), emailServer.getUseAuth(), emailServer.getUsername(), emailServer.getPassword(), emailServer.getState(),emailServer.getConfirmedAt());
     }
 
     public EmailServer withWaiting() {

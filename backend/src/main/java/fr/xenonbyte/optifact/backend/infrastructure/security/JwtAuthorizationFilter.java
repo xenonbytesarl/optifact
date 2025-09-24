@@ -13,7 +13,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -35,35 +34,46 @@ public final class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String subject = tokenProvider.extractSubject(getToken(request));
             String token = getToken(request);
-            if(tokenProvider.isValidToken(token, request) && tokenProvider.getSubject(subject) != null) {
-                List<GrantedAuthority> authorities =  tokenProvider.getAuthorities(token);
-                Authentication authentication = tokenProvider.getAuthentication(subject, authorities, request);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                SecurityContextHolder.clearContext();
+            if (token != null) {
+                String subject = tokenProvider.extractSubject(token);
+                if (tokenProvider.isValidToken(token, request) && tokenProvider.getSubject(subject) != null) {
+                    List<GrantedAuthority> authorities = tokenProvider.getAuthorities(token);
+                    Authentication authentication = tokenProvider.getAuthentication(subject, authorities, request);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    SecurityContextHolder.clearContext();
+                }
             }
-             filterChain.doFilter(request, response);
-         } catch (Exception exception) {
-             handleExceptionResolver(request, response, exception);
-         }
+            filterChain.doFilter(request, response);
+        } catch (Exception exception) {
+            // Ensure we never leave the request hanging
+            SecurityContextHolder.clearContext();
+            // If headers already committed, just stop; otherwise continue the chain to let exception handlers work
+            if (!response.isCommitted()) {
+                filterChain.doFilter(request, response);
+            }
+        }
     }
 
     private void handleExceptionResolver(HttpServletRequest request, HttpServletResponse response, Exception exception) {
-
+        // No-op for now; ensure we don't swallow CORS preflight
     }
 
     private String getToken(HttpServletRequest request) {
         return ofNullable(request.getHeader("Authorization"))
                 .filter(token -> token.startsWith("Bearer "))
                 .map(token -> token.replace("Bearer ", ""))
-                .get();
+                .orElse(null);
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getHeader("Authorization") == null || !request.getHeader("Authorization").startsWith("Bearer ") ||
-                request.getMethod().equalsIgnoreCase("OPTIONS") || asList("/swagger-ui/index.html", "/optifact/api/v1/users/auth/**").contains(request.getRequestURI());
+        String auth = request.getHeader("Authorization");
+        boolean isOptions = "OPTIONS".equalsIgnoreCase(request.getMethod());
+        boolean noBearer = auth == null || !auth.startsWith("Bearer ");
+        String uri = request.getRequestURI();
+        boolean publicPath = uri.startsWith("/swagger-ui/") || uri.startsWith("/v3/api-docs/") || uri.startsWith("/api/v1/optifact/users/auth/");
+        return isOptions || noBearer || publicPath;
     }
 }

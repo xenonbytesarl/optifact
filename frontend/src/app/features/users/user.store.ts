@@ -234,6 +234,19 @@ export const userStore = signalStore(
           return null;
         }
       },
+      async activateAccount(id: string, code: string) {
+        patchState(store, { loading: true, error: null, message: null });
+        const response = await api.activateAccount(id, code);
+        if ((response as any)?.success) {
+          const payloadResp = response as SuccessApiResponse<void>;
+          patchState(store, { loading: false, message: payloadResp.message ?? 'users.activate.success' });
+          return true;
+        } else {
+          const payloadErr = response as ErrorApiResponse;
+          patchState(store, { loading: false, error: payloadErr.reason ?? 'users.activate.error' });
+          return false;
+        }
+      },
     };
   })
 );

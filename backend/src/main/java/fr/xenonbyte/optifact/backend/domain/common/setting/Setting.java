@@ -32,7 +32,7 @@ public final class  Setting extends BaseEntity {
 
     public Setting with(Company company, EmailServer emailServer) {
         if(company == null) throw new IllegalArgumentException(SETTING_COMPANY_REQUIRED);
-        Setting setting = new Setting(this.id, company, emailServer);
+        Setting setting = new Setting(this.id, company, this.emailServer.update(emailServer));
         setting.updateAudit(this.createdAt);
         return setting;
     }
